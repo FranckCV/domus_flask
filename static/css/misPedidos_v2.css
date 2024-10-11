@@ -1,0 +1,109 @@
+.tabs {
+    display: flex;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #192a56; /* Fondo de las pestañas */
+    margin-right: 5px;
+}
+
+.tab.active {
+    border-bottom: 3px solid #fbc531; /* Color de la pestaña activa */
+}
+
+.order-filter {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.orders {
+    background-color: #3b3b6b; /* Fondo de las tarjetas de pedidos */
+    padding: 10px;
+    border-radius: 5px;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+}
+
+.order-card {
+    background-color: #fff; /* Color de las tarjetas individuales */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.order-header {
+    font-weight: bold;
+    background-color: #060528;
+    text-align: center;
+    border-style: solid;
+    border-radius: 0.5rem;
+}
+
+.order-body {
+    padding-top: 5px;
+    color: #000;
+}
+
+.form-select{
+    background-color: #192a56;
+    color: #fff;
+}
+
+.titulo_orden{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    font-weight: bolder;
+}
+
+.cantidad_carrito{
+    padding-top: 0.4rem;
+    font-size: 1.6rem;
+}
+
+@media (max-width: 992px) {
+    .orders {
+        flex: 0 0 46.5%; /* Ocupa el 48% del ancho del contenedor para que quepan dos elementos en una fila */
+        margin-bottom: 1rem;
+    }
+    .row {
+        flex-wrap: wrap;
+    }
+
+    .body_page{
+        position: relative;
+        right: -0.4rem;
+    }
+
+}
+
+@media (max-width: 576px) {
+    .orders {
+        flex: 0 0 100%; /* Ocupa el 100% del ancho del contenedor para que solo haya un elemento por fila */
+        margin-bottom: 1rem;
+        margin-left: 0; /* Asegura que no haya margen en los laterales */
+        margin-right: 0;
+    }
+
+    .contendor_perfil{
+        margin: 0%;
+        margin-right: 0%;
+        padding: 0%;
+    }
+
+    .body_page{
+        display: flex;
+        position: relative;
+        right: 0.2rem;
+    }
+
+    .cantidad_carrito{
+        display: flex;
+        margin: 0% !important;
+    }
+   
+}

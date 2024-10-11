@@ -1,0 +1,42 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    Inciar Sesion
+{% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/iniciar_sesion.css">
+{% endblock %}
+
+{% block contenido %}
+    <section class="login_body">
+        <div class="login-container">
+            <div class="login-logo">
+                <img src="url_for(img/elementos/iconDomus.png)" alt="Logo">
+            </div>
+            <h4 class="text-center text-white mb-3">¡Inicia sesión!</h4>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="username" placeholder="Usuario" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
+                </div>
+                <p class="mt-3 text-center text-white">
+                    <a href="#" class="text-light" onclick="forgotPassword()">¿Olvidaste tu contraseña?</a>
+                </p>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                </div>
+                <p class="text-center text-white">
+                    ¿No tienes una cuenta? &nbsp;<a href="{{url_for('registrate')}}" class="text-light">Regístrate aquí</a>
+                </p>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %} 
+    <script src="static/js/inicio_sesion.js"></script>
+{% endblock %}
+    

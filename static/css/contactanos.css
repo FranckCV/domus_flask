@@ -1,0 +1,22 @@
+.cbo_motivo{
+    width: 93%;
+}
+
+#email{
+    width: 45.20%;
+}
+
+textarea {
+    width: 93%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    resize: vertical;
+    margin-top: 1rem;
+}
+
+.comentarios_span{
+    display: flex;
+    justify-content: start;
+    align-items: start;
+}

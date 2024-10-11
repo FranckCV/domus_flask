@@ -1,0 +1,542 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    Novedades 
+{% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/anuncios.css">
+    <link rel="stylesheet" href="static/css/novedades.css">
+    <link rel="stylesheet" href="static/css/stylesProductCard.css">
+{% endblock %}
+
+{% block contenido %}
+    <main id="anunciosM">
+        
+        <section id="anuncios">
+            <h1 id="h1PROM" style="color: black; ">NOVEDADES </h1>
+            <h2>ANUNCIOS</h2>
+            <div class="anuncios-grid">
+                <div class="anuncio-item grande">
+                    <h3>¡SORTEO!</h3>
+                    <p>Gana un iPhone 15 Pro y 2 camisetas oficiales</p>
+                    <img src="img/anuncios/sorteo.png" alt="Sorteo">
+                    <p class="sorteo-fecha">Sorteo 20 de Junio</p>
+                    <p class="vigencia">Vigencia de 5 al 20 de junio</p>
+                </div>
+                <div class="anuncio-item">
+                    <h3>DIOR</h3>
+                    <p>Feliz día papá</p>
+                    <img src="img/anuncios/Colonia.png" alt="Dior">
+                </div>
+                <div class="anuncio-item">
+                    <h3>INDEX</h3>
+                    <p>Abrigos</p>
+                    <img src="img/anuncios/abrigos.png" alt="Index">
+                </div>
+                <div class="anuncio-item">
+                    <h3>¡Paga tus compras en cuotas!</h3>
+                    <img src="img/anuncios/cuotealo.png" alt="Cuotealo">
+                </div>
+            </div>
+        </section>
+
+        <section id="delivery">
+            <h2 class="delivery">DELIVERY 24 HORAS EN ALIMENTOS Y HOGAR</h2>
+        </section>
+        
+        <article id="ofertas">
+            <h2>OFERTAS</h2>
+            <p>Descubre las novedades que te presentamos</p>
+            <div class="slider_product">
+                <i class="btn_slider_product fas fa-angle-left"></i>
+                <div class="list_product">
+                    <div class="product">
+                        <a class="product_info" href="producto1.html">
+                            <img class="product_pic"
+                                src="img/productos/Tecnologia/Celular Samsung Galaxy A24 128GB 4GB RAM Negro/Celular Samsung Galaxy A24 128GB 4GB RAM Negro.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Samsung Galaxy A24 Negro
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 1,600
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 898
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Hogar/Refrigeradora Samsung Side by Side RS52B3000M9 PE 490L Gris Metal.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Refrigeradora Samsung Side by Side 490L Gris Metal
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 3,099
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 2,199
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 2,099
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Hogar/Tricombo Oster Arrocera + Hervidor + Licuadora.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Tricombo Oster Arrocera + Hervidor + Licuadora
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 509
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 498
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 449
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Alimentos/Whisky Johnnie Walker Blue Label Botella 750ml.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Whisky Johnnie Walker Blue Label Botella 750ml
+                            </p>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 1,449
+                                    <sup>.90</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Alimentos/Almendras con Cobertura de Chocolate Vizzio 69g.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Almendras con Cobertura de Chocolate Vizzio 69g
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 6
+                                    <sup>.50</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 5
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Hogar/Juego de Vajilla Krea Opal Flores 16 Piezas.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Juego de Vajilla Krea Opal Flores 16 Piezas
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 121
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 29
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button  id="heart"button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Hogar/Freidora de Aire OSTER 4L Digital Negro.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Freidora de Aire OSTER 4L Digital Negro
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 589
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 289
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 249
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Tecnologia/Samsung Galaxy S24 Ultra 6.8 12GB RAM 512GB - Negro Titanio + CARGADOR 45w.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Samsung Galaxy S24 Ultra 6.8" 12GB RAM 512GB - ...
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 6,999
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 5,329
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Tecnologia/Lenovo HE05 + Reloj Pulsera Digital de REGALO.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Lenovo HE05 + Reloj Pulsera Digital de REGALO
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 199
+                                    <sup>.90</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 179
+                                    <sup>.90</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 149
+                                    <sup>.90</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/Hogar/Batería Krea 7 Piezas Antiadherente.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Batería Krea 7 Piezas Antiadherente
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 301
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 199
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 129
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Tecnologia/Laptop Lenovo IdeaPad Gaming3 15IAH7 i5-12450H 8GB RAM 512GB SSD RTX3060.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Laptop Lenovo IdeaPad Gaming3 15IAH7 i5-...
+                            </p>
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 3,529
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 3,299
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 3,199
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic"
+                                src="img/productos/Ropa y Calzado/Casaca Diger Denim Stretch Hombre Pionier.png"
+                                alt="Photo_Product">
+                            <p class="product_name">
+                                Casaca Diger Denim Stretch Hombre Pionier
+                            </p>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. 279
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                </div>
+                <i class="btn_slider_product fas fa-angle-right"></i>
+            </div>
+        </article>
+
+        <section id="promociones">
+            <h2>PROMOCIONES</h2>
+            <p>Descubre todas nuestras promociones</p>
+            <div class="promociones-grid">
+                <div class="promocion-item grande">
+                    <h3>Hasta</h3>
+                    <h2>20% dscto</h2>
+                    <p>en yogures laive</p>
+                    <img src="img/productos/laive.png" alt="Yogures Laive">
+                </div>
+                <div class="promocion-item">
+                    <h2>40% dscto</h2>
+                    <p>en comida para mascotas</p>
+                    <img src="img/productos/mascotas.png" alt="Comida para Mascotas">
+                </div>
+                <div class="promocion-item">
+                    <h2>3X2</h2>
+                    <p>en shampoos Head & Shoulders</p>
+                    <img src="img/productos/shampoo.png" alt="Shampoo">
+                </div>
+                <div class="promocion-item">
+                    <h2>15% dscto</h2>
+                    <p>en todo Lego</p>
+                    <img src="img/productos/lego.png" alt="Lego">
+                </div>
+                <div class="promocion-item">
+                    <h2>Desde S/.20</h2>
+                    <p>en polos INDEX</p>
+                    <img src="img/productos/polos.png" alt="Polos INDEX">
+                </div>
+            </div>
+        </section>
+        
+    </main>
+{% endblock %}
+
+{% block scripts %} 
+    <script src="static/js/scriptListProduct.js"></script>
+{% endblock %}

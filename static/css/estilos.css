@@ -1,0 +1,243 @@
+
+/* *********************************************PÁGINA DE REGISTRO********************************* */
+#logoRegistro{
+    background-color: #060546;
+    border-radius: 10px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    border-radius: 50%;
+
+}
+
+#logoRegistro img{
+    height: 60px;
+}
+
+form{
+    padding-top: 30px;
+    margin: 20px 20px;
+    place-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    /* background-color: rgba(169, 167, 167, 0.5); */
+    background-color: rgb(15, 37, 101);
+    width: 50%;
+    border-radius: 15px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    min-height: auto;
+}
+
+form .grupo {
+    position: relative; /* Posición relativa.Significa que el elemento se posicionará en relación con su posición original en el flujo normal del documento, pero aún puede ser desplazado utilizando las propiedades top, right, bottom y left.*/
+}
+
+input:not(#terminos,#enviar,#buscar) {
+    color: #c6c6c6; /* Color del texto */
+    font-size: 18px; /* Tamaño de la fuente */
+    padding: 10px 10px 10px 5px; /* Relleno */
+    display: block; /* Mostrar como bloque */
+    border: none; /* Sin borde */
+    border-bottom: 1px solid #c6c6c6; /* Borde inferior */
+    border-radius: 10px;
+    width: 400px;
+}
+form h1{
+    color:#fff;
+}
+#enviar{
+    height: 42px;
+    width: 150px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    border:none;
+    font-family: Poppins, sans-serif;
+    color: #fff;
+    background-color: #060546;
+}
+
+#otroLabel{
+    font-size:16px;
+    color:#fff;
+}
+
+/* Estilos de los campos de entrada cuando están enfocados */
+input:focus {
+    outline: none; /* Sin contorno */
+    color: rgb(94,93,93); /* Cambiar el color del texto */
+}
+
+/* Estilos de las etiquetas */
+.label:not(#otroLabel) {
+    color: #49454567; /* Color del texto */
+    font-size: 16px; /* Tamaño de la fuente */
+    position: absolute; /* Posición absoluta */
+    left: 5px; /* Posición a la izquierda */
+    top: 10px; /* Posición arriba */
+    transition: 0.5s ease-in-out all; /* Transición */
+    pointer-events: none; /* No permitir eventos de puntero */
+}
+
+input:focus ~ .label,
+input:valid ~ .label {
+    top: -14px; /* Posición arriba */
+    font-size: 12px; /* Tamaño de la fuente */
+}
+/* *********************************************NOSOTROS************************************************ */
+#identidad{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+div {
+    text-align: center; /* Centra el contenido horizontalmente */
+    place-self: center;
+}
+
+/* Estilos para el contenedor del pergamino */
+.pergamino {
+    position: relative; /* Posición relativa para facilitar el posicionamiento */
+    display: inline-block; /* Hace que el contenedor se ajuste al contenido */
+}
+
+/* Estilos para la imagen de pergamino */
+.pergamino img {
+    display: block; /* Hace que la imagen se muestre como bloque */
+    width: 450px;
+    margin: 0px;
+}
+#valores{
+    height:300px;
+}
+.title_pergamino h2{
+    margin:0px;
+    padding: 0px;
+}
+/* Estilos para el párrafo dentro del pergamino */
+.pergamino p, ul {
+    position: absolute; /* Posición absoluta para poder colocar encima */
+    top: 50%; /* Coloca el borde superior del elemento en el 50% del contenedor padre */
+    left: 50%; /* Coloca el borde izquierdo del elemento en el 50% del contenedor padre */
+    transform: translate(-50%, -60%); /* Centra el elemento en ambos ejes */
+    text-align: center; /* Centra el texto horizontalmente */
+}
+.imagenHistoria{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+.historia{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+}
+
+#section_nosotros h2,p{
+    text-align: center;
+}
+#nosotros{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+/* *********************************************PARA EL PERFIL************************************************ */
+
+.contenedor_perfil {
+    margin:10px;
+    display: grid;
+    grid-template-columns: 20% 80%;
+    gap:10px;
+    color: white;
+}
+
+.aside_perfil{
+    background-color: #242281;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.main_perfil{
+    background-color: #060528;
+    border-radius: 5px;
+}
+.img_perfil, .flecha{
+    width: 30%;
+}
+.img_perfil{
+    place-self: center;
+}
+.opcion_perfil{
+    display: grid;
+    grid-template-columns: 30% 60% 10%;
+}
+.opcion_perfil p{
+    text-align: start;
+    color: white;
+}
+.main_perfil h1{
+    text-align: start;
+    font-size: 30px;
+    padding-left: 20px;
+}
+
+.profile-details {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    height: 80%;
+}
+.detalle{
+    background-color: white;
+    width: 90%;
+    height: 100%;
+    color:#000;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.boletin{
+    background-color: white;
+    place-self: start;
+    width: 95%;
+    height: 50%;
+    color: #000;
+}
+
+.detalle > :nth-child(3) {
+    grid-column: 1 / 3; 
+}
+
+.datos_perfil{
+    text-align: start;
+    place-self: start;
+    padding: 30px 50px 0px 50px;
+}
+.datos_perfil strong, p{
+    text-align: start;
+}
+
+#informativo{
+    color:grey;
+}
+/* #confirmar_boletin {
+    display: flex;
+    align-items: center;
+    margin: 20px;
+} */
+
+#confirmar_boletin input[type="checkbox"] {
+    margin: 0px; 
+    width: 5%;
+}
+#confirmar_boletin{
+    display: flex;
+    flex-direction: inline;
+}
+#confirmar_boletin p{
+    margin-left: 5px;
+    font-size: 15px;
+}
+.boletin div{
+    margin-left: 15px;
+}

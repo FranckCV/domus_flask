@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}{% endblock %} | Domus Market</title>
+    <link rel="shortcut icon" href="static/img/elementos/iconDomus.png">
+    <link rel="stylesheet" href="static/css/common_styles/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/common_styles/all.min.css">
+    <link rel="stylesheet" href="static/css/common_styles/fontawesome.min.css">
+    <link rel="stylesheet" href="static/css/common_styles/fonts.css">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/common_styles/domus_styles.css')}}">
+
+    {% block estilos %}        
+    {% endblock %}
+    
+</head>
+
+<body class="body_section">
+    <header>
+        <a class="header_item" id="index_logo" href="{{url_for('index')}}">            
+            <img class="img-fluid" id="logo_header" src="{{url_for('static', filename = logo_foto)}}" alt="Logo">            
+        </a>        
+        <div class="header_item" id="search">
+            <input type="text">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <a class="header_item header_option" id="header_carrito" href="{{url_for('carrito')}}">
+            <div class="d-flex flex-row">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <div class="burbuja_carrito_cant">
+                    <span id="carrito_cant"></span>
+                </div>
+            </div>
+            <p>Mi Carrito</p>
+        </a>
+        <a class="header_item header_option" id="header_perfil" href="{{url_for('iniciar_sesion')}}">
+            <i class="fa-solid fa-user"></i>
+            <p>Mi Perfil</p>            
+        </a>
+        <nav>
+            <div id="menu_button" class="nav_element active_menu">
+                <i class="fa-solid fa-bars"></i>
+                <p>Menú</p>
+            </div>
+            <a class="nav_element" href="{{url_for('catalogo')}}">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <p>Catálogo</p>
+            </a>
+            <a class="nav_element" href="{{url_for('servicio_cliente')}}">
+                <i class="fa-regular fa-circle-question"></i>
+                <p>Servicio al Cliente</p>
+            </a>
+            <a class="nav_element" href="{{url_for('contactanos')}}">
+                <i class="fa-solid fa-message"></i>
+                <p>Contáctanos</p>
+            </a>
+            <a class="nav_element" href="{{url_for('novedades')}}">
+                <i class="fa-solid fa-star"></i>
+                <p>Novedades</p>
+            </a>
+            <!-- <a href="exclusividad.html" class="nav_element menu_exclusividad">
+                <i class="fa-solid fa-star"></i>
+                <p>Exclusividad Domus</p>
+            </a>    -->
+        </nav>
+    </header>
+    <aside id="menu_content" class="menu_items desplegar">
+        <div class="menu_element">
+            <i class="fa-solid fa-list"></i>
+            <span>Categorias</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="submenu_content" id="menu_categories">
+            
+            {% for categoria in categoriasMenu %}
+                <a href="{{url_for('categoria', id=categoria[0])}}">
+                    <i class="{{categoria[2]}}"></i>
+                    {{categoria[1]}}
+                </a>
+            {% endfor %}
+
+        </div>        
+        <div class="menu_element">
+            <i class="fa-solid fa-tag"></i>
+            <span>Marcas Asociadas</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="submenu_content" id="menu_brands">
+
+            {% for marca in marcasMenu %}
+            <a href="{{url_for('marca', id=marca[0])}}">
+                <img src="{{marca[2]}}" alt="{{marca[1]}}">
+                {{marca[1]}}
+            </a>
+            {% endfor %}
+
+            <a href="{{url_for('marcas')}}">
+                <i class="fa-solid fa-plus"></i> 
+                Ver más... 
+            </a>
+            
+        </div>
+        <!-- <div class="menu_element">
+            <i class="fa-solid fa-star"></i>
+            <span>Novedades</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="submenu_content" id="menu_brands">
+
+            {% for marca in marcasMenu %}
+            <a href="{{url_for('marca', id=marca[0])}}">
+                <img src="{{marca[2]}}" alt="{{marca[1]}}">
+                {{marca[1]}}
+            </a>
+            {% endfor %}
+
+            <a href="{{url_for('marcas')}}">
+                <i class="fa-solid fa-plus"></i> 
+                Ver más... 
+            </a>
+            
+        </div> -->
+        <!-- <a href="exclusividad.html" class="menu_element menu_exclusividad">                
+            <i class="fa-solid fa-star"></i>
+            <span>Exclusividad Domus</span>                
+        </a>      -->
+    </aside>
+
+    {% block contenido %}
+    {% endblock %}
+
+    <footer>
+        <div id="footer_pictures">
+            <a href="{{url_for('index')}}">
+                <img id="logo_footer" src="{{url_for('static', filename = logo_foto)}}" alt="">
+            </a>
+            <hr>
+            <div id="social">
+                <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.twitter.com"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.whatsapp.com"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.tiktok.com"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div id="footer_contactanos" class="footer_column">
+            <h2>Contáctanos</h2>
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                servicioalcliente@domus.pe
+            </p>
+            <p href="">
+                <i class="fa-solid fa-phone-volume"></i>
+                074 606240
+            </p>
+            <p href="">
+                <i class="fa-solid fa-clock"></i>
+                Lun-Vie: <br>
+                8:00 am - 05:00 pm
+            </p>
+            <p>
+                <i class="fa-solid fa-message"></i>
+                Dejanos tu contacto: <br>
+                <a href="{{url_for('contactanos')}}">
+                    Ir a Formulario
+                </a>
+            </p>
+        </div>
+        <div id="footer_servicio" class="footer_column">
+            <h2>Servicio al Cliente</h2>
+            <a href="{{url_for('terminos')}}">Terminos y Condiciones</a>
+            <a href="{{url_for('faq')}}">Preguntas Frecuentes</a>
+            <a href="{{url_for('devoluciones')}}">Devoluciones y Cambios</a>
+            <a href="{{url_for('reclamos')}}">Reclamos</a>
+        </div>
+        <div id="footer_nosotros" class="footer_column">
+            <h2>Sobre nosotros</h2>
+            <a href="{{url_for('nosotros')}}">Conócenos</a>
+            <p>Puntos de Venta</p>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.0777467455528!2d-79.86560812524452!3d-6.760374293236254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x904ceeeffd190ddd%3A0xce387ae6229aa09e!2sUSAT!5e0!3m2!1ses-419!2spe!4v1724621773294!5m2!1ses-419!2spe"
+                width="250" height="150" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </footer>
+    <div class="footer_end">
+        &copy; 2024 Copyright: Grupo 02 <br>
+        Cortez Villaseca, Franco | Gil Alarcon, Gabriel | Guzman Salazar, Leonardo | Paucar Mejia, Fabiana | Perez
+        Davila, Junior
+    </div>
+
+    <script src="static/js/common_script/bootstrap.bundle.min.js"></script>
+    <script src="static/js/common_script/gsap.min.js"></script>
+    <script src="static/js/common_script/ScrollTrigger.min.js"></script>
+    <script src="static/js/common_script/jquery-3.7.1.min.js"></script>
+    <script src="static/js/common_script/domus_script.js"></script>
+    <script src="static/js/common_script/mo.umd.min.js"></script>
+    <script src="static/js/common_script/agregarCarrito.js"></script>
+    <script src="static/js/common_script/estadoCarro.js"></script>
+    {% block scripts %}        
+    {% endblock %}
+
+</body>
+</html>

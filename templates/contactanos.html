@@ -1,0 +1,43 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    Contactanos 
+{% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/registrate.css">
+    <link rel="stylesheet" href="static/css/contactanos.css">
+{% endblock %}
+
+{% block contenido %}
+    <section class="body_page">
+        <form>
+            <div id="form_logo">
+                <img src="static/img/elementos/iconDomus.png" alt="logo" id="logo_form">
+            </div>
+            <h1>Envíanos tus comentarios</h1>
+            <div class="comentarios_span"><span>Trataremos de comunicarnos contigo lo antes posible</span></div>
+            <div id="form_content">
+                <input type="text" placeholder="Nombres" required>
+                <input type="text" placeholder="Apellidos" required>
+                <input type="email" placeholder="Email" id="email" name="email" required>
+                <input type="tel" id="telefono" name="telefono" placeholder="Número de celular" pattern="9[0-9]{8}" required>
+                <select class="cbo_motivo">
+                    <option value="" disabled selected>Motivo</option>
+                    <option value="Masculino">Queja</option>
+                    <option value="Femenino">Mejora</option>
+                    <option value="Femenino">Sugerencia</option>
+                </select>
+            </div>
+
+            <textarea id="comentarios" name="comentarios" rows="4" cols="50" required></textarea>
+
+            <input type="submit" value="Enviar comentarios">
+
+        </form>
+    </section>
+{% endblock %}
+
+{% block scripts %} 
+    <script src="js/registro.js"></script>
+{% endblock %}

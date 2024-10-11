@@ -1,0 +1,56 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    Categoria {{categoria[1]}}
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="static/css/stylesProductCard.css">
+    <link rel="stylesheet" href="static/css/stylesCatalogue.css">
+    <link rel="stylesheet" href="static/css/stylesSubcategories.css">
+    <link rel="stylesheet" href="static/css/stylesGalleryImages.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+{% endblock %}
+
+{% block contenido %}
+    <section class="body_page">
+        <article class="article_category">
+            <h1 class="title1_1">
+                CATEGORIA {{categoria[1]}}
+            </h1>
+            <div class="category_content">
+                <div class="category">
+                    <i class="category_icon {{categoria[2]}}"></i>
+                </div>                
+                <div class="slider_subcategory subslider_subcategory">
+                    <i class="btn_slider_subcategory fas fa-angle-left"></i>
+
+                    <div class="list_subcategory">
+                        
+                        {% for subcategoria in subcategorias %}
+
+                        <div class="subcategory">
+                            <div class="subcategory_icon">
+                                <i class="{{subcategoria[2]}}"></i>
+                            </div>
+                            <div class="subcategory_name">
+                                {{subcategoria[1]}}
+                            </div>
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <i class="btn_slider_subcategory fas fa-angle-right"></i>
+                </div>
+            </div>                        
+        </article>
+    </section>
+{% endblock %}
+
+{% block scripts %}    
+    <script src="static/js/scriptCatalogue.js"></script>
+    <script src="static/js/scriptListSubcategory.js"></script>
+{% endblock %}
+

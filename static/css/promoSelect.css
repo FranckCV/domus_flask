@@ -1,0 +1,92 @@
+/* Estilos generales */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+main {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Enlace de promociones */
+.promo-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1em;
+    background-color: #0C0A3E;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+/* Contenedor de la promoción */
+.promotion {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    margin-bottom: 30px; /* Añade espacio extra debajo del cuadro de promoción */
+}
+
+/* Contenido de la promoción */
+.promo-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.promo-img {
+    max-width: 50%;
+    border-radius: 15px 0 0 15px;
+    height: auto;
+    object-fit: cover;
+}
+
+.promo-text {
+    background-color: #1E2A78;
+    color: #fff;
+    padding: 20px;
+    border-radius: 15px; /* Redondea las cuatro esquinas del cuadro azul */
+    text-align: center;
+    flex: 1;
+}
+
+.promo-text h1 {
+    font-size: 2.5em;
+    margin: 10px 0;
+}
+
+.promo-text h2 {
+    font-size: 1.5em;
+    margin: 5px 0;
+}
+
+.promo-text p {
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+
+/* Estilo para los términos y condiciones */
+.terms {
+    background-color: #e8eaf6;
+    border-radius: 10px;
+    padding: 30px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}

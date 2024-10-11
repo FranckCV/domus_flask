@@ -1,0 +1,388 @@
+:root {    
+    --color-catalogue-background2: #003e68;
+    --color-catalogue-background: #002550;
+    --color-catalogue: #236bd7;
+    --color-filter: #003d98;
+    --color-catalogue-square: #298dff;
+    --color-pag-icon: #fff;
+    --color-pag-num: #fff;
+
+    --border-radius-catalogue-content: 1rem;
+
+    --space-catalogue: 10rem;
+
+    --size-pagination-char: 2.2rem;
+    --size-button-up: 60px;
+}
+
+.article_catalogue {
+    background: linear-gradient(var(--color-catalogue-background),var(--color-catalogue-background2));
+}
+
+.catalogue_product {
+    width: 100%;
+    gap: calc(var(--space-catalogue)/5);
+    padding-inline: var(--space-catalogue);
+    display: grid;
+    grid-template-columns: 25vw 68vw;
+    justify-content: center;
+}
+
+/* Cuadro de filtros */
+
+.catalogue_filters{
+    font-size: 1.1rem;
+    text-align: center;
+    background-color: #dce0f6;
+    height: fit-content;
+    display: grid;
+    gap: 1.2rem;
+    padding: 1.2rem;
+    border-radius: var(--border-radius-catalogue-content);
+}
+
+.ctlg_filters_head {
+    font-size: 120%;
+    gap: 0;
+    color: #01012d;
+}
+
+.ctlg_filters_head span,
+.ctlg_filters_head i {
+    margin: 0;
+}
+
+.ctlg_filters_head hr {
+    margin: 0.75rem;
+}
+
+.ctlg_filters_content {
+    gap: 3px;
+    display: grid;
+    color: white;
+}
+
+.ctlg_filters_element {
+    display: grid;
+    grid-template-columns: 1fr 6fr 1fr;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--color-filter);
+    padding-block: 0.6rem;
+    padding-inline: 0.7rem;
+    border-radius: var(--border-radius-element);
+    transition: 0.07s ease;
+    cursor: pointer;
+}
+
+.ctlg_filters_element:hover {
+    background-color: #1f50cc;
+}
+
+.ctlg_filters_element p,
+.ctlg_filters_element i {
+    padding: 0;
+    margin: 0;
+}
+
+.ctlg_filters_element p {
+    text-align: left;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ctlg_filters_element i {
+    text-align: center;
+}
+
+.ctlg_filters_element i + i {
+    text-align: right;
+}
+
+.ctlg_filters_element.active {
+    background-color: #1f50cc;
+    border: 2px solid #ffffff;
+}
+
+.ctlg_filters_clean {
+    color: #ffffff;
+    background-color: var(--color-catalogue);
+    border: 0.1rem solid #fff;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.5rem;
+    padding-inline: 0.7rem;
+    border-radius: var(--border-radius-element);
+    transition: 0.05s ease;
+}
+
+.ctlg_filters_clean:hover {
+    scale: 1.05;
+    background-color: #ffffff;
+    color: var(--color-filter);
+}
+
+.ctlg_filters_subcontent {
+    display: grid;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    padding-block: 0.5rem;
+    background-color: white;
+    padding-inline: 0.7rem;
+    overflow: hidden;
+    border-radius: var(--border-radius-element);
+    transition: max-height 0.3s ease-in-out, padding-block 0.3s ease-out;
+}
+
+.ctlg_filters_subcontent .show {
+    max-height: auto;
+    padding-block: 0.5rem;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.ctlg_filters_subcontent_hidden {
+    display: none;
+    max-height: 0;
+    padding-block: 0; 
+    overflow: hidden;
+}
+
+.ctlg_filters_subelement {    
+    background-color: #0080c5;
+    color: #fff;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    align-items: center;
+    border-radius: 7px;
+    padding-block: 0.4rem;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.ctlg_filters_subelement i {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.ctlg_filters_subelement:hover {
+    color: #ffffff;
+    background-color: var(--color-filter);
+}
+
+/* Cuadro de contenido de productos */
+
+.catalogue_content {
+    background-color: #e1e1e1;
+    border-radius: var(--border-radius-catalogue-content);
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr auto 1fr;
+    grid-template-areas: "ctlg_orderselect" "ctlg_wrap" "ctlg_pagination";
+}
+
+.ctlg_order {
+    border-top-left-radius: var(--border-radius-catalogue-content);
+    border-top-right-radius: var(--border-radius-catalogue-content);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "ctlg_order_order ctlg_order_number";
+    grid-area: ctlg_orderselect;
+    padding-inline: 2rem;
+    gap: 1rem;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    color: var(--background);
+    padding-block: 1rem;       
+    background-color: var(--color-catalogue-square);
+    font-size: 1rem;
+}
+
+.ctlg_select {
+    grid-area: ctlg_order_order;
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    justify-items: center;
+    gap: 1rem;
+}
+
+.ctlg_select p {
+    margin: 0;
+    width: fit-content;
+    justify-self: flex-end;
+}
+
+.ctlg_select select {
+    text-align: center;
+    outline: none;
+    border: 0px;
+    padding: 5px;
+    border-radius: var(--border-tag);
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ctlg_order .ctlg_pagination {
+    grid-area: ctlg_order_number;
+    padding: 0;
+}
+
+/* PAGINATION */
+
+.ctlg_pagination {
+    border-bottom-left-radius:  var(--border-radius-catalogue-content);
+    border-bottom-right-radius:  var(--border-radius-catalogue-content);
+    grid-area: ctlg_pagination;
+    background-color: var(--color-catalogue-square);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1vw;
+    align-items: center;
+    justify-content: center;
+    color: var(--background);
+    padding: 1rem;
+    font-size: 1rem;
+}
+
+.ctlg_pagination i ,
+.ctlg_pagination p {
+    color: var(--font2);
+    padding: 0;
+    margin: 0;
+    border-radius: 100%;
+    width: var(--size-pagination-char);
+    height: var(--size-pagination-char);
+    text-align: center;
+    align-content: center;
+    border: 1px solid;
+    transition: 0.2s ease;
+}
+
+.ctlg_pagination i {
+    background-color: #000000;
+    font-size: 120%;
+}
+
+.ctlg_pagination i:hover {
+    color: #000;
+    background-color: #fff;
+}
+
+.ctlg_pagination p {
+    background-color: #2709ac;
+    color: #ffffff;
+}
+
+.ctlg_pagination p:hover {
+    color: #2709ac;
+    background-color: white;
+}
+
+/* Productos contenido catalogo */
+
+.gallery_product {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 1.5rem;
+    grid-area: ctlg_wrap;
+}
+
+/* Boton Subir */
+
+.return_up_button {
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: #0c036e;
+    height: var(--size-button-up);
+    width: var(--size-button-up);
+    border-radius: 100%;
+    font-size: 2rem;
+    position: fixed;
+    cursor: pointer;
+    display: none;
+    transition: 0.2s ease;            
+    top: 85vh;
+    right: 15vw;
+}
+
+.return_up_button:hover {
+    scale: 1.2;
+}
+
+/* Responsividad */
+
+@media (max-width:599px){
+    
+    .catalogue_product {
+        grid-template-columns: 80vw;
+        grid-template-rows: auto auto;
+        gap: 2rem;
+        padding-inline: 0;
+    }
+
+    .ctlg_order {
+        grid-template-columns: 100%;
+        grid-template-rows: auto auto;
+        grid-template-areas: "ctlg_order_order" "ctlg_order_number";
+        padding-inline: 10vw;
+        font-size: 1rem;
+        
+    }
+
+    .ctlg_select {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 0.1rem;
+    }
+
+    .ctlg_select p {
+        justify-self: center;
+    }
+
+    .return_up_button {
+        display: flex;
+    }
+
+}
+
+@media (min-width:600px) and (max-width:1000px){
+    .catalogue_product {  
+        grid-template-columns: 90vw;
+        grid-template-rows: auto auto;      
+        /* grid-template-columns: 35% 60%; */
+        padding-inline: 2rem;
+    }
+
+    .ctlg_order {
+        grid-template-columns: 100%;
+        grid-template-rows: auto auto;
+        grid-template-areas: "ctlg_order_order" "ctlg_order_number";
+        padding-inline: 2rem;
+        /* gap: 2rem; */
+    }
+    
+    .ctlg_order {
+        justify-items: center;
+        justify-content: center;
+    }
+
+    .return_up_button {        
+        display: flex;
+    }
+    
+}
+  

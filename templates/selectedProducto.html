@@ -1,0 +1,220 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    {{producto[1]}}
+{% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/stylesBrands.css">
+    <link rel="stylesheet" href="static/css/stylesProductCard.css">
+    <link rel="stylesheet" href="static/css/stylesPageProduct.css">
+{% endblock %}
+
+{% block contenido %}
+    <section class="body_page">
+        <article class="article_product_information">
+
+            <div class="breadcrumb">
+                <a href="{{url_for('index')}}"><i class="fa-solid fa-home"></i></a> >
+                <a href="{{url_for('marca', id=marca[0])}}">{{marca[1]}}</a> >
+                <a href="#">{{producto[1]}}</a>
+            </div>
+
+            <div class="product_content">
+                <div id="carouselExampleIndicators" class="carousel slide product_slider">
+                    <div class="carousel-indicators">
+                        {% for i in range(imgs_producto|length) %}
+                            {% if i == 0 %}
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" aria-label="Slide 1" class="active" aria-current="true"></button>
+                            {% else %}
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ i }}" aria-label="Slide {{ i + 1 }}"></button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="carousel-inner">
+                        
+                        {% for imagen in imgs_producto %}
+                            {% if imagen[2] == 0 %}
+                                <div class="carousel-item ">
+                                    <img src="{{imagen[1]}}" class="d-block w-100" alt="...">
+                                </div>
+                                {% elif imagen[2] == 1 %}
+                                <div class="carousel-item active">
+                                    <img src="{{imagen[1]}}" class="d-block w-100" alt="...">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                      
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <div class="product_head">
+                    <div class="product_rating">
+                        <div class="product_stars">
+                            <div class="stars_icon">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </div>
+                            <div class="stars_value">
+                                {{ producto[5] | round(1) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product_code">
+                        ID: 
+                        <strong>
+                            {{ "{:09d}".format(producto[0]) }}
+                        </strong>
+                    </div>
+
+                    <div class="product_brand">
+                        <a class="brand_picture" href="{{url_for('marca', id=producto[9])}}">
+                            <img class="brand_logo" src="{{marca[2]}}" alt="">
+                            <p class="brand_name">
+                                {{marca[1]}}
+                            </p>
+                        </a>
+                    </div>
+                    
+                    <h1 class="product_title">
+                        {{producto[1]}}
+                    </h1>
+                </div>
+
+                <div class="product_main_details">
+                    <div class="product_page_title pf_title">
+                        PRINCIPALES CARACTERÍSTICAS
+                    </div>
+                    <div class="product_features"> 
+                        {% for carac in caracteristicasPrincipales %}                  
+                        <div class="pf_date">
+                            <div class="pf_date_name">
+                                {{carac[0]}}
+                            </div>
+                            <div class="pf_date_value">
+                                {{carac[1]}}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                    
+                <div class="product_cart">
+                    <div class="product_cart_content">
+                        <div class="product_page_title">
+                            COMPRA YA!
+                        </div>
+
+                        {% if producto[2] %}
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>
+                                <p class="product_price_number">
+                                    S/. {{  producto[2] | int  }}
+                                    <sup>.{{ "{:.2f}".format(producto[2]).split('.')[1] }}</sup>
+                                </p>
+                            </div>
+                        {% endif %}
+
+                        <div class="product_price price_online">
+                            <p class="product_price_title">
+                                Online
+                            </p>
+                            <p class="product_price_number">
+                                S/. {{ producto[3] | int }}
+                                <sup>.{{ "{:.2f}".format(producto[3]).split('.')[1] }}</sup>
+                            </p>
+                        </div>
+
+                        {% if producto[4] %}
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>
+                                <p class="product_price_number">
+                                    S/. {{ producto[4] | int }}
+                                    <sup>.{{ "{:.2f}".format(producto[4]).split('.')[1] }}</sup>
+                                </p>
+                            </div>
+                        {% endif %}
+
+                        <div class="product_stock">
+                            <div class="product_stock_value">
+                                {{ producto[7] }}
+                            </div>
+                            productos disponibles
+                        </div>
+    
+                        <div class="product_cart_quantity">
+                            <input type="number" min="1" max="99" value="1">
+                        </div>
+                    </div>                   
+
+                    <div class="product_cart_option product_cart_add">
+                        Agregar al carrito
+                    </div>
+
+                    <div class="product_cart_option product_cart_fav">
+                        <i class="fa-regular fa-heart"></i>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="product_details">
+                <div class="product_page_title product_details_title">
+                    MÁS DETALLES
+                </div>
+
+                <div class="product_details_content">
+                    <div class="product_specifications">
+                        <strong>Especificaciones</strong>
+                        <div class="product_features">
+
+                            {% for carac in caracteristicasSecundarias %}                  
+                            <div class="pf_date">
+                                <div class="pf_date_name">
+                                    {{carac[0]}}
+                                </div>
+                                <div class="pf_date_value">
+                                    {{carac[1]}}
+                                </div>
+                            </div>
+                            {% endfor %}
+                                                   
+                        </div>
+                    </div>
+                    <div class="space"></div>
+                    <div class="product_additional">
+                        <strong>Información adicional</strong>
+                        <div class="product_additional_content">
+                            {{ producto[6] | safe }}
+                        </div>                        
+                    </div>
+                </div>                
+
+                <button class="product_details_more">Ver más</button>
+            </div>
+
+        </article>
+        
+    </section>    
+{% endblock %}
+
+{% block scripts %}
+    <script src="static/js/scriptListProduct.js"></script>
+{% endblock %}
+

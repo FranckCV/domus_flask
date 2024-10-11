@@ -1,0 +1,175 @@
+/* ---------------------------- HOMEPAGE ---------------------------- */
+
+/* CARRUSEL PROMOCIONES Y ANUNCIOS */
+
+.article_promotion {
+    padding-top: 0;
+    padding-bottom: 10px;
+    padding-inline: 0;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: black;
+    border: 5px solid black;
+    border-radius: 100%;
+    padding: 1.1vw;
+}
+
+.carousel-indicators .active {
+    background-color: var(--color1);
+}
+
+/* EXCLUSIVIDAD DOMUS */
+
+.article_banner_domus {
+    padding-block: 0;
+    display: flex;
+    flex-direction: column;
+    background: url(../img/exclusividad/domus_bg.jpg);
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center;
+    background-blend-mode: overlay;
+    background-color: #000425d2;
+    color: var(--font2);
+}
+
+.domus_title {
+    font-size: 2rem;
+    margin-block: 0.75rem;
+}
+
+.domus_img {    
+    background-color: #000;
+    width: 100%;
+}
+
+.domus_info {
+    display: grid;
+    column-gap: 25px;
+    row-gap: 15px;
+    align-items: flex-start;
+    padding-inline: 5rem;
+    padding-block: 3rem;
+    justify-items: center;
+    font-size: 1.3vw;
+    align-items: center;
+}
+
+.domus_info h2 {
+    align-self: flex-end;
+    text-align: center;
+    grid-area: title;
+    margin-block: 5px;
+    font-size: 150%;
+    grid-area: d_title;
+    font-weight: bold;
+}
+
+.domus_info img {
+    border-radius: 50px;
+    grid-area: d_img;
+}
+
+.domus_info p {
+    grid-area: d_text;
+    margin: 0;
+    align-self: flex-start;
+}
+
+.domus_text {
+    text-align: right;    
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 4fr;
+    grid-template-areas: "d_img d_title"
+                         "d_img d_text";
+}
+
+.domus_text2 {
+    text-align: left;    
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 4fr;
+    grid-template-areas: "d_title d_img"
+                         "d_text d_img";
+}
+
+
+@media (max-width:599px){
+    :root {    
+        --size-img-for-sale-gallery: 85vw;
+        --gap-for-sale-gallery: 3vw;
+    }
+
+    .domus_info {
+        grid-template-columns: auto;
+        grid-template-rows: repeat(3,auto);
+        font-size: 4vw;
+        padding-inline: 10vw;
+        padding-block: 5vw;
+    }
+
+    .domus_text {
+        text-align: right;
+        grid-template-areas: "d_img"
+                             "d_title"
+                             "d_text";
+    }
+    
+    .domus_text2 {
+        text-align: left;
+        grid-template-areas: "d_img"
+                             "d_title"
+                             "d_text";
+    }
+}
+
+@media (min-width:600px) and (max-width:1000px){
+    .domus_info {
+        grid-template-columns: auto;
+        grid-template-rows: repeat(3,auto);
+        font-size: 2.5vw;
+        padding-block: 4vw;
+    }
+
+    .domus_text {
+        text-align: right;
+        grid-template-areas: "d_img"
+                             "d_title"
+                             "d_text";
+    }
+    
+    .domus_text2 {
+        text-align: left;
+        grid-template-areas: "d_img"
+                             "d_title"
+                             "d_text";
+    }
+
+}
+
+/* --------------------- COLOR ARTICLE ----------------------- */
+
+/* LO MAS NUEVO */
+
+.article_product_new {
+    background-color: var(--color5);
+}
+
+/* LO MAS POPULAR */
+
+.article_product_popular {
+    background-color: var(--color6);
+}
+
+/* PRODUCTOS SIMILARES */
+
+.article_product_similar {
+    background-color: var(--color5);
+}
+
+/* DE LA MISMA MARCA */
+
+.article_product_brand {
+    background-color: var(--color4);
+}

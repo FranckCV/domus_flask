@@ -1,0 +1,657 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    {{marca[1]}}
+{% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/stylesProductCard.css">
+    <link rel="stylesheet" href="static/css/stylesSubcategories.css">
+    <link rel="stylesheet" href="static/css/stylesCatalogue.css">
+    <link rel="stylesheet" href="static/css/stylesGalleryImages.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/stylesBrands.css">
+    {% endblock %}
+
+    {% block contenido %}
+    <section class="body_page">
+        <article class="article_selected_brand" 
+                style="
+                background-image: 
+                    linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+                    url({{marca[3]}});">
+                    
+            <div class="brand_picture brand_page">
+                <img class="brand_logo" src="{{marca[2]}}" alt="{{marca[1]}}">
+                <p class="brand_name">
+                    {{marca[1]}}
+                </p>
+            </div>
+        </article>
+        
+        <article class="article_catalogue catalogue_brand">
+            <h1 class="title1_2">
+                ¡NUEVAS OFERTAS Y ÚLTIMOS DESCUENTOS!
+            </h1>
+            
+            <div class="slider_subcategory">
+                <i class="btn_slider_subcategory fas fa-angle-left"></i>
+                <div class="list_subcategory">
+                    <div class="subcategory">
+                        <div class="subcategory_icon">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <div class="subcategory_name">
+                            Telefonia
+                        </div>
+                    </div>
+                    <div class="subcategory">
+                        <div class="subcategory_icon">
+                            <i class="fa-solid fa-tablet"></i>
+                        </div>
+                        <div class="subcategory_name">
+                            Tablets
+                        </div>
+                    </div>
+                    <div class="subcategory">
+                        <div class="subcategory_icon">
+                            <i class="fa-solid fa-headphones"></i>
+                        </div>
+                        <div class="subcategory_name">
+                            Audio
+                        </div>
+                    </div>                    
+                    <div class="subcategory">
+                        <div class="subcategory_icon">
+                            <i class="fa-solid fa-desktop"></i>
+                        </div>
+                        <div class="subcategory_name">
+                            Cómputo
+                        </div>
+                    </div>
+                    <div class="subcategory">
+                        <div class="subcategory_icon">
+                            <i class="fa-solid fa-tv"></i>
+                        </div>
+                        <div class="subcategory_name">
+                            Televisores
+                        </div>
+                    </div>
+                    <div class="subcategory">
+                        <div class="subcategory_icon">
+                            <i class="fa-solid fa-keyboard"></i>
+                        </div>
+                        <div class="subcategory_name">
+                            Accesorios
+                        </div>
+                    </div>
+                    <div class="subcategory">
+                        <div class="subcategory_icon">
+                            <i class="fa-solid fa-blender"></i>
+                        </div>
+                        <div class="subcategory_name">
+                            Electrodom...
+                        </div>
+                    </div>
+                </div>
+                <i class="btn_slider_subcategory fas fa-angle-right"></i>
+            </div>
+
+            <div class="catalogue_product">
+        
+                <div class="catalogue_filters">
+                    <div class="ctlg_filters_head"> 
+                        <i class="fa-solid fa-filter"></i>
+                        <span>
+                            Filtros
+                        </span>
+                        <hr>
+                        <span>
+                            Resultados: 
+                            <b>183</b>
+                        </span>
+                    </div>
+        
+                    <div class="ctlg_filters_content">
+        
+                        <div class="ctlg_filters_element">
+                            <i class="fa-solid fa-list"></i>
+                            <p>CATEGORIAS</p>
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-drumstick-bite"></i>
+                                Alimentos
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-person-running"></i>
+                                Deporte
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-house-chimney"></i>
+                                Hogar
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-book"></i>
+                                Libreria y Oficina
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-paw"></i>
+                                Mascotas
+                                <input type="checkbox" name="" id="filt">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-shirt"></i>
+                                Ropa y Calzado
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-microchip"></i>
+                                Tecnología
+                                <input type="checkbox" name="" id="">
+                            </div>
+                        </div>
+                        
+                        <div class="ctlg_filters_element">
+                            <i class="fa-solid fa-table-list"></i>
+                            <p>SUBCATEGORIAS</p>
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            
+                        </div>
+        
+                        <div class="ctlg_filters_element">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                            <p>GAMA DE PRECIOS</p>
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            
+                        </div>
+        
+                        <div class="ctlg_filters_element">
+                            <i class="fa-solid fa-star"></i>
+                            <p>CALIFICACION</p>
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            
+                        </div>
+        
+                    </div>
+                    
+                    <div class="ctlg_filters_clean">
+                        Limpiar Filtros
+                    </div>
+                </div>
+        
+                <div class="catalogue_content">
+                    <div class="ctlg_order">
+        
+                        <div class="ctlg_select">
+                            <p>Ordenar por:</p>
+                            <select id="ctlg_products_order" name="order">                                    
+                                <option value="1">Más Populares</option>
+                                <option value="2">Más Recientes</option>
+                                <option value="3">Mejores Descuentos</option>
+                                <option value="4">Mejores Calificaciones</option>
+                                <option value="5">Desde el Menor Precio</option>
+                                <option value="6">Desde el Mayor Precio</option>
+                                <option value="7">A - Z</option>
+                                <option value="8">Z - A</option>
+                            </select>
+                        </div>
+        
+                        <div class="ctlg_pagination">
+                            <i class="fa-solid fa-caret-left"></i>
+                            <p>1</p>
+                            <p>2</p>
+                            <p>3</p>
+                            <!-- <p>4</p> -->
+                            <!-- <p>5</p> -->
+                            <p>...</p>
+                            <p>16</p>
+                            <i class="fa-solid fa-caret-right"></i>
+                        </div>
+                    </div>
+        
+                    <div class="gallery_product">
+                        
+                        <div class="product">
+                            <a class="product_info" href="producto1.html">
+                                <img class="product_pic"
+                                    src="img/productos/Tecnologia/Celular Samsung Galaxy A24 128GB 4GB RAM Negro/Celular Samsung Galaxy A24 128GB 4GB RAM Negro.png"
+                                    alt="Photo_Product">
+                                <p class="product_name">
+                                    Samsung Galaxy A24 Negro
+                                </p>
+                                <div class="product_price price_regular">
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. 1,600
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. 898
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+        
+                            </a>
+                            <div class="product_option product_option_fav button" id="heart">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div> 
+            
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Hogar/Refrigeradora Samsung Side by Side RS52B3000M9 PE 490L Gris Metal.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Refrigeradora Samsung Side by Side 490L Gris Metal
+                                </p>                                    
+                                <div class="product_price price_regular">                    
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 3,099
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 2,199
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_for_sale">
+                                    <p class="product_price_title">
+                                        Oferta
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 2,099
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Samsung Galaxy S24 Ultra 6.8 12GB RAM 512GB - Negro Titanio + CARGADOR 45w.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Samsung Galaxy S24 Ultra 6.8" 12GB RAM 512GB - ...
+                                </p>                                    
+                                <div class="product_price price_regular">
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 6,999
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 5,329
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Televisor Samsung Smart TV 65 Crystal UHD 4K UN65CU7000GXPE.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Televisor Smart TV 65 Crystal UHD 4K
+                                </p>                                    
+                                <div class="product_price price_regular">                    
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 2,599
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 1,649
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_for_sale">
+                                    <p class="product_price_title">
+                                        Oferta
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 1,499
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+        
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Celular Samsung Galaxy A54 5G 256GB 8GB RAM Negro.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Celular Samsung Galaxy A54 5G 256GB 8GB RAM Negro
+                                </p>                                    
+                                <div class="product_price price_regular">                    
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 2,500
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 1,478
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Smartphone SAMSUNG Galaxy A15 6.5 8GB 256GB 50MP + 5MP + 2MP Blue Black.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Smartphone SAMSUNG Galaxy A15 6.5 8GB Blue Black
+                                </p>                                    
+                                <div class="product_price price_regular">                    
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 799
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 699
+                                        <sup>.99</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_for_sale">
+                                    <p class="product_price_title">
+                                        Oferta
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 649
+                                        <sup>.99</sup>
+                                    </p>
+                                </div>
+                            </a>
+                            <div class="product_option product_option_fav">
+                        <i class="fa-regular fa-heart"></i>
+                    </div>
+                    <div class="product_option product_option_add">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                        </div>
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Celular Samsung Galaxy A34 5G 128GB Rom 6GB Ram NEGRO.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Samsung Galaxy A34 5G 128GB Rom 6GB Ram NEGRO
+                                </p>                                    
+                                <div class="product_price price_regular">                    
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 1,149
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 989
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>                
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Celular Samsung Galaxy S21 Plus 5G 128GB - Púrpura.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Celular Samsung Galaxy S21 Plus 5G 128GB - Púrpura
+                                </p>                                    
+                                <div class="product_price price_regular">                    
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 2,620
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 2,019
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>                        
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+        
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Samsung Note 10 Plus 5G 256GB 12GB Aurora Glow.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Samsung Note 10 Plus 5G 256GB 12GB Aurora Glow
+                                </p>                                    
+                                <div class="product_price price_regular">                    
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 2,733
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 2,186
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Samsung Galaxy S22 Ultra - 12GB RAM + 256GB + Cargador 45W - Borgoña.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Samsung Galaxy S22 Ultra / 12GB RAM + 256GB + ...
+                                </p>                                    
+                                
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 6,500
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Samsung Z Fold 5 5G 512GB 12GB Crema.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Samsung Z Fold 5 5G 512GB 12GB Crema
+                                </p>                                    
+                                
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 6,318
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product_info" href="#">
+                                <img class="product_pic" src="img/productos/Tecnologia/Soundbar Bluetooth Samsung 2.0 Ch HW-C400.png" alt="Photo_Product">
+                                <p class="product_name">
+                                    Soundbar Bluetooth Samsung 2.0 Ch HW-C400
+                                </p>                                    
+                                <div class="product_price price_regular">                    
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 399
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>                    
+                                    <p class="product_price_number">
+                                        S/. 255
+                                        <sup>.00</sup>
+                                    </p>
+                                </div>
+                                
+                            </a>
+                            <div class="product_option product_option_fav">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="ctlg_pagination">
+                        <i class="fa-solid fa-caret-left"></i>
+                        <p>1</p>
+                        <p>2</p>
+                        <p>3</p>
+                        <p>4</p>
+                        <p>5</p>
+                        <p>6</p>
+                        <p>7</p>
+                        <p>8</p>
+                        <p>...</p>
+                        <p>16</p>
+                        <i class="fa-solid fa-caret-right"></i>
+                    </div>
+                </div>
+        
+            </div>
+        </article> 
+    </section>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

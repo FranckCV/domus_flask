@@ -1,0 +1,5 @@
+  .product_option_fav.active i {
+    color: red; /* Color del corazón cuando está activo */
+    transition: color 0.3s ease;
+  }
+  

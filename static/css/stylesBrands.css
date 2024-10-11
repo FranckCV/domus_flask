@@ -1,0 +1,190 @@
+
+/* MARCAS */
+
+.article_brands {
+    background-color: var(--color7);
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.brand_content {
+    display: grid;
+    gap: 1vw;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    grid-template-columns: 1.1fr 2fr 4.5fr;
+    grid-template-areas: "b_logo b_new b_product";
+    margin-inline: 1vw;
+}
+
+.brand_picture {
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+    justify-content: center;
+    align-items: center;
+    grid-area: b_logo;
+    cursor: pointer;
+}
+
+.brand_picture:hover {
+    scale: 1.05;
+    transition: 0.1s;
+}
+
+.brand_picture img {
+    width: 10vw;
+    border-radius: var(--border-item);
+}
+
+.brand_picture img ,
+.brand_picture p {
+    box-shadow: 0px 0px 5px var(--color1);
+    transition: 0.1s ease;
+}
+
+.brand_picture img ,
+.brand_picture p {
+    box-shadow: 0px 0px 10px #2e5cd3;
+}
+
+.brand_picture img:hover {
+    box-shadow: 0px 0px 25px #6a94ff;
+}
+
+.brand_name {
+    text-align: center;
+    font-size: 120%;
+    color: white;
+    background-color: var(--color9);
+    border-radius: var(--border-item);
+    padding-inline: 15px;
+    padding-block: 5px;
+    margin: 0;
+    width: 11vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.brand_new {
+    grid-area: b_new;
+}
+
+.brand_products {
+    grid-area: b_product;
+}
+
+/* ------------------- CATALOGO MARCAS --------------- */
+
+.article_brands_gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-inline: 5vw;
+    height: auto;
+    background-color: #e6efff;
+    justify-content: center;
+}
+
+.catalogue_brand {
+    background-color: #fff;
+}
+
+.catalogue_brand .ctlg_order,
+.catalogue_brand .ctlg_pagination {
+    background-color: #04379d;
+}
+
+.gallery_brand {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 35px;
+    padding-block: 2vw;
+    padding-inline: 1vw;
+    justify-content: center;
+}
+
+/* ------------------- PAGINA MARCA --------------- */
+
+.article_selected_brand {
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 40px;
+}
+
+.brand_page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+@media (max-width:599px){
+    .article_brands {
+        row-gap: 10vw;
+    }
+
+    .brand_content {
+        margin-inline: 10vw;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        grid-template-areas: "b_logo"
+                             "b_new"
+                             "b_product";
+        gap: 5vw;
+    }
+
+    .brand_picture {
+        gap: 5vw;
+    }
+
+    .brand_picture img {
+        width: 35vw;
+    }
+
+    .brand_name {
+        width: 30vw;
+    }
+
+    .gallery_brand {
+        gap: 7vw;
+        padding-block: 7vw;
+        padding-inline: 2vw;
+        /* justify-content: center; */
+    }
+}
+
+@media (min-width:600px) and (max-width:1000px){
+    .article_brands {
+        row-gap: 3vw;
+    }
+
+    .brand_content {
+        margin-inline: 5vw;
+        gap: 2vw;
+        grid-template-columns: 0.5fr 0.75fr;
+        grid-template-rows: 0.5fr 0.01fr;
+        grid-template-areas: "b_logo b_product"
+                             "b_new b_product";
+    }
+
+    .brand_picture {
+        gap: 2vw;
+    }
+
+    .brand_picture img {
+        width: 15vw;
+    }
+
+    .brand_name {
+        width: 15vw;
+    }
+
+}
+
+

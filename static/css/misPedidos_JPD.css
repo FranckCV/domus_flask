@@ -1,0 +1,237 @@
+
+
+
+/* *********************************************PARA EL PERFIL************************************************ */
+
+.contenedor_perfil {
+    margin:10px;
+    display: grid;
+    grid-template-columns: 20% 80%;
+    gap:10px;
+    color: white;
+}
+
+/* #title{
+
+} */
+h2,h3{
+    margin-top: 10px;
+    font-size: 1.4rem;
+}
+.aside_perfil{
+    background-color: #242281;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.main_perfil{
+    background-color: #060528;
+    border-radius: 5px;
+}
+
+.img_perfil{
+    place-self: center;
+}
+.opcion_perfil{
+    display: grid;
+    grid-template-columns: 30% 60% 10%;
+    background-color: #060528;
+    
+}
+.opcion_perfil p{
+    text-align: start;
+    color: white;
+}
+
+
+.menu_izquierda{
+    margin-top: 1.5rem;
+    align-items: center;
+    color: #8395a7;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 1rem;
+    border-style: solid;
+    border-color: #fbc531; 
+    border-width: 5px; 
+}
+
+/* -------------------------------------- */
+
+body, html {
+    margin: 0;
+    background-color: #e5e7ed; /* Oscuro del fondo */
+    color: white;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    background-color: #201F6A; /* Azul oscuro del menú */
+    width: 240px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1rem;
+}
+
+.user-greeting {
+    font-size: 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.user-icon img {
+    width: 40px; /* Ajusta según el tamaño del icono real */
+    margin-right: 10px;
+}
+
+.menu-item {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: #8395a7; /* Color de los ítems */
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 1rem;
+    border-style: solid;
+    border-color: #fbc531;
+    border-width: 1px;
+}
+
+/* .menu-izq{
+    
+} */
+
+.menu-item .icon {
+    margin-right: 10px;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #0C0B2B; /* Gris azulado del contenido */
+    border-radius: 5px;
+    margin-right: 20px; /* Asegúrate de que hay espacio suficiente en el contenedor */
+    min-width: 0; /* Esto puede ayudar a respetar los márgenes y paddings */
+}
+
+.main_perfil h1{
+    text-align: start;
+    font-size: 30px;
+    padding-left: 40px;
+    padding-top: 20px;
+    margin:0px;
+}
+
+.header {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.tabs {
+    display: flex;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #192a56; /* Fondo de las pestañas */
+    margin-right: 5px;
+}
+
+.tab.active {
+    border-bottom: 3px solid #fbc531; /* Color de la pestaña activa */
+}
+
+.order-filter {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.orders {
+    background-color: #3b3b6b; /* Fondo de las tarjetas de pedidos */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.order-card {
+    background-color: #fff; /* Color de las tarjetas individuales */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.order-header {
+    font-weight: bold;
+    background-color: #060528;
+    text-align: center;
+
+}
+
+.order-body {
+    padding-top: 5px;
+    color: #000;
+}
+
+.form-select{
+    background-color: #192a56;
+    color: #fff;
+}
+
+.profile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-weight: bolder;
+}
+/* para botones izquierda */
+.aside_perfil{
+    background-color: #242281;
+    border-radius: 5px;
+    padding: 20px;
+}
+.profile{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.flecha{
+    width: 10%;
+}
+.img_perfil{
+    place-self: center;
+    width: 15%;
+}
+.opcion_perfil{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #060528;
+    margin: 10px;
+    border-radius: 10px;
+    padding: 10px;
+}
+.opcion_perfil p{
+    text-align: start;
+    color: white;
+    margin: 0;
+}
+/*  */
+
+.titulo_orden{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    font-weight: bolder;
+}
