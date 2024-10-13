@@ -157,32 +157,41 @@ def obtenerEnTarjetas_Marca(marca, limit):
 
 
 
-# def obtenerEnTarjetasxMarca(marca):
-#     conexion = obtener_conexion()
-#     productos = []
-#     with conexion.cursor() as cursor:
-#         sql = '''
-#                 SELECT pr.id , pr.nombre , pr.price_regular , pr.precio_online , pr.precio_oferta ,  
-#                 pr.MARCAid , pr.SUBCATEGORIAid , ipr.imagen 
-#                 FROM `producto` pr 
-#                 inner join img_producto ipr on pr.id = ipr.PRODUCTOid 
-#                 where ipr.imgPrincipal = 1 and pr.marcaid = '''+str(marca)+'''
-#             '''
-#         cursor.execute(sql)
-#         productos = cursor.fetchall()
+def obtenerEnTarjetasxMarca(marca):
+    conexion = obtener_conexion()
+    productos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    pr.id , 
+                    pr.nombre , 
+                    pr.price_regular , 
+                    pr.precio_online , 
+                    pr.precio_oferta ,  
+                    pr.MARCAid , 
+                    pr.SUBCATEGORIAid , 
+                    ipr.imagen 
+                FROM `producto` pr 
+                inner join img_producto ipr 
+                on pr.id = ipr.PRODUCTOid 
+                where ipr.imgPrincipal = 1 and pr.disponibilidad = 1 and pr.marcaid = '''+str(marca)+'''
+                order by pr.fecha_registro
+            '''
+        cursor.execute(sql)
+        productos = cursor.fetchall()
     
-#     productos_lista = []
-#     for producto in productos:
-#         pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar , pr_sub, img_binario = producto
-#         if img_binario:
-#             img_base64 = base64.b64encode(img_binario).decode('utf-8')
-#             img_url = f"data:image/png;base64,{img_base64}"
-#         else:
-#             img_url = ""  # Placeholder en caso de que no haya logo
-#         productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar , pr_sub, img_url))
+    productos_lista = []
+    for producto in productos:
+        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar , pr_sub, img_binario = producto
+        if img_binario:
+            img_base64 = base64.b64encode(img_binario).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
+            img_url = ""  # Placeholder en caso de que no haya logo
+        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar , pr_sub, img_url))
     
-#     conexion.close()
-#     return productos_lista
+    conexion.close()
+    return productos_lista
 
 
 # def obtenerEnTarjetasxCategoria(categoria):

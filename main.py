@@ -35,7 +35,14 @@ def marcas():
 @app.route("/catalogo") #falta
 def catalogo():
     productos = controlador_productos.obtenerEnTarjetasMasRecientes()
-    return render_template("catalogo.html", productos = productos)
+    categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()
+    
+    # novedades
+    # productos
+    # filtro categoria
+    # filtro subcategoria
+
+    return render_template("catalogo.html", productos = productos, categoriasFiltro = categoriasFiltro)
 
 
 @app.route("/novedades") #falta
@@ -63,6 +70,7 @@ def categoria(id):
 @app.route("/selectedMarca=<int:id>")  #falta
 def marca(id):
     marca = controlador_marcas.obtener_marca_por_id(id)
+    
     return render_template("marca.html", marca = marca)
 
 
