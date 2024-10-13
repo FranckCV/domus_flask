@@ -111,7 +111,7 @@ def obtenerEnTarjetas_Marca(marca, limit):
                 FROM `producto` pr 
                 inner join img_producto ipr 
                 on pr.id = ipr.PRODUCTOid 
-                where pr.precio_oferta != null and ipr.imgPrincipal = 1 and pr.disponibilidad = 1 and pr.marcaid = '''+str(marca)+'''
+                where ipr.imgPrincipal = 1 and pr.disponibilidad = 1 and pr.marcaid = '''+str(marca)+'''
                 order by pr.fecha_registro
                 limit '''+str(limit)+''' 
             '''

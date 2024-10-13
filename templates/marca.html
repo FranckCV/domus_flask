@@ -15,12 +15,11 @@
 
     {% block contenido %}
     <section class="body_page">
-        <article class="article_selected_brand" 
-                style="
-                background-image: 
-                    linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
-                    url({{marca[3]}});">
-                    
+        <article class="article_selected_brand"
+            style="
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+                url( {{imagenMarcaFondo}} );">
             <div class="brand_picture brand_page">
                 <img class="brand_logo" src="{{marca[2]}}" alt="{{marca[1]}}">
                 <p class="brand_name">

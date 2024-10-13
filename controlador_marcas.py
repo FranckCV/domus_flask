@@ -83,7 +83,7 @@ def obtener_marca_por_id(id):
                 ma.img_logo,
                 ma.img_banner
             FROM marca ma
-            where ma.id = '''+ str(id) +'''
+            where ma.disponibilidad = 1 and ma.id = '''+ str(id) +'''
             '''
         cursor.execute(sql)
         marca = cursor.fetchone()
@@ -115,7 +115,7 @@ def obtener_marcas():
     conexion = obtener_conexion()
     marcas = []
     with conexion.cursor() as cursor:
-        sql = "SELECT id, marca, img_logo FROM "+tabla
+        sql = "SELECT id, marca, img_logo FROM "+tabla+" where disponibilidad = 1"
         cursor.execute(sql)
         marcas = cursor.fetchall()
     

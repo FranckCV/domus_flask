@@ -9,11 +9,14 @@ import controlador_subcategorias
 
 app = Flask(__name__)
 
+logo_domus = 'img/elementos/logoDomus.png'
+
+
 @app.context_processor
 def inject_globals():
     categoriasMenu = controlador_categorias.obtener_categorias()
     marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
-    logo_foto = 'img/elementos/logoDomus.png'
+    logo_foto = logo_domus
     return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu)
 
 
@@ -50,11 +53,14 @@ def novedades():
     return render_template("novedades.html")
 
 
-
 @app.route("/promociones") #falta
 def promociones():
     return render_template("promociones.html")
 
+
+@app.route("/error") #falta
+def error():
+    return render_template("error.html")
 
 
 
@@ -62,27 +68,49 @@ def promociones():
 
 @app.route("/selectedCategoria=<int:id>")  #falta
 def categoria(id):
-    categoria = controlador_categorias.obtener_categoria_por_id(id)
-    subcategorias = controlador_subcategorias.obtenerSubcategoriasXCategoria(id)
-    return render_template("categoria.html", categoria = categoria, subcategorias = subcategorias)
+    try:
+        categoria = controlador_categorias.obtener_categoria_por_id(id)
+        if categoria and categoria[3] == 1:        
+            
+            subcategorias = controlador_subcategorias.obtenerSubcategoriasXCategoria(id)
+            return render_template("categoria.html", categoria = categoria, subcategorias = subcategorias)
+        
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
 
 
 @app.route("/selectedMarca=<int:id>")  #falta
 def marca(id):
-    marca = controlador_marcas.obtener_marca_por_id(id)
-    
-    return render_template("marca.html", marca = marca)
+    try:
+        marca = controlador_marcas.obtener_marca_por_id(id)
+        if marca and marca["disponibilidad"] == 1: 
+
+            if marca[3]:
+                imagenMarcaFondo = marca[3]
+            else:
+                imagenMarcaFondo =  'static/img/elementos/domus_bg.jpg'
+
+            return render_template("marca.html", marca = marca , imagenMarcaFondo = imagenMarcaFondo)
+        
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
 
 
 @app.route("/selectedProducto=<int:id>")  #falta
 def producto(id):
-    producto = controlador_productos.obtener_por_id(id)
-    marca = controlador_marcas.obtener_marca_por_id(producto[9])
-    imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(producto[0])
-    caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
-    caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
-    return render_template("selectedProducto.html" , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
-
+    try:
+        producto = controlador_productos.obtener_por_id(id)
+        marca = controlador_marcas.obtener_marca_por_id(producto[9])
+        imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(producto[0])
+        caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
+        caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
+        return render_template("selectedProducto.html" , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
+    except:
+        return redirect("/error")
 
 @app.route("/selectedNovedad?<int:tipo_id>=<int:id>")  #falta
 def novedad(id,tipo_id):
