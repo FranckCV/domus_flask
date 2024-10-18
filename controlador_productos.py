@@ -95,7 +95,7 @@ def obtenerEnTarjetasMasPopulares():
     for producto in productos:
         pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cant = producto
         img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url},"))
+        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
     
     conexion.close()
     return productos_lista
