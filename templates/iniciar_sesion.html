@@ -1,6 +1,7 @@
 {% extends "maestra_general.html" %}
 {% block estilos %}
   <link rel="stylesheet" href="static/css/iniciar_sesion.css"/>
+  <link rel="stylesheet" href="static/css/modal.css"/>
 {% endblock %}
 
 {% block contenido %}
@@ -32,7 +33,7 @@
 
     <!--Registro -->
     <div class="container-form">
-      <form class="sign-up" id="signup-form">
+      <form class="sign-up" id="signup-form" action="{{ url_for('registrar_cliente') }}" method="post">
         <h2>Registrar cuenta</h2>
 
         <div class="container-input form-field">
@@ -90,7 +91,13 @@
           <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirmar contraseña" required>
           <small></small>
         </div>
-      
+        
+        <div class="check">
+          <input type="checkbox" name="terminos" value="1" id="terminos">
+        <a href="{{url_for('terminos')}}" >Acepta términos y condiciones</a>
+        <small></small>
+        </div>
+
         <button type="submit" class="button">Registrarse</button>
       </form>
     </div>
@@ -99,24 +106,50 @@
 
       <div class="welcome-sign-up welcome">
         <h3>¡Bienvenido!</h3>
-        <p>Ingrese sus datos para disfrutar de todas las funcionalidades</p>
+        <p>Si aún no tienes cuenta, regístrate para disfrutar de todas las funcionalidades:</p>
         <button class="button" id="btn-sign-up">Registrarse</button>
       </div>
 
       <div class="welcome-sign-in welcome">
         <h3>¡Bienvenido!</h3>
-        <p>Regístrate con tus datos personales para usar todas las funcionalidades</p>
+        <p>Si ya tienes cuenta, inicia sesión aquí:</p>
         <button class="button" id="btn-sign-in">Iniciar sesión</button>
       </div>
 
     </div>
 
+
+
   </div>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Error en el registro</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          El correo usado ya fue registrado, utilíce otro. Por favor, inténtelo nuevamente.
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </section>
+
 
 {% endblock %}
 
 {% block scripts %}
   <script src="static/js/inicio_sesion.js"></script>
   <script src="static/js/validar_formulario.js"></script>
+  <script>
+    {% if show_modal %}
+    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+      keyboard: false
+    });
+    myModal.show();
+    {% endif %}
+    </script>
 {% endblock %}

@@ -12,13 +12,13 @@
     font-family:Poppins, sans-serif;
     padding-block: 15px;
 }
-.login_body .container{
-    border: 2px solid black;
+.container{
     width: 800px;
     height: 500px;
     display: flex;
     position: relative;
     --bs-gutter-x:0;
+    box-shadow: -10px 0px 20px rgba(0, 0, 0, 0.2);
 }
 .login_body .container-form{
     width: 100%;
@@ -70,7 +70,7 @@
     color: white;
 }
 .button:hover{
-    background-color: #7979c9;
+    background-color: #6d6dfb;
     color: black;
 }
 .container-input select {
@@ -177,4 +177,15 @@
 .container-input.success small {
     visibility: hidden; 
     color: green;
+}
+.check a{
+    font-size: 12px;
+    padding-bottom: 10px;
+}
+
+.check.error small {
+    color: red;
+}
+.check small{
+    display: block;
 }

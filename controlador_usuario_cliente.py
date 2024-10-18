@@ -1,0 +1,26 @@
+from bd import obtener_conexion
+import base64
+
+
+
+
+def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad):
+    conexion = obtener_conexion() 
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT correo FROM usuario WHERE correo = %s", (correo,))
+            result = cursor.fetchone()
+
+            if result is not None:
+                return 0 #Ya estaba registrado
+
+            cursor.execute(
+                "INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad)
+            )
+            conexion.commit()  
+            return 1
+    except Exception as e:
+        conexion.close() 
+        return -1
