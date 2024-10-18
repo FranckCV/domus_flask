@@ -70,7 +70,7 @@
     color: white;
 }
 .button:hover{
-    background-color: #7979c9;
+    background-color: #6d6dfb;
     color: black;
 }
 .container-input select {
@@ -177,4 +177,15 @@
 .container-input.success small {
     visibility: hidden; 
     color: green;
+}
+.check a{
+    font-size: 12px;
+    padding-bottom: 10px;
+}
+
+.check.error small {
+    color: red;
+}
+.check small{
+    display: block;
 }

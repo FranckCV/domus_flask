@@ -6,6 +6,7 @@ import controlador_imagenes_productos
 import controlador_imagenes_novedades
 import controlador_caracteristicas_productos
 import controlador_subcategorias
+import controlador_usuario_cliente
 
 app = Flask(__name__)
 
@@ -402,7 +403,26 @@ def actualizar_producto():
 
 
 #########################INICIO DE SESIÓN####################################
+#PARA GUARDAR
+@app.route("/registrar_cliente", methods=["POST"])
+def registrar_cliente():
 
+    nombres = request.form["nombres"]
+    apellidos = request.form["apellidos"]
+    dni = request.form["dni"]
+    genero = request.form["genero"]
+    fecha_nacimiento = request.form["fecha_nacimiento"]
+    telefono = request.form["telefono"]
+    correo = request.form["correo"]
+    password = request.form["password"]
+
+    result=controlador_usuario_cliente.insertar_usuario(
+        nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, password,True
+    )
+    if(result==1):
+        return redirect("/carrito")
+    else:
+        return render_template("iniciar_sesion.html", show_modal=True)
 
 #####################FIN INICIO DE SESIÓN######################
 # EJECUTAR

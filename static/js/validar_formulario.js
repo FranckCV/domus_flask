@@ -1,17 +1,19 @@
-//PARA VALIDAR EL INICIO DE SESIÓN
+// PARA VALIDAR INICIO
 const loginForm = document.querySelector('#login-form');
 const emailLoginEl = document.querySelector('#email-login');
 const passwordLoginEl = document.querySelector('#password-login');
-//PARA VALIDAR EL REGISTRO
+//PARA VALIDAR REGISTRO
 const usernameEl = document.querySelector('#username');
 const lastnameEl = document.querySelector('#lastname');
 const dniEl = document.querySelector('#dni');
 const telefonoEl = document.querySelector('#telefono');
 const passwordEl = document.querySelector('#password');
+const passwordConfirm=document.querySelector('#confirm-password')
 const emailEl = document.querySelector('#email-signup');
 const signupForm = document.querySelector('#signup-form');
+const terminos = document.querySelector("#terminos");
 
-// Solo letras
+// Validar solo letras
 const checkName = (input) => {
     let valid = false;
     const re = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/; 
@@ -91,6 +93,35 @@ const checkPassword = (input) => {
     }
     return valid;
 };
+
+const checkPasswordMatch = () => {
+    let valid = false;
+    const password = passwordEl.value.trim();
+    const confirmPassword = passwordConfirm.value.trim();
+
+    if (!isRequired(confirmPassword)) {
+        showError(passwordConfirm, 'La confirmación de contraseña no puede estar vacía.');
+    } else if (password !== confirmPassword) {
+        showError(passwordConfirm, 'Las contraseñas no coinciden.');
+    } else {
+        showSuccess(passwordConfirm);
+        valid = true;
+    }
+    return valid;
+};
+
+// Validar si los términos están aceptados
+const checkTerminos = () => {
+    let valid = false;
+    if (!terminos.checked) {
+        showError(terminos, 'Debes aceptar los términos y condiciones.');
+    } else {
+        showSuccess(terminos);
+        valid = true;
+    }
+    return valid;
+};
+
 // Funciones generales
 const isRequired = value => value === '' ? false : true;
 
@@ -98,17 +129,32 @@ const showError = (input, message) => {
     const formField = input.parentElement;
     formField.classList.remove('success');
     formField.classList.add('error');
+    
     const error = formField.querySelector('small');
-    error.textContent = message;
+    if (error) {
+        error.textContent = message;
+    }
+
+    if (input.type === 'checkbox') {
+        input.style.border = '2px solid red';
+    }
 };
 
 const showSuccess = (input) => {
     const formField = input.parentElement;
     formField.classList.remove('error');
     formField.classList.add('success');
+    
     const error = formField.querySelector('small');
-    error.textContent = '';
+    if (error) {
+        error.textContent = '';
+    }
+
+    if (input.type === 'checkbox') {
+        input.style.border = '2px solid #ccc';  
+    }
 };
+
 
 const isEmailValid = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -122,7 +168,7 @@ const debounce = (fn, delay = 500) => {
             clearTimeout(timeoutId);
         }
         timeoutId = setTimeout(() => {
-            fn.apply(null, args)
+            fn.apply(null, args);
         }, delay);
     };
 };
@@ -135,16 +181,20 @@ signupForm.addEventListener('submit', function (e) {
           isLastnameValid = checkName(lastnameEl),
           isDniValid = checkDni(),
           isTelefonoValid = checkTelefono(),
-          isEmailValid = checkEmail(),
-          isPasswordValid = checkPassword();
+          isEmailValid = checkEmail(emailEl),
+          isPasswordValid = checkPassword(passwordEl),
+          isPasswordMatchValid = checkPasswordMatch(), // Validar que las contraseñas coincidan
+          areTerminosAccepted = checkTerminos(); 
 
-    const isFormValid = isUsernameValid && isLastnameValid && isDniValid && isTelefonoValid && isEmailValid && isPasswordValid;
+    const isFormValid = isUsernameValid && isLastnameValid && isDniValid && isTelefonoValid && isEmailValid && isPasswordValid && isPasswordMatchValid && areTerminosAccepted;
 
     if (isFormValid) {
         console.log('Formulario válido!');
+        signupForm.submit(); // Si todo es válido, envía el formulario
     }
 });
 
+// Evento de validación del formulario de inicio de sesión
 loginForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -156,6 +206,7 @@ loginForm.addEventListener('submit', function (e) {
     if (isLoginFormValid) {
         console.log('Formulario de inicio de sesión válido!');
         // Aquí puedes realizar la acción de enviar o continuar
+        loginForm.submit();
     }
 });
 
@@ -169,7 +220,6 @@ loginForm.addEventListener('input', debounce(function (e) {
             break;
     }
 }, 500));
-
 
 signupForm.addEventListener('input', debounce(function (e) {
     switch (e.target.id) {
@@ -186,10 +236,13 @@ signupForm.addEventListener('input', debounce(function (e) {
             checkTelefono();
             break;
         case 'email-signup':
-            checkEmail();
+            checkEmail(emailEl);
             break;
         case 'password':
-            checkPassword();
+            checkPassword(passwordEl);
+            break;
+        case 'confirm-password':
+            checkPasswordMatch();
             break;
     }
 }, 500));
