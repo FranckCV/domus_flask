@@ -1,4 +1,4 @@
-if (!window.location.pathname.includes('carrito') || !window.location.pathname.includes('carrito.html') ) {        
+if (!window.location.pathname.includes('carrito') ) {        
     document.addEventListener('DOMContentLoaded', () => {
         const agregarDivs = document.querySelectorAll('.product_option_add');
 
