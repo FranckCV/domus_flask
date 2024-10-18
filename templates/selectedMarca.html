@@ -1,0 +1,266 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    {{marca[1]}}
+{% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/stylesProductCard.css">
+    <link rel="stylesheet" href="static/css/stylesSubcategories.css">
+    <link rel="stylesheet" href="static/css/stylesCatalogue.css">
+    <link rel="stylesheet" href="static/css/stylesGalleryImages.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/stylesBrands.css">
+    {% endblock %}
+
+    {% block contenido %}
+    <section class="body_page">
+        <article class="article_selected_brand"
+            style="
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+                url( {{imagenMarcaFondo}} );">
+            <div class="brand_picture brand_page">
+                <img class="brand_logo" src="{{marca[2]}}" alt="{{marca[1]}}">
+                <p class="brand_name">
+                    {{marca[1]}}
+                </p>
+            </div>
+        </article>
+        
+        <article class="article_catalogue catalogue_brand">
+            <h1 class="title1_2">
+                ¡NUEVAS OFERTAS Y ÚLTIMOS DESCUENTOS!
+            </h1>
+            
+            <div class="slider_subcategory">
+                <i class="btn_slider_subcategory fas fa-angle-left"></i>
+                <div class="list_subcategory">
+
+                    {% for subcategoria in subcategoriasMarca %}
+
+                        <div class="subcategory">
+                            <div class="subcategory_icon">
+                                <i class="{{subcategoria[2]}}"></i>
+                            </div>
+                            <div class="subcategory_name">
+                                {{subcategoria[1]}}
+                            </div>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+                <i class="btn_slider_subcategory fas fa-angle-right"></i>
+            </div>
+
+            <div class="catalogue_product">
+        
+                <div class="catalogue_filters">
+                    <div class="ctlg_filters_head"> 
+                        <i class="fa-solid fa-filter"></i>
+                        <span>
+                            Filtros
+                        </span>
+                        <hr>
+                        <span>
+                            Resultados: 
+                            <b>183</b>
+                        </span>
+                    </div>
+        
+                    <div class="ctlg_filters_content">
+        
+                        <div class="ctlg_filters_element">
+                            <i class="fa-solid fa-list"></i>
+                            <p>CATEGORIAS</p>
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-drumstick-bite"></i>
+                                Alimentos
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-person-running"></i>
+                                Deporte
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-house-chimney"></i>
+                                Hogar
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-book"></i>
+                                Libreria y Oficina
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-paw"></i>
+                                Mascotas
+                                <input type="checkbox" name="" id="filt">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-shirt"></i>
+                                Ropa y Calzado
+                                <input type="checkbox" name="" id="">
+                            </div>
+                            <div class="ctlg_filters_subelement">
+                                <i class="fa-solid fa-microchip"></i>
+                                Tecnología
+                                <input type="checkbox" name="" id="">
+                            </div>
+                        </div>
+                        
+                        <div class="ctlg_filters_element">
+                            <i class="fa-solid fa-table-list"></i>
+                            <p>SUBCATEGORIAS</p>
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            
+                        </div>
+        
+                        <div class="ctlg_filters_element">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                            <p>GAMA DE PRECIOS</p>
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            
+                        </div>
+        
+                        <div class="ctlg_filters_element">
+                            <i class="fa-solid fa-star"></i>
+                            <p>CALIFICACION</p>
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            
+                        </div>
+        
+                    </div>
+                    
+                    <div class="ctlg_filters_clean">
+                        Limpiar Filtros
+                    </div>
+                </div>
+        
+                <div class="catalogue_content">
+                    <div class="ctlg_order">
+        
+                        <div class="ctlg_select">
+                            <p>Ordenar por:</p>
+                            <select id="ctlg_products_order" name="order">                                    
+                                <option value="1">Más Populares</option>
+                                <option value="2">Más Recientes</option>
+                                <option value="3">Mejores Descuentos</option>
+                                <option value="4">Mejores Calificaciones</option>
+                                <option value="5">Desde el Menor Precio</option>
+                                <option value="6">Desde el Mayor Precio</option>
+                                <option value="7">A - Z</option>
+                                <option value="8">Z - A</option>
+                            </select>
+                        </div>
+        
+                        <div class="ctlg_pagination">
+                            <i class="fa-solid fa-caret-left"></i>
+                            <p>1</p>
+                            <p>2</p>
+                            <p>3</p>
+                            <!-- <p>4</p> -->
+                            <!-- <p>5</p> -->
+                            <p>...</p>
+                            <p>16</p>
+                            <i class="fa-solid fa-caret-right"></i>
+                        </div>
+                    </div>
+        
+                    <div class="gallery_product">
+                        
+
+                        {% for producto in productosMarca %}
+
+                        <div class="product" data-subcategory="{{producto[6]}}">
+                            <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                                <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
+
+                                <p class="product_name">
+                                    {{producto[1]}}
+                                </p>
+
+                                {% if producto[2] %}
+                                    <div class="product_price price_regular">
+                                        <p class="product_price_title">
+                                            Regular
+                                        </p>
+                                        <p class="product_price_number">
+                                            S/. {{  producto[2] | int  }}
+                                            <sup>.{{ "{:.2f}".format(producto[2]).split('.')[1] }}</sup>
+                                        </p>
+                                    </div>
+                                {% endif %}
+
+                                <div class="product_price price_online">
+                                    <p class="product_price_title">
+                                        Online
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. {{ producto[3] | int }}
+                                        <sup>.{{ "{:.2f}".format(producto[3]).split('.')[1] }}</sup>
+                                    </p>
+                                </div>
+
+                                {% if producto[4] %}
+                                    <div class="product_price price_for_sale">
+                                        <p class="product_price_title">
+                                            Oferta
+                                        </p>
+                                        <p class="product_price_number">
+                                            S/. {{ producto[4] | int }}
+                                            <sup>.{{ "{:.2f}".format(producto[4]).split('.')[1] }}</sup>
+                                        </p>
+                                    </div>
+                                {% endif %}
+
+                            </a>
+                            <div class="product_option product_option_fav button" id="heart">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="product_option product_option_add">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+
+
+                    </div>
+        
+                    <div class="ctlg_pagination">
+                        <i class="fa-solid fa-caret-left"></i>
+                        <p>1</p>
+                        <p>2</p>
+                        <p>3</p>
+                        <p>4</p>
+                        <p>5</p>
+                        <p>6</p>
+                        <p>7</p>
+                        <p>8</p>
+                        <p>...</p>
+                        <p>16</p>
+                        <i class="fa-solid fa-caret-right"></i>
+                    </div>
+                </div>
+        
+            </div>
+        </article> 
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    <script src="static/js/scriptCatalogue.js"></script>
+    <script src="static/js/scriptListSubcategory.js"></script>
+{% endblock %}

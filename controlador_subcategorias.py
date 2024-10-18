@@ -29,6 +29,7 @@ def obtenerSubcategoriasXMarca(marca):
             SELECT DISTINCT 
                 s.id, 
                 s.subcategoria , 
+                s.faicon_subcat , 
                 m.marca 
             FROM SUBCATEGORIA s 
             INNER JOIN PRODUCTO p ON p.SUBCATEGORIAid = s.id 
@@ -41,3 +42,42 @@ def obtenerSubcategoriasXMarca(marca):
 
 
 
+
+def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("INSERT INTO subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id) VALUES (%s, %s,%s,%s)",(nombre,faicon_subcat,disponibilidad,categoria_id))
+    conexion.commit()
+    conexion.close()
+
+def obtener_subcategorias():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id , subcategoria ,faicon_subcat,disponibilidad,categoriaid FROM subcategoria")
+        subcategorias = cursor.fetchall()
+    conexion.close()
+    return subcategorias
+
+def eliminar_subcategoria(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("DELETE FROM subcategoria WHERE id = %s", (id,))
+    conexion.commit()
+    conexion.close()
+
+def obtener_subcategoria_por_id(id):
+    conexion = obtener_conexion()
+    subcategoria = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id, nombre,faicon_subcat,disponibilidad,categoria_id FROM subcategoria WHERE id = %s", (id,))
+        subcategoria = cursor.fetchone()
+    conexion.close()
+    return subcategoria
+
+def actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id, id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("UPDATE subcategoria SET nombre = %s ,faicon_subcat = %s,disponibilidad = %s,categoria_id = %s WHERE id =%s",
+                       (nombre,faicon_subcat,disponibilidad,categoria_id, id))
+    conexion.commit()
+    conexion.close()

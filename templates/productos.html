@@ -1,0 +1,115 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %} Productos {% endblock %}
+{% block contenido %}
+
+
+    <section class="h_section" id="mainSection">
+        <h2 class="fw-bolder">Listado de productos</h2>
+        <div class="container-fluid" id="break_nav">
+                <div class="col">
+                    <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
+                    <select class="form-select choosie" aria-label="Default select example">
+                        <option selected>Tecnología</option>
+                        <option value="1">Ropa</option>
+                        <option value="2">Accesorios</option>        
+                    </select>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+                            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
+                        </button>
+                        <a href="{{ url_for('formulario_agregar_producto') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
+                        
+                    </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+        <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio Regular</th>
+                    <th>Precio Online</th>
+                    <th>Precio Oficial</th>
+                    <th>Calificacion</th>
+                    <th>Informacion Adicional</th>
+                    <th>Stock</th>
+                    <th>Fecha Registro</th>
+                    <th>Disponibilidad</th>
+                    <th>Marca</th>
+                    <th>Subcategoria</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto[1] }}</td>
+                    <td>{{ producto[2] }}</td>
+                    <td>{{ producto[3] }}</td>
+                    {% if producto[4] == 0.00 %}
+                        <td> - </td>
+                    {% else%}
+                        <td>{{ producto[4] }}</td>
+                    {% endif %}
+                    
+                    <td>{{ producto[5] }}</td>
+                    <td>{{ producto[6] }}</td>
+                    <td>{{ producto[7] }}</td>
+                    <td>{{ producto[8] }}</td>                    
+                    <td>
+                    {% if producto[9] == 1 %}
+                    <span>Disponible</span>
+                    {% else %}
+                    <span>No Disponible</span>
+                    {% endif %}
+                    </td>
+                    <td>
+                    {% for marca in marcas %}
+                        {% if marca[0] == producto[10] %}
+                           <span>{{ marca[1] }}</span> 
+                        {% endif %}
+                    {% endfor %}
+                    </td>
+                    <td>
+                    {% for subcategoria in subcategorias %}
+                        {% if subcategoria[0] == producto[11] %}
+                        <span>{{ subcategoria[1] }}</span>
+                        {% endif %}
+                    {% endfor %}
+                    </td>                   
+                    <td class="acciones">
+                        <a href="{{ url_for('editar_producto', id=producto[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
+                        <form action="{{ url_for('eliminar_producto') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                            <input type="hidden" name="id" value="{{ producto[0] }}">
+                            <button type="submit">
+                                <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </section>
+</div>
+    
+
+<style>
+    .PrActive{
+        background-color: rgb(255, 255, 255);
+        color:#00095c;
+    }
+</style>
+<!-- JavaScript para la confirmación de eliminación -->
+<script>
+    function confirmarEliminacion() {
+        return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+    }
+</script>
+<script src="/static/js/admin_productos.js"></script>
+{% endblock %}

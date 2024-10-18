@@ -1,0 +1,62 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+Agregar Categoria
+{% endblock %}
+{% block contenido %}
+
+
+<section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar SubCategoria</h2><br><br><br>
+    <form action="{{ url_for('guardar_subcategoria') }}" method="post">
+        <div class="form-grid" id="col_add">
+            <!-- Primera columna -->
+            <div class="row">
+                <div class="col">
+                    <label for="categoria">Nombre:</label><br>
+                    <input required type="text" class="input" placeholder="Nombre de la Subcategoria" name="nombre" id="nombre" style="height: 60%;">
+                </div>
+
+                <div class="col">
+                    <label for="disponibilidad">Disponibilidad </label><br>
+                <label class="" style="color: #000; font-weight: lighter;">
+                    <input type="radio" name="disponibilidad" value=1 id="disponibilidad" checked > Disponible
+                </label>
+                <label class="" style="color: #000; font-weight: lighter;">
+                    <input type="radio" name="disponibilidad" value=0 id="disponibilidad"> No Disponible
+                </label>
+                </div>  
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">Clase del Icono:</label><br> <!--boostrap -->
+                    <input required type="text" class="input" placeholder="Clase del icono" name="faicon_subcat"
+                        id="faicon_subcat">
+                </div>
+                <div class="col">
+                    <label class="fw-bolder lblchoosie">Categoría</label><br>
+                    <select class="form-select" aria-label="Default select example" name="categoria_id">
+                        {% for categoria in categorias %}
+                        <option value={{categoria[0]}}>{{ categoria[1]}}</option>  
+                        {% endfor %}     
+                    </select>
+                </div>
+            </div>
+            <div class="col" id="sbmt">
+                <div class="form-buttons">
+                    <a href="{{ url_for('categorias') }}" id="backbtn">Volver</a>
+                    <button type="submit" class="button is-primary">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</section>
+</div>
+<script src="/static/js/admin_productos.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+{% endblock %}

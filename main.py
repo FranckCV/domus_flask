@@ -14,9 +14,11 @@ logo_domus = 'img/elementos/logoDomus.png'
 
 @app.context_processor
 def inject_globals():
-    categoriasMenu = controlador_categorias.obtener_categorias()
+    categoriasMenu = controlador_categorias.obtener_categorias_disponibles()
     marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
     logo_foto = logo_domus
+    # gogogogogog = gogogogogog
+
     return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu)
 
 
@@ -29,9 +31,9 @@ def index():
     return render_template("index.html", marcasBloque = marcasBloque , productos = productos)
 
 
-@app.route("/marcas") #falta
-def marcas():
-    marcas = controlador_marcas.obtener_marcas()
+@app.route("/nuestras_marcas") #falta
+def nuestras_marcas():
+    marcas = controlador_marcas.obtener_todas_marcas()
     return render_template("nuestras_marcas.html", marcas = marcas)
 
 
@@ -73,7 +75,7 @@ def categoria(id):
         if categoria and categoria[3] == 1:        
             
             subcategorias = controlador_subcategorias.obtenerSubcategoriasXCategoria(id)
-            return render_template("categoria.html", categoria = categoria, subcategorias = subcategorias)
+            return render_template("selectedCategoria.html", categoria = categoria, subcategorias = subcategorias)
         
         else:
             return redirect("/error")
@@ -85,14 +87,19 @@ def categoria(id):
 def marca(id):
     try:
         marca = controlador_marcas.obtener_marca_por_id(id)
-        if marca and marca["disponibilidad"] == 1: 
-
+        if marca and marca[4] == 1:
             if marca[3]:
                 imagenMarcaFondo = marca[3]
             else:
                 imagenMarcaFondo =  'static/img/elementos/domus_bg.jpg'
 
-            return render_template("marca.html", marca = marca , imagenMarcaFondo = imagenMarcaFondo)
+            productosMarca = controlador_productos.obtenerEnTarjetas_Marca(id,0)
+
+            
+
+            subcategoriasMarca = controlador_subcategorias.obtenerSubcategoriasXMarca(id)
+
+            return render_template("selectedMarca.html", marca = marca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca)
         
         else:
             return redirect("/error")
@@ -111,6 +118,7 @@ def producto(id):
         return render_template("selectedProducto.html" , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
     except:
         return redirect("/error")
+
 
 @app.route("/selectedNovedad?<int:tipo_id>=<int:id>")  #falta
 def novedad(id,tipo_id):
@@ -202,6 +210,193 @@ def carrito():
 
 
 # PAGINAS USUARIO ADMINISTRADOR
+
+
+
+
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html", active='dashboard')
+
+########## INICIO MARCAS ##########
+
+@app.route("/agregar_marca")
+def formulario_agregar_marca():
+    return render_template("agregar_marca.html")
+
+@app.route("/guardar_marca", methods=["POST"])
+def guardar_marca():
+    marca = request.form["marca"] 
+    logo= request.files["logo"] 
+    logo_binario = logo.read()
+    controlador_marcas.insertar_marca(marca,logo_binario)
+    return redirect("/marcas")
+
+@app.route("/marcas")
+def marcas():
+    marcas = controlador_marcas.obtener_marcas()
+    return render_template("marcas.html", marcas=marcas, active='marcas')
+
+@app.route("/eliminar_marca", methods=["POST"])
+def eliminar_marca():
+    controlador_marcas.eliminar_marca(request.form["id"])
+    return redirect("/marcas")
+
+@app.route("/formulario_editar_marca/<int:id>")
+def editar_marca(id):
+    marca = controlador_marcas.obtener_marca_por_id(id)
+    return render_template("editar_marca.html", marca=marca)
+
+@app.route("/actualizar_marca", methods=["POST"])
+def actualizar_marca():
+    id = request.form["id"]
+    marca = request.form["marca"] 
+    logo= request.files["logo"] 
+    logo_binario = logo.read()  
+    controlador_marcas.actualizar_marca(marca,logo_binario,id)
+    return redirect("/marcas")
+
+########## FIN MARCAS ##########
+
+########## INICIO CATEGORIA ##########
+@app.route("/agregar_categoria")
+def formulario_agregar_categoria():
+    return render_template("agregar_categoria.html")
+
+@app.route("/guardar_categoria", methods=["POST"])
+def guardar_categoria():
+    categoria = request.form["categoria"] 
+    faicon_cat = request.form["faicon_cat"] 
+    disponibilidad = request.form["disponibilidad"] 
+    controlador_categorias.insertar_categoria(categoria,faicon_cat,disponibilidad)
+    return redirect("/categorias")
+    
+@app.route("/categorias")
+def categorias():
+    categorias = controlador_categorias.obtener_categorias()
+    subcategorias =controlador_subcategorias.obtener_subcategorias()
+    return render_template("categorias.html", categorias=categorias,subcategorias = subcategorias)
+
+@app.route("/eliminar_categoria", methods=["POST"])
+def eliminar_categoria():
+    controlador_categorias.eliminar_categoria(request.form["id"])
+    return redirect("/categorias")
+
+@app.route("/formulario_editar_categoria/<int:id>")
+def editar_categoria(id):
+    categoria = controlador_categorias.obtener_categoria_por_id(id)
+    return render_template("editar_categoria.html", categoria=categoria)
+
+@app.route("/actualizar_categoria", methods=["POST"])
+def actualizar_categoria():
+    id = request.form["id"]
+    categoria = request.form["categoria"] 
+    faicon_cat = request.form["faicon_cat"] 
+    disponibilidad = request.form["disponibilidad"] 
+    controlador_categorias.actualizar_categoria(categoria,faicon_cat,disponibilidad,id)
+    return redirect("/categorias")
+########## FIN CATEGORIA ##########
+
+########## INICIO SUB-CATEGORIA ##########
+@app.route("/agregar_subcategoria")
+def formulario_agregar_subcategoria():
+    categorias = controlador_categorias.obtener_categorias()
+    return render_template("agregar_subcategoria.html",categorias=categorias,active='categorias')
+
+@app.route("/guardar_subcategoria", methods=["POST"])
+def guardar_subcategoria():
+    nombre = request.form["nombre"] 
+    faicon_subcat = request.form["faicon_subcat"] 
+    disponibilidad = request.form["disponibilidad"] 
+    categoria_id = request.form["categoria_id"] 
+    controlador_subcategorias.insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id)
+    return redirect("/categorias")
+
+@app.route("/eliminar_subcategoria", methods=["POST"])
+def eliminar_subcategoria():
+    controlador_subcategorias.eliminar_subcategoria(request.form["id"])
+    return redirect("/categorias")
+
+@app.route("/formulario_editar_subcategoria/<int:id>")
+def editar_subcategoria(id):
+    subcategoria = controlador_subcategorias.obtener_subcategoria_por_id(id)
+    categorias = controlador_categorias.obtener_categorias()
+    return render_template("editar_subcategoria.html", subcategoria=subcategoria, categorias=categorias)
+
+@app.route("/actualizar_subcategoria", methods=["POST"])
+def actualizar_subcategoria():
+    id = request.form["id"]
+    nombre = request.form["nombre"] 
+    faicon_subcat = request.form["faicon_subcat"] 
+    disponibilidad = request.form["disponibilidad"] 
+    categoria_id = request.form["categoria_id"] 
+    controlador_subcategorias.actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id,id)
+    return redirect("/categorias")
+########## FIN SUB-CATEGORIA ##########
+
+
+########## INICIO PRODUCTOS ##########
+
+@app.route("/agregar_producto")
+def formulario_agregar_producto():
+    marcas = controlador_marcas.obtener_marcas()
+    subcategorias = controlador_subcategorias.obtener_subcategorias()
+    return render_template("agregar_producto.html", marcas = marcas, subcategorias = subcategorias)
+
+@app.route("/guardar_producto", methods=["POST"])
+def guardar_producto():
+    nombre = request.form["nombre"] 
+    price_regular= request.form["price_regular"] 
+    price_online= request.form["price_online"] 
+    precio_oferta= request.form["precio_oferta"] 
+    calificacion= request.form["calificacion"] 
+    infoAdicional= request.form["infoAdicional"] 
+    stock= request.form["stock"] 
+    fecha_registro= request.form["fecha_registro"]
+    disponibilidad= request.form["disponibilidad"] 
+    marca_id= request.form["marca_id"] 
+    subcategoria_id= request.form["subcategoria_id"]  
+    controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
+    return redirect("/productos")
+
+@app.route("/productos")
+def productos():
+    productos = controlador_productos.obtener_productos()
+    marcas = controlador_marcas.obtener_marcas()
+    subcategorias = controlador_subcategorias.obtener_subcategorias()
+    return render_template("productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias)
+
+@app.route("/eliminar_producto", methods=["POST"])
+def eliminar_producto():
+    controlador_productos.eliminar_producto(request.form["id"])
+    return redirect("/productos")
+
+@app.route("/formulario_editar_producto/<int:id>")
+def editar_producto(id):
+    producto = controlador_productos.obtener_producto_por_id(id)
+    marcas = controlador_marcas.obtener_marcas()
+    subcategorias = controlador_subcategorias.obtener_subcategorias()
+    return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias)
+
+@app.route("/actualizar_producto", methods=["POST"])
+def actualizar_producto(): 
+    id = request.form["id"]
+    nombre = request.form["nombre"] 
+    price_online= request.form["price_online"] 
+    price_regular= request.form["price_regular"] 
+    precio_oferta= request.form["precio_oferta"] 
+    calificacion= request.form["calificacion"] 
+    infoAdicional= request.form["infoAdicional"] 
+    stock= request.form["stock"] 
+    fecha_registro= request.form["fecha_registro"]
+    disponibilidad= request.form["disponibilidad"] 
+    marca_id= request.form["marca_id"] 
+    subcategoria_id= request.form["subcategoria_id"]  
+    controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
+    return redirect("/productos")
+
+########## FIN PRODUCTOS ##########
 
 
 

@@ -1,0 +1,42 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+Agregar marca
+{% endblock %}
+{% block contenido %}
+
+    
+    <section class="h_section" id="mainSection">
+            <h2 class="fw-bolder" style="margin-top: 0.5rem;" >Agregar marca</h2><br><br><br>
+        <form action="{{ url_for('guardar_marca') }}" method="post" enctype="multipart/form-data">
+            <div class="form-grid" id="col_add">
+                <!-- Primera columna -->
+                <div class="row">
+                    <div class="col">
+                        <label for="nombre">Marca:</label><br>
+                        <input required type="text" class="input" placeholder="Nombre de la marca" name="marca" id="marca">
+                    </div>
+                                        
+                </div>
+                <div class="row">
+                    <div class="col"> 
+                        <label for="logo">Subir logo de marca:</label>
+                        <input type="file" name="logo" id="logo">
+                    </div>
+                </div>
+                <div class="row">                    
+                    <div class="col" id="sbmt">
+                        <div class="form-buttons">
+                            <a href="{{ url_for('productos') }}" id="backbtn">Volver</a>
+                            <button type="submit" class="button is-primary" style="border-radius: 20px;">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </form>
+        
+    </section>
+</div>
+<script src="/static/js/admin_productos.js"></script>
+
+{% endblock %}

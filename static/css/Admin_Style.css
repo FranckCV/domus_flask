@@ -1,0 +1,906 @@
+:root {    
+    --height-header1: 8vh;
+    --height-header2: 10vh;
+    --height-nav: 10vh;
+    --height-main-header: calc( var(--height-header1) + var(--height-header2) + var(--height-nav));
+    
+    --border-article: 50px;
+    --border-title: 70px;
+    --border-item: 25px;
+    --border-product: 10px;
+    --border-tag: 25px;
+    --border-menu: 10px;
+    --border-radius-element: 5px;
+
+    --font-icon-cel: 20px;
+    --font-icon-tab: 2.5vw;
+    --font-icon-pc: 1.55vw;
+
+    --background: #ffffff;
+    --color1: #0C0A3E;
+    --color2: #1e1c7a;
+    --color3: #fff;
+    --color4: #2756f0;
+    --color5: #218aec;
+    --color6: #ffffff;
+    --color7: #040136;
+    --color8: #02011f;
+    --color9: #3532d3;
+    --color10: #2709ac;
+    --color-title1: #00095c;
+    --color-title2: #00223d;
+    --font1: #000;
+    --font2: #fff;
+    --font3: #fff;
+}
+
+.body_section {
+    background-color: var(--background);
+    margin: 0px;
+    font-family: Poppins, sans-serif;
+    font-size: 90%;  
+    min-height: 10vh;
+    color: #000;
+    display: grid;
+    grid-template-columns: 100%;
+    overflow-x: hidden;
+    position: relative;
+}
+
+a {
+    color: var(--font2);
+    text-decoration: none;
+}
+
+h1 {
+    text-align: center;
+    color: var(--font2);
+    font-size: 25px;
+}
+
+input[type="text" i] {
+    padding-inline: 10px;
+    outline: none;
+}
+
+input[type="number"] {
+    outline: none;
+}
+.quantity{
+    padding-inline: 0 !important; 
+    outline: revert;
+}
+/* HEADER */
+
+header {
+    background-color: var(--color1);
+    display: grid;
+    align-items: center;
+    width: 100%;
+    position: sticky; 
+    z-index: 1501;
+    top: 0;
+    padding: 10px;
+
+}
+
+header label{
+    color: #ffffff;
+    text-align: end;
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
+}
+
+body {
+    overflow: hidden;
+}
+
+
+.contenedor {
+    overflow: hidden;
+}
+
+#header_perfil i {
+    font-size: 30px;  
+}
+
+#header_perfil p {
+    margin: 0;
+    font-size: 16px; /* Tamaño del texto */
+}
+
+
+
+
+.h_section {
+    margin-left: 5%;
+    width: 89%;
+    padding: 20px; 
+    overflow-y: auto; 
+    background-color: var(--background);
+    transition: margin-left 0.3s ease; 
+}
+
+
+
+#logo_header{
+    max-width: 12.2rem;
+    max-height: 6rem;
+
+}
+.h_section.shift {
+    margin-left: 21%;
+    width: 78%;
+}
+
+
+
+.h_section {
+
+    background-color: #ffffff; 
+    padding: 20px;
+    text-align: center;
+}
+.product_if {
+    margin: 1rem auto;
+    border-collapse: collapse;
+    width: 100%; 
+    background-color: #f9f9f9;
+}
+
+.product_if thead tr th{
+    background-color: #122881;
+    color: #ffffff;
+    text-align: center;
+}
+
+.h_section h2{
+    color: #000;
+    display: flex;
+    float: left;
+    margin: 2rem;
+}
+.acciones a img{
+    max-height: 2rem;
+    margin: 0 5px 0 5px;
+}
+
+.acciones form img{
+    max-height: 2rem;
+    margin: 0 5px 0 5px;
+}
+
+.acciones form button{
+    border: 0px;
+}
+table tbody tr td{
+    font-size: 1.5rem;
+}
+
+.header_option {
+    transition: color 0.1s ease;
+    font-size: 1.5vw;
+    gap: 10px;
+}
+
+.header_option i {
+    font-size: 50%;
+
+}
+
+.header_option:hover {
+    color: var(--color5);
+    animation-name: header_item_floating;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    display: flex;
+    align-items: center;
+}
+
+.select2-container .select2-selection__rendered i {
+    margin-right: 10px;  /* Espacio entre el ícono y el texto */
+}
+
+@keyframes header_item_floating {
+    0%,100% {        
+        transform: translateY(-10%);
+    }
+    50% {
+        transform: translateY(10%);
+    }
+}
+
+header p {
+    margin: 0;
+}
+
+#index_logo {
+    grid-area: h_domus;
+    width: 100%;
+    height: 100%;
+}
+
+#index_logo img {
+    transition: scale 0.25s ease;
+}
+
+#index_logo img:hover {
+    scale: 1.10;
+}
+
+
+#header_perfil {
+    grid-area: h_perfil;
+}
+
+#break_nav{
+    display: flex;
+    justify-content: space-around;
+}
+#break_nav .input-group {
+    width: 100%; /* Asegura que el input ocupe todo el ancho de su columna */
+}
+
+#break_nav select {
+    width: 100%; /* El select ocupará todo el ancho de su columna */
+}
+#logo_nav{
+    margin: 1% 0 5% 0;
+    width: 7rem;
+    height: auto;
+}
+
+#add_btn{
+    border: 4px transparent;
+    border-radius: 13px;
+    background-color: rgb(13, 10, 58);
+    color: #ffffff;
+    padding: 0 5rem 0 5rem;
+}
+
+.search_loupe{
+    max-height: 2rem;
+    padding: 0.5rem;
+    border: 4px rgb(77, 77, 77);
+    border-radius: 25px;
+}
+.searchi{
+    border: 4px rgb(0, 0, 0);
+    border-radius: 25px;
+    margin-right: 1rem;
+}
+
+.nav_element {
+    margin: auto 10% auto 10% ;
+    line-height: 2rem;
+    display: flex;
+    align-items: center;
+    border-radius: 15px;    
+    border: 1px solid var(--font2);
+    background-color: var(--color2);
+    transition: 0.4s ease;
+    cursor: pointer;
+}
+
+.nav_element i {
+    font-size: 125%;
+}
+
+.nav_element p {
+    display: none;
+}
+
+.nav_element:hover {    
+    background-color: var(--font2);
+    color: var(--color2);
+}
+
+.lblchoosie{
+    display: inline-flex;
+}
+
+
+.choosie{
+    margin: 0 0 0 2rem;
+    display: inline-block;
+    max-width: 50%;
+}
+
+.form-select.choosie option:checked {
+    color: rgb(163, 163, 163); 
+}
+
+.form-select.choosie:focus {
+    border-color: #380098;
+    box-shadow: 0 0 5px rgba(243, 243, 243, 0.605);
+}
+
+.adminOpt{
+    width: max-content;
+    border-color: #414040;
+    background-color: #00000065;
+    opacity: 0.8;
+    filter: alpha(opacity=20);    
+    zoom: 1; 
+    margin-bottom: 5%;
+    margin-top: 5% !important;
+   
+}
+
+.adminOpt:hover{
+    background-color: rgb(255, 255, 255);
+}
+
+
+.adminOpt img{
+    padding: 3px;
+    /*background-color: #676d76;
+    border: 1px transparent;
+    border-radius: 50%;*/
+    width: 3rem;
+}
+
+#admin{
+    font-size: 1.45rem !important;
+
+}
+
+#toggleBtn {
+    margin-left: 2rem;
+    background-color: transparent;
+    border: transparent;
+}
+
+#toggleBtn img{
+    width: 2.6rem;
+    margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.header_item {
+    display: inline !important; /* Permite controlar el tamaño del enlace */
+    padding: 0 !important; /* Ajusta el padding según sea necesario */ /* Ajusta el margin según sea necesario */
+    text-align: center !important; /* Centra el contenido dentro del enlace */
+}
+
+
+.toggle-button {
+    position: relative; 
+    z-index: 1001; 
+}
+
+.h_section {
+    transition: margin-left 0.4s ease; 
+}
+
+
+
+
+.navbar-end {
+    float: left;
+    text-align: end;
+
+}
+#admin_t{
+    text-align: end;
+}
+
+.col{
+    text-align: start;
+}
+
+#col_add {
+    margin-left: 10rem;
+    padding:1rem;
+    text-align: start;
+    font-size: 1.8em;
+
+
+}
+#agrlbl{
+    display: block;
+    padding: 5rem 0 0 5rem;
+}
+
+#col_add div {
+    margin-bottom: 2rem;
+}
+
+#add_btn {
+    height: 100%;
+}
+
+.col label{
+    color:#122881;
+    font-weight: bold;
+}
+
+.col input, .col select{
+    width: 90%;
+    height: 60%;
+    text-align: start;
+}
+
+.form-buttons a{
+    color: rgb(255, 255, 255); 
+    border: 1.2px rgb(0, 0, 0) solid;
+    border-radius: 3rem;
+    background-color: rgba(63, 72, 81, 0.806);
+    padding: 0.6rem 2rem 0.6rem 2rem;
+}
+.form-buttons button {
+    color: rgb(255, 255, 255); 
+    border: 1.2px rgb(18, 15, 15) solid;
+    border-radius: 2rem !important;
+    background-color: rgba(39, 38, 123, 0.806);
+    padding: 0.4rem;
+    width: 10em;
+
+}
+
+#infoAdicional {
+    width: 100% ; /* Ajusta el ancho */
+    height: 90% ; /* Altura del campo */
+    font-size: 1.5rem ; /* Tamaño del texto */
+    padding: 0; /* Elimina el padding */
+    box-sizing: border-box ; /* Incluye el borde en el tamaño */
+    line-height: 1.5rem ; /* Controla la altura de las líneas */
+    vertical-align: top  ; /* Asegura que el texto se alinee desde arriba */
+}
+
+#infoAdicional::placeholder {
+    font-size: 1.5rem; /* Mantén el tamaño del placeholder */
+    position: absolute ;
+    top: 0 ; /* Asegura que el placeholder esté alineado al borde superior */
+    padding-top: 0 ; /* Elimina el padding superior */
+    padding-top: 0 ; /* Elimina el padding superior */
+    line-height: 1.5rem ; /* Mantiene una altura adecuada para el texto del placeholder */
+    color: #888; /* Opcional, para dar estilo al placeholder */
+}
+
+#sbmt{
+    text-align: end;
+}
+
+#deleteF{
+    display: inline-block;
+}
+
+.scrollable-section {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    height: 50%; /* Altura fija */
+    overflow-y: auto; /* Activa el scrollbar vertical */
+    border: 1px solid #ccc; /* Opcional, para ver los límites de la sección */
+    padding: 10px; /* Espaciado interno */
+}
+.table-containersy {
+    max-height: 35em; /* Establece la altura máxima del contenedor */
+    overflow-y: auto; /* Activa el scrollbar vertical si el contenido excede la altura */
+    width: 100%;
+}
+
+.table-container{
+    width: 100%; /* El ancho que deseas para mostrar la tabla visible */
+    overflow-x: auto; /* Activar scroll horizontal */ 
+}
+.table-container table{
+    width: 120%; /* Un ancho mayor que el contenedor para crear el scroll */
+    border-collapse: collapse;
+}
+.table-container th, .table-container td{
+    padding: 10px;
+    text-align: center;
+}
+
+
+
+
+
+
+@keyframes menu_exclusividad_color {
+    0%,100% {        
+        background-color: #8400ff;
+        color: var(--background);       
+    }
+    20% {
+        background-color: #4400ff;
+        color: var(--background);
+    }
+    40% {
+        background-color: #1100ff;
+        color: var(--background);
+    }
+    60% {
+        background-color: #0077ff;
+        color: var(--background);
+    }
+    80% {
+        background-color: #006eff;
+        color: var(--background);
+    }
+}
+
+@keyframes menu_exclusividad_scale {
+    0%,100% {
+        scale: 1;
+    }
+    50% {
+        scale: 1.05;
+    }
+}
+
+
+
+
+
+/* RESPONSIVIDAD */
+
+/* Para pantallas muy pequeñas como móviles */
+@media (max-width:599px) {
+    header {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        grid-template-areas: 
+            "h_domus"
+            "h_perfil";
+        font-size: 3vw;
+    }
+
+    .header_item {
+        margin-block: 15px;
+        font-size: 4vw;
+    }
+
+    .header_option {
+        font-size: 4vw;
+        gap: 5px;
+    }
+
+    #search input {
+        width: 100%;
+        padding: 5px;
+        margin: 0;
+    }
+
+    #search i {
+        right: 15px;
+    }
+
+    nav {
+        gap: 5vw;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .nav_element {
+        margin-block: 2vw;
+        font-size: 3.5vw;
+        padding-inline: 5vw;
+        padding-block: 2vw;
+        gap: 2vw;
+    }
+
+    .nav_element p {
+        display: inline;
+    }
+
+    #menu_button p {
+        display: none;
+    }
+
+    #menu_content {
+        width: 75%;
+        padding: 15px;
+        font-size: 3.5vw;
+    }
+
+    .icon_exclusividad {
+        height: var(--font-icon-mobile);
+        width: var(--font-icon-mobile);
+    }
+
+    footer {
+        padding: 20px;
+        background-color: var(--color8);
+        color: var(--font3);
+        text-align: center;
+        display: block;
+    }
+}
+
+/* Para pantallas medianas (tablets) */
+@media (min-width:600px) and (max-width:1000px) {
+
+
+    .header_item {
+        margin-block: 20px;
+        font-size: 2.5vw;
+    }
+
+    .header_option {
+        font-size: 2.5vw;
+        gap: 10px;
+    }
+
+    #search input {
+        width: 100%;
+        margin: 0;
+    }
+    
+    #search i {
+        right: 25px;
+    }
+
+    nav {
+        gap: 2vw;
+    }
+
+    .nav_element {
+        margin-block: 1.5vw;
+        font-size: 1.75vw;
+        padding-inline: 2vw;
+        padding-block: 1vw;
+        gap: 0.75vw;
+    }
+
+    .nav_element p {
+        display: inline;
+    }
+
+    #menu_content {
+        width: 45%;
+        padding: 25px;
+        font-size: 1.75vw;
+    }
+
+    .icon_exclusividad {
+        height: var(--font-icon-tab);
+        width: var(--font-icon-tab);
+    }
+
+    footer {
+        padding: 25px;
+        background-color: var(--color8);
+        color: var(--font3);
+        display: grid;
+        justify-content: center;
+        gap: 60px;
+        text-align: center;
+        grid-template-columns: repeat(2, auto);
+        grid-template-rows: repeat(2, auto);
+    }
+}
+
+/* Para pantallas grandes (escritorios) */
+@media (min-width:1001px) {
+
+
+    .header_item {
+        margin-block: 20px;
+        font-size: 1.5vw;
+    }
+
+    
+    #index_logo {
+        grid-area: h_domus;
+        padding-inline: 15%;
+    }
+
+    #search {
+        margin: 0;
+    }
+
+    #search input {
+        padding-block: 10px;
+        padding-inline: 2vw;
+        margin: 0;
+    }
+
+    #search i {
+        right: 4.5vw;
+        padding: 10px;
+    }
+
+    nav {
+        gap: 3.5vw;
+    }
+
+    .nav_element {
+        margin-block: 0.75vw;
+        font-size: 1.1vw;
+        padding-inline: 1.25vw;
+        padding-block: 0.5vw;
+        gap: 0.75vw;
+    }
+
+    .nav_element p {
+        display: inline;
+    }
+
+    #menu_content {
+        width: 30vw;
+        padding: 15px;
+        gap: 10px;
+        font-size: 1.1vw;
+    }
+
+    .icon_exclusividad {
+        height: var(--font-icon-pc);
+        width: var(--font-icon-pc);
+    }
+
+    footer {
+        padding: 25px;
+        background-color: var(--color8);
+        color: var(--font3);
+        display: grid;
+        justify-content: center;
+        gap: 5vw;
+        text-align: center;
+        grid-template-columns: repeat(4, auto);
+        grid-template-rows: auto;
+    }
+}
+/* Para pantallas pequeñas */
+@media (max-width: 599px) {
+    section#mainSection, nav {
+        max-height: 100vh; /* O ajustar según necesidad */
+        overflow-y: auto; /* Solo agrega el scrollbar vertical */
+        padding: 10px;
+    }
+
+    /* Ajustes adicionales para que los elementos internos se ajusten correctamente */
+    table.product_if {
+        width: 100%; /* Hacer que la tabla se ajuste al ancho disponible */
+    }
+
+    th, td {
+        font-size: 2.5vw; /* Ajustar tamaño de fuente para pantallas pequeñas */
+        padding: 5px; /* Reducir los paddings */
+    }
+
+    .table-container {
+        overflow-x: auto; /* Agregar scroll horizontal si la tabla es muy ancha */
+        margin-bottom: 20px;
+    }
+
+    /* Ajustes para el selector y otros elementos */
+    .form-select.choosie, .input-group {
+        width: 100%; /* Que los inputs ocupen todo el ancho disponible */
+    }
+
+    .fw-bolder.lblchoosie {
+        font-size: 3vw;
+    }
+
+    .search_loupe {
+        width: 20px; /* Ajustar tamaño del ícono de búsqueda */
+    }
+}
+/* Para pantallas pequeñas (menos de 600px) y medianas (entre 600px y 1000px) */
+@media (max-width: 1000px) {
+    section#mainSection, nav {
+        max-width: 100vw; /* Asegura que el contenido no exceda el ancho de la pantalla */
+        overflow-x: auto; /* Agregar scroll horizontal */
+        padding: 10px;
+    }
+
+    /* Ajustes para hacer la tabla más responsiva */
+    .table-container {
+        overflow-x: auto; /* Scroll horizontal para la tabla */
+        width: 100%; /* La tabla ocupará el 100% del ancho disponible */
+    }
+
+    table.product_if {
+        min-width: 900px; /* Asegurar que la tabla mantenga su estructura mínima para scroll */
+        width: 100%;
+    }
+
+    th, td {
+        font-size: 1.5vw; /* Ajustar tamaño de fuente para pantallas medianas/pequeñas */
+        padding: 10px; /* Ajustar padding de las celdas */
+    }
+
+    /* Ajustes de fuentes y espacio en el select y la búsqueda */
+    .form-select.choosie, .input-group {
+        width: 100%; /* Que los inputs ocupen todo el ancho disponible */
+    }
+
+    .fw-bolder.lblchoosie {
+        font-size: 3vw; /* Fuente adaptada para pantallas más pequeñas */
+    }
+
+    .search_loupe {
+        width: 25px; /* Ajustar tamaño del ícono de búsqueda */
+    }
+
+    /* Ajustes para los botones y otros elementos */
+    #add_btn {
+        font-size: 2.5vw; /* Fuente del botón adaptada */
+    }
+}
+/* MANEJO ASIDE */
+.title_aside{
+    margin-bottom: 0;
+    padding: 0;
+    height: fit-content !important;
+}
+
+.adminVar{
+    margin: 0 5% 0 5%;
+}
+
+.RowAdmin{
+    text-align: end;
+    clear: right;
+    width: 100%;
+}
+.content {
+    height: 100%; /* Asegúrate de que el contenedor padre tenga un alto definido */
+    overflow:hidden; /* Oculta cualquier desbordamiento en el contenido principal */
+}
+
+.h_aside {
+    width: 25rem; /* Ancho fijo del aside */
+    height: 100%; /* Asegúrate de que el aside ocupe el 100% de la altura */
+    text-align: center;
+    background-color:#0f1f5f; /* Color de fondo */
+    padding: 10px; /* Espaciado interno */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Mantener el aside en su lugar */
+    left: -25rem; /* Comienza fuera de la pantalla */
+    transition: left 0.5s ease; /* Transición suave */
+    z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
+    overflow-x: auto; /* Agrega el scroll horizontal */
+    white-space: nowrap; /* Evita que el texto se divida en múltiples líneas */
+}
+
+.h_aside.active {
+    left: 0; /* Muestra el aside cuando está activo */
+}
+
+.content .h_aside h3 {
+    color: #ffffff;
+    padding: 10%;
+}
+
+.content .h_aside a {
+    margin-bottom: 4%;
+}
+
+.h_aside a p {
+    margin: 0.1em 0 0 0;
+}
+
+.h_aside a .next {
+    margin-left: auto;
+}
+
+/* Opcional: Para el contenido que se desplaza en caso de que sea necesario */
+.content {
+    overflow-y: auto; /* Permite el desplazamiento vertical si es necesario */
+}
+
+/* Para responsividad */
+@media (max-width: 768px) { /* Cambia a este tamaño según tu diseño */
+    .h_aside {
+        width: 75%; /* Aumenta el ancho del aside en pantallas más pequeñas */
+        left: -75%; /* Comienza fuera de la pantalla */
+    }
+
+    .h_aside.active {
+        left: 0; /* Muestra el aside cuando está activo */
+    }
+}
+
+
+/* FIN MANEJO ASIDE */
+
+
+
+
+

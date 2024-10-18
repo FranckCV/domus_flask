@@ -2,7 +2,7 @@ from bd import obtener_conexion
 tabla = 'categoria'
 import controlador_subcategorias
 
-def obtener_categorias():
+def obtener_categorias_disponibles():
     conexion = obtener_conexion()
     categorias = []
     with conexion.cursor() as cursor:
@@ -50,5 +50,52 @@ def obtener_categorias_subcategorias():
 
     conexion.close()
     return categorias_lista
+
+
+def insertar_categoria(categoria,faicon_cat,disponibilidad):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("INSERT INTO categoria(categoria,faicon_cat,disponibilidad) VALUES (%s, %s,%s)",(categoria,faicon_cat,disponibilidad))
+    conexion.commit()
+    conexion.close()
+
+
+def obtener_categorias():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id ,categoria,faicon_cat,disponibilidad FROM categoria")
+        categorias = cursor.fetchall()
+    conexion.close()
+    return categorias
+
+
+def eliminar_categoria(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("DELETE FROM categoria WHERE id = %s", (id,))
+    conexion.commit()
+    conexion.close()
+
+
+def obtener_categoria_por_id(id):
+    conexion = obtener_conexion()
+    categoria = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id, categoria,faicon_cat,disponibilidad FROM categoria WHERE id = %s", (id,))
+        categoria = cursor.fetchone()
+    conexion.close()
+    return categoria
+
+
+def actualizar_categoria(categoria,faicon_cat,disponibilidad, id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("UPDATE categoria SET categoria = %s ,faicon_cat = %s,disponibilidad=%s WHERE id =%s",
+                       (categoria,faicon_cat,disponibilidad, id))
+    conexion.commit()
+    conexion.close()
+
+
+
 
 

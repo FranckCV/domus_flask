@@ -113,8 +113,11 @@ def obtenerEnTarjetas_Marca(marca, limit):
                 on pr.id = ipr.PRODUCTOid 
                 where ipr.imgPrincipal = 1 and pr.disponibilidad = 1 and pr.marcaid = '''+str(marca)+'''
                 order by pr.fecha_registro
-                limit '''+str(limit)+''' 
             '''
+        
+        if limit != 0:
+            sql += '''limit '''+str(limit)
+
         cursor.execute(sql)
         productos = cursor.fetchall()
     
@@ -306,3 +309,46 @@ def obtenerEnTarjetasxMarca(marca):
 #                        (codigo, nombre, artista, precio, genero, id))
 #     conexion.commit()
 #     conexion.close()
+
+
+
+
+
+def insertar_producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("INSERT INTO producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id) VALUES (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s)",(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id))
+    conexion.commit()
+    conexion.close()
+
+def obtener_productos():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id ,nombre, price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id FROM producto")
+        productos = cursor.fetchall()
+    conexion.close()
+    return productos
+
+def eliminar_producto(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("DELETE FROM producto WHERE id = %s", (id,))
+    conexion.commit()
+    conexion.close()
+
+def obtener_producto_por_id(id):
+    conexion = obtener_conexion()
+    producto = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id, nombre, price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id FROM producto WHERE id = %s", (id,))
+        producto = cursor.fetchone()
+    conexion.close()
+    return producto
+
+def actualizar_producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("UPDATE producto SET nombre = %s, price_regular = %s ,price_online = %s ,precio_oferta = %s,calificacion = %s,infoAdicional = %s ,stock = %s,fecha_registro = %s,disponibilidad = %s,marca_id = %s,subcategoria_id = %s WHERE id =%s",
+                       (nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id))
+    conexion.commit()
+    conexion.close()
