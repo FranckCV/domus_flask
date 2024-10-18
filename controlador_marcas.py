@@ -14,7 +14,7 @@ def obtener_marcas_menu(valor):
                 img_logo 
             FROM '''+tabla+''' 
             where disponibilidad = 1 
-            order by fecha_registro
+            order by fecha_registro desc
             LIMIT '''+str(valor)
         cursor.execute(sql)
         marcas = cursor.fetchall()
