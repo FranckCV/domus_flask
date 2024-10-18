@@ -33,7 +33,7 @@ def obtener_informacion_producto(id):
     return obtener_por_id(id)
 
 
-def obtener_en_tarjetas_mas_recientes():
+def obtenerEnTarjetasMasRecientes():
     conexion = obtener_conexion()
     productos = []
     with conexion.cursor() as cursor:
@@ -48,10 +48,45 @@ def obtener_en_tarjetas_mas_recientes():
                     pr.SUBCATEGORIAid, 
                     ipr.imagen 
                 FROM `producto` pr 
-                inner join img_producto ipr 
-                on pr.id = ipr.PRODUCTOid 
+                inner join img_producto ipr on pr.id = ipr.PRODUCTOid 
                 where ipr.imgPrincipal = 1 and pr.disponibilidad = 1
                 order by pr.fecha_registro desc
+            '''
+        cursor.execute(sql)
+        productos = cursor.fetchall()
+
+    productos_lista = []
+    for producto in productos:
+        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
+        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
+        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
+    
+    conexion.close()
+    return productos_lista
+
+def obtenerEnTarjetasMasPopulares():
+    conexion = obtener_conexion()
+    productos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    pr.id, 
+                    pr.nombre, 
+                    pr.price_regular, 
+                    pr.precio_online, 
+                    pr.precio_oferta,  
+                    pr.MARCAid, 
+                    pr.SUBCATEGORIAid, 
+                    ipr.imagen,
+                    COUNT(dp.PRODUCTOid) AS total_compras
+                FROM 
+                    PRODUCTO pr
+                inner join img_producto ipr on pr.id = ipr.PRODUCTOid
+                INNER JOIN detalles_pedido dp ON pr.id = dp.PRODUCTOid
+                GROUP BY 
+                    pr.id
+                ORDER BY 
+                    total_compras DESC;
             '''
         cursor.execute(sql)
         productos = cursor.fetchall()
@@ -97,6 +132,7 @@ def obtener_en_tarjetas_marca(marca, limit):
     for producto in productos:
         pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
         img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
+
         productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
     
     conexion.close()

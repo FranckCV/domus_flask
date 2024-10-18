@@ -7,6 +7,7 @@ import controlador_imagenes_novedades
 import controlador_caracteristicas_productos
 import controlador_subcategorias
 import controlador_usuario_cliente
+import controlador_novedades
 
 app = Flask(__name__)
 
@@ -97,7 +98,7 @@ def marca(id):
             else:
                 imagenMarcaFondo =  'static/img/elementos/domus_bg.jpg'
 
-            productosMarca = controlador_productos.obtenerEnTarjetas_Marca(id,0)
+            productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,0)
 
             
 

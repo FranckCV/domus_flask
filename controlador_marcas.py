@@ -59,7 +59,7 @@ def obtener_marcas_index(cant):
     for marca in marcas:
         marca_id, marca_nombre, logo_binario , nov_id, nov_tip, img_nov = marca
 
-        productosMarca = controlador_productos.obtenerEnTarjetas_Marca(marca_id , cant)
+        productosMarca = controlador_productos.obtener_en_tarjetas_marca(marca_id , cant)
 
         if logo_binario:
             logo_base64 = base64.b64encode(logo_binario).decode('utf-8')

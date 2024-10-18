@@ -43,10 +43,10 @@ def obtenerSubcategoriasXMarca(marca):
 
 
 
-def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id):
+def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id) VALUES (%s, %s,%s,%s)",(nombre,faicon_subcat,disponibilidad,categoria_id))
+        cursor.execute("INSERT INTO subcategoria(subcategoria,faicon_subcat,disponibilidad,categoriaid) VALUES (%s, %s,%s,%s)",(nombre,faicon_subcat,disponibilidad,categoriaid))
     conexion.commit()
     conexion.close()
 
@@ -69,15 +69,15 @@ def obtener_subcategoria_por_id(id):
     conexion = obtener_conexion()
     subcategoria = None
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id, nombre,faicon_subcat,disponibilidad,categoria_id FROM subcategoria WHERE id = %s", (id,))
+        cursor.execute("SELECT id, subcategoria,faicon_subcat,disponibilidad,categoriaid FROM subcategoria WHERE id = %s", (id,))
         subcategoria = cursor.fetchone()
     conexion.close()
     return subcategoria
 
-def actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id, id):
+def actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid, id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("UPDATE subcategoria SET nombre = %s ,faicon_subcat = %s,disponibilidad = %s,categoria_id = %s WHERE id =%s",
-                       (nombre,faicon_subcat,disponibilidad,categoria_id, id))
+        cursor.execute("UPDATE subcategoria SET subcategoria = %s ,faicon_subcat = %s,disponibilidad = %s,categoriaid = %s WHERE id =%s",
+                       (nombre,faicon_subcat,disponibilidad,categoriaid, id))
     conexion.commit()
     conexion.close()
