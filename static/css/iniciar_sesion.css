@@ -1,43 +1,175 @@
+:root {
+    --error-color: #dc3545;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+}
 .login_body {
-    background-color: #222246;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 70vh;
+    height: 100vh;
     margin: 0;
+    font-family:Poppins, sans-serif;
 }
-
-.login-container {
-    background-color: #3b3b6b;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.container{
+    border: 2px solid black;
+    width: 800px;
+    height: 500px;
+    display: flex;
+    position: relative;
+}
+.container-form{
     width: 100%;
-    max-width: 400px;
+    overflow: hidden;
+}
+.container-form form{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s ease-in;
+}
+.container-form h2{
+    font-weight: 900;
+}
+.container-form span{
+    font-size: 12px;
+    margin-bottom: 15px;
 }
 
-.login-logo {
+.container-input input{
+    border:none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+    padding-left: 10px;
+}
+.container-form a{
+    color:black;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+.button{
+    width: 170px;
+    height: 40px;
+    font-size: 15px;
+    border:none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #0d0d4a;
+    color: white;
+}
+.button:hover{
+    background-color: #7979c9;
+    color: black;
+}
+.container-input select {
+    width: 100%; 
+    height: 100%;
+    border: none;
+    outline: none;
+    background-color: inherit; 
+    color:gray;
+    padding-left: 8px;
+}
+#fecha_nacimiento{
+    color:gray;
+}
+.sign-up{
+    transform: translateX(-100%);
+} 
+.container.toggle .sign-in{
+    transform: translateX(100%);
+}
+.container.toggle .sign-up{
+    transform: translateX(0);
+}
+/*Welcome*/
+.container-welcome{
+    background-color: #0b0e5f;
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    transform: translateX(100%);
+    color: white;
+    overflow: hidden;
+    transition: transform 0.5s ease-in-out;
+}
+.container-welcome .welcome{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:20px;
+    padding: 0 50px;
+    transition: transform 0.5s ease-in-out;
+}
+.welcome-sign-in{
+    transform: translateX(100%);
+}
+.container-welcome h3{
+    font-size: 40px;
+    font-weight: 800;
+}
+.container-welcome p{
+    font-size: 14px;
+    text-align: center;
+}
+.container-welcome .button{
+    box-shadow:2px 2px 3px white ;
+}
+.container.toggle .welcome-sign-in{
+    transform: translateX(0);
+}
+.container.toggle .welcome-sign-up{
+    transform: translateX(-100%);
+}
+.container.toggle .container-welcome{
+    transform: translateX(0);
+}
+/* PARA EL INPUT*/
+
+.container-input{
+    width: 300px;
+    height: 40px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    align-items: center;
+    gap:8px;
+    padding: 0 15px;
+    background-color: #EEE;
+    border: 2px solid transparent; 
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
 }
 
-.login-logo img {
-    width: 50px;
+.container-input.error {
+    border-color: red;
 }
 
-.login-container p{
-    font-size: small;
-    display: flex;
-    justify-content: end;
+.container-input.success {
+    border-color: green;
 }
 
-.login-container .btn{
-    background-color: #242281;
-    border-color: #242281;
+.container-input small {
+    color: red;
+    font-size: 10px;
+    visibility: hidden;
 }
 
-.login-container .btn:hover{
-    background-color: #00095c;
-    border-color: #242281;
+.container-input.error small {
+    visibility: visible; 
+}
+
+.container-input.success small {
+    visibility: hidden; 
+    color: green;
 }

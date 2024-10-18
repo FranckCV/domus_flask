@@ -1,42 +1,125 @@
-{% extends "maestra_general.html" %}
-
-{% block titulo %} 
-    Inciar Sesion
-{% endblock %}
-
-{% block estilos %} 
-    <link rel="stylesheet" href="static/css/iniciar_sesion.css">
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/iniciar_sesion.css" />
+  <link rel="stylesheet" href="static/css/common_styles/fontawesome.min.css">
+  <link rel="stylesheet" href="static/css/common_styles/all.min.css">
+  <link rel="stylesheet" href="static/css/common_styles/fonts.css">
 {% endblock %}
 
 {% block contenido %}
-    <section class="login_body">
-        <div class="login-container">
-            <div class="login-logo">
-                <img src="url_for(img/elementos/iconDomus.png)" alt="Logo">
-            </div>
-            <h4 class="text-center text-white mb-3">¡Inicia sesión!</h4>
-            <form id="loginForm">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="username" placeholder="Usuario" required>
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
-                </div>
-                <p class="mt-3 text-center text-white">
-                    <a href="#" class="text-light" onclick="forgotPassword()">¿Olvidaste tu contraseña?</a>
-                </p>
-                <div class="d-grid mb-3">
-                    <button type="submit" class="btn btn-primary">Ingresar</button>
-                </div>
-                <p class="text-center text-white">
-                    ¿No tienes una cuenta? &nbsp;<a href="{{url_for('registrate')}}" class="text-light">Regístrate aquí</a>
-                </p>
-            </form>
+<section class="login_body">
+    
+  <div class="container">
+
+    <!-- Inicio de Sesión -->
+    <div class="container-form">
+      <form class="sign-in" id="login-form">
+        <h2>Iniciar sesión</h2>
+        <span>Ingrese su correo y contraseña</span>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="email-login" name="email" placeholder="Correo" required />
+          <small></small>
         </div>
-    </section>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="password-login" name="password" placeholder="Contraseña" required />
+          <small></small>
+        </div>
+
+        <a href="#" class="text-light" onclick="forgotPassword()">¿Olvidaste tu contraseña?</a>
+        <button type="submit" class="button">Iniciar sesión</button>
+      </form>
+    </div>
+
+    <!--Registro -->
+    <div class="container-form">
+      <form class="sign-up" id="signup-form">
+        <h2>Registrar cuenta</h2>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="username" name="nombres" placeholder="Nombres" required />
+          <small></small>
+        </div>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="lastname" name="apellidos" placeholder="Apellidos" required>
+          <small></small>
+        </div>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-id-card"></i>
+          <input type="text" id="dni" name="dni" placeholder="Documento de identidad" pattern="\d{8}" required>
+          <small></small>
+        </div>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-venus-mars"></i>
+          <select id="genero" name="genero" required>
+              <option value="" disabled selected>Género</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+          </select>
+        </div>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-calendar-days"></i>
+          <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento" required>
+        </div>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-mobile-retro"></i>
+          <input type="tel" id="telefono" name="telefono" placeholder="Número de celular" pattern="9[0-9]{8}" required>
+          <small></small>
+        </div>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="email-signup" name="correo" placeholder="Correo electrónico" required>
+          <small></small>
+        </div>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="password" name="password" placeholder="Contraseña" required>
+          <small></small>
+        </div>
+
+        <div class="container-input form-field">
+          <i class="fa-solid fa-check"></i>
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirmar contraseña" required>
+          <small></small>
+        </div>
+      
+        <button type="submit" class="button">Registrarse</button>
+      </form>
+    </div>
+
+    <div class="container-welcome">
+
+      <div class="welcome-sign-up welcome">
+        <h3>¡Bienvenido!</h3>
+        <p>Ingrese sus datos para disfrutar de todas las funcionalidades</p>
+        <button class="button" id="btn-sign-up">Registrarse</button>
+      </div>
+
+      <div class="welcome-sign-in welcome">
+        <h3>¡Bienvenido!</h3>
+        <p>Regístrate con tus datos personales para usar todas las funcionalidades</p>
+        <button class="button" id="btn-sign-in">Iniciar sesión</button>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
 {% endblock %}
 
-{% block scripts %} 
-    <script src="static/js/inicio_sesion.js"></script>
+{% block scripts %}
+  <script src="static/js/inicio_sesion.js"></script>
+  <script src="static/js/validar_formulario.js"></script>
 {% endblock %}
-    
