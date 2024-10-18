@@ -30,7 +30,7 @@ def inject_globals():
 def index():
     marcasBloque = controlador_marcas.obtener_marcas_index(10)
     productosRecientes = controlador_productos.obtenerEnTarjetasMasRecientes()
-    productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
+    productosPopulares = controlador_productos.obtenerEnTarjetasMasPopulares()
     novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
     return render_template("index.html", marcasBloque = marcasBloque , productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
 
