@@ -13,44 +13,36 @@
 
 {% block contenido %}
     <section class="body_page">
-        <div id="carouselExampleIndicators" class="article_promotion carousel slide">
+        {% if novedadesBanner %}
+        <div id="carouselExampleIndicators" class="carousel slide product_slider">
             <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
-                    aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
-                    aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
-                    aria-label="Slide 3"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"
-                    aria-label="Slide 4"></button>
-                <!-- <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button> -->
+                {% for i in range(novedadesBanner|length) %}
+                    {% if i == 0 %}
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" aria-label="Slide 1" class="active" aria-current="true"></button>
+                    {% else %}
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ i }}" aria-label="Slide {{ i + 1 }}"></button>
+                    {% endif %}
+                {% endfor %}
             </div>
             <div class="carousel-inner">
-                <a class="carousel-item active" href="{{url_for('novedades')}}">
-                    <img class="img-fluid" src="static/img/promociones/samsungProm1.png" class="d-block w-100" alt="...">
-                </a>
-                <div class="carousel-item">
-                    <img src="static/img/promociones/xiaomiProm.png" class="d-block w-100" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img class="img-fluid" src="static/img/promociones/alimentoProm.png" class="d-block w-100" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img src="static/img/anuncios/sorteoAnun.png" class="d-block w-100" alt="...">
-                </div>
-
+                {% for imagen in novedadesBanner %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{imagen[1]}}" class="d-block w-100" alt="{{imagen[2]}}">
+                    </div>
+                {% endfor %}
+              
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
             </button>
         </div>
+        {% endif %}
+
         <!-- <article class="article_banner_domus">
             <p class="domus_title">EXCLUSIVIDAD DOMUS</p>
             <img class="domus_img" src="static/img/exclusividad/domus_main_banner.png" alt="exclusividadDomus">
@@ -118,7 +110,7 @@
                 <img class="img-fluid img_for_sale_horizontal" src="static/img/promociones/samsungProm2.png" alt="o4">
             </div>
         </article> -->
-        <!-- <article class="article_products article_product_new">
+        <article class="article_products article_product_new">
             <h1 class="title1_2">
                 ¡LO MÁS NUEVO!
             </h1>
@@ -126,7 +118,7 @@
                 <i class="btn_slider_product fas fa-angle-left"></i>
                 <div class="list_product">
 
-                    {% for producto in productos %}
+                    {% for producto in productosRecientes %}
 
                     <div class="product">
                         <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
@@ -195,278 +187,52 @@
             <div class="slider_product">
                 <i class="btn_slider_product fas fa-angle-left"></i>
                 <div class="list_product">
+                    {% for producto in productosPopulares %}
+
                     <div class="product">
-                        <a class="product_info" href="#">
+                        <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
                             <img class="product_pic"
-                                src="static/img/productos/Tecnologia/Samsung Galaxy S24 Ultra 6.8 12GB RAM 512GB - Negro Titanio + CARGADOR 45w.png"
-                                alt="Photo_Product">
+                                src="{{ producto[7] }}"
+                                alt="{{producto[1]}}">
+
                             <p class="product_name">
-                                Samsung Galaxy S24 Ultra 6.8" 12GB RAM 512GB - ...
+                                {{producto[1]}}
                             </p>
-                            <div class="product_price price_regular">
-                                <p class="product_price_title">
-                                    Regular
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 6,999
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
+
+                            {% if producto[2] %}
+                                <div class="product_price price_regular">
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. {{  producto[2] | int  }}
+                                        <sup>.{{ "{:.2f}".format(producto[2]).split('.')[1] }}</sup>
+                                    </p>
+                                </div>
+                            {% endif %}
+
                             <div class="product_price price_online">
                                 <p class="product_price_title">
                                     Online
                                 </p>
                                 <p class="product_price_number">
-                                    S/. 5,329
-                                    <sup>.00</sup>
+                                    S/. {{ producto[3] | int }}
+                                    <sup>.{{ "{:.2f}".format(producto[3]).split('.')[1] }}</sup>
                                 </p>
                             </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="product">
-                        <a class="product_info" href="producto1.html">
-                            <img class="product_pic"
-                                src="static/img/productos/Tecnologia/Celular Samsung Galaxy A24 128GB 4GB RAM Negro/Celular Samsung Galaxy A24 128GB 4GB RAM Negro.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Samsung Galaxy A24 Negro
-                            </p>
-                            <div class="product_price price_regular">
-                                <p class="product_price_title">
-                                    Regular
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 1,600
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 898
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="product">
-                        <a class="product_info" href="#">
-                            <img class="product_pic"
-                                src="static/img/productos/Tecnologia/Lenovo HE05 + Reloj Pulsera Digital de REGALO.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Lenovo HE05 + Reloj Pulsera Digital de REGALO
-                            </p>
-                            <div class="product_price price_regular">
-                                <p class="product_price_title">
-                                    Regular
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 199
-                                    <sup>.99</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 179
-                                    <sup>.99</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_for_sale">
-                                <p class="product_price_title">
-                                    Oferta
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 149
-                                    <sup>.99</sup>
-                                </p>
-                            </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="product">
-                        <a class="product_info" href="#">
-                            <img class="product_pic" src="static/img/productos/Hogar/Batería Krea 7 Piezas Antiadherente.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Batería Krea 7 Piezas Antiadherente
-                            </p>
-                            <div class="product_price price_regular">
-                                <p class="product_price_title">
-                                    Regular
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 301
-                                    <sup>.99</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 199
-                                    <sup>.99</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_for_sale">
-                                <p class="product_price_title">
-                                    Oferta
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 129
-                                    <sup>.99</sup>
-                                </p>
-                            </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="product">
-                        <a class="product_info" href="#">
-                            <img class="product_pic"
-                                src="static/img/productos/Tecnologia/Laptop Lenovo IdeaPad Gaming3 15IAH7 i5-12450H 8GB RAM 512GB SSD RTX3060.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Laptop Lenovo IdeaPad Gaming3 15IAH7 i5-...
-                            </p>
-                            <div class="product_price price_regular">
-                                <p class="product_price_title">
-                                    Regular
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 3,529
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 3,299
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_for_sale">
-                                <p class="product_price_title">
-                                    Oferta
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 3,199
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="product">
-                        <a class="product_info" href="#">
-                            <img class="product_pic"
-                                src="static/img/productos/Ropa y Calzado/Casaca Diger Denim Stretch Hombre Pionier.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Casaca Diger Denim Stretch Hombre Pionier
-                            </p>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 279
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="product">
-                        <a class="product_info" href="#">
-                            <img class="product_pic"
-                                src="static/img/productos/Alimentos/Whisky Johnnie Walker Blue Label Botella 750ml.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Whisky Johnnie Walker Blue Label Botella 750ml
-                            </p>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 1,449
-                                    <sup>.90</sup>
-                                </p>
-                            </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="product">
-                        <a class="product_info" href="#">
-                            <img class="product_pic"
-                                src="static/img/productos/Tecnologia/Celular Samsung Galaxy A54 5G 256GB 8GB RAM Negro.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Celular Samsung Galaxy A54 5G 256GB 8GB RAM Negro
-                            </p>
-                            <div class="product_price price_regular">
-                                <p class="product_price_title">
-                                    Regular
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 2,500
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 1,478
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
+
+                            {% if producto[4] %}
+                                <div class="product_price price_for_sale">
+                                    <p class="product_price_title">
+                                        Oferta
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. {{ producto[4] | int }}
+                                        <sup>.{{ "{:.2f}".format(producto[4]).split('.')[1] }}</sup>
+                                    </p>
+                                </div>
+                            {% endif %}
+
 
                         </a>
                         <div class="product_option product_option_fav button" id="heart">
@@ -476,87 +242,12 @@
                             <i class="fa-solid fa-plus"></i>
                         </div>
                     </div>
-                    <div class="product">
-                        <a class="product_info" href="#">
-                            <img class="product_pic"
-                                src="static/img/productos/Tecnologia/Smartphone SAMSUNG Galaxy A15 6.5 8GB 256GB 50MP + 5MP + 2MP Blue Black.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Smartphone SAMSUNG Galaxy A15 6.5 8GB Blue Black
-                            </p>
-                            <div class="product_price price_regular">
-                                <p class="product_price_title">
-                                    Regular
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 799
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 699
-                                    <sup>.99</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_for_sale">
-                                <p class="product_price_title">
-                                    Oferta
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 649
-                                    <sup>.99</sup>
-                                </p>
-                            </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="product">
-                        <a class="product_info" href="#">
-                            <img class="product_pic"
-                                src="static/img/productos/Tecnologia/Celular Apple Iphone 13 128GB Negro.png"
-                                alt="Photo_Product">
-                            <p class="product_name">
-                                Celular Apple Iphone 13 128GB Negro
-                            </p>
-                            <div class="product_price price_regular">
-                                <p class="product_price_title">
-                                    Regular
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 4,699
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. 2,499
-                                    <sup>.00</sup>
-                                </p>
-                            </div>
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                    </div>
+
+                    {% endfor %}
                 </div>
                 <i class="btn_slider_product fas fa-angle-right"></i>
             </div>
-        </article> -->
+        </article>
         <article class="article_brands">
             <h1 class="title1_2">
                 MARCAS QUE DEBES VISITAR
@@ -571,9 +262,11 @@
                     </p>
                 </a>
 
-                <a class="brand_new" href="{{url_for('novedad', id=marca[3] , tipo_id=marca[4])}}">
-                    <img class="img-fluid" src="{{marca[5]}}" alt="">
-                </a>
+                {% if marca[5] %}
+                    <a class="brand_new" href="{{url_for('novedad', id=marca[3] , tipo_id=marca[4])}}">
+                        <img class="img-fluid" src="{{marca[5]}}" alt="">
+                    </a>
+                {% endif %}
 
                 <div class="brand_products">
                     <div class="slider_product subslider_product">

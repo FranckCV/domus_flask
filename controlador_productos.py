@@ -73,7 +73,7 @@ def obtenerEnTarjetasMasRecientes():
                 inner join img_producto ipr 
                 on pr.id = ipr.PRODUCTOid 
                 where ipr.imgPrincipal = 1 and pr.disponibilidad = 1
-                order by pr.fecha_registro
+                order by pr.fecha_registro desc
             '''
         cursor.execute(sql)
         productos = cursor.fetchall()

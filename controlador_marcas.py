@@ -33,7 +33,7 @@ def obtener_marcas_menu(valor):
     return marcas_lista
 
 
-def obtener_marcas_index(tipo_img_nov , cant):
+def obtener_marcas_index(cant):
     conexion = obtener_conexion()
     marcas = []
     with conexion.cursor() as cursor:
@@ -48,8 +48,9 @@ def obtener_marcas_index(tipo_img_nov , cant):
             FROM marca ma
             inner join novedad nov on nov.marcaid = ma.id
             inner join img_novedad ino on ino.novedadid = nov.id 
-            where ma.disponibilidad = 1 and nov.disponibilidad = 1 and ino.tipo_img_novedadid = '''+str(tipo_img_nov)+''' 
+            where ma.disponibilidad = 1 and nov.disponibilidad = 1 and ino.tipo_img_novedadid = 2 
             order by ma.fecha_registro , nov.fecha_registro desc
+            limit 3
             '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
