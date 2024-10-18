@@ -14,6 +14,7 @@ def obtener_marcas_menu(valor):
                 img_logo 
             FROM '''+tabla+''' 
             where disponibilidad = 1 
+            order by fecha_registro
             LIMIT '''+str(valor)
         cursor.execute(sql)
         marcas = cursor.fetchall()
@@ -78,7 +79,7 @@ def obtener_marcas_index(tipo_img_nov , cant):
     return marcas_lista
 
 
-def obtener_marca_por_id(id):
+def obtener_marca_disponible_por_id(id):
     conexion = obtener_conexion()
     marca = None
     with conexion.cursor() as cursor:
@@ -95,8 +96,10 @@ def obtener_marca_por_id(id):
         cursor.execute(sql)
         marca = cursor.fetchone()
 
+    marca_elemento = None
+
     if marca:
-        marca_id, marca_nombre, logo_binario, banner_binario , img_disp = marca
+        marca_id, marca_nombre, logo_binario, banner_binario , marca_disp = marca
 
         if logo_binario:
             logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
@@ -110,8 +113,7 @@ def obtener_marca_por_id(id):
         else:
             banner_url = ""  # Placeholder en caso de que no haya banner
 
-        marca_elemento = (marca_id, marca_nombre, logo_url, banner_url , img_disp)
-
+        marca_elemento = (marca_id, marca_nombre, logo_url, banner_url , marca_disp)
 
     conexion.close()
     return marca_elemento

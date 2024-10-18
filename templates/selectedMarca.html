@@ -26,12 +26,16 @@
                     {{marca[1]}}
                 </p>
             </div>
+            <a href="{{url_for('nuestras_marcas')}}">Ver más de Nuestras Marcas</a>
+
         </article>
         
         <article class="article_catalogue catalogue_brand">
             <h1 class="title1_2">
-                ¡NUEVAS OFERTAS Y ÚLTIMOS DESCUENTOS!
+                ¡NUEVAS OFERTAS Y ÚLTIMOS PRODUCTOS!
             </h1>
+            
+            {% if subcategoriasMarca|length > 7 %}
             
             <div class="slider_subcategory">
                 <i class="btn_slider_subcategory fas fa-angle-left"></i>
@@ -53,6 +57,8 @@
                 </div>
                 <i class="btn_slider_subcategory fas fa-angle-right"></i>
             </div>
+
+            {% endif %}
 
             <div class="catalogue_product">
         

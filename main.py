@@ -86,7 +86,8 @@ def categoria(id):
 @app.route("/selectedMarca=<int:id>")  #falta
 def marca(id):
     try:
-        marca = controlador_marcas.obtener_marca_por_id(id)
+        marca = controlador_marcas.obtener_marca_disponible_por_id(id)
+
         if marca and marca[4] == 1:
             if marca[3]:
                 imagenMarcaFondo = marca[3]
@@ -100,7 +101,7 @@ def marca(id):
             subcategoriasMarca = controlador_subcategorias.obtenerSubcategoriasXMarca(id)
 
             return render_template("selectedMarca.html", marca = marca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca)
-        
+            
         else:
             return redirect("/error")
     except:

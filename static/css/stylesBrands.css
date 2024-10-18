@@ -109,11 +109,14 @@
 /* ------------------- PAGINA MARCA --------------- */
 
 .article_selected_brand {
-    
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     padding: 40px;
+}
+
+.article_selected_brand a:hover {
+    color: #2e5cd3;
 }
 
 .brand_page {

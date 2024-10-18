@@ -22,6 +22,10 @@ def obtener_categoria_por_id(id):
     return categoria
 
 
+
+
+
+
 def obtener_categorias_subcategorias():
     conexion = obtener_conexion()
     categorias = []
