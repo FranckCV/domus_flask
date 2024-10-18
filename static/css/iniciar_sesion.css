@@ -12,12 +12,12 @@
     font-family:Poppins, sans-serif;
 }
 .container{
-    border: 2px solid black;
     width: 800px;
     height: 500px;
     display: flex;
     position: relative;
     --bs-gutter-x:0;
+    box-shadow: -10px 0px 20px rgba(0, 0, 0, 0.2);
 }
 .container-form{
     width: 100%;

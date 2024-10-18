@@ -402,10 +402,10 @@ def actualizar_producto():
 
 
 
+#########################INICIO DE SESIÓN####################################
 
 
-
-
+#####################FIN INICIO DE SESIÓN######################
 # EJECUTAR
 
 if __name__ == "__main__":
