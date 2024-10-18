@@ -26,9 +26,8 @@ def inject_globals():
 
 @app.route("/") #falta
 def index():
-    productos = controlador_productos.obtenerEnTarjetasMasRecientes()
     marcasBloque = controlador_marcas.obtener_marcas_index(2,10)
-    return render_template("index.html", marcasBloque = marcasBloque , productos = productos)
+    return render_template("index.html", marcasBloque = marcasBloque )
 
 
 @app.route("/nuestras_marcas") #falta
