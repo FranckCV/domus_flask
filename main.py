@@ -198,7 +198,8 @@ def registrate():
 
 @app.route("/carrito") #falta
 def carrito():
-    return render_template("carrito.html")
+    productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
+    return render_template("carrito.html" , productosPopulares = productosPopulares)
 
 
 
