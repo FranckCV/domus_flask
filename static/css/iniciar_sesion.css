@@ -7,11 +7,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 75vh;
+    height: auto;
     margin: 0;
     font-family:Poppins, sans-serif;
+    padding-block: 15px;
 }
-.container{
+.login_body .container{
     border: 2px solid black;
     width: 800px;
     height: 500px;
@@ -19,11 +20,11 @@
     position: relative;
     --bs-gutter-x:0;
 }
-.container-form{
+.login_body .container-form{
     width: 100%;
     overflow: hidden;
 }
-.container-form form{
+.login_body .container-form form{
     height: 100%;
     display: flex;
     flex-direction: column;
