@@ -35,6 +35,13 @@
     font-size: 80%;
 }
 
+.product_breadcrumb {
+    width: 30%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* ------------ INFORMACIÓN CENTRAL ------------ */
 
 .product_content {

@@ -18,7 +18,7 @@
             <div class="breadcrumb">
                 <a href="{{url_for('index')}}"><i class="fa-solid fa-home"></i></a> >
                 <a href="{{url_for('marca', id=marca[0])}}">{{marca[1]}}</a> >
-                <a href="#">{{producto[1]}}</a>
+                <a class="product_breadcrumb" href="#">{{producto[1]}}</a>
             </div>
 
             <div class="product_content">
@@ -208,21 +208,8 @@
             </div>
 
         </article>
-        
-        <article class="article_products article_product_similar">
-            <h1 class="title1_2">
-                ENCUENTRA PRODUCTOS SIMILARES
-            </h1>
-            <div class="slider_product">
-                <i class="btn_slider_product fas fa-angle-left"></i>
-                <div class="list_product">
-                  
-                    
-                    
-                </div>
-                <i class="btn_slider_product fas fa-angle-right"></i>
-            </div>
-        </article>
+
+        {% if productosMarca %}        
         <article class="article_products article_product_brand">
             <h1 class="title1_1">
                 MÁS SOBRE ESTA MARCA
@@ -231,12 +218,136 @@
                 <i class="btn_slider_product fas fa-angle-left"></i>
                 <div class="list_product">
                     
-                    
+                    {% for producto in productosMarca %}
+
+                    <div class="product" data-subcategory="{{producto[6]}}">
+                        <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                            <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
+
+                            <p class="product_name">
+                                {{producto[1]}}
+                            </p>
+
+                            {% if producto[2] %}
+                                <div class="product_price price_regular">
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. {{  producto[2] | int  }}
+                                        <sup>.{{ "{:.2f}".format(producto[2]).split('.')[1] }}</sup>
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. {{ producto[3] | int }}
+                                    <sup>.{{ "{:.2f}".format(producto[3]).split('.')[1] }}</sup>
+                                </p>
+                            </div>
+
+                            {% if producto[4] %}
+                                <div class="product_price price_for_sale">
+                                    <p class="product_price_title">
+                                        Oferta
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. {{ producto[4] | int }}
+                                        <sup>.{{ "{:.2f}".format(producto[4]).split('.')[1] }}</sup>
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+
+                    {% endfor %} 
                     
                 </div>
                 <i class="btn_slider_product fas fa-angle-right"></i>
             </div>            
         </article>
+        {% endif %}
+
+        {% if productosSimilares %}
+        <article class="article_products article_product_similar">
+            <h1 class="title1_2">
+                ENCUENTRA PRODUCTOS SIMILARES
+            </h1>
+            <div class="slider_product">
+                <i class="btn_slider_product fas fa-angle-left"></i>
+                <div class="list_product">
+                  
+                    {% for producto in productosSimilares %}
+
+                    <div class="product" data-subcategory="{{producto[6]}}">
+                        <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                            <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
+
+                            <p class="product_name">
+                                {{producto[1]}}
+                            </p>
+
+                            {% if producto[2] %}
+                                <div class="product_price price_regular">
+                                    <p class="product_price_title">
+                                        Regular
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. {{  producto[2] | int  }}
+                                        <sup>.{{ "{:.2f}".format(producto[2]).split('.')[1] }}</sup>
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>
+                                <p class="product_price_number">
+                                    S/. {{ producto[3] | int }}
+                                    <sup>.{{ "{:.2f}".format(producto[3]).split('.')[1] }}</sup>
+                                </p>
+                            </div>
+
+                            {% if producto[4] %}
+                                <div class="product_price price_for_sale">
+                                    <p class="product_price_title">
+                                        Oferta
+                                    </p>
+                                    <p class="product_price_number">
+                                        S/. {{ producto[4] | int }}
+                                        <sup>.{{ "{:.2f}".format(producto[4]).split('.')[1] }}</sup>
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                        </a>
+                        <div class="product_option product_option_fav button" id="heart">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+
+                    {% endfor %}  
+                    
+                </div>
+                <i class="btn_slider_product fas fa-angle-right"></i>
+            </div>
+        </article>
+        {% endif %}
 
     </section>    
 {% endblock %}

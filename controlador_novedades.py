@@ -58,6 +58,48 @@ def obtenerTiposNovedades():
     return productos
 
 
+def obtenerNovedadesMarca(marca):
+    conexion = obtener_conexion()
+    elementos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    nov.id, 
+                    Min(imnov.imagen) as novImagen,
+                    nov.nombre,
+                    imnov.tipo_img_novedadid
+                FROM 
+                    novedad nov
+                INNER JOIN 
+                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
+                WHERE 
+                    nov.disponibilidad = 1 and nov.MARCAid = '''+str(marca)+'''
+                GROUP BY 
+                    nov.id
+                ORDER BY 
+                    nov.fecha_registro DESC , imnov.tipo_img_novedadid
+                LIMIT 4
+            '''
+        cursor.execute(sql)
+        elementos = cursor.fetchall()   
+
+    novedades_lista = []
+    for dato in elementos:
+        nov_id, nov_img, nov_nom , nov_tipo = dato
+
+        if nov_img:
+            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
+            img_url = f"data:image/png;base64,{logo_base64}"
+        else:
+            img_url = ""
+        
+        novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
+        
+    conexion.close()
+    return novedades_lista
+
+
+
 
 
 

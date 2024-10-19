@@ -89,7 +89,7 @@ def categoria(id):
 
 @app.route("/selectedMarca=<int:id>")  #falta
 def marca(id):
-    try:
+    # try:
         marca = controlador_marcas.obtener_marca_disponible_por_id(id)
 
         if marca and marca[4] == 1:
@@ -98,18 +98,16 @@ def marca(id):
             else:
                 imagenMarcaFondo =  'static/img/elementos/domus_bg.jpg'
 
-            productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,0)
-
-            
-
+            productosMarca = controlador_productos.obtener_en_tarjetas_marca(0,id,0)
+            novedadesMarca = controlador_novedades.obtenerNovedadesMarca(id)
             subcategoriasMarca = controlador_subcategorias.obtenerSubcategoriasXMarca(id)
 
-            return render_template("selectedMarca.html", marca = marca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca)
+            return render_template("selectedMarca.html", marca = marca , novedadesMarca = novedadesMarca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca)
             
         else:
             return redirect("/error")
-    except:
-        return redirect("/error")
+    # except:
+        # return redirect("/error")
 
 
 @app.route("/selectedProducto=<int:id>")  #falta
@@ -117,11 +115,12 @@ def producto(id):
     # try:
         producto = controlador_productos.obtener_por_id(id)
         marca = controlador_marcas.obtener_marca_disponible_por_id(producto[9])
-        imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(producto[0])
+        imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(id)
         caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
         caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
-        productosSimilares = controlador_productos.obtener_en_tarjetas_marca()
-        return render_template("selectedProducto.html" , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
+        productosSimilares = controlador_productos.obtener_en_tarjetas_subcategoria(id,producto[10],12)
+        productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,producto[9],12)
+        return render_template("selectedProducto.html" , productosSimilares = productosSimilares , productosMarca = productosMarca , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
     # except:
         # return redirect("/error")
 
