@@ -840,8 +840,8 @@ header p {
     width: 100%;
 }
 .content {
-    height: 100%; /* Asegúrate de que el contenedor padre tenga un alto definido */
-    overflow:hidden; /* Oculta cualquier desbordamiento en el contenido principal */
+    height: 100%; 
+    overflow:hidden;
 }
 
 .h_aside {
@@ -900,6 +900,31 @@ header p {
 
 /* FIN MANEJO ASIDE */
 
+/* En lugar de ocultar el overflow en todo el body, permitimos el scroll vertical */
+body {
+    overflow-y: auto;
+}
+
+/* Aseguramos que el contenido pueda hacer scroll si es necesario */
+.content {
+    height: 100%; 
+    overflow-y: auto; /* Permite scroll vertical */
+    overflow-x: hidden; /* Evita scroll horizontal si no es necesario */
+}
+
+/* Si usas un header fijo, asegúrate de que el contenido debajo permita scroll */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1501;
+    width: 100%;
+}
+
+/* El aside puede tener overflow, pero asegúrate de que el contenido permita scroll */
+.h_aside {
+    height: 100%; /* Asegura que el aside ocupe el 100% de la altura */
+    overflow-y: auto; /* Permite scroll si el contenido del aside es más grande */
+}
 
 
 

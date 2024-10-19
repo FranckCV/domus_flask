@@ -99,6 +99,7 @@
         </div>
 
         <button type="submit" class="button">Registrarse</button>
+
       </form>
     </div>
 
@@ -137,19 +138,19 @@
   </div>
   
 </section>
-
-
 {% endblock %}
 
 {% block scripts %}
   <script src="static/js/inicio_sesion.js"></script>
   <script src="static/js/validar_formulario.js"></script>
-  <script>
-    {% if show_modal %}
-    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
-      keyboard: false
-    });
-    myModal.show();
-    {% endif %}
+  {%if mostrar%}
+    <script src="static/js/animacion.js"></script>
+    {% elif mostrar == False %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        modal.show();
+      });
     </script>
+  {% endif %}
 {% endblock %}

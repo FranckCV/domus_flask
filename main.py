@@ -381,7 +381,7 @@ def eliminar_producto():
 
 @app.route("/formulario_editar_producto/<int:id>")
 def editar_producto(id):
-    producto = controlador_productos.obtener_producto_por_id(id)
+    producto = controlador_productos.obtener_por_id(id)
     marcas = controlador_marcas.obtener_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias)
@@ -425,9 +425,9 @@ def registrar_cliente():
         nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, password,True
     )
     if(result==1):
-        return redirect("/carrito")
-    else:
-        return render_template("iniciar_sesion.html", show_modal=True)
+        return render_template("iniciar_sesion.html", mostrar=True)
+    elif(result==0):
+        return render_template("iniciar_sesion.html", mostrar=False)
 
 #####################FIN INICIO DE SESIÓN######################
 # EJECUTAR
