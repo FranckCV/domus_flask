@@ -32,8 +32,7 @@
                             {% endif %}
                         {% endfor %}
                     </div>
-                    <div class="carousel-inner">
-                        
+                    <div class="carousel-inner">                        
                         {% for imagen in imgs_producto %}
                             {% if imagen[2] == 0 %}
                                 <div class="carousel-item ">
@@ -200,17 +199,398 @@
                     <div class="space"></div>
                     <div class="product_additional">
                         <strong>Información adicional</strong>
-                        <div class="product_additional_content">
-                            {{ producto[6] | safe }}
+                        <div class="product_additional_content">{{ producto[6] | safe }}
                         </div>                        
                     </div>
                 </div>                
 
-                <button class="product_details_more">Ver más</button>
+                <!-- <button class="product_details_more">Ver más</button> -->
             </div>
 
         </article>
         
+        <article class="article_products article_product_similar">
+            <h1 class="title1_2">
+                ENCUENTRA PRODUCTOS SIMILARES
+            </h1>
+            <div class="slider_product">
+                <i class="btn_slider_product fas fa-angle-left"></i>
+                <div class="list_product">
+                  
+                    
+                    
+                </div>
+                <i class="btn_slider_product fas fa-angle-right"></i>
+            </div>
+        </article>
+        <article class="article_products article_product_brand">
+            <h1 class="title1_1">
+                MÁS SOBRE ESTA MARCA
+            </h1>
+            <div class="slider_product">
+                <i class="btn_slider_product fas fa-angle-left"></i>
+                <div class="list_product">
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/Tecnologia/Samsung Galaxy S24 Ultra 6.8 12GB RAM 512GB - Negro Titanio + CARGADOR 45w.png" alt="Photo_Product">
+                            <p class="product_name">
+                                Samsung Galaxy S24 Ultra 6.8" 12GB RAM 512GB - ...
+                            </p>                                    
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 6,999
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 5,329
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="producto1.html">
+                            <img class="product_pic" src="img/productos/Tecnologia/Celular Samsung Galaxy A24 128GB 4GB RAM Negro/Celular Samsung Galaxy A24 128GB 4GB RAM Negro.png" alt="Photo_Product">
+                            <p class="product_name">
+                                Samsung Galaxy A24 Negro
+                            </p>                                    
+                            <div class="product_price price_regular">
+                                <p class="product_price_title">
+                                    Regular
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 1,600
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 898
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/Tecnologia/Lenovo HE05 + Reloj Pulsera Digital de REGALO.png" alt="Photo_Product">
+                            <p class="product_name">
+                                Lenovo HE05 + Reloj Pulsera Digital de REGALO
+                            </p>                                    
+                            <div class="product_price price_regular">                    
+                                <p class="product_price_title">
+                                    Regular
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. xxxx
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. xxxx
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. XXXX
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/Hogar/Batería Krea 7 Piezas Antiadherente.png" alt="Photo_Product">
+                            <p class="product_name">
+                                Batería Krea 7 Piezas Antiadherente
+                            </p>                                    
+                            <div class="product_price price_regular">                    
+                                <p class="product_price_title">
+                                    Regular
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 301
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 199
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 129
+                                    <sup>.99</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/Tecnologia/Laptop Lenovo IdeaPad Gaming3 15IAH7 i5-12450H 8GB RAM 512GB SSD RTX3060.png" alt="Photo_Product">
+                            <p class="product_name">
+                                Laptop Lenovo IdeaPad Gaming3 15IAH7 i5-...
+                            </p>                                    
+                            <div class="product_price price_regular">                    
+                                <p class="product_price_title">
+                                    Regular
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 3,529
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 3,299
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 3,199
+                                    <sup>.00</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/Ropa y Calzado/Casaca Diger Denim Stretch Hombre Pionier.png" alt="Photo_Product">
+                            <p class="product_name">
+                                Casaca Diger Denim Stretch Hombre Pionier
+                            </p>                        
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 279
+                                    <sup>.00</sup>
+                                </p>
+                            </div>                        
+                        </a>
+                        <div class="product_option product_option_fav">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <div class="product_option product_option_add">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/Alimentos/Whisky Johnnie Walker Blue Label Botella 750ml.png" alt="Photo_Product">
+                            <p class="product_name">
+                                Whisky Johnnie Walker Blue Label Botella 750ml
+                            </p>                        
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. 1,449
+                                    <sup>.90</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/" alt="Photo_Product">
+                            <p class="product_name">
+                                XXXXXXX XXXXXXXXXXX XXXXXX XXXXXXX
+                            </p>                                    
+                            <div class="product_price price_regular">                    
+                                <p class="product_price_title">
+                                    Regular
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. xxxx
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. xxxx
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. XXXX
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/" alt="Photo_Product">
+                            <p class="product_name">
+                                XXXXXXX XXXXXXXXXXX XXXXXX XXXXXXX
+                            </p>                                    
+                            <div class="product_price price_regular">                    
+                                <p class="product_price_title">
+                                    Regular
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. xxxx
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. xxxx
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. XXXX
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                    <div class="product">
+                        <a class="product_info" href="#">
+                            <img class="product_pic" src="img/productos/" alt="Photo_Product">
+                            <p class="product_name">
+                                XXXXXXX XXXXXXXXXXX XXXXXX XXXXXXX
+                            </p>                                    
+                            <div class="product_price price_regular">                    
+                                <p class="product_price_title">
+                                    Regular
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. xxxx
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_online">
+                                <p class="product_price_title">
+                                    Online
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. xxxx
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                            <div class="product_price price_for_sale">
+                                <p class="product_price_title">
+                                    Oferta
+                                </p>                    
+                                <p class="product_price_number">
+                                    S/. XXXX
+                                    <sup>.xx</sup>
+                                </p>
+                            </div>
+                        </a>
+                        <div class="product_option product_option_fav">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <div class="product_option product_option_add">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    </div>
+                </div>
+                <i class="btn_slider_product fas fa-angle-right"></i>
+            </div>            
+        </article>
+
     </section>    
 {% endblock %}
 

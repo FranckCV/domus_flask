@@ -7,6 +7,7 @@ import controlador_imagenes_novedades
 import controlador_caracteristicas_productos
 import controlador_subcategorias
 import controlador_usuario_cliente
+import controlador_novedades
 
 app = Flask(__name__)
 
@@ -18,17 +19,20 @@ def inject_globals():
     categoriasMenu = controlador_categorias.obtener_categorias_disponibles()
     marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
     logo_foto = logo_domus
-    # gogogogogog = gogogogogog
+    gogogogogog = logo_domus
 
-    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu)
+    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , gogogogogog = gogogogogog)
 
 
 # PAGINAS GENERALES
 
 @app.route("/") #falta
 def index():
-    marcasBloque = controlador_marcas.obtener_marcas_index(2,10)
-    return render_template("index.html", marcasBloque = marcasBloque )
+    marcasBloque = controlador_marcas.obtener_marcas_index(10)
+    productosRecientes = controlador_productos.obtenerEnTarjetasMasRecientes()
+    productosPopulares = controlador_productos.obtenerEnTarjetasMasPopulares()
+    novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
+    return render_template("index.html", marcasBloque = marcasBloque , productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
 
 
 @app.route("/nuestras_marcas") #falta
@@ -94,7 +98,7 @@ def marca(id):
             else:
                 imagenMarcaFondo =  'static/img/elementos/domus_bg.jpg'
 
-            productosMarca = controlador_productos.obtenerEnTarjetas_Marca(id,0)
+            productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,0)
 
             
 
@@ -110,15 +114,15 @@ def marca(id):
 
 @app.route("/selectedProducto=<int:id>")  #falta
 def producto(id):
-    try:
+    # try:
         producto = controlador_productos.obtener_por_id(id)
-        marca = controlador_marcas.obtener_marca_por_id(producto[9])
+        marca = controlador_marcas.obtener_marca_disponible_por_id(producto[9])
         imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(producto[0])
         caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
         caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
         return render_template("selectedProducto.html" , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
-    except:
-        return redirect("/error")
+    # except:
+        # return redirect("/error")
 
 
 @app.route("/selectedNovedad?<int:tipo_id>=<int:id>")  #falta
