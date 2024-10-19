@@ -61,6 +61,7 @@ def novedades():
 
 @app.route("/promociones") #falta
 def promociones():
+    
     return render_template("promociones.html")
 
 

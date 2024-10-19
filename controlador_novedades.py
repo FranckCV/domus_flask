@@ -57,8 +57,20 @@ def obtenerTiposNovedades():
     conexion.close()
     return productos
 
-
-
+def obtenerPromocionesTarjetas():
+    conexion = obtener_conexion()
+    productos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    tn.nomTipo 
+                FROM `tipo_novedad` tn
+            '''
+        cursor.execute(sql)
+        productos = cursor.fetchall()    
+    
+    conexion.close()
+    return productos
 
 
 
