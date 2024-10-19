@@ -4,105 +4,142 @@ Agregar producto
 {% endblock %}
 {% block contenido %}
 
-    
-    <section class="h_section" id="mainSection">
-            <h2 class="fw-bolder" style="margin-top: 0.5rem;" >Agregar Producto</h2><br><br><br>
-        <form action="{{ url_for('actualizar_producto') }}" method="post">
-            <input type="hidden" name="id" value="{{ producto[0] }}">
-            <div class="form-grid" id="col_add">
-                <!-- Primera columna -->
-                <div class="row">
-                    <div class="col">
-                        <label for="nombre">Nombre:</label><br>
-                        <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre" id="nombre" value="{{ producto[1] }}" style="text-align: center;">
-                    </div>
-                    <div class="col"> 
-                        <label for="stock">Stock:</label><br>
-                        <input required type="number" class="input" placeholder="Cantidad en Stock" name="stock" id="stock" value="{{ producto[7] }}" style="text-align: center;">
-                    </div>
 
-                    <div class="col"> 
-                        <label for="fecha_registro">Fecha de Registro:</label><br>
-                        <input required type="date" class="input" placeholder="Fecha de Registro" name="fecha_registro" id="fecha_registro" value="{{ producto[8] }}" style="text-align: center;">
-                    </div>
-                    
+<section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Producto</h2><br><br><br>
+    <form action="{{ url_for('actualizar_producto') }}" method="post">
+        <input type="hidden" name="id" value="{{ producto[0] }}">
+        <div class="form-grid" id="col_add">
+            <!-- Primera columna -->
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">Nombre:</label><br>
+                    <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre"
+                        id="nombre" value="{{ producto[1] }}" style="text-align: center;">
+                </div>
+                <div class="col">
+                    <label for="stock">Stock:</label><br>
+                    <input required type="number" class="input" placeholder="Cantidad en Stock" name="stock" id="stock"
+                        value="{{ producto[7] }}" style="text-align: center;">
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="fecha_registro">Fecha de Registro:</label><br>
+                    <input required type="date" class="input" placeholder="Fecha de Registro" name="fecha_registro"
+                        id="fecha_registro" value="{{ producto[8] }}" style="text-align: center;">
+                </div>
+                <div class="col">
+                    <label for="price_online">Precio Online:</label><br>
+                    <input required type="number" class="input" placeholder="Precio Online" name="price_online"
+                        id="price_online" value="{{ producto[3] }}" style="text-align: center;" step="0.01">
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <label for="precio_oferta">Precio Oferta:</label><br>
+                    <input type="number" class="input" placeholder="Precio Oferta (opcional)" name="precio_oferta"
+                        id="precio_oferta" value="{{ producto[4] }}" style="text-align: center;" step="0.01">
+                </div>
+
+                <div class="col">
+                    <label for="price_regular">Precio Regular:</label><br>
+                    <input required type="number" class="input" placeholder="Precio Regular" name="price_regular"
+                        id="price_regular" value="{{ producto[2] }}" style="text-align: center;" step="0.01">
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col">
+                    <label for="disponibilidad">Disponibilidad:</label><br>
+                    <select required class="input" name="disponibilidad" id="disponibilidad">
+                        <option value=1 {% if producto[9]==1 %} checked {% endif %}>Disponible</option>
+                        <option value=0 {% if producto[9]==0 %} checked {% endif %}>No Disponible</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <label for="marca_id">Marca:</label><br>
+                    <select required class="input" name="marca_id" id="marca_id" style="width: 67%;">
+                        {% for marca in marcas %}
+                        <option value="{{marca[0]}}" {% if marca[0]==producto[10] %} selected {% endif %}>{{marca[1]}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a
+                            href="{{url_for ('formulario_agregar_marca')}}"
+                            style=" color: #ffffff;">Agregar</a></button>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="subcategoria_id">Subcategoría:</label><br>
+                    <select required class="input" name="subcategoria_id" id="subcategoria_id" style="width: 67%;">
+                        {% for subcategoria in subcategorias %}
+                        <option value="{{subcategoria[0]}}" {% if subcategoria[0]==producto[11] %} selected {% endif %}>
+                            {{subcategoria[1]}}</option>
+                        {% endfor %}
+                    </select>
+                    <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a
+                            href="{{url_for ('formulario_agregar_subcategoria')}}"
+                            style=" color: #ffffff;">Agregar</a></button>
+                </div>
+
+                <div class="col">
+                    <label for="calificacion">Calificación:</label><br>
+                    <input type="number" class="input" placeholder="Calificación (1-5)" name="calificacion"
+                        id="calificacion" value="{{ producto[5] }}">
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col" id="space_info">
+                    <label for="infoAdicional">Información Adicional:</label><br>
+                    <textarea name="infoAdicional" id="infoAdicional" placeholder="Información Adicional (opcional)"
+                        style="height: 200px;">{{ producto[6] }}</textarea>
 
                 </div>
-                <div class="row">
-
-                    <div class="col">
-                        <label for="price_online">Precio Online:</label><br>
-                        <input required type="number" class="input" placeholder="Precio Online" name="price_online" id="price_online" value="{{ producto[3] }}" style="text-align: center;" step="0.01">
-                    </div>  
-
-                    <div class="col">    
-                        <label for="precio_oferta">Precio Oferta:</label><br>
-                        <input type="number" class="input" placeholder="Precio Oferta (opcional)" name="precio_oferta" id="precio_oferta" value="{{ producto[4] }}" style="text-align: center;" step="0.01">
-                    </div>
-
-                    <div class="col">
-                        <label for="price_regular">Precio Regular:</label><br>
-                        <input required type="number" class="input" placeholder="Precio Regular" name="price_regular" id="price_regular" value="{{ producto[2] }}"style="text-align: center;" step="0.01">
-                    </div>
-                    
-                </div>
-                <div class="row">
-                    
-                    <div class="col"> 
-                        <label for="disponibilidad">Disponibilidad:</label><br>
-                        <select required class="input" name="disponibilidad" id="disponibilidad">
-                            <option value=1  {% if producto[9] == 1 %} checked {% endif %}>Disponible</option>
-                            <option value=0 {% if producto[9] == 0 %} checked {% endif %}>No Disponible</option>
-                        </select>
-                    </div>
-
-                    <div class="col"> 
-                        <label for="marca_id">Marca:</label><br>
-                        <select required class="input" name="marca_id" id="marca_id" style="width: 67%;">
-                            {% for marca in marcas %}                                
-                                <option value="{{marca[0]}}" {% if marca[0] == producto[10] %} selected {% endif %}>{{marca[1]}}</option>
-                            {% endfor %}
-                        </select>
-                        <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a href="{{url_for ('formulario_agregar_marca')}}" style=" color: #ffffff;">Agregar</a></button>
-                    </div>
-                    <div class="col"> 
-                        <label for="subcategoria_id">Subcategoría:</label><br>
-                        <select required class="input" name="subcategoria_id" id="subcategoria_id" style="width: 67%;">
-                            {% for subcategoria in subcategorias %}
-                                <option value="{{subcategoria[0]}}"{% if subcategoria[0] == producto[11] %} selected {% endif %}>{{subcategoria[1]}}</option>
-                            {% endfor %}
-                        </select>
-                        <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a href="{{url_for ('formulario_agregar_subcategoria')}}" style=" color: #ffffff;">Agregar</a></button>
-                    </div>
-                    
-                </div>
-                <div class="row">
-                    
-                    <div class="col"> 
-                        <label for="calificacion">Calificación:</label><br>
-                        <input type="number" class="input" placeholder="Calificación (1-5)" name="calificacion" id="calificacion" value="{{ producto[5] }}">
-                    </div> 
-                    <div class="col" id="space_info"> 
-                        <label for="infoAdicional">Información Adicional:</label><br>
-                        <textarea name="infoAdicional" id="infoAdicional" placeholder="Información Adicional (opcional)">{{ producto[6] }}</textarea>
-                    </div>
-                </div>
-                <div class="row">                    
-                    <div class="col" id="sbmt">
-                        <div class="form-buttons">
-                            <a href="{{ url_for('productos') }}" id="backbtn">Volver</a>
-                            <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
-                        </div>
+            </div>
+            <div class="row">
+                <div class="col" id="sbmt">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('productos') }}" id="backbtn">Volver</a>
+                        <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
                     </div>
                 </div>
             </div>
-        </form>
-    </section>
+        </div>
+    </form>
+</section>
 </div>
 <style>
-    .PrActive{
+    .PrActive {
         background-color: rgb(255, 255, 255);
-        color:#00095c;
+        color: #00095c;
+    }
+
+    /* Asegurar que el body permita scroll si el contenido excede el tamaño de la ventana */
+    html,
+    body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    /* O en caso de que quieras forzar el scroll siempre que haya contenido extra */
+    html,
+    body {
+        height: 100%;
+        overflow-y: scroll;
     }
 </style>
 
