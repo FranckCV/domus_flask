@@ -120,6 +120,7 @@ def producto(id):
         imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(producto[0])
         caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
         caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
+        productosSimilares = controlador_productos.obtener_en_tarjetas_marca()
         return render_template("selectedProducto.html" , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
     # except:
         # return redirect("/error")
