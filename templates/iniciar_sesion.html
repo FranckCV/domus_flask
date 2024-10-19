@@ -145,5 +145,12 @@
   <script src="static/js/validar_formulario.js"></script>
   {%if mostrar%}
     <script src="static/js/animacion.js"></script>
+    {% elif mostrar == False %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        modal.show();
+      });
+    </script>
   {% endif %}
 {% endblock %}

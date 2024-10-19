@@ -12,7 +12,7 @@ const burst = new mojs.Burst({
 });
 
 const timeline = new mojs.Timeline({
-    repeat: Infinity 
+    repeat: 3 
 })
 .add(burst)
 .play();
