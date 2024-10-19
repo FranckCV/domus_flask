@@ -33,7 +33,7 @@ def obtener_marcas_menu(valor):
     return marcas_lista
 
 
-def obtener_marcas_index(tipo_img_nov , cant):
+def obtener_marcas_index(cant):
     conexion = obtener_conexion()
     marcas = []
     with conexion.cursor() as cursor:
@@ -48,8 +48,9 @@ def obtener_marcas_index(tipo_img_nov , cant):
             FROM marca ma
             inner join novedad nov on nov.marcaid = ma.id
             inner join img_novedad ino on ino.novedadid = nov.id 
-            where ma.disponibilidad = 1 and nov.disponibilidad = 1 and ino.tipo_img_novedadid = '''+str(tipo_img_nov)+''' 
+            where ma.disponibilidad = 1 and nov.disponibilidad = 1 and ino.tipo_img_novedadid = 2 
             order by ma.fecha_registro , nov.fecha_registro desc
+            limit 3
             '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
@@ -58,7 +59,7 @@ def obtener_marcas_index(tipo_img_nov , cant):
     for marca in marcas:
         marca_id, marca_nombre, logo_binario , nov_id, nov_tip, img_nov = marca
 
-        productosMarca = controlador_productos.obtenerEnTarjetas_Marca(marca_id , cant)
+        productosMarca = controlador_productos.obtener_en_tarjetas_marca(marca_id , cant)
 
         if logo_binario:
             logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
@@ -141,10 +142,10 @@ def obtener_todas_marcas():
     return marcas_lista
 
 
-def insertar_marca(marca,logo):
+def insertar_marca(marca, logo):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO marca(marca,logo) VALUES (%s, %s)",(marca,logo))
+        cursor.execute("INSERT INTO marca(marca, img_logo) VALUES (%s, %s)", (marca, logo))
     conexion.commit()
     conexion.close()
 
@@ -187,7 +188,7 @@ def obtener_marca_por_id(id):
     conexion = obtener_conexion()
     marca = None
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id, marca,logo FROM marca WHERE id = %s", (id,))
+        cursor.execute("SELECT id, marca,img_logo FROM marca WHERE id = %s", (id,))
         marca = cursor.fetchone()
     conexion.close()
     return marca
@@ -196,7 +197,7 @@ def obtener_marca_por_id(id):
 def actualizar_marca(marca,logo, id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("UPDATE marca SET marca = %s ,logo = %s WHERE id =%s",
+        cursor.execute("UPDATE marca SET marca = %s ,img_logo = %s WHERE id =%s",
                        (marca,logo, id))
     conexion.commit()
     conexion.close()
