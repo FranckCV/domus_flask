@@ -31,7 +31,7 @@ $(function() {
     var numberOfItems = $(".gallery_brand .brand_picture").length;
     var limitPerPage = 24; //No. of cards to show per page
     var totalPages = Math.ceil(numberOfItems / limitPerPage);
-    var paginationSize = 2; //pagination items to show
+    var paginationSize = 5; //pagination items to show
     var currentPage;
 
 

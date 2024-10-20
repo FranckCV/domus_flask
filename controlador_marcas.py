@@ -131,7 +131,7 @@ def obtener_marca_disponible_por_id(id):
     return marca_elemento
 
 
-def obtener_todas_marcas():
+def obtener_todas_marcas_recientes():
     conexion = obtener_conexion()
     marcas = []
     with conexion.cursor() as cursor:
@@ -159,6 +159,9 @@ def obtener_todas_marcas():
     
     conexion.close()
     return marcas_lista
+
+
+
 
 
 
