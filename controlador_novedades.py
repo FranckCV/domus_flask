@@ -199,6 +199,34 @@
 import base64
 from bd import obtener_conexion
 
+def obtenerTodasLasNovedades():
+    conexion = obtener_conexion()
+    novedades = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                nov.id, 
+                nov.nombre, 
+                nov.titulo, 
+                nov.fecha_inicio, 
+                nov.fecha_vencimiento, 
+                nov.terminos, 
+                nov.fecha_registro, 
+                nov.disponibilidad,
+                nov.MARCAid, 
+                nov.SUBCATEGORIAid, 
+                nov.TIPO_NOVEDADid
+            FROM 
+                novedad nov
+            ORDER BY 
+                nov.fecha_registro DESC;
+        '''
+        cursor.execute(sql)
+        novedades = cursor.fetchall()
+    conexion.close()
+    return novedades
+
+
 # Obtener los banners de las novedades recientes
 def obtenerBannersNovedadesRecientes():
     conexion = obtener_conexion()
