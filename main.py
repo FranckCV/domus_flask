@@ -40,9 +40,9 @@ def index():
     return render_template("index.html", novedadesRecientes = novedadesRecientes , marcasBloque = marcasBloque , productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
 
 
-@app.route("/nuestras_marcas") #falta
+@app.route("/nuestras_marcas")
 def nuestras_marcas():
-    marcas = controlador_marcas.obtener_todas_marcas()
+    marcas = controlador_marcas.obtener_todas_marcas_recientes()
     return render_template("nuestras_marcas.html", marcas = marcas)
 
 
@@ -67,6 +67,7 @@ def catalogo():
 
 @app.route("/promociones") #falta
 def promociones():
+    
     return render_template("promociones.html")
 
 

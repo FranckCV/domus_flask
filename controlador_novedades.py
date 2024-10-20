@@ -266,6 +266,35 @@ def obtenerBannersNovedadesRecientes():
     conexion.close()
     return bannersLista
 
+<<<<<<< HEAD
+def obtenerPromocionesTarjetas():
+    conexion = obtener_conexion()
+    productos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    nov.id, 
+                    nov.nombre,
+                    imnov.imagen
+                FROM 
+                    novedad nov
+                INNER JOIN 
+                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
+                WHERE 
+                    imnov.TIPO_IMG_NOVEDADid = 5 
+                    AND nov.disponibilidad = 1
+                GROUP BY 
+                    nov.id
+                ORDER BY 
+                    nov.fecha_registro DESC
+                LIMIT 6;
+            '''
+        cursor.execute(sql)
+        productos = cursor.fetchall()    
+    
+    conexion.close()
+    return productos
+=======
 # Obtener los tipos de novedades
 def obtenerTiposNovedades():
     conexion = obtener_conexion()
@@ -357,6 +386,7 @@ def obtenerNovedadesPorCategoria(categoriaId):
         '''
         cursor.execute(sql, (categoriaId, categoriaId))
         elementos = cursor.fetchall()
+>>>>>>> 694f3b8ea14f3689b8dd4388099db6bc02c94744
 
     novedadesLista = []
     for dato in elementos:
