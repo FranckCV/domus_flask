@@ -60,7 +60,8 @@ def catalogo():
 
 @app.route("/novedades") #falta
 def novedades():
-    return render_template("novedades.html")
+    productosOfertas = controlador_productos.obtenerEnTarjetasOfertas()
+    return render_template("novedades.html" , productosOfertas = productosOfertas)
 
 
 @app.route("/promociones") #falta
@@ -119,10 +120,8 @@ def producto(id):
         if producto and producto[11] == 1: 
             marca = controlador_marcas.obtener_marca_disponible_por_id(producto[9])
             imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(id)
-            # caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
-            # caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
-            caracteristicasPrincipales = []
-            caracteristicasSecundarias = []
+            caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
+            caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
             productosSimilares = controlador_productos.obtener_en_tarjetas_subcategoria(id,producto[10],12)
             productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,producto[9],12)
             return render_template("selectedProducto.html" , productosSimilares = productosSimilares , productosMarca = productosMarca , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)

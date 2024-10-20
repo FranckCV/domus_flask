@@ -385,7 +385,7 @@
 .product_additional_content {
     border: 0.2vw solid #ffffffc2;
     border-radius: 20px;
-    padding: 1vw;
+    padding: 3vw;
     white-space: pre-wrap;
 }
 
@@ -495,8 +495,12 @@
         width: auto;
     }
 
+    .product_details_content strong {
+        font-size: 110%;
+    }
+
     .product_details_content {
-        grid-template-columns: auto;
+        grid-template-columns: 90vw;
         grid-template-rows: 1fr 0.001fr 1fr;
         grid-template-areas: "pdc_specifications" 
                              "pdc_space"
@@ -506,12 +510,12 @@
 
     .product_additional {
         width: auto;
+        padding: 5vw;
     }
 
-/*     
     .product_additional_content {
-        width: 30vw;
-    } */
+        padding: 5vw;
+    }
 
 
 

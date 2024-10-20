@@ -9,12 +9,13 @@ def obtenerCaracteristicasxProducto(id,valor):
     with conexion.cursor() as cursor:
         sql = '''
             SELECT 
-                csc.campo,
+                car.campo,
                 cpr.valor
             FROM caracteristica_producto cpr
-            inner join caracteristica_subcat csc on csc.id = cpr.caracteristica_subcatid
-            where cpr.productoid = '''+ str(id) +''' and cpr.principal = '''+str(valor)+'''
-            order by csc.campo
+            inner join caracteristica car on car.id = cpr.CARACTERISTICAid
+            inner join caracteristica_subcategoria csc on csc.CARACTERISTICAid = cpr.CARACTERISTICAid
+            where cpr.productoid = '''+str(id)+''' and cpr.principal = '''+str(valor)+'''
+            order by car.campo
             '''
         cursor.execute(sql)
         caracteristicas = cursor.fetchall()

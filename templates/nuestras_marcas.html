@@ -33,13 +33,31 @@
                     </div>
     
                     <div class="ctlg_pagination">
-                        <i class="fa-solid fa-caret-left"></i>
-                        <p>1</p>
-                        <p>2</p>
-                        <p>3</p>
-                        <p>4</p>
-                        <p>5</p>
-                        <i class="fa-solid fa-caret-right"></i>
+                        <p class="page-item previous-page disable">
+                            <a class="page-link" href="#">
+                                <i class="fa-solid fa-caret-left"></i>
+                            </a>
+                        </p>
+                        <p class="page-item dots">
+                            <a class="page-link" href="#">1</a>
+                        </p>
+                        <p class="page-item dots">
+                            <a class="page-link" href="#">...</a>
+                        </p>
+                        <p class="page-item current-page">
+                            <a class="page-link" href="#">5</a>
+                        </p>
+                        <p class="page-item current-page">
+                            <a class="page-link" href="#">6</a>
+                        </p>
+                        <p class="page-item dots">
+                            <a class="page-link" href="#">...</a>
+                        </p>
+                        <p class="page-item next-page">
+                            <a class="page-link" href="#">
+                                <i class="fa-solid fa-caret-right"></i>
+                            </a>
+                        </p>                    
                     </div>
                 </div>
                 <div class="gallery_brand">
@@ -54,24 +72,42 @@
                     {% endfor %}
 
                 </div>
-                <div class="ctlg_pagination">
-                    <i class="fa-solid fa-caret-left"></i>
-                    <p>1</p>
-                    <p>2</p>
-                    <p>3</p>
-                    <p>4</p>
-                    <p>5</p>
-                    <p>6</p>
-                    <p>7</p>
-                    <i class="fa-solid fa-caret-right"></i>
-                </div>
+                <!-- <div class="ctlg_pagination">
+                    <p class="page-item previous-page disable">
+                        <a class="page-link" href="#">
+                            <i class="fa-solid fa-caret-left"></i>
+                        </a>
+                    </p>
+                    <p class="page-item dots">
+                        <a class="page-link" href="#">1</a>
+                    </p>
+                    <p class="page-item dots">
+                        <a class="page-link" href="#">...</a>
+                    </p>
+                    <p class="page-item current-page">
+                        <a class="page-link" href="#">5</a>
+                    </p>
+                    <p class="page-item current-page">
+                        <a class="page-link" href="#">6</a>
+                    </p>
+                    <p class="page-item dots">
+                        <a class="page-link" href="#">...</a>
+                    </p>
+                    <p class="page-item next-page">
+                        <a class="page-link" href="#">
+                            <i class="fa-solid fa-caret-right"></i>
+                        </a>
+                    </p>                    
+                </div> -->
             </div>
             
         </article> 
     </section>
 {% endblock %}
 
-
+{% block scripts %} 
+    <script src="static/js/scriptBrands.js"></script>
+{% endblock %}
 
 
 

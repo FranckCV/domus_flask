@@ -122,6 +122,11 @@ def obtenerNovedadesCategoria(categoria):
                         INNER JOIN MARCA m ON m.id = p.MARCAid 
                         WHERE s.disponibilidad = 1 AND m.disponibilidad = 1
                         and s.CATEGORIAid = '''+str(categoria)+'''
+                    ) or nov.SUBCATEGORIAid in (
+                    	SELECT 
+                        	sub.id 
+                        FROM SUBCATEGORIA sub
+                        WHERE sub.disponibilidad = 1 and sub.CATEGORIAid = '''+str(categoria)+'''
                     )
                 GROUP BY 
                     nov.id

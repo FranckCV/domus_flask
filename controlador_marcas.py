@@ -41,16 +41,27 @@ def obtener_marcas_index(cant):
             SELECT 
                 ma.id, 
                 ma.marca, 
-                ma.img_logo,
-                nov.id,
-                nov.tipo_novedadid,
+                ma.img_logo, 
+                nov.id AS novedad_id, 
+                nov.tipo_novedadid, 
                 ino.imagen
-            FROM marca ma
-            inner join novedad nov on nov.marcaid = ma.id
-            inner join img_novedad ino on ino.novedadid = nov.id 
-            where ma.disponibilidad = 1 and nov.disponibilidad = 1 and ino.tipo_img_novedadid = 2 
-            order by ma.fecha_registro , nov.fecha_registro desc
-            limit 3
+            FROM 
+                marca ma
+            INNER JOIN 
+                novedad nov ON nov.marcaid = ma.id
+            INNER JOIN 
+                img_novedad ino ON ino.novedadid = nov.id
+            WHERE 
+                ma.disponibilidad = 1 
+                AND nov.disponibilidad = 1 
+                AND ino.tipo_img_novedadid = 2
+                AND   
+                    (SELECT COUNT(*) 
+                    FROM producto p 
+                    WHERE p.marcaid = ma.id) > 4
+            ORDER BY 
+                ma.fecha_registro DESC, nov.fecha_registro DESC
+            LIMIT 3;
             '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
@@ -59,7 +70,7 @@ def obtener_marcas_index(cant):
     for marca in marcas:
         marca_id, marca_nombre, logo_binario , nov_id, nov_tip, img_nov = marca
 
-        productosMarca = controlador_productos.obtener_en_tarjetas_marca(0,marca_id , cant)
+        productosMarca = controlador_productos.obtener_en_tarjetas_marca(0 , marca_id , cant)
 
         if logo_binario:
             logo_base64 = base64.b64encode(logo_binario).decode('utf-8')

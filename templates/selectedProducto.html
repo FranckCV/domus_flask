@@ -93,6 +93,7 @@
                     </h1>
                 </div>
 
+                {% if caracteristicasPrincipales %}
                 <div class="product_main_details">
                     <div class="product_page_title pf_title">
                         PRINCIPALES CARACTERÍSTICAS
@@ -110,7 +111,8 @@
                         {% endfor %}
                     </div>
                 </div>
-                    
+                {% endif %}
+
                 <div class="product_cart">
                     <div class="product_cart_content">
                         <div class="product_page_title">
@@ -179,6 +181,7 @@
                 </div>
 
                 <div class="product_details_content">
+                    {% if caracteristicasSecundarias %}
                     <div class="product_specifications">
                         <strong>Especificaciones</strong>
                         <div class="product_features">
@@ -197,6 +200,8 @@
                         </div>
                     </div>
                     <div class="space"></div>
+                    {% endif %}
+
                     <div class="product_additional">
                         <strong>Información adicional</strong>
                         <div class="product_additional_content">{{ producto[6] | safe }}

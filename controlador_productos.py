@@ -103,6 +103,40 @@ def obtenerEnTarjetasMasPopulares():
     return productos_lista
 
 
+def obtenerEnTarjetasOfertas():
+    conexion = obtener_conexion()
+    productos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    pr.id, 
+                    pr.nombre, 
+                    pr.price_regular, 
+                    pr.precio_online, 
+                    pr.precio_oferta,  
+                    pr.MARCAid, 
+                    pr.SUBCATEGORIAid, 
+                    ipr.imagen 
+                FROM `producto` pr 
+                inner join img_producto ipr on pr.id = ipr.PRODUCTOid 
+                where ipr.imgPrincipal = 1 and pr.disponibilidad = 1 and pr.precio_oferta > 0
+                order by pr.fecha_registro desc
+            '''
+        cursor.execute(sql)
+        productos = cursor.fetchall()
+
+    productos_lista = []
+    for producto in productos:
+        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
+        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
+        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
+    
+    conexion.close()
+    return productos_lista
+
+
+
+
 def obtener_en_tarjetas_marca(id,marca, limit):
     conexion = obtener_conexion()
     productos = []
@@ -218,7 +252,7 @@ def obtener_en_tarjetas_categoria(id,categoria, limit):
     return productos_lista
 
 
-
+# CRUD
 
 def insertar_producto(nombre, price_regular, price_online, precio_oferta, calificacion, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id):
     conexion = obtener_conexion()
