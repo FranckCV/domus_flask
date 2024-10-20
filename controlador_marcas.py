@@ -135,7 +135,15 @@ def obtener_todas_marcas():
     conexion = obtener_conexion()
     marcas = []
     with conexion.cursor() as cursor:
-        sql = "SELECT id, marca, img_logo FROM "+tabla+" where disponibilidad = 1"
+        sql = '''
+                SELECT 
+                    id,
+                    marca, 
+                    img_logo 
+                FROM marca 
+                where disponibilidad = 1
+                order by fecha_registro desc
+                '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
     
@@ -151,6 +159,7 @@ def obtener_todas_marcas():
     
     conexion.close()
     return marcas_lista
+
 
 
 def insertar_marca(marca, logo):
