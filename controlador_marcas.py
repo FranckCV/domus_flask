@@ -142,10 +142,10 @@ def obtener_todas_marcas():
     return marcas_lista
 
 
-def insertar_marca(marca,logo):
+def insertar_marca(marca, logo):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO marca(marca,logo) VALUES (%s, %s)",(marca,logo))
+        cursor.execute("INSERT INTO marca(marca, img_logo) VALUES (%s, %s)", (marca, logo))
     conexion.commit()
     conexion.close()
 
@@ -188,7 +188,7 @@ def obtener_marca_por_id(id):
     conexion = obtener_conexion()
     marca = None
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id, marca,logo FROM marca WHERE id = %s", (id,))
+        cursor.execute("SELECT id, marca,img_logo FROM marca WHERE id = %s", (id,))
         marca = cursor.fetchone()
     conexion.close()
     return marca
@@ -197,7 +197,7 @@ def obtener_marca_por_id(id):
 def actualizar_marca(marca,logo, id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("UPDATE marca SET marca = %s ,logo = %s WHERE id =%s",
+        cursor.execute("UPDATE marca SET marca = %s ,img_logo = %s WHERE id =%s",
                        (marca,logo, id))
     conexion.commit()
     conexion.close()
