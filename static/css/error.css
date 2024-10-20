@@ -6,9 +6,18 @@ section {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    color: black;
 }
 
 section i {
     font-size: 500%;
+    color: #00007c;
+}
+
+section a {
+    color: black;
+}
+
+section a:hover {
     color: #00007c;
 }

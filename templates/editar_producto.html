@@ -17,16 +17,16 @@ Agregar producto
                     <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre"
                         id="nombre" value="{{ producto[1] }}" style="text-align: center;">
                 </div>
+
+            </div>
+
+            <div class="row">
+
                 <div class="col">
                     <label for="stock">Stock:</label><br>
                     <input required type="number" class="input" placeholder="Cantidad en Stock" name="stock" id="stock"
                         value="{{ producto[7] }}" style="text-align: center;">
                 </div>
-
-
-            </div>
-
-            <div class="row">
                 <div class="col">
                     <label for="fecha_registro">Fecha de Registro:</label><br>
                     <input required type="date" class="input" placeholder="Fecha de Registro" name="fecha_registro"
@@ -53,9 +53,6 @@ Agregar producto
                         id="price_regular" value="{{ producto[2] }}" style="text-align: center;" step="0.01">
                 </div>
 
-            </div>
-            <div class="row">
-
                 <div class="col">
                     <label for="disponibilidad">Disponibilidad:</label><br>
                     <select required class="input" name="disponibilidad" id="disponibilidad">
@@ -63,6 +60,9 @@ Agregar producto
                         <option value=0 {% if producto[9]==0 %} checked {% endif %}>No Disponible</option>
                     </select>
                 </div>
+
+            </div>
+            <div class="row">
 
                 <div class="col">
                     <label for="marca_id">Marca:</label><br>
@@ -77,9 +77,6 @@ Agregar producto
                             style=" color: #ffffff;">Agregar</a></button>
                 </div>
 
-            </div>
-
-            <div class="row">
                 <div class="col">
                     <label for="subcategoria_id">Subcategoría:</label><br>
                     <select required class="input" name="subcategoria_id" id="subcategoria_id" style="width: 67%;">
@@ -98,6 +95,7 @@ Agregar producto
                     <input type="number" class="input" placeholder="Calificación (1-5)" name="calificacion"
                         id="calificacion" value="{{ producto[5] }}">
                 </div>
+
 
             </div>
 
@@ -129,18 +127,7 @@ Agregar producto
     }
 
     /* Asegurar que el body permita scroll si el contenido excede el tamaño de la ventana */
-    html,
-    body {
-        height: 100%;
-        overflow-y: auto;
-    }
-
-    /* O en caso de que quieras forzar el scroll siempre que haya contenido extra */
-    html,
-    body {
-        height: 100%;
-        overflow-y: scroll;
-    }
+    
 </style>
 
 <script src="/static/js/admin_productos.js"></script>

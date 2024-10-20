@@ -16,9 +16,12 @@ logo_domus = 'img/elementos/logoDomus.png'
 
 @app.context_processor
 def inject_globals():
+    # General
     categoriasMenu = controlador_categorias.obtener_categorias_disponibles()
     marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
     logo_foto = logo_domus
+
+    # Administrativa
     gogogogogog = logo_domus
 
     return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , gogogogogog = gogogogogog)
@@ -32,12 +35,13 @@ def index():
     productosRecientes = controlador_productos.obtenerEnTarjetasMasRecientes()
     productosPopulares = controlador_productos.obtenerEnTarjetasMasPopulares()
     novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
-    return render_template("index.html", marcasBloque = marcasBloque , productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
+    novedadesRecientes = controlador_novedades.obtenerNovedadesRecientes()
+    return render_template("index.html", novedadesRecientes = novedadesRecientes , marcasBloque = marcasBloque , productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
 
 
-@app.route("/nuestras_marcas") #falta
+@app.route("/nuestras_marcas")
 def nuestras_marcas():
-    marcas = controlador_marcas.obtener_todas_marcas()
+    marcas = controlador_marcas.obtener_todas_marcas_recientes()
     return render_template("nuestras_marcas.html", marcas = marcas)
 
 
@@ -56,7 +60,8 @@ def catalogo():
 
 @app.route("/novedades") #falta
 def novedades():
-    return render_template("novedades.html")
+    productosOfertas = controlador_productos.obtenerEnTarjetasOfertas()
+    return render_template("novedades.html" , productosOfertas = productosOfertas)
 
 
 @app.route("/promociones") #falta
@@ -70,7 +75,6 @@ def error():
     return render_template("error.html")
 
 
-
 # PAGINAS ESPECIFICAS
 
 @app.route("/selectedCategoria=<int:id>")  #falta
@@ -78,10 +82,10 @@ def categoria(id):
     try:
         categoria = controlador_categorias.obtener_categoria_por_id(id)
         if categoria and categoria[3] == 1:        
-            
             subcategorias = controlador_subcategorias.obtenerSubcategoriasXCategoria(id)
-            return render_template("selectedCategoria.html", categoria = categoria, subcategorias = subcategorias)
-        
+            novedadesCategoria = controlador_novedades.obtenerNovedadesCategoria(id)
+            productosCategoria = controlador_productos.obtener_en_tarjetas_categoria(0,id,0)
+            return render_template("selectedCategoria.html", productosCategoria = productosCategoria , categoria = categoria, subcategorias = subcategorias , novedadesCategoria = novedadesCategoria)
         else:
             return redirect("/error")
     except:
@@ -90,40 +94,42 @@ def categoria(id):
 
 @app.route("/selectedMarca=<int:id>")  #falta
 def marca(id):
-    try:
+    # try:
         marca = controlador_marcas.obtener_marca_disponible_por_id(id)
-
         if marca and marca[4] == 1:
             if marca[3]:
                 imagenMarcaFondo = marca[3]
             else:
                 imagenMarcaFondo =  'static/img/elementos/domus_bg.jpg'
 
-            productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,0)
-
-            
-
+            productosMarca = controlador_productos.obtener_en_tarjetas_marca(0,id,0)
+            novedadesMarca = controlador_novedades.obtenerNovedadesMarca(id)
             subcategoriasMarca = controlador_subcategorias.obtenerSubcategoriasXMarca(id)
 
-            return render_template("selectedMarca.html", marca = marca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca)
+            return render_template("selectedMarca.html", marca = marca , novedadesMarca = novedadesMarca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca)
             
         else:
             return redirect("/error")
-    except:
-        return redirect("/error")
+    # except:
+        # return redirect("/error")
 
 
 @app.route("/selectedProducto=<int:id>")  #falta
 def producto(id):
-    # try:
+    try:
         producto = controlador_productos.obtener_por_id(id)
-        marca = controlador_marcas.obtener_marca_disponible_por_id(producto[9])
-        imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(producto[0])
-        caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
-        caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
-        return render_template("selectedProducto.html" , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
-    # except:
-        # return redirect("/error")
+        if producto and producto[11] == 1: 
+            marca = controlador_marcas.obtener_marca_disponible_por_id(producto[9])
+            imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(id)
+            caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
+            caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
+            productosSimilares = controlador_productos.obtener_en_tarjetas_subcategoria(id,producto[10],12)
+            productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,producto[9],12)
+            return render_template("selectedProducto.html" , productosSimilares = productosSimilares , productosMarca = productosMarca , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
 
 
 @app.route("/selectedNovedad?<int:tipo_id>=<int:id>")  #falta
@@ -405,6 +411,71 @@ def actualizar_producto():
 
 ########## FIN PRODUCTOS ##########
 
+#########################PARA NOVEDAD##############################
+
+# @app.route("/agregar_novedad")
+# def formulario_agregar_novedad():
+#     marcas = controlador_marcas.obtenerMarcas()
+#     subcategorias = controlador_subcategorias.obtenerSubcategorias()
+#     tiposNovedad = controlador_tiposNovedad.obtenerTiposNovedades()
+#     return render_template("agregar_novedad.html", marcas=marcas, subcategorias=subcategorias, tiposNovedad=tiposNovedad)
+
+# @app.route("/guardar_novedad", methods=["POST"])
+# def guardar_novedad():
+#     nombre = request.form["nombre"]
+#     titulo = request.form["titulo"]
+#     fecha_inicio = request.form["fecha_inicio"]
+#     fecha_vencimiento = request.form["fecha_vencimiento"]
+#     terminos = request.form["terminos"]
+#     disponibilidad = request.form["disponibilidad"]
+#     marca_id = request.form["marca_id"]
+#     subcategoria_id = request.form["subcategoria_id"]
+#     tipo_novedad_id = request.form["tipo_novedad_id"]
+    
+#     # Manejo de imagen
+#     imagen = request.files["imagen"].read() if "imagen" in request.files else None
+
+#     controlador_novedades.insertarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id, imagen)
+#     return redirect("/novedades")
+
+# @app.route("/novedades")
+# def novedades():
+#     novedades = controlador_novedades.obtenerNovedadesRecientes()
+#     marcas = controlador_marcas.obtenerMarcas()
+#     subcategorias = controlador_subcategorias.obtenerSubcategorias()
+#     return render_template("novedades.html", novedades=novedades, marcas=marcas, subcategorias=subcategorias)
+
+# @app.route("/eliminar_novedad", methods=["POST"])
+# def eliminar_novedad():
+#     controlador_novedades.eliminarNovedad(request.form["id"])
+#     return redirect("/novedades")
+
+# @app.route("/formulario_editar_novedad/<int:id>")
+# def editar_novedad(id):
+#     novedad = controlador_novedades.obtenerNovedadPorId(id)
+#     marcas = controlador_marcas.obtenerMarcas()
+#     subcategorias = controlador_subcategorias.obtenerSubcategorias()
+#     tiposNovedad = controlador_tiposNovedad.obtenerTiposNovedades()
+#     return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tiposNovedad=tiposNovedad)
+
+# @app.route("/actualizar_novedad", methods=["POST"])
+# def actualizar_novedad():
+#     id = request.form["id"]
+#     nombre = request.form["nombre"]
+#     titulo = request.form["titulo"]
+#     fecha_inicio = request.form["fecha_inicio"]
+#     fecha_vencimiento = request.form["fecha_vencimiento"]
+#     terminos = request.form["terminos"]
+#     disponibilidad = request.form["disponibilidad"]
+#     marca_id = request.form["marca_id"]
+#     subcategoria_id = request.form["subcategoria_id"]
+#     tipo_novedad_id = request.form["tipo_novedad_id"]
+    
+#     # Manejo de imagen
+#     imagen = request.files["imagen"].read() if "imagen" in request.files else None
+
+#     controlador_novedades.actualizarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id, imagen, id)
+#     return redirect("/novedades")
 
 
 #########################INICIO DE SESIÓN####################################
