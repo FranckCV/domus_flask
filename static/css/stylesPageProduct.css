@@ -404,6 +404,7 @@
     .article_product_information {
         gap: 4vw;
         font-size: 5vw;
+        padding-block: 5vw;
     }
     
     .breadcrumb {
@@ -490,21 +491,27 @@
 
     .product_details {
         margin: 0;
-        border-radius: 0;
-        padding-inline: 30vw;
-
+        /* border-radius: 0; */
+        width: auto;
     }
 
     .product_details_content {
-        grid-template-columns: 100vw;
+        grid-template-columns: auto;
         grid-template-rows: 1fr 0.001fr 1fr;
         grid-template-areas: "pdc_specifications" 
                              "pdc_space"
                              "pdc_additional";
 
     }
-    
 
+    .product_additional {
+        width: auto;
+    }
+
+/*     
+    .product_additional_content {
+        width: 30vw;
+    } */
 
 
 

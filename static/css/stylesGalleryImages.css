@@ -1,6 +1,6 @@
 :root {    
     --size-img-for-sale-gallery: 40vw;
-    --gap-for-sale-gallery: 1vw;
+    --gap-for-sale-gallery: 2vw;
 }
 
 .article_for_sale {
@@ -24,6 +24,11 @@
 .for_sale_gallery img {
     border-radius: var(--border-item);
     text-align: center;
+    transition: 0.2s;
+}
+
+.for_sale_gallery img:hover {
+    scale: 1.025;
 }
 
 .img_for_sale_full {
