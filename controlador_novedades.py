@@ -1,200 +1,447 @@
-from bd import obtener_conexion
-import base64
+# from bd import obtener_conexion
+# import base64
 
+# def obtenerBannersNovedadesRecientes():
+#     conexion = obtener_conexion()
+#     elementos = []
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#                 SELECT 
+#                     nov.id, 
+#                     MIN(imnov.imagen) AS imagen, 
+#                     nov.nombre
+#                 FROM 
+#                     novedad nov
+#                 INNER JOIN 
+#                     img_novedad imnov ON nov.id = imnov.NOVEDADid 
+#                 WHERE 
+#                     imnov.TIPO_IMG_NOVEDADid = 1 
+#                     AND nov.disponibilidad = 1
+#                 GROUP BY 
+#                     nov.id, nov.nombre
+#                 ORDER BY 
+#                     nov.fecha_registro DESC
+#                 LIMIT 6;
+#             '''
+#         cursor.execute(sql)
+#         elementos = cursor.fetchall()   
+
+#     banners_lista = []
+#     for dato in elementos:
+#         nov_id, nov_img, nov_nom = dato
+
+#         if nov_img:
+#             logo_base64 = base64.b64encode(nov_img).decode('utf-8')
+#             img_url = f"data:image/png;base64,{logo_base64}"
+#         else:
+#             img_url = ""
+        
+#         banners_lista.append((nov_id, img_url, nov_nom))
+        
+#     conexion.close()
+#     return banners_lista
+
+
+# def obtenerTiposNovedades():
+#     conexion = obtener_conexion()
+#     productos = []
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#                 SELECT 
+#                     tn.nomTipo 
+#                 FROM `tipo_novedad` tn
+#             '''
+#         cursor.execute(sql)
+#         productos = cursor.fetchall()    
+    
+#     conexion.close()
+#     return productos
+
+
+# def obtenerNovedadesMarca(marca):
+#     conexion = obtener_conexion()
+#     elementos = []
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#                 SELECT 
+#                     nov.id, 
+#                     Min(imnov.imagen) as novImagen,
+#                     nov.nombre,
+#                     imnov.tipo_img_novedadid
+#                 FROM 
+#                     novedad nov
+#                 INNER JOIN 
+#                     img_novedad imnov ON nov.id = imnov.NOVEDADid 
+#                 WHERE 
+#                     nov.disponibilidad = 1 and nov.MARCAid = '''+str(marca)+'''
+#                 GROUP BY 
+#                     nov.id
+#                 ORDER BY 
+#                     nov.fecha_registro DESC , imnov.tipo_img_novedadid desc
+#                 LIMIT 4
+#             '''
+#         cursor.execute(sql)
+#         elementos = cursor.fetchall()   
+
+#     novedades_lista = []
+#     for dato in elementos:
+#         nov_id, nov_img, nov_nom , nov_tipo = dato
+
+#         if nov_img:
+#             logo_base64 = base64.b64encode(nov_img).decode('utf-8')
+#             img_url = f"data:image/png;base64,{logo_base64}"
+#         else:
+#             img_url = ""
+        
+#         novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
+        
+#     conexion.close()
+#     return novedades_lista
+
+
+# def obtenerNovedadesCategoria(categoria):
+#     conexion = obtener_conexion()
+#     elementos = []
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#                 SELECT 
+#                     nov.id, 
+#                     Min(imnov.imagen) as novImagen,
+#                     nov.nombre,
+#                     imnov.tipo_img_novedadid
+#                 FROM 
+#                     novedad nov
+#                 INNER JOIN 
+#                     img_novedad imnov ON nov.id = imnov.NOVEDADid
+#                 WHERE 
+#                     nov.disponibilidad = 1 and nov.MARCAid in (
+#                         SELECT DISTINCT 
+#                         	m.id 
+#                         FROM SUBCATEGORIA s 
+#                         INNER JOIN PRODUCTO p ON p.SUBCATEGORIAid = s.id 
+#                         INNER JOIN MARCA m ON m.id = p.MARCAid 
+#                         WHERE s.disponibilidad = 1 AND m.disponibilidad = 1
+#                         and s.CATEGORIAid = '''+str(categoria)+'''
+#                     ) or nov.SUBCATEGORIAid in (
+#                     	SELECT 
+#                         	sub.id 
+#                         FROM SUBCATEGORIA sub
+#                         WHERE sub.disponibilidad = 1 and sub.CATEGORIAid = '''+str(categoria)+'''
+#                     )
+#                 GROUP BY 
+#                     nov.id
+#                 ORDER BY 
+#                     nov.fecha_registro DESC , imnov.tipo_img_novedadid desc
+#                 LIMIT 4;
+#             '''
+#         cursor.execute(sql)
+#         elementos = cursor.fetchall()   
+
+#     novedades_lista = []
+#     for dato in elementos:
+#         nov_id, nov_img, nov_nom , nov_tipo = dato
+
+#         if nov_img:
+#             logo_base64 = base64.b64encode(nov_img).decode('utf-8')
+#             img_url = f"data:image/png;base64,{logo_base64}"
+#         else:
+#             img_url = ""
+        
+#         novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
+        
+#     conexion.close()
+#     return novedades_lista
+
+
+# def obtenerNovedadesRecientes():
+#     conexion = obtener_conexion()
+#     elementos = []
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#                 SELECT 
+#                     nov.id, 
+#                     Min(imnov.imagen) as novImagen,
+#                     nov.nombre,
+#                     imnov.tipo_img_novedadid
+#                 FROM 
+#                     novedad nov
+#                 INNER JOIN 
+#                     img_novedad imnov ON nov.id = imnov.NOVEDADid 
+#                 WHERE 
+#                     nov.disponibilidad = 1 and imnov.tipo_img_novedadid != 1
+#                 GROUP BY 
+#                     nov.id
+#                 ORDER BY 
+#                     nov.fecha_registro DESC , imnov.tipo_img_novedadid
+#                 LIMIT 4
+#             '''
+#         cursor.execute(sql)
+#         elementos = cursor.fetchall()   
+
+#     img_lista = []
+#     for dato in elementos:
+#         nov_id, nov_img, nov_nom , nov_tipo = dato
+
+#         if nov_img:
+#             logo_base64 = base64.b64encode(nov_img).decode('utf-8')
+#             img_url = f"data:image/png;base64,{logo_base64}"
+#         else:
+#             img_url = ""
+        
+#         img_lista.append((nov_id, img_url, nov_nom , nov_tipo))
+        
+#     conexion.close()
+#     return img_lista
+
+
+
+#########################Version 2########################3
+import base64
+from bd import obtener_conexion
+
+# Obtener los banners de las novedades recientes
 def obtenerBannersNovedadesRecientes():
     conexion = obtener_conexion()
     elementos = []
     with conexion.cursor() as cursor:
         sql = '''
-                SELECT 
-                    nov.id, 
-                    MIN(imnov.imagen) AS imagen, 
-                    nov.nombre
-                FROM 
-                    novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
-                WHERE 
-                    imnov.TIPO_IMG_NOVEDADid = 1 
-                    AND nov.disponibilidad = 1
-                GROUP BY 
-                    nov.id, nov.nombre
-                ORDER BY 
-                    nov.fecha_registro DESC
-                LIMIT 6;
-            '''
+            SELECT 
+                nov.id, 
+                MIN(imnov.imagen) AS imagen, 
+                nov.nombre
+            FROM 
+                novedad nov
+            INNER JOIN 
+                img_novedad imnov ON nov.id = imnov.NOVEDADid 
+            WHERE 
+                imnov.TIPO_IMG_NOVEDADid = 1 
+                AND nov.disponibilidad = 1
+            GROUP BY 
+                nov.id, nov.nombre
+            ORDER BY 
+                nov.fecha_registro DESC
+            LIMIT 6;
+        '''
         cursor.execute(sql)
-        elementos = cursor.fetchall()   
-
-    banners_lista = []
+        elementos = cursor.fetchall()
+    
+    bannersLista = []
     for dato in elementos:
         nov_id, nov_img, nov_nom = dato
-
         if nov_img:
             logo_base64 = base64.b64encode(nov_img).decode('utf-8')
             img_url = f"data:image/png;base64,{logo_base64}"
         else:
             img_url = ""
-        
-        banners_lista.append((nov_id, img_url, nov_nom))
-        
-    conexion.close()
-    return banners_lista
-
-
-def obtenerTiposNovedades():
-    conexion = obtener_conexion()
-    productos = []
-    with conexion.cursor() as cursor:
-        sql = '''
-                SELECT 
-                    tn.nomTipo 
-                FROM `tipo_novedad` tn
-            '''
-        cursor.execute(sql)
-        productos = cursor.fetchall()    
+        bannersLista.append((nov_id, img_url, nov_nom))
     
     conexion.close()
-    return productos
+    return bannersLista
 
+# Obtener los tipos de novedades
+def obtenerTiposNovedades():
+    conexion = obtener_conexion()
+    tipos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                tn.nomTipo 
+            FROM tipo_novedad tn
+        '''
+        cursor.execute(sql)
+        tipos = cursor.fetchall()
+    conexion.close()
+    return tipos
 
-def obtenerNovedadesMarca(marca):
+# Obtener las novedades por marca
+def obtenerNovedadesPorMarca(marcaId):
     conexion = obtener_conexion()
     elementos = []
     with conexion.cursor() as cursor:
         sql = '''
-                SELECT 
-                    nov.id, 
-                    Min(imnov.imagen) as novImagen,
-                    nov.nombre,
-                    imnov.tipo_img_novedadid
-                FROM 
-                    novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
-                WHERE 
-                    nov.disponibilidad = 1 and nov.MARCAid = '''+str(marca)+'''
-                GROUP BY 
-                    nov.id
-                ORDER BY 
-                    nov.fecha_registro DESC , imnov.tipo_img_novedadid desc
-                LIMIT 4
-            '''
-        cursor.execute(sql)
-        elementos = cursor.fetchall()   
-
-    novedades_lista = []
+            SELECT 
+                nov.id, 
+                MIN(imnov.imagen) AS novImagen,
+                nov.nombre,
+                imnov.tipo_img_novedadid
+            FROM 
+                novedad nov
+            INNER JOIN 
+                img_novedad imnov ON nov.id = imnov.NOVEDADid 
+            WHERE 
+                nov.disponibilidad = 1 AND nov.MARCAid = %s
+            GROUP BY 
+                nov.id
+            ORDER BY 
+                nov.fecha_registro DESC, imnov.tipo_img_novedadid DESC
+            LIMIT 4
+        '''
+        cursor.execute(sql, (marcaId,))
+        elementos = cursor.fetchall()
+    
+    novedadesLista = []
     for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
+        nov_id, nov_img, nov_nom, nov_tipo = dato
         if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
+            img_base64 = base64.b64encode(nov_img).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
         else:
             img_url = ""
-        
-        novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
+        novedadesLista.append((nov_id, img_url, nov_nom, nov_tipo))
+    
     conexion.close()
-    return novedades_lista
+    return novedadesLista
 
-
-def obtenerNovedadesCategoria(categoria):
+# Obtener las novedades por categoría
+def obtenerNovedadesPorCategoria(categoriaId):
     conexion = obtener_conexion()
     elementos = []
     with conexion.cursor() as cursor:
         sql = '''
-                SELECT 
-                    nov.id, 
-                    Min(imnov.imagen) as novImagen,
-                    nov.nombre,
-                    imnov.tipo_img_novedadid
-                FROM 
-                    novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid
-                WHERE 
-                    nov.disponibilidad = 1 and nov.MARCAid in (
-                        SELECT DISTINCT 
-                        	m.id 
-                        FROM SUBCATEGORIA s 
-                        INNER JOIN PRODUCTO p ON p.SUBCATEGORIAid = s.id 
-                        INNER JOIN MARCA m ON m.id = p.MARCAid 
-                        WHERE s.disponibilidad = 1 AND m.disponibilidad = 1
-                        and s.CATEGORIAid = '''+str(categoria)+'''
-                    ) or nov.SUBCATEGORIAid in (
-                    	SELECT 
-                        	sub.id 
+            SELECT 
+                nov.id, 
+                MIN(imnov.imagen) AS novImagen,
+                nov.nombre,
+                imnov.tipo_img_novedadid
+            FROM 
+                novedad nov
+            INNER JOIN 
+                img_novedad imnov ON nov.id = imnov.NOVEDADid
+            WHERE 
+                nov.disponibilidad = 1 AND (
+                    nov.MARCAid IN (
+                        SELECT DISTINCT m.id 
+                        FROM SUBCATEGORIA s
+                        INNER JOIN PRODUCTO p ON p.SUBCATEGORIAid = s.id
+                        INNER JOIN MARCA m ON m.id = p.MARCAid
+                        WHERE s.CATEGORIAid = %s AND s.disponibilidad = 1 AND m.disponibilidad = 1
+                    ) OR nov.SUBCATEGORIAid IN (
+                        SELECT sub.id 
                         FROM SUBCATEGORIA sub
-                        WHERE sub.disponibilidad = 1 and sub.CATEGORIAid = '''+str(categoria)+'''
+                        WHERE sub.CATEGORIAid = %s AND sub.disponibilidad = 1
                     )
-                GROUP BY 
-                    nov.id
-                ORDER BY 
-                    nov.fecha_registro DESC , imnov.tipo_img_novedadid desc
-                LIMIT 4;
-            '''
-        cursor.execute(sql)
-        elementos = cursor.fetchall()   
+                )
+            GROUP BY 
+                nov.id
+            ORDER BY 
+                nov.fecha_registro DESC, imnov.tipo_img_novedadid DESC
+            LIMIT 4;
+        '''
+        cursor.execute(sql, (categoriaId, categoriaId))
+        elementos = cursor.fetchall()
 
-    novedades_lista = []
+    novedadesLista = []
     for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
+        nov_id, nov_img, nov_nom, nov_tipo = dato
         if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
+            img_base64 = base64.b64encode(nov_img).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
         else:
             img_url = ""
-        
-        novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
+        novedadesLista.append((nov_id, img_url, nov_nom, nov_tipo))
+    
     conexion.close()
-    return novedades_lista
+    return novedadesLista
 
-
+# Obtener las novedades recientes (excepto banners)
 def obtenerNovedadesRecientes():
     conexion = obtener_conexion()
     elementos = []
     with conexion.cursor() as cursor:
         sql = '''
-                SELECT 
-                    nov.id, 
-                    Min(imnov.imagen) as novImagen,
-                    nov.nombre,
-                    imnov.tipo_img_novedadid
-                FROM 
-                    novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
-                WHERE 
-                    nov.disponibilidad = 1 and imnov.tipo_img_novedadid != 1
-                GROUP BY 
-                    nov.id
-                ORDER BY 
-                    nov.fecha_registro DESC , imnov.tipo_img_novedadid
-                LIMIT 4
-            '''
+            SELECT 
+                nov.id, 
+                MIN(imnov.imagen) AS novImagen,
+                nov.nombre,
+                imnov.tipo_img_novedadid
+            FROM 
+                novedad nov
+            INNER JOIN 
+                img_novedad imnov ON nov.id = imnov.NOVEDADid 
+            WHERE 
+                nov.disponibilidad = 1 AND imnov.tipo_img_novedadid != 1
+            GROUP BY 
+                nov.id
+            ORDER BY 
+                nov.fecha_registro DESC, imnov.tipo_img_novedadid
+            LIMIT 4;
+        '''
         cursor.execute(sql)
-        elementos = cursor.fetchall()   
+        elementos = cursor.fetchall()
 
-    img_lista = []
+    novedadesLista = []
     for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
+        nov_id, nov_img, nov_nom, nov_tipo = dato
         if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
+            img_base64 = base64.b64encode(nov_img).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
         else:
             img_url = ""
-        
-        img_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
+        novedadesLista.append((nov_id, img_url, nov_nom, nov_tipo))
+
     conexion.close()
-    return img_lista
+    return novedadesLista
 
+# Insertar una novedad
+def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, imagen):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            INSERT INTO novedad (nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, MARCAid, SUBCATEGORIAid, TIPO_NOVEDADid, fecha_registro)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_DATE)
+        '''
+        cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId))
+        novedadId = cursor.lastrowid
 
+        if imagen:
+            insertarImagenNovedad(novedadId, imagen)
+    
+    conexion.commit()
+    conexion.close()
 
+# Actualizar una novedad
+def actualizarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, imagen, novedadId):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            UPDATE novedad
+            SET nombre = %s, titulo = %s, fecha_inicio = %s, fecha_vencimiento = %s, terminos = %s, disponibilidad = %s, MARCAid = %s, SUBCATEGORIAid = %s, TIPO_NOVEDADid = %s
+            WHERE id = %s
+        '''
+        cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, novedadId))
+        
+        if imagen:
+            insertarImagenNovedad(novedadId, imagen)
 
+    conexion.commit()
+    conexion.close()
 
+# Eliminar una novedad
+def eliminarNovedad(novedadId):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("DELETE FROM novedad WHERE id = %s", (novedadId,))
+    conexion.commit()
+    conexion.close()
 
+# Obtener una novedad por ID
+def obtenerNovedadPorId(novedadId):
+    conexion = obtener_conexion()
+    novedad = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id, nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, MARCAid, SUBCATEGORIAid, TIPO_NOVEDADid FROM novedad WHERE id = %s", (novedadId,))
+        novedad = cursor.fetchone()
+    conexion.close()
+    return novedad
+
+# Insertar una imagen para la novedad
+def insertarImagenNovedad(novedadId, imagen):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            INSERT INTO img_novedad (imagen, NOVEDADid, TIPO_IMG_NOVEDADid)
+            VALUES (%s, %s, %s)
+        '''
+        cursor.execute(sql, (imagen, novedadId, 2))  # 2 asumiendo que 2 es el tipo de imagen para novedades
+    conexion.commit()
+    conexion.close()

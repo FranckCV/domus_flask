@@ -410,6 +410,71 @@ def actualizar_producto():
 
 ########## FIN PRODUCTOS ##########
 
+#########################PARA NOVEDAD##############################
+
+# @app.route("/agregar_novedad")
+# def formulario_agregar_novedad():
+#     marcas = controlador_marcas.obtenerMarcas()
+#     subcategorias = controlador_subcategorias.obtenerSubcategorias()
+#     tiposNovedad = controlador_tiposNovedad.obtenerTiposNovedades()
+#     return render_template("agregar_novedad.html", marcas=marcas, subcategorias=subcategorias, tiposNovedad=tiposNovedad)
+
+# @app.route("/guardar_novedad", methods=["POST"])
+# def guardar_novedad():
+#     nombre = request.form["nombre"]
+#     titulo = request.form["titulo"]
+#     fecha_inicio = request.form["fecha_inicio"]
+#     fecha_vencimiento = request.form["fecha_vencimiento"]
+#     terminos = request.form["terminos"]
+#     disponibilidad = request.form["disponibilidad"]
+#     marca_id = request.form["marca_id"]
+#     subcategoria_id = request.form["subcategoria_id"]
+#     tipo_novedad_id = request.form["tipo_novedad_id"]
+    
+#     # Manejo de imagen
+#     imagen = request.files["imagen"].read() if "imagen" in request.files else None
+
+#     controlador_novedades.insertarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id, imagen)
+#     return redirect("/novedades")
+
+# @app.route("/novedades")
+# def novedades():
+#     novedades = controlador_novedades.obtenerNovedadesRecientes()
+#     marcas = controlador_marcas.obtenerMarcas()
+#     subcategorias = controlador_subcategorias.obtenerSubcategorias()
+#     return render_template("novedades.html", novedades=novedades, marcas=marcas, subcategorias=subcategorias)
+
+# @app.route("/eliminar_novedad", methods=["POST"])
+# def eliminar_novedad():
+#     controlador_novedades.eliminarNovedad(request.form["id"])
+#     return redirect("/novedades")
+
+# @app.route("/formulario_editar_novedad/<int:id>")
+# def editar_novedad(id):
+#     novedad = controlador_novedades.obtenerNovedadPorId(id)
+#     marcas = controlador_marcas.obtenerMarcas()
+#     subcategorias = controlador_subcategorias.obtenerSubcategorias()
+#     tiposNovedad = controlador_tiposNovedad.obtenerTiposNovedades()
+#     return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tiposNovedad=tiposNovedad)
+
+# @app.route("/actualizar_novedad", methods=["POST"])
+# def actualizar_novedad():
+#     id = request.form["id"]
+#     nombre = request.form["nombre"]
+#     titulo = request.form["titulo"]
+#     fecha_inicio = request.form["fecha_inicio"]
+#     fecha_vencimiento = request.form["fecha_vencimiento"]
+#     terminos = request.form["terminos"]
+#     disponibilidad = request.form["disponibilidad"]
+#     marca_id = request.form["marca_id"]
+#     subcategoria_id = request.form["subcategoria_id"]
+#     tipo_novedad_id = request.form["tipo_novedad_id"]
+    
+#     # Manejo de imagen
+#     imagen = request.files["imagen"].read() if "imagen" in request.files else None
+
+#     controlador_novedades.actualizarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id, imagen, id)
+#     return redirect("/novedades")
 
 
 #########################INICIO DE SESIÓN####################################
