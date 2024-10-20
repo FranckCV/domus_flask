@@ -63,8 +63,21 @@ def obtenerPromocionesTarjetas():
     with conexion.cursor() as cursor:
         sql = '''
                 SELECT 
-                    tn.nomTipo 
-                FROM `tipo_novedad` tn
+                    nov.id, 
+                    nov.nombre,
+                    imnov.imagen
+                FROM 
+                    novedad nov
+                INNER JOIN 
+                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
+                WHERE 
+                    imnov.TIPO_IMG_NOVEDADid = 5 
+                    AND nov.disponibilidad = 1
+                GROUP BY 
+                    nov.id
+                ORDER BY 
+                    nov.fecha_registro DESC
+                LIMIT 6;
             '''
         cursor.execute(sql)
         productos = cursor.fetchall()    
