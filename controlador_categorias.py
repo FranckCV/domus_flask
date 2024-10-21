@@ -22,10 +22,6 @@ def obtener_categoria_por_id(id):
     return categoria
 
 
-
-
-
-
 def obtener_categorias_subcategorias():
     conexion = obtener_conexion()
     categorias = []
@@ -35,7 +31,7 @@ def obtener_categorias_subcategorias():
             id, 
             categoria, 
             faicon_cat, 
-            disponibilidad 
+            disponibilidad
         FROM categoria 
         where disponibilidad = 1
         '''

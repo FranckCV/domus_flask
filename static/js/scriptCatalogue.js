@@ -22,10 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         3: 'Gloria'
     }
 
-    // Selecciona todos los elementos de filtros
     const filterElements = document.querySelectorAll('.ctlg_filters_element');
 
-    // Itera sobre cada elemento de filtro
     filterElements.forEach(element => {
         // Selecciona el subcontenido relacionado a este filtro
         const subContent = element.nextElementSibling;
