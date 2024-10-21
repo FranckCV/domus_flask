@@ -66,11 +66,20 @@ def novedades():
 
 @app.route("/promociones") #falta
 def promociones():
-    
-    return render_template("promociones.html")
+    promociones = controlador_novedades.mostrarNovedadesPromociones()
+    return render_template("promociones.html" , promociones = promociones)
 
 
-@app.route("/error") #falta
+
+
+# ahora mano
+# fase 2
+# pagina de promocion en especifico
+
+#@app.route("/anuncios") #falta
+
+
+@app.route("/error") 
 def error():
     return render_template("error.html")
 
@@ -132,12 +141,25 @@ def producto(id):
         return redirect("/error")
 
 
-@app.route("/selectedNovedad?<int:tipo_id>=<int:id>")  #falta
-def novedad(id,tipo_id):
-    if tipo_id == 3:
-        return render_template("promocionSelect.html")
-    else:
-        return redirect("/novedades")
+@app.route("/selectedPromocion=<int:id>")  #falta
+def promocion(id):
+    try:
+        promo = controlador_novedades.promoselect(id)
+        if promo:            
+            return render_template("selectedPromocion.html" , promo = promo)
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
+
+
+
+# @app.route("/selectedNovedad?<int:tipo_id>=<int:id>")  #falta
+# def novedad(id,tipo_id):
+#     if tipo_id == 3:
+#         return render_template("promocionSelect.html")
+#     else:
+#         return redirect("/novedades")
 
 
 
