@@ -1,0 +1,163 @@
+h_section {
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1e1c7a;
+}
+
+#break_nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#break_nav .col {
+    display: flex;
+    flex-direction: column;
+}
+
+.lblchoosie {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.choosie {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 200px;
+    font-size: 14px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-group input {
+    width: 250px;
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.searchi {
+    background-color: #1e1c7a;
+    border: none;
+    padding: 10px 15px;
+    margin-left: -5px;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search_loupe {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1); 
+}
+
+.add-btn {
+    margin-left: 20px;
+}
+
+#add_btn {
+    background-color: #1e1c7a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+#add_btn:hover {
+    background-color: #218aec;
+}
+
+/* Estilos de la tabla */
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: #333;
+}
+
+table thead {
+    background-color: #1e1c7a;
+    color: white;
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    font-weight: bold;
+}
+
+tr{
+    border-bottom: 1px solid #ddd;
+    text-align: center; 
+    vertical-align: middle; 
+}
+
+table tbody tr:hover {
+    background-color: #f0f2f5;
+}
+
+table td i {
+    font-size: 18px;
+}
+
+.acciones {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.acciones img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.acciones img:hover {
+    opacity: 0.7;
+}
+
+form button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+button:hover img {
+    opacity: 0.7;
+}
+.acciones form button img {
+    margin-right: 30px;
+}

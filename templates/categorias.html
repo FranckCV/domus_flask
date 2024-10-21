@@ -1,8 +1,12 @@
 {% extends "maestra_administrador.html" %}
 {% block titulo %} Categorias {% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/administrativa/listados.css">
+{% endblock %}
+
+
 {% block contenido %}
-
-
     <section class="h_section scrollable-section" id="mainSection">
         <h2 class="fw-bolder">Listado de categorias</h2>
         <div class="container-fluid" id="break_nav">
@@ -111,16 +115,9 @@
 
 
     </section>
-</div>
-    
+{% endblock %}
 
-<style>
-    .Catective{
-        background-color: rgb(255, 255, 255);
-        color:#00095c;
-    }
-</style>
-<!-- JavaScript para la confirmación de eliminación -->
+{% block scripts %} 
 <script>
     function confirmarEliminacion() {
         return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');

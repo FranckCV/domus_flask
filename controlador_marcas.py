@@ -236,3 +236,10 @@ def obtener_id_marca(marca):
     conexion.close()
     return marca_id
 
+def marcas_para_novedad():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id, marca FROM marca")
+        marcas = cursor.fetchall()  # Esto debe devolver una lista de tuplas o diccionarios
+    conexion.close()
+    return marcas

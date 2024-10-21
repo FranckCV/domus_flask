@@ -2,6 +2,12 @@
 {% block titulo %}
 Agregar Categoria
 {% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
+
 {% block contenido %}
 
 
@@ -52,7 +58,9 @@ Agregar Categoria
     </form>
 
 </section>
-</div>
+{% endblock %}
+
+{% block scripts %}
 <script src="/static/js/admin_productos.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

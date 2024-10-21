@@ -1,89 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block titulo %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--Poner un block para que luego pueda ser reemplazado en las siguientes plantillas; lo mismo con el block contenido-->
-    <title>DOMUS | {% block titulo %}{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="/static/css/common_styles/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/common_styles/all.min.css">
-    <link rel="stylesheet" href="/static/css/common_styles/fontawesome.min.css">
-    <link rel="stylesheet" href="/static/css/common_styles/fonts.css">
-    <link rel="stylesheet" href="/static/css/Admin_Style.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="/static/js/admin_productos.js"></script>
+      {% endblock %}| Domus Market
+    </title>
+    <link rel="shortcut icon" href="static/img/elementos/iconDomus.png" />
+    <link rel="stylesheet" href="static/css/common_styles/bootstrap.min.css" />
+    <link rel="stylesheet" href="static/css/common_styles/all.min.css" />
+    <link rel="stylesheet" href="static/css/common_styles/fontawesome.min.css" />
+    <link rel="stylesheet" href="static/css/common_styles/fonts.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/administrativa/dashboard.css') }}" />
 
+    {% block estilos %}        
+    {% endblock %}
+  </head>
 
-</head>
-
-<body class="body_section">
+  <body class="body_section">
     <header>
+      <a class="header_item" id="index_logo" href="{{ url_for('index') }}"><img class="img-fluid" id="logo_header" src="{{ url_for('static', filename=logo_foto) }}" alt="Logo" /></a>
 
-            <div class="row cols-3" style="padding: 1%;">
-                <div class="col-lg-2 col-md-4 col-sm-2 toggle-button d-flex align-items-center">
-                    <button id="toggleBtn"><img src="{{url_for('static',filename='img/elementosCRUD/menu-bar.png')}}" alt="menu-bar"></button>
-                </div>  
-                <div class="col-lg-8 col-md-8 col-sm-8" style="text-align: center;">
-                    <a class="header_item" id="index_logo" href="#">            
-                        <img class="img-fluid" id="logo_header" src="/static/img/elementosCRUD/logoDomus.png" alt="Logo">            
-                    </a>
-                </div> 
-                <div class="col-lg-2 col-md-6 col-sm-1 d-flex align-items-center" style="text-align: end;">
-                    <button type="button" class="btn btn-primary" style="display: inline-block;">Configuración</button>
-                    <button type="button" class="btn btn-secondary">Cerrar Sesion</button>
-                </div>
-            </div> 
-          
-    </header>    
-    
-    <div class="content" id="sidebar-nav1">
-            <aside class="h_aside" id="myAside">
-                <h3 class="title_aside">¡Hola, Usuario!</h3> 
-                <img class="img-fluid" id="logo_nav" src="/static/img/elementosCRUD/usuario.png" alt="Logo">   
-                <div class="row">
-                    <div class="col-12">
-                        <a href="{{ url_for('productos') }}" class="nav_element adminOpt PrActive">
-                            <img src="/static/img/elementosCRUD/caja-de-entrega.png" alt="imgPro">
-                            <p>Productos</p>
-                            <img class="next" src="/static/img/elementosCRUD/siguiente-boton.png" alt="next">
-                        </a>
-                    </div>  
-                    <div class="col-12">
-                        <a href="{{ url_for('categorias') }}" class="nav_element adminOpt CateActive">
-                            <img src="/static/img/elementosCRUD/categoria.png" alt="imgCate">
-                            <p>Categorias</p>
-                            <img class="next" src="/static/img/elementosCRUD/siguiente-boton.png" alt="next">
-                        </a>
-                    </div>
-                </div>     
-                
-            <div class="row">
-                <div class="col-12">
-                    <a href="{{ url_for('marcas') }}" class="nav_element adminOpt MarcActive">
-                        <img src="/static/img/elementosCRUD/bosquejo.png" alt="imgMrcA">
-                        <p>Marcas</p>
-                        <img class="next" src="/static/img/elementosCRUD/siguiente-boton.png" alt="next">
-                    </a>
-                </div>
-                <div class="col-12">
-                    <a href="#" class="nav_element adminOpt UsuActive">
-                        <img src="/static/img/elementosCRUD/usuario2.png" alt="imgUsu">
-                        <p>Usuarios</p>
-                        <img class="next" src="/static/img/elementosCRUD/siguiente-boton.png" alt="next">
-                    </a><br>
-                </div>
-            </div>    
-            </aside>
-                <!-- Main Content -->
-                <div class="content">
-                    {% block contenido %} {% endblock %}
-                </div>
+      <div class="header_item header_option" id="header_perfil">
+        <i class="fa-solid fa-user"></i>
+        <p>Mi perfil</p>
+        <div class="dropdown_menu" id="perfil_menu">
+          <ul>
+            <li>
+              <a href="{{ url_for('cuenta_administrativa') }}">Gestionar cuenta</a>
+            </li>
+            <li>
+              <a href="{{ url_for('index') }}">Cerrar sesión</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
 
-</body>
+    <aside>
+      
+      <div id="usuario">
+        <img src="{{ url_for('static', filename='img/usuario/admin.jpeg') }}" alt="Perfil" />
+        <p>Nombre</p>
+      </div>
 
+      <nav class="menu_items">
+
+        
+        <a  href="{{url_for('dashboard')}}"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a  href="{{url_for('productos')}}"><i class="fa-solid fa-box"></i> Productos</a>
+        <a  href="{{url_for('marcas')}}"><i class="fa-solid fa-box"></i> Marcas</a>
+        <a  href="{{url_for('categorias')}}"><i class="fa-solid fa-box"></i> Categorias</a>
+        
+
+      </nav>
+    </aside>
+
+    <main>
+      {% block contenido %}
+        <!-- Aquí va el contenido principal -->
+      {% endblock %}
+    </main>
+
+    <script src="static/js/maestra_administradora.js"></script>
+    {% block scripts %}        
+    {% endblock %}
+
+  </body>
 </html>
