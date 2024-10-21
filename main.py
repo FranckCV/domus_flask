@@ -449,8 +449,8 @@ def actualizar_tipo_novedad():
 def formulario_agregar_novedad():
     marcas = controlador_marcas.obtener_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
-    tiposNovedad = controlador_tipos_novedad.obtener_tipos_novedad()
-    return render_template("agregar_novedad.html", marcas=marcas, subcategorias=subcategorias, tiposNovedad=tiposNovedad)
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    return render_template("agregar_novedad.html", marcas=marcas, subcategorias=subcategorias, tipos_novedad=tipos_novedad)
 
 @app.route("/guardar_novedad", methods=["POST"])
 def guardar_novedad():
@@ -460,10 +460,9 @@ def guardar_novedad():
     fecha_vencimiento = request.form["fecha_vencimiento"]
     terminos = request.form["terminos"]
     disponibilidad = request.form["disponibilidad"]
-    marca_id = request.form["marca"]
-    subcategoria_id = request.form["subcategoria"]
-    # tipo_novedad_id = request.form["tipo_novedad"]
-    tipo_novedad_id = 3
+    marca_id = controlador_marcas.obtener_marca_disponible_por_id(request.form["marca"])
+    subcategoria_id = controlador_subcategorias.obtener_id_subcategoria(request.form["subcategoria"])
+    tipo_novedad_id = request.form["tipo_novedad"]
     
     
     # Manejo de imagen
