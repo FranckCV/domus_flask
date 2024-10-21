@@ -451,8 +451,8 @@ def eliminar_tipo_novedad():
 
 @app.route("/formulario_editar_tipo_novedad/<int:id>")
 def editar_tipo_novedad(id):
-    tipos_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
-    return render_template("editar_tipo_novedad.html", tipos_novedad=tipos_novedad)
+    tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
+    return render_template("editar_tipo_novedad.html", tipos_novedad=tipo_novedad)
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
 def actualizar_tipo_novedad(): 
@@ -506,9 +506,10 @@ def guardar_img_novedad(idNovedad):
 @app.route("/novedades_listado")
 def novedades_listado():
     novedades = controlador_novedades.obtenerTodasLasNovedades()
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()  # Añade esto
     marcas = controlador_marcas.obtener_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("novedades_listado.html", novedades=novedades, marcas=marcas, subcategorias=subcategorias)
+    return render_template("novedades_listado.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias)
 
 @app.route("/eliminar_novedad", methods=["POST"])
 def eliminar_novedad():
