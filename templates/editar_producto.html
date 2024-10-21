@@ -2,8 +2,12 @@
 {% block titulo %}
 Agregar producto
 {% endblock %}
-{% block contenido %}
 
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
+{% block contenido %}
 
 <section class="h_section" id="mainSection">
     <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Producto</h2><br><br><br>
@@ -119,7 +123,7 @@ Agregar producto
         </div>
     </form>
 </section>
-</div>
+
 <style>
     .PrActive {
         background-color: rgb(255, 255, 255);
@@ -130,6 +134,7 @@ Agregar producto
     
 </style>
 
+{% block scripts %}
 <script src="/static/js/admin_productos.js"></script>
 
 {% endblock %}

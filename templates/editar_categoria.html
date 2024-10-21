@@ -1,90 +1,88 @@
-{% extends "maestra_administrador.html" %}
+{% extends 'maestra_administrador.html' %}
 {% block titulo %}
-Agregar Categoria
+  Editar Categoria
 {% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
 {% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Categoria</h2>
 
-
-<section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Categoria</h2><br><br><br>
     <form action="{{ url_for('actualizar_categoria') }}" method="post">
-        <input type="hidden" name="id" value="{{ categoria[0] }}">
-        <div class="form-grid" id="col_add">
-            <!-- Primera columna -->
-            <div class="row">
-                <div class="col">
-                    <label for="categoria">Categoria:</label><br>
-                    <input required type="text" class="input" placeholder="Nombre de la categoria" name="categoria"
-                        id="categoria" style="height: 60%;" value="{{ categoria[1] }}">
-                </div>
+      <input type="hidden" name="id" value="{{ categoria.0 }}" />
 
-                <div class="col">
-                    <label for="disponibilidad">Disponibilidad </label><br>
-                
-                <label class="" style="color: #000; font-weight: lighter;">
-                    <input type="radio" name="disponibilidad" value=1 id="disponibilidad"
-                    {% if  categoria[3] == 1 %} checked {% endif %}> Disponible
-                </label>
-                <label class="" style="color: #000; font-weight: lighter;">
-                    <input type="radio" name="disponibilidad" value=0 id="disponibilidad" 
-                    {% if categoria[3] == 0 %} checked {% endif %}> No Disponible
-                </label>
-                </div>
-                
-                    <!-- <select class="form-select choosie" id="faicon-cat">
-                            <option value="fa-solid fa-drumstick-bite" data-icon="fa-solid fa-drumstick-bite">Alimentos</option>
-                            <option value="fa-solid fa-person-running" data-icon="fa-solid fa-person-running">Deporte</option>
-                            <option value="fa-solid fa-house-chimney" data-icon="fa-solid fa-house-chimney">Hogar</option>  
-                            <option value="fa-solid fa-book" data-icon="fa-solid fa-book">Librería y Oficina</option>   
-                            <option value="fa-solid fa-paw" data-icon="fa-solid fa-paw">Mascotas</option>   
-                            <option value="fa-solid fa-shirt" data-icon="fa-solid fa-shirt">Ropa y Calzado</option> 
-                            <option value="fa-solid fa-microchip" data-icon="fa-solid fa-microchip">Tecnología</option>           
-                        </select> -->
-
-                
-
-            </div>
-            <div class="row">
-                <div class="col">
-                    <label for="nombre">Clase del Icono:</label><br> <!--boostrap -->
-                    <input required type="text" class="input" placeholder="Clase del icono" name="faicon_cat"
-                        id="faicon_cat" value="{{ categoria[2] }}">
-                </div>
-                <div class="col" id="sbmt">
-                    <div class="form-buttons">
-                        <a href="{{ url_for('categorias') }}" id="backbtn">Volver</a>
-                        <button type="submit" class="button is-primary">Editar</button>
-                    </div>
-                </div>
+      <div class="form-grid" id="col_add">
+        <!-- Primera columna -->
+         
+        <div class="row">
+            <div class="col">
+              <label for="categoria">Categoria:</label><br />
+              <input required type="text" class="input" placeholder="Nombre de la categoria" name="categoria" id="categoria" value="{{ categoria.1 }}" />
             </div>
         </div>
+
+        <div class="col">
+          <label for="disponibilidad">Disponibilidad</label><br>
+          <div class="radio-group">
+              <label style="color: #000; font-weight: lighter;">
+                  <input type="radio" name="disponibilidad" value="1" id="disponible"
+                  {% if categoria['disponibilidad'] is not none and categoria['disponibilidad'] == 1 %} checked {% endif %}> 
+                  Disponible
+              </label>
+      
+              <label style="color: #000; font-weight: lighter;">
+                  <input type="radio" name="disponibilidad" value="0" id="no_disponible"
+                  {% if categoria['disponibilidad'] is not none and categoria['disponibilidad'] == 0 %} checked {% endif %}> No Disponible
+              </label>
+          </div>
+      </div>
+      
+
+
+        <div class="row">
+            <div class="col">
+            <label for="faicon_cat">Clase del Icono:</label><br /> <!-- Bootstrap -->
+            <input required type="text" class="input" placeholder="Clase del icono" name="faicon_cat" id="faicon_cat" value="{{ categoria.2 }}" />
+            </div>
+            <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('categorias') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Editar</button>
+            </div>
+            </div>
+        </div>
+
+      </div>
+
     </form>
+  </section>
+{% endblock %}
 
-</section>
-</div>
-<script src="/static/js/admin_productos.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% block scripts %}
+  <script src="/static/js/admin_productos.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <!-- Select2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
+  <script>
     $(document).ready(function () {
-        $('#faicon-cat').select2({
-            templateResult: formatIcon,
-            templateSelection: formatIcon,
-            width: '100%'  // Ajusta el ancho si es necesario
-        });
-
-        function formatIcon(option) {
-            if (!option.id) {
-                return option.text;
-            }
-            var $option = $(
-                '<span><i class="' + $(option.element).data('icon') + '"></i> ' + option.text + '</span>'
-            );
-            return $option;
+      $('#faicon_cat').select2({
+        templateResult: formatIcon,
+        templateSelection: formatIcon,
+        width: '100%' // Ajusta el ancho si es necesario
+      })
+    
+      function formatIcon(option) {
+        if (!option.id) {
+          return option.text
         }
-    });
-</script>
+        var $option = $('<span><i class="' + $(option.element).data('icon') + '"></i> ' + option.text + '</span>')
+        return $option
+      }
+    })
+  </script>
 {% endblock %}

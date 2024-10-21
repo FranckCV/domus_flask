@@ -2,8 +2,13 @@
 {% block titulo %}
 Editar Imagen de Novedad
 {% endblock %}
-{% block contenido %}
 
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
+
+{% block contenido %}
 <section class="h_section" id="mainSection">
     <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Imagen de Novedad</h2><br><br><br>
     <form action="{{ url_for('actualizar_img_novedad') }}" method="post" enctype="multipart/form-data">
@@ -48,7 +53,9 @@ Editar Imagen de Novedad
         </div>
     </form>
 </section>
+{% endblock %}
 
+{% block scripts %}
 <script src="/static/js/admin_novedades.js"></script>
 
 {% endblock %}

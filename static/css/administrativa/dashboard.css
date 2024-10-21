@@ -46,7 +46,7 @@
     min-height: 100vh;
     color: var(--font1);
     display: grid;
-    grid-template-columns: 300px 1fr; 
+    grid-template-columns: auto 1fr; 
     overflow-x: hidden;
     position: relative;
     grid-template-areas: 
@@ -130,7 +130,7 @@ aside {
     color: var(--font2);
     display: flex;
     flex-direction: column;
-    height: calc(100vh - var(--height-header1));
+    height: auto;
 }
 
 #usuario{
@@ -178,7 +178,7 @@ aside p {
 
 main {
     grid-area: main; 
-    padding: 20px;
+    padding: 40px;
     background-color: var(--background);
 }
 
@@ -226,4 +226,12 @@ main {
 
 .header_option.active .dropdown_menu {
     display: block;
+}
+
+
+/****************/
+.active {
+    background-color: #1e1c7a; 
+    color: white; 
+    font-weight: bold; 
 }

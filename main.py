@@ -16,6 +16,9 @@ app = Flask(__name__)
 logo_domus = 'img/elementos/logoDomus.png'
 
 
+
+
+
 @app.context_processor
 def inject_globals():
     # General
@@ -432,6 +435,7 @@ def actualizar_producto():
 ########## FIN PRODUCTOS ##########
 
 #########################PARA TIPO NOVEDAD##############################
+
 @app.route("/agregar_tipo_novedad")
 def formulario_agregar_tipo_novedad():
     return render_template("agregar_tipo_novedad.html")
@@ -693,6 +697,7 @@ def login():
 
 #####################FIN INICIO DE SESIÓN######################
 # EJECUTAR
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000, debug=True)

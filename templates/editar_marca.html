@@ -1,43 +1,44 @@
-{% extends "maestra_administrador.html" %}
+{% extends 'maestra_administrador.html' %}
 {% block titulo %}
-Editar Marca
+  Editar Marca
 {% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
 {% block contenido %}
-
-    
-    <section class="h_section" id="mainSection">
-            <h2 class="fw-bolder" style="margin-top: 0.5rem;" >Editar Marca</h2><br><br><br>
-        <form action="{{ url_for('actualizar_marca') }}" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="{{ marca[0] }}">
-            <div class="form-grid" id="col_add">
-                <!-- Primera columna -->
-                <div class="row">
-                    <div class="col">
-                        <label for="nombre">Marca:</label><br>
-                        <input value="{{ marca[1] }}" required type="text" class="input" placeholder="Nombre de la marca" name="marca" id="marca">
-                    </div>
-                                        
-                </div>
-                <div class="row">
-                    <div class="col"> 
-                        <label for="logo">Subir logo de marca:</label>
-                        <input value="{{ marca[2] }}" type="file" name="logo" id="logo">
-                    </div>
-                </div>
-                <div class="row">                    
-                    <div class="col" id="sbmt">
-                        <div class="form-buttons">
-                            <a href="{{ url_for('marcas') }}" id="backbtn">Volver</a>
-                            <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
-                        </div>
-                    </div>
-                </div>
-                
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Marca</h2><br /><br /><br />
+    <form action="{{ url_for('actualizar_marca') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="id" value="{{ marca.0 }}" />
+      <div class="form-grid" id="col_add">
+        <!-- Primera columna -->
+        <div class="row">
+          <div class="col">
+            <label for="nombre">Marca:</label><br />
+            <input value="{{ marca.1 }}" required type="text" class="input" placeholder="Nombre de la marca" name="marca" id="marca" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="logo">Subir logo de marca:</label>
+            <input value="{{ marca.2 }}" type="file" name="logo" id="logo" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('marcas') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
             </div>
-        </form>
-        
-    </section>
-</div>
-<script src="/static/js/admin_productos.js"></script>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}
 
+{% block scripts %}
+  <script src="/static/js/admin_productos.js"></script>
 {% endblock %}

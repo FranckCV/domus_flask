@@ -40,13 +40,21 @@
     </header>
 
     <aside>
+      
       <div id="usuario">
         <img src="{{ url_for('static', filename='img/usuario/admin.jpeg') }}" alt="Perfil" />
         <p>Nombre</p>
       </div>
+
       <nav class="menu_items">
-        <a href="#" class="selected"><i class="fa-solid fa-house"></i> Dashboard</a>
-        <a href="#"><i class="fa-solid fa-box"></i> Productos</a>
+
+        
+        <a  href="{{url_for('dashboard')}}"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a  href="{{url_for('productos')}}"><i class="fa-solid fa-box"></i> Productos</a>
+        <a  href="{{url_for('marcas')}}"><i class="fa-solid fa-box"></i> Marcas</a>
+        <a  href="{{url_for('categorias')}}"><i class="fa-solid fa-box"></i> Categorias</a>
+        
+
       </nav>
     </aside>
 

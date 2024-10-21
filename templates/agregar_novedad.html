@@ -1,126 +1,126 @@
-{% extends "maestra_administrador.html" %}
+{% extends 'maestra_administrador.html' %}
 {% block titulo %}
-Agregar Novedad
+  Agregar Novedad
 {% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
 {% block contenido %}
-
-
-<style>
+  <style>
     select {
-        color: black !important;
+      color: black !important;
     }
-
+    
     /* También, para mejorar la compatibilidad en algunos navegadores como Chrome */
     select option {
-        color: black !important;
+      color: black !important;
     }
-</style>
+  </style>
 
-<section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Novedad</h2><br><br><br>
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Novedad</h2>
     <form action="{{ url_for('guardar_novedad') }}" method="post" enctype="multipart/form-data">
-        <div class="form-grid" id="col_add">
-            <!-- Primera columna -->
-            <div class="row">
-                <div class="col">
-                    <label for="nombre">Nombre de la novedad:</label><br>
-                    <input required type="text" class="input" placeholder="Nombre de la novedad" name="nombre" id="nombre">
-                </div>
+      <div class="form-grid" id="col_add">
+        <!-- Primera columna -->
+        <div class="row">
+          <div class="col">
+            <label for="nombre">Nombre de la novedad:</label><br />
+            <input required type="text" class="input" placeholder="Nombre de la novedad" name="nombre" id="nombre" />
+          </div>
 
-                <div class="col">
-                    <label for="titulo">Título:</label><br>
-                    <input required type="text" class="input" placeholder="Título" name="titulo" id="titulo">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="fecha_inicio">Fecha de Inicio:</label><br>
-                    <input required type="date" class="input" name="fecha_inicio" id="fecha_inicio">
-                </div>
-                <div class="col">
-                    <label for="fecha_vencimiento">Fecha de Vencimiento:</label><br>
-                    <input required type="date" class="input" name="fecha_vencimiento" id="fecha_vencimiento">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="terminos">Términos y Condiciones:</label><br>
-                    <textarea required class="input" placeholder="Términos y condiciones" name="terminos" id="terminos"></textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="disponibilidad">Disponibilidad:</label><br>
-                    <label style="color: #000; font-weight: lighter;">
-                        <input type="radio" name="disponibilidad" value=1 id="disponibilidad" checked> Disponible
-                    </label>
-                    <label style="color: #000; font-weight: lighter;">
-                        <input type="radio" name="disponibilidad" value=0 id="disponibilidad"> No Disponible
-                    </label>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="marca">Marca:</label><br>
-                    <select class="input" name="marca" id="marca">
-                        <option value="" disabled selected>Selecciona una marca</option>
-                        {% for marca in marcas %}
-                            <!-- <option value="{{ marca.id }}">{{ marca.marca }}</option> -->
-                            <option value="{{ marca[0] }}">{{ marca[1] }}</option>
-                            <!-- <script>console.log('{{ marca.id }}: {{ marca.marca }}');</script> -->
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col">
-                    <label for="subcategoria">Subcategoría:</label><br>
-                    <select class="input" name="subcategoria" id="subcategoria">
-                        <option value="" disabled selected>Selecciona una subcategoría</option>
-                        {% for subcategoria in subcategorias %}
-                            <option value="{{ subcategoria[0] }}">{{ subcategoria[1] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="tipo_novedad">Tipo de Novedad:</label><br>
-                    <select class="input" name="tipo_novedad" id="tipo_novedad">
-                        <option value="" disabled selected>Selecciona un tipo de novedad</option>
-                        {% for tipo in tipos_novedad %}
-                            <option value="{{ tipo[0] }}">{{ tipo[1] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="imagenes">Subir Imágenes:</label><br>
-                    <input type="file" class="input" name="imagenes" id="imagenes" multiple>
-                </div>
-            </div>            
-
-            <div class="row">
-                <div class="col" id="sbmt">
-                    <div class="form-buttons">
-                        <a href="{{ url_for('novedades') }}" id="backbtn">Volver</a>
-                        <button type="submit" class="button is-primary">Agregar</button>
-                    </div>
-                </div>
-            </div>
+          <div class="col">
+            <label for="titulo">Título:</label><br />
+            <input required type="text" class="input" placeholder="Título" name="titulo" id="titulo" />
+          </div>
         </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="fecha_inicio">Fecha de Inicio:</label><br />
+            <input required type="date" class="input" name="fecha_inicio" id="fecha_inicio" />
+          </div>
+          <div class="col">
+            <label for="fecha_vencimiento">Fecha de Vencimiento:</label><br />
+            <input required type="date" class="input" name="fecha_vencimiento" id="fecha_vencimiento" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="terminos">Términos y Condiciones:</label><br />
+            <textarea required class="input" placeholder="Términos y condiciones" name="terminos" id="terminos"></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="disponibilidad">Disponibilidad:</label><br />
+            <div class="radio-group">
+              <label for="disponible" style="color: #000; font-weight: lighter;"><input type="radio" name="disponibilidad" value="1" id="disponible" checked />Disponible</label>
+              <label for="no_disponible" style="color: #000; font-weight: lighter;"><input type="radio" name="disponibilidad" value="0" id="no_disponible" />No Disponible</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="marca">Marca:</label><br />
+            <select class="input" name="marca" id="marca">
+              <option value="" disabled selected>Selecciona una marca</option>
+              {% for marca in marcas %}
+                <!-- <option value="{{ marca.id }}">{{ marca.marca }}</option> -->
+                <option value="{{ marca.0 }}">{{ marca.1 }}</option>
+                <!-- <script>console.log('{{ marca.id }}: {{ marca.marca }}');</script> -->
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col">
+            <label for="subcategoria">Subcategoría:</label><br />
+            <select class="input" name="subcategoria" id="subcategoria">
+              <option value="" disabled selected>Selecciona una subcategoría</option>
+              {% for subcategoria in subcategorias %}
+                <option value="{{ subcategoria.0 }}">{{ subcategoria.1 }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="tipo_novedad">Tipo de Novedad:</label><br />
+            <select class="input" name="tipo_novedad" id="tipo_novedad">
+              <option value="" disabled selected>Selecciona un tipo de novedad</option>
+              {% for tipo in tipos_novedad %}
+                <option value="{{ tipo.0 }}">{{ tipo.1 }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="imagenes">Subir Imágenes:</label><br />
+            <input type="file" class="input" name="imagenes" id="imagenes" multiple />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('novedades') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </form>
-</section>
+  </section>
+{% endblock %}
 
-
-
-<script src="/static/js/admin_novedades.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+{% block scripts %}
+  <script src="/static/js/admin_novedades.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {% endblock %}

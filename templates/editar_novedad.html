@@ -1,19 +1,14 @@
 {% extends "maestra_administrador.html" %}
+
 {% block titulo %}
 Editar Novedad
 {% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
 {% block contenido %}
-
-<style>
-    select {
-        color: black !important;
-    }
-
-    select option {
-        color: black !important;
-    }
-</style>
-
 <section class="h_section" id="mainSection">
     <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Novedad</h2><br><br><br>
     <form action="{{ url_for('actualizar_novedad') }}" method="post" enctype="multipart/form-data">
@@ -114,8 +109,9 @@ Editar Novedad
         </div>
     </form>
 </section>
+{% endblock %}
 
+{% block scripts %} 
 <script src="/static/js/admin_novedades.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 {% endblock %}
