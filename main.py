@@ -453,8 +453,8 @@ def eliminar_tipo_novedad():
 
 @app.route("/formulario_editar_tipo_novedad/<int:id>")
 def editar_tipo_novedad(id):
-    tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
-    return render_template("editar_tipo_novedad.html", tipo_novedad=tipo_novedad)
+    tipos_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
+    return render_template("editar_tipo_novedad.html", tipos_novedad=tipos_novedad)
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
 def actualizar_tipo_novedad(): 
