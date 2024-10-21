@@ -4,6 +4,18 @@ Agregar Novedad
 {% endblock %}
 {% block contenido %}
 
+
+<style>
+    select {
+        color: black !important;
+    }
+
+    /* También, para mejorar la compatibilidad en algunos navegadores como Chrome */
+    select option {
+        color: black !important;
+    }
+</style>
+
 <section class="h_section" id="mainSection">
     <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Novedad</h2><br><br><br>
     <form action="{{ url_for('guardar_novedad') }}" method="post" enctype="multipart/form-data">
@@ -57,7 +69,9 @@ Agregar Novedad
                     <select class="input" name="marca" id="marca">
                         <option value="" disabled selected>Selecciona una marca</option>
                         {% for marca in marcas %}
-                            <option value="{{ marca.id }}">{{ marca.marca }}</option>
+                            <!-- <option value="{{ marca.id }}">{{ marca.marca }}</option> -->
+                            <option value="{{ marca[0] }}">{{ marca[1] }}</option>
+                            <!-- <script>console.log('{{ marca.id }}: {{ marca.marca }}');</script> -->
                         {% endfor %}
                     </select>
                 </div>
@@ -67,7 +81,7 @@ Agregar Novedad
                     <select class="input" name="subcategoria" id="subcategoria">
                         <option value="" disabled selected>Selecciona una subcategoría</option>
                         {% for subcategoria in subcategorias %}
-                            <option value="{{ subcategoria.id }}">{{ subcategoria.subcategoria }}</option>
+                            <option value="{{ subcategoria[0] }}">{{ subcategoria[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -79,7 +93,7 @@ Agregar Novedad
                     <select class="input" name="tipo_novedad" id="tipo_novedad">
                         <option value="" disabled selected>Selecciona un tipo de novedad</option>
                         {% for tipo in tipos_novedad %}
-                            <option value="{{ tipo.id }}">{{ tipo.nomTipo }}</option>
+                            <option value="{{ tipo[0] }}">{{ tipo[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -103,17 +117,6 @@ Agregar Novedad
         </div>
     </form>
 </section>
-
-<style>
-    select {
-        color: black !important;
-    }
-
-    /* También, para mejorar la compatibilidad en algunos navegadores como Chrome */
-    select option {
-        color: black !important;
-    }
-</style>
 
 
 
