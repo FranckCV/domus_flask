@@ -252,6 +252,7 @@ def obtenerPromocionesTarjetas():
     conexion.close()
     return productos
 
+
 # Insertar una novedad
 def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, imagen):
     conexion = obtener_conexion()
