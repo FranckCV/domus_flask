@@ -59,10 +59,10 @@ def catalogo():
     return render_template("catalogo.html", productos = productos, categoriasFiltro = categoriasFiltro)
 
 
-# @app.route("/novedades") #falta
-# def novedades():
-#     productosOfertas = controlador_productos.obtenerEnTarjetasOfertas()
-#     return render_template("novedades.html" , productosOfertas = productosOfertas)
+@app.route("/novedades") #falta
+def novedades():
+    productosOfertas = controlador_productos.obtenerEnTarjetasOfertas()
+    return render_template("novedades.html" , productosOfertas = productosOfertas)
 
 
 @app.route("/promociones") #falta
@@ -447,9 +447,9 @@ def actualizar_tipo_novedad():
 
 @app.route("/agregar_novedad")
 def formulario_agregar_novedad():
-    marcas = controlador_marcas.obtenerMarcas()
-    subcategorias = controlador_subcategorias.obtenerSubcategorias()
-    tiposNovedad = controlador_tipos_novedad.obtenerTiposNovedades()
+    marcas = controlador_marcas.obtener_marcas()
+    subcategorias = controlador_subcategorias.obtener_subcategorias()
+    tiposNovedad = controlador_tipos_novedad.obtener_tipos_novedad()
     return render_template("agregar_novedad.html", marcas=marcas, subcategorias=subcategorias, tiposNovedad=tiposNovedad)
 
 @app.route("/guardar_novedad", methods=["POST"])
@@ -460,18 +460,20 @@ def guardar_novedad():
     fecha_vencimiento = request.form["fecha_vencimiento"]
     terminos = request.form["terminos"]
     disponibilidad = request.form["disponibilidad"]
-    marca_id = request.form["marca_id"]
-    subcategoria_id = request.form["subcategoria_id"]
-    tipo_novedad_id = request.form["tipo_novedad_id"]
+    marca_id = request.form["marca"]
+    subcategoria_id = request.form["subcategoria"]
+    # tipo_novedad_id = request.form["tipo_novedad"]
+    tipo_novedad_id = 3
+    
     
     # Manejo de imagen
     imagen = request.files["imagen"].read() if "imagen" in request.files else None
 
     controlador_novedades.insertarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id, imagen)
-    return redirect("/novedades")
+    return redirect("/novedades_listado")
 
 @app.route("/novedades_listado")
-def novedades():
+def novedades_listado():
     novedades = controlador_novedades.obtenerTodasLasNovedades()
     marcas = controlador_marcas.obtener_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
