@@ -224,3 +224,15 @@ def actualizar_marca(marca,logo, id):
                        (marca,logo, id))
     conexion.commit()
     conexion.close()
+
+def obtener_id_marca(marca):
+    conexion = obtener_conexion()
+    marca_id = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id FROM marca WHERE marca = %s", (marca,))
+        resultado = cursor.fetchone()
+        if resultado:
+            marca_id = resultado[0]
+    conexion.close()
+    return marca_id
+
