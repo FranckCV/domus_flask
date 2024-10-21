@@ -389,14 +389,13 @@ def guardar_producto():
     price_regular= request.form["price_regular"] 
     price_online= request.form["price_online"] 
     precio_oferta= request.form["precio_oferta"] 
-    calificacion= request.form["calificacion"] 
     infoAdicional= request.form["infoAdicional"] 
     stock= request.form["stock"] 
     fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
     subcategoria_id= request.form["subcategoria_id"]  
-    controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
+    controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
     return redirect("/productos")
 
 @app.route("/productos")
@@ -425,14 +424,13 @@ def actualizar_producto():
     price_online= request.form["price_online"] 
     price_regular= request.form["price_regular"] 
     precio_oferta= request.form["precio_oferta"] 
-    calificacion= request.form["calificacion"] 
     infoAdicional= request.form["infoAdicional"] 
     stock= request.form["stock"] 
     fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
     subcategoria_id= request.form["subcategoria_id"]  
-    controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
+    controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
     return redirect("/productos")
 
 ########## FIN PRODUCTOS ##########
@@ -457,7 +455,7 @@ def eliminar_tipo_novedad():
 @app.route("/formulario_editar_tipo_novedad/<int:id>")
 def editar_tipo_novedad(id):
     tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
-    return render_template("editar_tipo_novedad.html", tipo_novedad=tipo_novedad)
+    return render_template("editar_tipo_novedad.html", tipos_novedad=tipo_novedad)
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
 def actualizar_tipo_novedad(): 
@@ -511,9 +509,10 @@ def guardar_img_novedad(idNovedad):
 @app.route("/novedades_listado")
 def novedades_listado():
     novedades = controlador_novedades.obtenerTodasLasNovedades()
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()  # Añade esto
     marcas = controlador_marcas.obtener_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("novedades_listado.html", novedades=novedades, marcas=marcas, subcategorias=subcategorias)
+    return render_template("novedades_listado.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias)
 
 @app.route("/eliminar_novedad", methods=["POST"])
 def eliminar_novedad():

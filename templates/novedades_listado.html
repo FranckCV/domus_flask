@@ -1,5 +1,12 @@
-{% extends "maestra_administrador.html" %}
-{% block titulo %} Novedades y Tipos de Novedad {% endblock %}
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Listado de novedades
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
 {% block contenido %}
 
 <section class="h_section scrollable-section" id="mainSection">
@@ -106,11 +113,14 @@
         color: #00095c;
     }
 </style>
-<!-- JavaScript para la confirmación de eliminación -->
-<script>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
     function confirmarEliminacion() {
-        return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
     }
-</script>
-<script src="/static/js/admin_novedades.js"></script>
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
 {% endblock %}

@@ -1,6 +1,5 @@
 from bd import obtener_conexion
 import base64
-tabla = 'caracteristica_producto'
 
 
 def obtenerCaracteristicasxProducto(id,valor):

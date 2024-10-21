@@ -59,7 +59,7 @@
                                     <div class="ctlg_filters_subelement">
                                         <i class="{{subcategoria[2]}}"></i>
                                         {{subcategoria[1]}}
-                                        <input type="checkbox" value="{{subcategoria[0]}}">
+                                        <input type="checkbox" data-category="{{subcategoria[3]}}" value="{{subcategoria[0]}}">
                                     </div>
                                 {% endfor %}
                             {% endfor %}
@@ -125,7 +125,7 @@
                         {% for producto in productos %}
 
                         <div class="product" data-subcategory="{{producto[6]}}">
-                            <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                            <a class="product_info" href="{{url_for('producto', id=producto[0])}}" data-subcategory="{{producto[6]}}">
                                 <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
 
                                 <p class="product_name">

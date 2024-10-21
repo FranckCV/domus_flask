@@ -10,7 +10,8 @@ def obtenerSubcategoriasXCategoria(categoria):
             SELECT 
                 su.id , 
                 su.subcategoria , 
-                su.faicon_subcat
+                su.faicon_subcat,
+                su.CATEGORIAid
             FROM categoria ca
             inner join subcategoria su on su.CATEGORIAid = ca.id
             where su.disponibilidad = 1 and ca.id = '''+str(categoria)+'''
@@ -30,7 +31,7 @@ def obtenerSubcategoriasXMarca(marca):
                 s.id, 
                 s.subcategoria , 
                 s.faicon_subcat , 
-                m.marca 
+                m.marca
             FROM SUBCATEGORIA s 
             INNER JOIN PRODUCTO p ON p.SUBCATEGORIAid = s.id 
             INNER JOIN MARCA m ON m.id = p.MARCAid 
@@ -53,7 +54,7 @@ def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
 def obtener_subcategorias():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id , subcategoria ,faicon_subcat,disponibilidad,categoriaid FROM subcategoria")
+        cursor.execute("SELECT sub.id , sub.subcategoria ,sub.faicon_subcat,sub.disponibilidad,sub.categoriaid , cat.categoria ,cat.faicon_cat FROM subcategoria sub INNER JOIN categoria cat on cat.id = sub.categoriaid")
         subcategorias = cursor.fetchall()
     conexion.close()
     return subcategorias
