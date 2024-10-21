@@ -398,9 +398,10 @@ def guardar_producto():
 @app.route("/productos")
 def productos():
     productos = controlador_productos.obtener_productos()
-    marcas = controlador_marcas.obtener_marcas()
-    subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias)
+    marcas = controlador_marcas.obtener_marcasXnombre()
+    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+    categorias = controlador_categorias.obtener_categoriasXnombre()
+    return render_template("productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias , categorias = categorias)
 
 @app.route("/eliminar_producto", methods=["POST"])
 def eliminar_producto():

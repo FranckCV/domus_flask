@@ -110,14 +110,13 @@ table th, table td {
 
 table th {
     font-weight: bold;
+    text-align: center;
 }
 
 tr{
     border-bottom: 1px solid #ddd;
     text-align: center; 
     vertical-align: middle;
-    /* display: flex; */
-    /* align-items: center; */
 }
 
 table tbody tr:hover {
