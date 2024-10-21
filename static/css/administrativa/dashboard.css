@@ -60,7 +60,7 @@ header {
     position: sticky;
     z-index: 1501;
     top: 0;
-    padding: 0 20px;
+    /* padding: 0 20px; */
 }
 
 .header_item {
@@ -111,7 +111,7 @@ header p {
 
 #index_logo img {
     transition: transform 0.25s ease;
-    width: 150px;
+    width: 200px;
 }
 
 #index_logo img:hover {
