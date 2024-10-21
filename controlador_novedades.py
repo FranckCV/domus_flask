@@ -58,144 +58,6 @@ def obtenerTiposNovedades():
     return productos
 
 
-def obtenerNovedadesMarca(marca):
-    conexion = obtener_conexion()
-    elementos = []
-    with conexion.cursor() as cursor:
-        sql = '''
-                SELECT 
-                    nov.id, 
-                    Min(imnov.imagen) as novImagen,
-                    nov.nombre,
-                    imnov.tipo_img_novedadid
-                FROM 
-                    novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
-                WHERE 
-                    nov.disponibilidad = 1 and nov.MARCAid = '''+str(marca)+'''
-                GROUP BY 
-                    nov.id
-                ORDER BY 
-                    nov.fecha_registro DESC , imnov.tipo_img_novedadid desc
-                LIMIT 4
-            '''
-        cursor.execute(sql)
-        elementos = cursor.fetchall()   
-
-    novedades_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
-    conexion.close()
-    return novedades_lista
-
-
-def obtenerNovedadesCategoria(categoria):
-    conexion = obtener_conexion()
-    elementos = []
-    with conexion.cursor() as cursor:
-        sql = '''
-                SELECT 
-                    nov.id, 
-                    Min(imnov.imagen) as novImagen,
-                    nov.nombre,
-                    imnov.tipo_img_novedadid
-                FROM 
-                    novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid
-                WHERE 
-                    nov.disponibilidad = 1 and nov.MARCAid in (
-                        SELECT DISTINCT 
-                        	m.id 
-                        FROM SUBCATEGORIA s 
-                        INNER JOIN PRODUCTO p ON p.SUBCATEGORIAid = s.id 
-                        INNER JOIN MARCA m ON m.id = p.MARCAid 
-                        WHERE s.disponibilidad = 1 AND m.disponibilidad = 1
-                        and s.CATEGORIAid = '''+str(categoria)+'''
-                    ) or nov.SUBCATEGORIAid in (
-                    	SELECT 
-                        	sub.id 
-                        FROM SUBCATEGORIA sub
-                        WHERE sub.disponibilidad = 1 and sub.CATEGORIAid = '''+str(categoria)+'''
-                    )
-                GROUP BY 
-                    nov.id
-                ORDER BY 
-                    nov.fecha_registro DESC , imnov.tipo_img_novedadid desc
-                LIMIT 4;
-            '''
-        cursor.execute(sql)
-        elementos = cursor.fetchall()   
-
-    novedades_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
-    conexion.close()
-    return novedades_lista
-
-
-def obtenerNovedadesRecientes():
-    conexion = obtener_conexion()
-    elementos = []
-    with conexion.cursor() as cursor:
-        sql = '''
-                SELECT 
-                    nov.id, 
-                    Min(imnov.imagen) as novImagen,
-                    nov.nombre,
-                    imnov.tipo_img_novedadid
-                FROM 
-                    novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
-                WHERE 
-                    nov.disponibilidad = 1 and imnov.tipo_img_novedadid != 1
-                GROUP BY 
-                    nov.id
-                ORDER BY 
-                    nov.fecha_registro DESC , imnov.tipo_img_novedadid
-                LIMIT 4
-            '''
-        cursor.execute(sql)
-        elementos = cursor.fetchall()   
-
-    img_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        img_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
-    conexion.close()
-    return img_lista
-
-
-
-#########################Version 2########################3
 def obtenerTodasLasNovedades():
     conexion = obtener_conexion()
     novedades = []
@@ -265,22 +127,6 @@ def obtenerPromocionesTarjetas():
     return banners_lista
 
 
-def obtenerTiposNovedades():
-    conexion = obtener_conexion()
-    productos = []
-    with conexion.cursor() as cursor:
-        sql = '''
-                SELECT 
-                    tn.nomTipo 
-                FROM `tipo_novedad` tn
-            '''
-        cursor.execute(sql)
-        productos = cursor.fetchall()    
-    
-    conexion.close()
-    return productos
-
-
 def obtenerNovedadesMarca(marca):
     conexion = obtener_conexion()
     elementos = []
@@ -416,7 +262,7 @@ def obtenerNovedadesRecientes():
     conexion.close()
     return img_lista
 
-#Mostrar las promociones
+
 def mostrarNovedadesPromociones():
     conexion = obtener_conexion()
     elementos = []
@@ -448,7 +294,7 @@ def mostrarNovedadesPromociones():
     conexion.close()
     return img_lista
 
-# Promocion seleccionada
+
 def promoselect(id):
     conexion = obtener_conexion()
     promo = None
@@ -476,7 +322,7 @@ def promoselect(id):
         elemento_promo = None
 
         if promo:
-            pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , pro_img = promo
+            pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , pro_img , mar_nom = promo
 
             if pro_img:
                 logo_base64 = base64.b64encode(pro_img).decode('utf-8')
@@ -484,12 +330,10 @@ def promoselect(id):
             else:
                 logo_url = "" 
 
-        elemento_promo = (pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , logo_url)
+        elemento_promo = (pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , logo_url , mar_nom)
 
     conexion.close()
     return elemento_promo
-
-# ejecuta otra vez papu
 
 
 

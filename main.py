@@ -73,12 +73,6 @@ def promociones():
 
 
 
-# ahora mano
-# fase 2
-# pagina de promocion en especifico
-
-#@app.route("/anuncios") #falta
-
 
 @app.route("/error") 
 def error():
