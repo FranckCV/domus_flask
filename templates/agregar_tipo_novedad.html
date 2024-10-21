@@ -1,0 +1,34 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+Agregar Tipo de Novedad
+{% endblock %}
+{% block contenido %}
+
+<section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Tipo de Novedad</h2><br><br><br>
+    <form action="{{ url_for('guardar_tipo_novedad') }}" method="post">
+        <div class="form-grid" id="col_add">
+            <!-- Primera columna -->
+            <div class="row">
+                <div class="col">
+                    <label for="nombre_tipo">Nombre del Tipo de Novedad:</label><br>
+                    <input required type="text" class="input" placeholder="Nombre del tipo de novedad" name="nombre_tipo" id="nombre_tipo">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" id="sbmt">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('tipos_novedad') }}" id="backbtn">Volver</a>
+                        <button type="submit" class="button is-primary">Agregar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<script src="/static/js/admin_tipos_novedad.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% endblock %}

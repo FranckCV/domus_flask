@@ -41,16 +41,27 @@ def obtener_marcas_index(cant):
             SELECT 
                 ma.id, 
                 ma.marca, 
-                ma.img_logo,
-                nov.id,
-                nov.tipo_novedadid,
+                ma.img_logo, 
+                nov.id AS novedad_id, 
+                nov.tipo_novedadid, 
                 ino.imagen
-            FROM marca ma
-            inner join novedad nov on nov.marcaid = ma.id
-            inner join img_novedad ino on ino.novedadid = nov.id 
-            where ma.disponibilidad = 1 and nov.disponibilidad = 1 and ino.tipo_img_novedadid = 2 
-            order by ma.fecha_registro , nov.fecha_registro desc
-            limit 3
+            FROM 
+                marca ma
+            INNER JOIN 
+                novedad nov ON nov.marcaid = ma.id
+            INNER JOIN 
+                img_novedad ino ON ino.novedadid = nov.id
+            WHERE 
+                ma.disponibilidad = 1 
+                AND nov.disponibilidad = 1 
+                AND ino.tipo_img_novedadid = 2
+                AND   
+                    (SELECT COUNT(*) 
+                    FROM producto p 
+                    WHERE p.marcaid = ma.id) > 4
+            ORDER BY 
+                ma.fecha_registro DESC, nov.fecha_registro DESC
+            LIMIT 3;
             '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
@@ -59,7 +70,7 @@ def obtener_marcas_index(cant):
     for marca in marcas:
         marca_id, marca_nombre, logo_binario , nov_id, nov_tip, img_nov = marca
 
-        productosMarca = controlador_productos.obtener_en_tarjetas_marca(marca_id , cant)
+        productosMarca = controlador_productos.obtener_en_tarjetas_marca(0 , marca_id , cant)
 
         if logo_binario:
             logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
@@ -120,11 +131,19 @@ def obtener_marca_disponible_por_id(id):
     return marca_elemento
 
 
-def obtener_todas_marcas():
+def obtener_todas_marcas_recientes():
     conexion = obtener_conexion()
     marcas = []
     with conexion.cursor() as cursor:
-        sql = "SELECT id, marca, img_logo FROM "+tabla+" where disponibilidad = 1"
+        sql = '''
+                SELECT 
+                    id,
+                    marca, 
+                    img_logo 
+                FROM marca 
+                where disponibilidad = 1
+                order by fecha_registro desc
+                '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
     
@@ -140,6 +159,10 @@ def obtener_todas_marcas():
     
     conexion.close()
     return marcas_lista
+
+
+
+
 
 
 def insertar_marca(marca, logo):
@@ -201,3 +224,22 @@ def actualizar_marca(marca,logo, id):
                        (marca,logo, id))
     conexion.commit()
     conexion.close()
+
+def obtener_id_marca(marca):
+    conexion = obtener_conexion()
+    marca_id = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id FROM marca WHERE marca = %s", (marca,))
+        resultado = cursor.fetchone()
+        if resultado:
+            marca_id = resultado[0]
+    conexion.close()
+    return marca_id
+
+def marcas_para_novedad():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id, marca FROM marca")
+        marcas = cursor.fetchall()  # Esto debe devolver una lista de tuplas o diccionarios
+    conexion.close()
+    return marcas

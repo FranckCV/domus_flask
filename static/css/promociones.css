@@ -12,6 +12,7 @@ body {
     max-width: 1200px; /* Ajusta el ancho máximo del contenedor */
     margin: 40px auto; /* Agrega un margen superior e inferior */
     padding: 20px; /* Añade un padding para que no queden pegadas al borde del contenedor */
+    align-items: center;
 }
 
 /* Ajustar margen de las tarjetas de promoción */

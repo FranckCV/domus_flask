@@ -81,3 +81,15 @@ def actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid, id)
                        (nombre,faicon_subcat,disponibilidad,categoriaid, id))
     conexion.commit()
     conexion.close()
+
+
+def obtener_id_subcategoria(subcategoria):
+    conexion = obtener_conexion()
+    subcategoria_id = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id FROM subcategoria WHERE subcategoria = %s", (subcategoria,))
+        resultado = cursor.fetchone()
+        if resultado:
+            subcategoria_id = resultado[0]
+    conexion.close()
+    return subcategoria_id

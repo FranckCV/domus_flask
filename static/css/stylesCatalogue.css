@@ -257,7 +257,6 @@
 
 }
 
-.ctlg_pagination i ,
 .ctlg_pagination p {
     color: var(--font2);
     padding: 0;
@@ -268,20 +267,7 @@
     text-align: center;
     align-content: center;
     border: 1px solid;
-    transition: 0.2s ease;
-}
-
-.ctlg_pagination i {
-    background-color: #000000;
-    font-size: 120%;
-}
-
-.ctlg_pagination i:hover {
-    color: #000;
-    background-color: #fff;
-}
-
-.ctlg_pagination p {
+    transition: 0.075s ease;
     background-color: #2709ac;
     color: #ffffff;
 }

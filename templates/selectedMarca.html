@@ -30,6 +30,36 @@
 
         </article>
         
+        {% if novedadesMarca %}
+        <article class="article_for_sale">
+            <h1 class="title1_1">
+                ¡ULTIMAS NOVEDADES DE {{marca[1]}}!
+            </h1>
+            <div class="for_sale_gallery">
+                {% for imagen in novedadesMarca %}
+                <img class="img-fluid 
+
+                {% if imagen[3] == 1 %}
+                    img_for_sale_full
+                {% elif imagen[3] == 3 %}
+                    img_for_sale_vertical
+                {% elif imagen[3] == 2 %}
+                    img_for_sale_vertical
+                {% elif imagen[3] == 4 %}
+                    img_for_sale_horizontal 
+                {% endif %}
+
+                " src="{{imagen[1]}}" alt="{{imagen[2]}}">
+                {% endfor %}
+
+                <!-- <img class="img-fluid img_for_sale_full" src="img/promociones/samsungProm1.png" alt="o1">
+                <img class="img-fluid img_for_sale_vertical" src="img/ofertas/samsungOfer1.png" alt="o3">
+                <img class="img-fluid img_for_sale_vertical" src="img/promociones/samsungProm2.png" alt="o2"> -->
+            </div>                                  
+        </article>
+        {% endif %}
+
+        {% if productosMarca %}
         <article class="article_catalogue catalogue_brand">
             <h1 class="title1_2">
                 ¡NUEVAS OFERTAS Y ÚLTIMOS PRODUCTOS!
@@ -263,6 +293,8 @@
         
             </div>
         </article> 
+        {% endif %}
+        
     </section>
 {% endblock %}
 
