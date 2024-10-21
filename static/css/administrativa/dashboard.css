@@ -46,12 +46,16 @@
     min-height: 100vh;
     color: var(--font1);
     display: grid;
-    grid-template-columns: 100%;
+    grid-template-columns: 300px 1fr; 
     overflow-x: hidden;
     position: relative;
+    grid-template-areas: 
+        "header header"
+        "aside main";
 }
 
 header {
+    grid-area: header;
     background-color: var(--color1);
     display: flex;
     justify-content: space-between; 
@@ -60,7 +64,6 @@ header {
     position: sticky;
     z-index: 1501;
     top: 0;
-    /* padding: 0 20px; */
 }
 
 .header_item {
@@ -120,13 +123,14 @@ header p {
 
 /* Sidebar menu */
 aside {
+    grid-area: aside; 
     width: 250px;
     background-color: var(--color7);
     padding: 20px;
     color: var(--font2);
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: calc(100vh - var(--height-header1));
 }
 
 #usuario{
@@ -173,7 +177,7 @@ aside p {
 }
 
 main {
-    flex-grow: 1;
+    grid-area: main; 
     padding: 20px;
     background-color: var(--background);
 }
