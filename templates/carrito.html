@@ -115,7 +115,7 @@
                     
                     {% for producto in productosPopulares %}
 
-                    <div class="product" data-subcategory="{{producto[6]}}">
+                    <div class="product" data-subcategory="{{producto[6]}}" data-product-id="{{producto[0]}}">
                         <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
                             <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
 
@@ -161,9 +161,11 @@
                         <div class="product_option product_option_fav button" id="heart">
                             <i class="fa-regular fa-heart"></i>
                         </div>
+
                         <div class="product_option product_option_add">
                             <i class="fa-solid fa-plus"></i>
                         </div>
+                        
                     </div>
 
                     {% endfor %}
