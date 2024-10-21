@@ -61,3 +61,14 @@ def eliminar_tipo_novedad(id):
         cursor.execute(sql, (id,))
     conexion.commit()
     conexion.close()
+
+def obtener_id_tipo_novedad(tipo_novedad):
+    conexion = obtener_conexion()
+    tipo_novedad_id = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id FROM tipo_novedad WHERE nomTipo = %s", (tipo_novedad,))
+        resultado = cursor.fetchone()
+        if resultado:
+            tipo_novedad_id = resultado[0]
+    conexion.close()
+    return tipo_novedad_id
