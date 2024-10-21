@@ -218,12 +218,17 @@ def carrito():
 # PAGINAS USUARIO ADMINISTRADOR
 
 
+@app.route("/maestra_administrador")
+def maestra_administrador():
+    return render_template("maestra_administrador.html")
 
-
+@app.route('/cuenta_administrativa')
+def cuenta_administrativa():
+    return render_template('cuenta_administrativa.html')
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html", active='dashboard')
+    return render_template("dashboard.html")
 
 ########## INICIO MARCAS ##########
 
@@ -427,6 +432,14 @@ def registrar_cliente():
         return render_template("iniciar_sesion.html", mostrar=True)
     elif(result==0):
         return render_template("iniciar_sesion.html", mostrar=False)
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email-login')
+        password = request.form.get('password-login')
+    return render_template('iniciar_sesion.html')
+
 
 #####################FIN INICIO DE SESIÓN######################
 # EJECUTAR
