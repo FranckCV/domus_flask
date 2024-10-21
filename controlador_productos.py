@@ -135,8 +135,6 @@ def obtenerEnTarjetasOfertas():
     return productos_lista
 
 
-
-
 def obtener_en_tarjetas_marca(id,marca, limit):
     conexion = obtener_conexion()
     productos = []

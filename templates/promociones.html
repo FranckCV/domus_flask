@@ -13,7 +13,27 @@
     <main>
         <div class="grid-container">
             
-            <a href="promocionSelect.html?promo=audifonos-sony">
+<!--
+            
+-->
+
+            {% for promo in promociones %}    
+
+            <a href="{{url_for('promocion', id=promo[0])}}">
+                <div class="promo-card">
+                    <div class="promo-image-container">
+                        <img src="{{promo[1]}}" alt="Audífonos Sony">
+                    </div>
+                    <div class="promo-details">
+                        <h2>{{promo[2]}}</h2>
+                        
+                    </div>
+                </div>
+            </a>
+
+            {% endfor %}
+            
+            <!-- <a href="promocionSelect.html?promo=audifonos-sony">
                 <div class="promo-card">
                     <div class="promo-image-container">
                         <img src="static/img/imgLeo/audifonos.jpg" alt="Audífonos Sony">
@@ -24,8 +44,12 @@
                         <p>En audífonos Sony</p>
                     </div>
                 </div>
-            </a>
-            
+            </a> -->
+
+
+
+
+
             <a href="promocionSelect.html?promo=medias-nike">
                 <div class="promo-card">
                     <div class="promo-image-container">
@@ -125,5 +149,5 @@
 
     {% block scripts %} 
     
-    <script src="static/js/promociones.js"></script>
+    <!-- <script src="static/js/promociones.js"></script> -->
     {% endblock %}
