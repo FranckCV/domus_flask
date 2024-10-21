@@ -1,0 +1,116 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %} Novedades y Tipos de Novedad {% endblock %}
+{% block contenido %}
+
+<section class="h_section scrollable-section" id="mainSection">
+    <h2 class="fw-bolder">Listado de Novedades</h2>
+    <div class="container-fluid" id="break_nav">
+        <div class="col">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+                    <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
+                </button>
+                <a href="{{ url_for('formulario_agregar_novedad') }}" class="button is-success add-btn">
+                    <button type="button" id="add_btn">Agregar</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+        <thead>
+            <tr>
+                <th>Novedad</th>
+                <th>Título</th>
+                <th>Disponibilidad</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for novedad in novedades %}
+            <tr>
+                <td>{{ novedad[1] }}</td>
+                <td>{{ novedad[2] }}</td>
+                <td>
+                    {% if novedad[3] == 1 %}
+                    <span>No Disponible</span>
+                    {% else %}
+                    <span>Disponible</span>
+                    {% endif %}
+                </td>
+                <td class="acciones">
+                    <a href="{{ url_for('editar_novedad', id=novedad[0]) }}">
+                        <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
+                    </a>
+                    <form action="{{ url_for('eliminar_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                        <input type="hidden" name="id" value="{{ novedad[0] }}">
+                        <button type="submit">
+                            <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 class="fw-bolder">Listado de Tipos de Novedad</h2>
+    <div class="container-fluid" id="break_nav">
+        <div class="col">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+                    <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
+                </button>
+                <a href="{{ url_for('formulario_agregar_tipo_novedad') }}" class="button is-success add-btn">
+                    <button type="button" id="add_btn">Agregar</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+        <thead>
+            <tr>
+                <th>Tipo de Novedad</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tipo_novedad in tipos_novedad %}
+            <tr>
+                <td>{{ tipo_novedad[1] }}</td>
+                <td class="acciones">
+                    <a href="{{ url_for('editar_tipo_novedad', id=tipo_novedad[0]) }}">
+                        <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
+                    </a>
+                    <form action="{{ url_for('eliminar_tipo_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                        <input type="hidden" name="id" value="{{ tipo_novedad[0] }}">
+                        <button type="submit">
+                            <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+<style>
+    .Catective {
+        background-color: rgb(255, 255, 255);
+        color: #00095c;
+    }
+</style>
+<!-- JavaScript para la confirmación de eliminación -->
+<script>
+    function confirmarEliminacion() {
+        return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+    }
+</script>
+<script src="/static/js/admin_novedades.js"></script>
+{% endblock %}
