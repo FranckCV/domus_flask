@@ -10,6 +10,7 @@ import controlador_subcategorias
 import controlador_usuario_cliente
 import controlador_novedades
 import controlador_tipos_img_novedad
+import controlador_carrito
 
 app = Flask(__name__)
 
@@ -233,11 +234,13 @@ def carrito():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
     return render_template("carrito.html" , productosPopulares = productosPopulares)
 
-
-
-
-
-
+######################CARRO######################
+    
+    
+    
+    
+    
+######################################FIN CARRO#############################################    
 # PAGINAS USUARIO EMPLEADO
 
 
