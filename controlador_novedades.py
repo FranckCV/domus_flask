@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import base64
-=======
->>>>>>> 284d3827a96857aaa7da7560c7453e742f4cb6e6
 from bd import obtener_conexion
 import base64
 
@@ -10,8 +6,6 @@ def obtenerBannersNovedadesRecientes():
     elementos = []
     with conexion.cursor() as cursor:
         sql = '''
-<<<<<<< HEAD
-=======
                 SELECT 
                     nov.id, 
                     MIN(imnov.imagen) AS imagen, 
@@ -235,7 +229,6 @@ def obtenerPromocionesTarjetas():
     productos = []
     with conexion.cursor() as cursor:
         sql = '''
->>>>>>> 284d3827a96857aaa7da7560c7453e742f4cb6e6
                 SELECT 
                     nov.id, 
                     MIN(imnov.imagen) AS imagen, 
@@ -286,7 +279,6 @@ def obtenerTiposNovedades():
     
     conexion.close()
     return productos
-<<<<<<< HEAD
 
 
 def obtenerNovedadesMarca(marca):
@@ -499,8 +491,6 @@ def promoselect(id):
 
 # ejecuta otra vez papu
 
-=======
->>>>>>> 284d3827a96857aaa7da7560c7453e742f4cb6e6
 
 
 # Insertar una novedad
