@@ -480,11 +480,24 @@ def guardar_novedad():
     marca_id = request.form["marca"]
     subcategoria_id = request.form["subcategoria"]
     tipo_novedad_id = request.form["tipo_novedad"]
-    
-    imagen = request.files["imagen"].read() if "imagen" in request.files else None
 
-    controlador_novedades.insertarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id, imagen)
+    idNovedad = controlador_novedades.insertarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id)
+    
+    guardar_img_novedad(idNovedad=idNovedad)
+    
     return redirect("/novedades_listado")
+
+def guardar_img_novedad(idNovedad):
+    novedad_id = idNovedad
+    nom_imagen = 'Por definir'
+    tipo_img_novedad_id = 1 #por defecto este ps luego se edita XDD
+    
+    if "imagenes" in request.files:
+        imagenes = request.files.getlist("imagenes")
+        
+        for imagen in imagenes:
+            imagen_data = imagen.read()
+            controlador_novedades.insertarImagenNovedad(nom_imagen, imagen_data, tipo_img_novedad_id, novedad_id)
 
 @app.route("/novedades_listado")
 def novedades_listado():
@@ -599,16 +612,20 @@ def formulario_agregar_img_novedad(novedad_id):
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
     return render_template("agregar_img_novedad.html", novedad_id=novedad_id, tipos_img_novedad=tipos_img_novedad)
 
-@app.route("/guardar_img_novedad", methods=["POST"])
-def guardar_img_novedad():
-    novedad_id = request.form["novedad_id"]
-    nom_imagen = request.form["nomImagen"]
-    tipo_img_novedad_id = request.form["tipo_img_novedad"]
-
-    imagen = request.files["imagen"].read() if "imagen" in request.files else None
-
-    controlador_novedades.insertarImagenNovedad(nom_imagen, imagen, tipo_img_novedad_id, novedad_id)
-    return redirect("/novedades_listado")
+# @app.route("/guardar_img_novedad", methods=["POST"])
+# def guardar_img_novedad():
+#     novedad_id = request.form["novedad_id"]
+#     nom_imagen = request.form["nomImagen"]
+#     tipo_img_novedad_id = request.form["tipo_img_novedad"]
+    
+#     if "imagenes" in request.files:
+#         imagenes = request.files.getlist("imagenes")
+        
+#         for imagen in imagenes:
+#             imagen_data = imagen.read()
+#             controlador_novedades.insertarImagenNovedad(nom_imagen, imagen_data, tipo_img_novedad_id, novedad_id)
+    
+#     return redirect("/novedades_listado")
 
 @app.route("/img_novedades_listado/<int:novedad_id>")
 def img_novedades_listado(novedad_id):

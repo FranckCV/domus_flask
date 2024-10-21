@@ -338,7 +338,8 @@ def promoselect(id):
 
 
 # Insertar una novedad
-def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, imagen):
+def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId):
+    novedadId = None
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
@@ -347,12 +348,10 @@ def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, dis
         '''
         cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId))
         novedadId = cursor.lastrowid
-
-        if imagen:
-            insertarImagenNovedad(novedadId, imagen)
     
     conexion.commit()
     conexion.close()
+    return novedadId
 
 # Actualizar una novedad
 def actualizarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, imagen, novedadId):

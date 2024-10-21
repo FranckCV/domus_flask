@@ -1,0 +1,54 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+Editar Imagen de Novedad
+{% endblock %}
+{% block contenido %}
+
+<section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Imagen de Novedad</h2><br><br><br>
+    <form action="{{ url_for('actualizar_img_novedad') }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{{ img_novedad[0] }}">
+        
+        <div class="form-grid" id="col_add">
+            <!-- Primera columna -->
+            <div class="row">
+                <input type="hidden" name="novedad_id" value="{{ img_novedad[4] }}">
+                <div class="col">
+                    <label for="nomImagen">Nombre de la Imagen:</label><br>
+                    <input value="{{ img_novedad[1] }}" required type="text" class="input" placeholder="Nombre de la imagen" name="nomImagen" id="nomImagen">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="imagen">Subir nueva imagen (opcional):</label>
+                    <input type="file" name="imagen" id="imagen">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="tipo_img_novedad">Tipo de Imagen:</label><br>
+                    <select class="input" name="tipo_img_novedad" id="tipo_img_novedad" required>
+                        {% for tipo in tipos_img_novedad %}
+                            <option value="{{ tipo[0] }}" {% if tipo[0] == img_novedad[3] %}selected{% endif %}>{{ tipo[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">                    
+                <div class="col" id="sbmt">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('novedades_listado') }}">Volver</a>
+                        <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<script src="/static/js/admin_novedades.js"></script>
+
+{% endblock %}
