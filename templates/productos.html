@@ -36,13 +36,13 @@
               <th>Nombre</th>
               <th>Precio Regular</th>
               <th>Precio Online</th>
-              <th>Precio Oficial</th>
-              <th>Calificación</th>
+              <th>Precio Oferta</th>
               <th>Información Adicional</th>
               <th>Stock</th>
               <th>Fecha Registro</th>
               <th>Disponibilidad</th>
               <th>Marca</th>
+              <th>Categoría</th>
               <th>Subcategoría</th>
               <th>Acción</th>
             </tr>
@@ -59,8 +59,7 @@
                   <td>{{ producto.4 }}</td>
                 {% endif %}
 
-                <td>{{ producto.5 }}</td>
-                <td>{{ producto.6 }}</td>
+                <td class="celda_texto_amplio">{{ producto.6 }}</td>
                 <td>{{ producto.7 }}</td>
                 <td>{{ producto.8 }}</td>
                 <td>
@@ -71,19 +70,36 @@
                   {% endif %}
                 </td>
                 <td>
-                  {% for marca in marcas %}
-                    {% if marca.0 == producto.10 %}
-                      <span>{{ marca.1 }}</span>
-                    {% endif %}
-                  {% endfor %}
+                  <div class="celda_texto_bloque">
+                    {% for marca in marcas %}
+                      {% if marca.0 == producto.10 %}
+                      <img class="img-fluid" src="{{marca.2}}" alt="">
+                        <span>{{ marca.1 }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
                 </td>
                 <td>
+                  <div class="celda_texto_bloque">
+                    {% for subcategoria in subcategorias %}
+                      {% if subcategoria.0 == producto.11 %}
+                        <i class="{{ subcategoria.6 }}"></i> 
+                        <span>{{ subcategoria.5 }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>                  
+                </td>
+                <td>
+                  <div class="celda_texto_bloque">
                   {% for subcategoria in subcategorias %}
                     {% if subcategoria.0 == producto.11 %}
+                      <i class="{{ subcategoria.2 }}"></i> 
                       <span>{{ subcategoria.1 }}</span>
                     {% endif %}
                   {% endfor %}
+                  </div>
                 </td>
+
                 <td class="acciones">
                   <a href="{{ url_for('editar_producto', id=producto.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
                   <form action="{{ url_for('eliminar_producto') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">

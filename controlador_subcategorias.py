@@ -54,7 +54,7 @@ def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
 def obtener_subcategorias():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id , subcategoria ,faicon_subcat,disponibilidad,categoriaid FROM subcategoria")
+        cursor.execute("SELECT sub.id , sub.subcategoria ,sub.faicon_subcat,sub.disponibilidad,sub.categoriaid , cat.categoria ,cat.faicon_cat FROM subcategoria sub INNER JOIN categoria cat on cat.id = sub.categoriaid")
         subcategorias = cursor.fetchall()
     conexion.close()
     return subcategorias

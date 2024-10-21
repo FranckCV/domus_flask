@@ -386,14 +386,13 @@ def guardar_producto():
     price_regular= request.form["price_regular"] 
     price_online= request.form["price_online"] 
     precio_oferta= request.form["precio_oferta"] 
-    calificacion= request.form["calificacion"] 
     infoAdicional= request.form["infoAdicional"] 
     stock= request.form["stock"] 
     fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
     subcategoria_id= request.form["subcategoria_id"]  
-    controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
+    controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
     return redirect("/productos")
 
 @app.route("/productos")
@@ -422,14 +421,13 @@ def actualizar_producto():
     price_online= request.form["price_online"] 
     price_regular= request.form["price_regular"] 
     precio_oferta= request.form["precio_oferta"] 
-    calificacion= request.form["calificacion"] 
     infoAdicional= request.form["infoAdicional"] 
     stock= request.form["stock"] 
     fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
     subcategoria_id= request.form["subcategoria_id"]  
-    controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,calificacion ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
+    controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
     return redirect("/productos")
 
 ########## FIN PRODUCTOS ##########
