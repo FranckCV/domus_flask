@@ -98,7 +98,7 @@ def categoria(id):
 
 @app.route("/selectedMarca=<int:id>")  #falta
 def marca(id):
-    # try:
+    try:
         marca = controlador_marcas.obtener_marca_disponible_por_id(id)
         if marca and marca[4] == 1:
             if marca[3]:
@@ -114,8 +114,8 @@ def marca(id):
             
         else:
             return redirect("/error")
-    # except:
-        # return redirect("/error")
+    except:
+        return redirect("/error")
 
 
 @app.route("/selectedProducto=<int:id>")  #falta
