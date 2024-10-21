@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 //la etiqueta de precio va a variar según lo que se encuentre
                 const priceOferta = productElement.querySelector('.price_for_sale .product_price_number');
                 const priceOnline = productElement.querySelector('.price_online .product_price_number');
-
+                const product_id= productElement.getAttribute('data-product-id');
                 let precio = 0; //lo declaramos como let porque va a variar
 
                 if (priceOferta) {//Si encuentra una etiqueta de precio oferta ejecuta la línea de código, sino usa
@@ -39,13 +39,79 @@ document.addEventListener('DOMContentLoaded', () => {
                 actualizarCarrito(); //llama a la función actualizar carre
                 actualizarCantidadCarrito(); //Actualiza la cantidad de productos agregados que sale en el header
                 console.log(productElement); //por si acaso haya errores
+                // agregarCarritoBase(product_id)
             } else {
                 console.log("No se encontró el elemento del producto."); //por si acaso haya errores x2 
             }
         });
     });
 });
+/**********************PARA AGREGAR EL CARRITO A LA BASE DE DATOS*****************/
+// function agregarCarritoBase(productId) {
+//     carrito = obtenerCarrito(); 
+//     console.log(carrito);
 
+//     const data = {
+//         USUARIOid: 1,           
+//         product_id: productId,    
+//         quantity: carrito.cantidad
+//     };
+
+//     // Enviar los datos al servidor para crear el pedido y agregar el detalle
+//     fetch('/agregar_a_carrito', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data)  // Convertir el objeto en JSON para enviarlo
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             console.log('Producto agregado al carrito.');
+//         } else {
+//             console.error('Error al agregar producto al carrito:', data.message);
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//     });
+// }
+
+
+// function generar_carrito() {
+//     carrito = obtenerCarrito(); 
+//     console.log(carrito);
+
+//     const data = {
+//         USUARIOid: 1,           
+//         estado:1
+//     };
+
+//     // Enviar los datos al servidor para crear el pedido y agregar el detalle
+//     fetch('/generar_carrito', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data)  // Convertir el objeto en JSON para enviarlo
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             console.log('Producto agregado al carrito.');
+//         } else {
+//             console.error('Error al agregar producto al carrito:', data.message);
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//     });
+// }
+
+
+
+/*************************************************************************************** */
 
 function agregarProducto(nombre, precio, img) {//pasa como parametros el nombre, el precio y la imagen
     let carrito = obtenerCarrito(); //Llama a la función que obtiene el carrito de compras
@@ -57,7 +123,8 @@ function agregarProducto(nombre, precio, img) {//pasa como parametros el nombre,
             precio: precio,
             img: img,
             cantidad: 1
-        };
+        }
+        generar_carrito();
     }
     guardarCarrito(carrito); //Se llama a la función guardar en el carrito
     actualizarCarrito(); //Se actualiza el carre
@@ -206,7 +273,10 @@ function aplicarDescuento() {
 }
 
 function validarCarro() {
-    const carrito = obtenerCarrito();
+    // Obtener el carrito desde tu función existente
+    const carrito = obtenerCarrito(); 
+
+    // Verificar si el carrito tiene productos
     let disponible = false;
     for (let nombre in carrito) {
         if (carrito[nombre].cantidad > 0) {
@@ -214,12 +284,38 @@ function validarCarro() {
             break;
         }
     }
+
     if (disponible) {
-        window.location.href = "resumenDePedido.html";
+        // Si hay productos, enviar el estado del pedido al servidor
+        const data = {
+            USUARIOid: 1,  // Aquí deberías usar el ID del usuario actual
+            ESTADO_PEDIDOid: 2  // Cambiar el estado del pedido a 2
+        };
+
+        fetch('/actualizar_estado_pedido', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirigir al siguiente paso (por ejemplo, a la página de pago)
+                window.location.href = '/resumen_pedido';  // Redirige a la página de entrega o siguiente paso
+            } else {
+                console.error('Error al actualizar el estado del pedido:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     } else {
-        alert('Agregue productos a su carrito');
+        alert('Agregue productos a su carrito antes de continuar.');
     }
 }
+
 
 /***************************************PARA EL CONTADOR DE PRODUCTOS*****************************************************/
 function actualizarCantidadCarrito() {

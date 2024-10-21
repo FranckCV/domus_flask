@@ -10,6 +10,7 @@ import controlador_subcategorias
 import controlador_usuario_cliente
 import controlador_novedades
 import controlador_tipos_img_novedad
+import controlador_carrito
 
 app = Flask(__name__)
 
@@ -233,11 +234,13 @@ def carrito():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
     return render_template("carrito.html" , productosPopulares = productosPopulares)
 
-
-
-
-
-
+######################CARRO######################
+    
+    
+    
+    
+    
+######################################FIN CARRO#############################################    
 # PAGINAS USUARIO EMPLEADO
 
 
@@ -398,9 +401,10 @@ def guardar_producto():
 @app.route("/productos")
 def productos():
     productos = controlador_productos.obtener_productos()
-    marcas = controlador_marcas.obtener_marcas()
-    subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias)
+    marcas = controlador_marcas.obtener_marcasXnombre()
+    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+    categorias = controlador_categorias.obtener_categoriasXnombre()
+    return render_template("productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias , categorias = categorias)
 
 @app.route("/eliminar_producto", methods=["POST"])
 def eliminar_producto():

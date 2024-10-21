@@ -161,6 +161,32 @@ def obtener_todas_marcas_recientes():
     return marcas_lista
 
 
+def obtener_marcasXnombre():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id, marca, img_logo FROM marca order by marca")
+        marcas = cursor.fetchall()
+        
+        # Convertir el logo binario a base64 para cada marca
+        marcas_procesadas = []
+        for marca in marcas:
+            id_marca = marca[0]
+            nombre_marca = marca[1]
+            logo_binario = marca[2]
+            
+            # Convertir el logo binario a una cadena base64
+            if logo_binario:
+                logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
+                logo_formato = f"data:image/png;base64,{logo_base64}" 
+            else:
+                logo_formato = None 
+            
+            marcas_procesadas.append((id_marca, nombre_marca, logo_formato))
+    
+    conexion.close()
+    return marcas_procesadas
+
+
 
 
 

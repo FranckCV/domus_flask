@@ -11,14 +11,37 @@
   <section class="h_section" id="mainSection">
     <h2 class="fw-bolder">Listado de productos</h2>
     <div class="container-fluid" id="break_nav">
+
       <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
-        <select class="form-select choosie" aria-label="Default select example">
-          <option selected>Tecnología</option>
-          <option value="1">Ropa</option>
-          <option value="2">Accesorios</option>
+        <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
+            <option value="0" selected>Todos</option>
+          {% for categoria in categorias %}
+            <option value="{{categoria[0]}}">{{categoria[1]}}</option>
+          {% endfor %}
         </select>
       </div>
+
+      <div class="col">
+        <p class="fw-bolder lblchoosie">Filtrar por subcategoría</p>
+        <select class="form-select choosie" aria-label="Default select example" id="subcategorySelect">
+            <option value="0" selected>Todos</option>
+          {% for subcategoria in subcategorias %}
+            <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}">{{subcategoria[1]}}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col">
+        <p class="fw-bolder lblchoosie">Filtrar por marca</p>
+        <select class="form-select choosie" aria-label="Default select example" id="brandSelect">
+            <option value="0" selected>Todos</option>
+          {% for marca in marcas %}
+            <option value="{{marca[0]}}">{{marca[1]}}</option>
+          {% endfor %}
+        </select>
+      </div>
+
       <div class="col">
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
@@ -33,6 +56,7 @@
         <table border="2" cellspacing="0" cellpadding="8" class="product_if">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Nombre</th>
               <th>Precio Regular</th>
               <th>Precio Online</th>
@@ -47,9 +71,10 @@
               <th>Acción</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="productTableBody">
             {% for producto in productos %}
               <tr>
+                <td>{{ producto.0 }}</td>
                 <td>{{ producto.1 }}</td>
                 <td>{{ producto.2 }}</td>
                 <td>{{ producto.3 }}</td>
@@ -70,34 +95,34 @@
                   {% endif %}
                 </td>
                 <td>
-                  <div class="celda_texto_bloque">
-                    {% for marca in marcas %}
-                      {% if marca.0 == producto.10 %}
-                      <img class="img-fluid" src="{{marca.2}}" alt="">
+                  {% for marca in marcas %}
+                    {% if marca.0 == producto.10 %}
+                      <div class="celda_texto_bloque" data-brand="{{marca.0}}">
+                        <img class="img-fluid" src="{{marca.2}}" alt="">
                         <span>{{ marca.1 }}</span>
-                      {% endif %}
-                    {% endfor %}
-                  </div>
-                </td>
-                <td>
-                  <div class="celda_texto_bloque">
-                    {% for subcategoria in subcategorias %}
-                      {% if subcategoria.0 == producto.11 %}
-                        <i class="{{ subcategoria.6 }}"></i> 
-                        <span>{{ subcategoria.5 }}</span>
-                      {% endif %}
-                    {% endfor %}
-                  </div>                  
-                </td>
-                <td>
-                  <div class="celda_texto_bloque">
-                  {% for subcategoria in subcategorias %}
-                    {% if subcategoria.0 == producto.11 %}
-                      <i class="{{ subcategoria.2 }}"></i> 
-                      <span>{{ subcategoria.1 }}</span>
+                      </div>
                     {% endif %}
                   {% endfor %}
-                  </div>
+                </td>
+                <td>
+                  {% for subcategoria in subcategorias %}
+                    {% if subcategoria.0 == producto.11 %}
+                      <div class="celda_texto_bloque" data-category="{{subcategoria.4}}">
+                        <i class="{{ subcategoria.6 }}"></i> 
+                        <span>{{ subcategoria.5 }}</span>
+                      </div>                  
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td>
+                  {% for subcategoria in subcategorias %}
+                    {% if subcategoria.0 == producto.11 %}
+                    <div class="celda_texto_bloque" data-subcategory="{{producto.11}}">
+                      <i class="{{ subcategoria.2 }}"></i> 
+                      <span>{{ subcategoria.1 }}</span>
+                    </div>
+                    {% endif %}
+                  {% endfor %}
                 </td>
 
                 <td class="acciones">
@@ -128,5 +153,6 @@
       return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
     }
   </script>
-  <script src="/static/js/admin_productos.js"></script>
+  <script src="static/js/admin_productos.js"></script>
+  <script src="static/js/filtroCRUDListado.js"></script>
 {% endblock %}
