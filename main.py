@@ -333,7 +333,7 @@ def guardar_marca():
 
 @app.route("/marcas")
 def marcas():
-    marcas = controlador_marcas.obtener_marcas()
+    marcas = controlador_marcas.obtener_listado_marcas()
     return render_template("marcas.html", marcas=marcas, active='marcas')
 
 @app.route("/eliminar_marca", methods=["POST"])
@@ -435,7 +435,7 @@ def actualizar_subcategoria():
 
 @app.route("/agregar_producto")
 def formulario_agregar_producto():
-    marcas = controlador_marcas.obtener_marcas()
+    marcas = controlador_marcas.obtener_listado_marcas()
     categorias = controlador_categorias.obtener_categoriasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
     return render_template("agregar_producto.html", marcas = marcas, subcategorias = subcategorias , categorias = categorias)
@@ -471,7 +471,7 @@ def eliminar_producto():
 @app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
     producto = controlador_productos.obtener_por_id(id)
-    marcas = controlador_marcas.obtener_marcas()
+    marcas = controlador_marcas.obtener_listado_marcas()
     categorias = controlador_categorias.obtener_categoriasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
     return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias,categorias = categorias)
@@ -530,7 +530,7 @@ def actualizar_tipo_novedad():
 
 @app.route("/agregar_novedad")
 def formulario_agregar_novedad():
-    marcas = controlador_marcas.obtener_marcas()
+    marcas = controlador_marcas.obtener_listado_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
@@ -575,7 +575,7 @@ def guardar_img_novedad():
 def novedades_listado():
     novedades = controlador_novedades.obtenerTodasLasNovedades()
     tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()  # Añade esto
-    marcas = controlador_marcas.obtener_marcas()
+    marcas = controlador_marcas.obtener_listado_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     return render_template("novedades_listado.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias)
 
@@ -587,7 +587,7 @@ def eliminar_novedad():
 @app.route("/formulario_editar_novedad=<int:id>")
 def editar_novedad(id):
     novedad = controlador_novedades.obtenerNovedadPorId(id)
-    marcas = controlador_marcas.obtener_marcas()
+    marcas = controlador_marcas.obtener_listado_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     tiposNovedad = controlador_tipos_novedad.obtener_tipos_novedad()
     print(tiposNovedad)
