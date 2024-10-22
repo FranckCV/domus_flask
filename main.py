@@ -76,8 +76,22 @@ def promociones():
     promociones = controlador_novedades.mostrarNovedadesPromociones()
     return render_template("promociones.html" , promociones = promociones)
 
+@app.route('/anuncios')
+def anuncios():
+    anuncios = controlador_novedades.mostrarNovedadesAnuncios()
+    return render_template('anuncios.html', anuncios=anuncios)
 
-
+@app.route("/selectedAnuncio=<int:id>")
+def anuncio(id):
+    try:
+        anuncio = controlador_novedades.anuncioselect(id)
+        
+        if anuncio:
+            return render_template("selectedAnuncio.html", anuncio=anuncio)
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
 
 
 @app.route("/error") 
