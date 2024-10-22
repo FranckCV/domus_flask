@@ -1,62 +1,13 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Productos
+{% endblock %}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title> Categorias | Domus Market</title>
-  <link rel="shortcut icon" href="static/img/elementos/iconDomus.png">
-  <link rel="stylesheet" href="static/css/common_styles/bootstrap.min.css">
-  <link rel="stylesheet" href="static/css/common_styles/all.min.css">
-  <link rel="stylesheet" href="static/css/common_styles/fontawesome.min.css">
-  <link rel="stylesheet" href="static/css/common_styles/fonts.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="static/css/administrativa/dashboard.css"> 
-
-   
+{% block estilos %}
     <link rel="stylesheet" href="static/css/administrativa/listados.css">
+{% endblock %}
 
-</head>
-
-  <body class="body_section">
-    <header>
-      <a class="header_item" id="index_logo" href="/"><img class="img-fluid" id="logo_header" src="/static/img/elementos/logoDomus.png" alt="Logo" /></a>
-
-      <div class="header_item header_option" id="header_perfil">
-        <i class="fa-solid fa-user"></i>
-        <p>Mi perfil</p>
-        <div class="dropdown_menu" id="perfil_menu">
-          <ul>
-            <li>
-              <a href="/cuenta_administrativa">Gestionar cuenta</a>
-            </li>
-            <li>
-              <a href="/">Cerrar sesión</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </header>
-
-    <aside>
-      
-      <div id="usuario">
-        <img src="/static/img/usuario/admin.jpeg" alt="Perfil" />
-        <p>Nombre</p>
-      </div>
-
-      <nav class="menu_items">
-        <a  href="/dashboard"><i class="fa-solid fa-house"></i> <p>Dashboard</p></a>
-        <a  href="/productos"><i class="fa-solid fa-clipboard-list"></i> <p>Productos</p></a>
-        <a  href="/marcas"><i class="fa-solid fa-tag"></i> <p>Marcas</p></a>
-        <a  href="/categorias"><i class="fa-solid fa-list"></i> <p>Categorias</p></a>
-        <a  href="/categorias"><i class="fa-solid fa-x"></i> <p>Novedades</p></a>
-        <a  href="/categorias"><i class="fa-solid fa-x"></i> <p>Tipos de Novedades</p></a>
-        <a  href="/categorias"><i class="fa-solid fa-x"></i> <p>Pedidos y Compras</p></a>
-      </nav>
-    </aside>
-
-    <main>
+{% block contenido %}
       
     <section class="h_section scrollable-section" id="mainSection">
         <h2 class="fw-bolder">Listado de categorias</h2>
@@ -175,10 +126,9 @@
 
     </section>
 
-    </main>
+{% endblock %}
 
-    <script src="static/js/maestra_administradora.js"></script>
-     
+{% block scripts %}
 <script>
     function confirmarEliminacion() {
         return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
@@ -186,6 +136,4 @@
 </script>
 <script src="/static/js/admin_productos.js"></script>
 
-
-  </body>
-</html>
+{% endblock %}
