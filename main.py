@@ -81,15 +81,18 @@ def anuncios():
     anuncios = controlador_novedades.mostrarNovedadesAnuncios()
     return render_template('anuncios.html', anuncios=anuncios)
 
-@app.route("/anuncio/<int:id>")
+@app.route("/selectedAnuncio=<int:id>")
 def anuncio(id):
-    anuncio = anuncioselect(id)
-    
-    if anuncio:
-        return render_template('anuncioSelect.html', anuncio=anuncio)
-    else:
-        # Si no se encuentra el anuncio, podrías redirigir a una página de error o mostrar un mensaje.
-        return render_template('404.html'), 404
+    try:
+        anuncio = controlador_novedades.anuncioselect(id)
+        
+        if anuncio:
+            return render_template("selectedAnuncio.html", anuncio=anuncio)
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
+
 
 @app.route("/error") 
 def error():
