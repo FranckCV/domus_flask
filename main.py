@@ -638,7 +638,7 @@ def img_novedades_listado(novedad_id):
 
 @app.route("/eliminar_img_novedad", methods=["POST"])
 def eliminar_img_novedad():
-    controlador_novedades.eliminarImagenNovedad(request.form["id"])
+    controlador_imagenes_novedades.eliminarImagenNovedad(request.form["id"])
     novedad_id = request.form["novedad_id"]
     return redirect(f"/img_novedades_listado={novedad_id}")
 

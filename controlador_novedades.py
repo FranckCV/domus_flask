@@ -440,8 +440,8 @@ def actualizarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, d
         '''
         cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, novedadId))
         
-        if imagen:
-            insertarImagenNovedad(novedadId, imagen)
+        # if imagen:
+        #     insertarImagenNovedad(novedadId, imagen)
 
     conexion.commit()
     conexion.close()
@@ -537,7 +537,6 @@ def obtenerNovedadPorId(novedadId):
 #     conexion.commit()
 #     conexion.close()
 
-<<<<<<< HEAD
 # def eliminarImagenNovedad(id):
 #     conexion = obtener_conexion()
 #     with conexion.cursor() as cursor:
@@ -548,21 +547,5 @@ def obtenerNovedadPorId(novedadId):
 #         cursor.execute(sql, (id,))
 #     conexion.commit()
 #     conexion.close()
-=======
-def eliminarImagenNovedad(id):
-    conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        sql = '''
-            DELETE FROM IMG_NOVEDAD
-            WHERE id = %s
-        '''
-        cursor.execute(sql, (id,))
-    conexion.commit()
-    conexion.close()
-<<<<<<< HEAD
-=======
 
 
-
->>>>>>> 2ee3b118972bc40c1f40dc85a0c666692f8de4d5
->>>>>>> 39abbc4fe3a351630f765f251ef0014f904ecd6b
