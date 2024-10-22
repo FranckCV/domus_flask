@@ -1,31 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const categories = {
-        1: 'Alimentos' ,
-        2: 'Deporte' ,
-        3: 'Hogar' ,
-        4: 'Libreria y Oficina' ,
-        5: 'Mascotas' ,
-        6: 'Ropa y Calzado' ,
-        7: 'Tecnología' 
-    }
-
-    const subcategories = {
-        1: 'Celulares' ,
-        2: 'Televisores' ,
-        3: 'Electrodomesticos' ,
-        4: 'Audio' 
-    }
-
-    const brands = {
-        1: 'Samsung' ,
-        2: 'Oster' ,
-        3: 'Gloria'
-    }
-
-    // Selecciona todos los elementos de filtros
     const filterElements = document.querySelectorAll('.ctlg_filters_element');
 
-    // Itera sobre cada elemento de filtro
     filterElements.forEach(element => {
         // Selecciona el subcontenido relacionado a este filtro
         const subContent = element.nextElementSibling;

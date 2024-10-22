@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 //la etiqueta de precio va a variar según lo que se encuentre
                 const priceOferta = productElement.querySelector('.price_for_sale .product_price_number');
                 const priceOnline = productElement.querySelector('.price_online .product_price_number');
-
+                const productoId = productElement.getAttribute('data-product-id');
                 let precio = 0; //lo declaramos como let porque va a variar
 
                 if (priceOferta) {//Si encuentra una etiqueta de precio oferta ejecuta la línea de código, sino usa
@@ -35,19 +35,85 @@ document.addEventListener('DOMContentLoaded', () => {
                     precio = parseFloat(priceOnline.innerText.replace('S/. ', '').replace(',', ''));
                 }
 
-                agregarProducto(nombreProducto, precio, img); //Llama a la función agregar producto
+                agregarProducto(nombreProducto, precio, img, productoId); //Llama a la función agregar producto
                 actualizarCarrito(); //llama a la función actualizar carre
                 actualizarCantidadCarrito(); //Actualiza la cantidad de productos agregados que sale en el header
                 console.log(productElement); //por si acaso haya errores
+                // agregarCarritoBase(product_id)
             } else {
                 console.log("No se encontró el elemento del producto."); //por si acaso haya errores x2 
             }
         });
     });
 });
+/**********************PARA AGREGAR EL CARRITO A LA BASE DE DATOS*****************/
+// function agregarCarritoBase(productId) {
+//     carrito = obtenerCarrito(); 
+//     console.log(carrito);
+
+//     const data = {
+//         USUARIOid: 1,           
+//         product_id: productId,    
+//         quantity: carrito.cantidad
+//     };
+
+//     // Enviar los datos al servidor para crear el pedido y agregar el detalle
+//     fetch('/agregar_a_carrito', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data)  // Convertir el objeto en JSON para enviarlo
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             console.log('Producto agregado al carrito.');
+//         } else {
+//             console.error('Error al agregar producto al carrito:', data.message);
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//     });
+// }
 
 
-function agregarProducto(nombre, precio, img) {//pasa como parametros el nombre, el precio y la imagen
+// function generar_carrito() {
+//     carrito = obtenerCarrito(); 
+//     console.log(carrito);
+
+//     const data = {
+//         USUARIOid: 1,           
+//         estado:1
+//     };
+
+//     // Enviar los datos al servidor para crear el pedido y agregar el detalle
+//     fetch('/generar_carrito', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data)  // Convertir el objeto en JSON para enviarlo
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             console.log('Producto agregado al carrito.');
+//         } else {
+//             console.error('Error al agregar producto al carrito:', data.message);
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//     });
+// }
+
+
+
+/*************************************************************************************** */
+
+function agregarProducto(nombre, precio, img, id) {//pasa como parametros el nombre, el precio y la imagen
     let carrito = obtenerCarrito(); //Llama a la función que obtiene el carrito de compras
     //Esa función te devuelve un objeto con todos los elementos del carrito, se usa como clave el nombre del producto 
     if (carrito[nombre]) { //Si el producto ya existe en el carrito, aumenta la cantidad
@@ -56,8 +122,9 @@ function agregarProducto(nombre, precio, img) {//pasa como parametros el nombre,
         carrito[nombre] = { //Si el producto no existe, crea un objeto y los inicializa
             precio: precio,
             img: img,
-            cantidad: 1
-        };
+            cantidad: 1,
+            id: id
+        }
     }
     guardarCarrito(carrito); //Se llama a la función guardar en el carrito
     actualizarCarrito(); //Se actualiza el carre
@@ -91,14 +158,14 @@ function aumentar(button) {
     const productElement = button.closest('.product_item'); //Todos los divs que contienen la info del producto empiezan con row, entonces
     //busca la etiqueta más cerca que contenga la clase row de ese botón
     const nombreProducto = productElement.querySelector('.nombreProducto').innerText; //obtiene el nombre de ese producto
-    const descuentoElement = document.getElementById('descuento'); 
+    const descuentoElement = document.getElementById('descuento');
     let carrito = obtenerCarrito(); //llamamos al carrito para modificar su cantidad
-    if(carrito[nombreProducto].cantidad<10) {
+    if (carrito[nombreProducto].cantidad < 10) {
         carrito[nombreProducto].cantidad += 1;
         descuentoElement.querySelector('span').innerText = `S/.00.00`;
-        descuentoAplicado = false;    
+        descuentoAplicado = false;
     }
-    else{
+    else {
         alert("No puedes agregar más de 10 productos");
     }
     guardarCarrito(carrito);
@@ -110,13 +177,13 @@ function disminuir(button) {
     const productElement = button.closest('.product_item');
     const nombreProducto = productElement.querySelector('.nombreProducto').innerText;
     //obtenemos la etiqueta de descuento porque si va a eliminar productos, entonces su descuento ya no es válido
-    const descuentoElement = document.getElementById('descuento'); 
+    const descuentoElement = document.getElementById('descuento');
     let carrito = obtenerCarrito();
 
     if (carrito[nombreProducto]) {
         carrito[nombreProducto].cantidad -= 1;
         descuentoElement.querySelector('span').innerText = `S/.00.00`;
-        descuentoAplicado = false; 
+        descuentoAplicado = false;
         if (carrito[nombreProducto].cantidad < 1) { //Si la cantidad agregada de ese elemento es 0
             delete carrito[nombreProducto];
         }
@@ -139,34 +206,43 @@ function actualizarCarrito() {
         total += totalProducto;
         unidades += producto.cantidad;
 
-        const productoHTML = `
-            <div class="product_item">
-                <div class="product_item_info">
-                    <img src="${producto.img}" class="product_item_pic" alt="Imagen del Producto">
+//         const productoHTML = `
+//             <div class="product_item">
+//                 <div class="product_item_info">
+//                     <img src="${producto.img}" class="product_item_pic" alt="Imagen del Producto">
                     
-                    <div class="product_item_name">
-                        <p class="nombreProducto">${nombre}</p>
-                        <p class="vendido-por">Vendido por: <strong>Domus</strong></p>
-                    </div>
-                </div>
+//                     <div class="product_item_name">
+//                         <p class="nombreProducto">${nombre}</p>
+//                         <p class="vendido-por">Vendido por: <strong>Domus</strong></p>
+//                     </div>
+//                 </div>
 
-                <div class="product_item_price_unit">
-                    <p class="precioProducto">S/ ${producto.precio.toFixed(2)}</p>
-                </div>
+//                 <div class="product_item_price_unit">
+//                     <p class="precioProducto">S/ ${producto.precio.toFixed(2)}</p>
+//                 </div>
 
-                <div class="product_item_count">
-                    <button type="button" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="disminuir(this)"><span class="signo">-</span></button>
-                    <label class="cant">${producto.cantidad}</label>
-                    <button type="button" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="aumentar(this)"><span class="signo">+</span></button>
-                </div>
+//                 <div class="cantidades">
+//                 <form class="product_item_count"method="post">
+//                     <input type="hidden" name="producto_id" value="${producto.id}"> <!-- Campo oculto con el producto_id -->
+//                     <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">-</span></button>
+//                 </form>
 
-                <div class="product_item_price_total">
-                    <p class="total"> S/ ${totalProducto.toFixed(2)}</p>
-                </div>
-            </div>
-        `;
+//                     <span class="cant">${producto.cantidad}</span>
 
-        carritoContenido.insertAdjacentHTML('beforeend', productoHTML);
+//                 <form class="product_item_count" action="${aumentarCarro}" method="post">
+//                     <input type="hidden" name="producto_id" value="${producto.id}"> <!-- Campo oculto con el producto_id -->
+//                     <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">+</span></button>
+//                 </form>
+
+//                 </div>
+
+//                 <div class="product_item_price_total">
+//                     <p class="total"> S/ ${totalProducto.toFixed(2)}</p>
+//                 </div>
+//             </div>
+//         `;
+
+//         carritoContenido.insertAdjacentHTML('beforeend', productoHTML);
     }
 
     document.getElementById('subtotal').querySelector('span').innerText = `S/. ${total.toFixed(2)}`;
@@ -206,7 +282,10 @@ function aplicarDescuento() {
 }
 
 function validarCarro() {
+    // Obtener el carrito desde tu función existente
     const carrito = obtenerCarrito();
+
+    // Verificar si el carrito tiene productos
     let disponible = false;
     for (let nombre in carrito) {
         if (carrito[nombre].cantidad > 0) {
@@ -214,12 +293,38 @@ function validarCarro() {
             break;
         }
     }
+
     if (disponible) {
-        window.location.href = "resumenDePedido.html";
+        // Si hay productos, enviar el estado del pedido al servidor
+        const data = {
+            USUARIOid: 1,  // Aquí deberías usar el ID del usuario actual
+            ESTADO_PEDIDOid: 2  // Cambiar el estado del pedido a 2
+        };
+
+        fetch('/actualizar_estado_pedido', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirigir al siguiente paso (por ejemplo, a la página de pago)
+                    window.location.href = '/resumen_pedido';  // Redirige a la página de entrega o siguiente paso
+                } else {
+                    console.error('Error al actualizar el estado del pedido:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     } else {
-        alert('Agregue productos a su carrito');
+        alert('Agregue productos a su carrito antes de continuar.');
     }
 }
+
 
 /***************************************PARA EL CONTADOR DE PRODUCTOS*****************************************************/
 function actualizarCantidadCarrito() {

@@ -1,8 +1,63 @@
-{% extends "maestra_administrador.html" %}
-{% block titulo %} Categorias {% endblock %}
-{% block contenido %}
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title> Categorias | Domus Market</title>
+  <link rel="shortcut icon" href="static/img/elementos/iconDomus.png">
+  <link rel="stylesheet" href="static/css/common_styles/bootstrap.min.css">
+  <link rel="stylesheet" href="static/css/common_styles/all.min.css">
+  <link rel="stylesheet" href="static/css/common_styles/fontawesome.min.css">
+  <link rel="stylesheet" href="static/css/common_styles/fonts.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="static/css/administrativa/dashboard.css"> 
 
+   
+    <link rel="stylesheet" href="static/css/administrativa/listados.css">
+
+</head>
+
+  <body class="body_section">
+    <header>
+      <a class="header_item" id="index_logo" href="/"><img class="img-fluid" id="logo_header" src="/static/img/elementos/logoDomus.png" alt="Logo" /></a>
+
+      <div class="header_item header_option" id="header_perfil">
+        <i class="fa-solid fa-user"></i>
+        <p>Mi perfil</p>
+        <div class="dropdown_menu" id="perfil_menu">
+          <ul>
+            <li>
+              <a href="/cuenta_administrativa">Gestionar cuenta</a>
+            </li>
+            <li>
+              <a href="/">Cerrar sesión</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <aside>
+      
+      <div id="usuario">
+        <img src="/static/img/usuario/admin.jpeg" alt="Perfil" />
+        <p>Nombre</p>
+      </div>
+
+      <nav class="menu_items">
+        <a  href="/dashboard"><i class="fa-solid fa-house"></i> <p>Dashboard</p></a>
+        <a  href="/productos"><i class="fa-solid fa-clipboard-list"></i> <p>Productos</p></a>
+        <a  href="/marcas"><i class="fa-solid fa-tag"></i> <p>Marcas</p></a>
+        <a  href="/categorias"><i class="fa-solid fa-list"></i> <p>Categorias</p></a>
+        <a  href="/categorias"><i class="fa-solid fa-x"></i> <p>Novedades</p></a>
+        <a  href="/categorias"><i class="fa-solid fa-x"></i> <p>Tipos de Novedades</p></a>
+        <a  href="/categorias"><i class="fa-solid fa-x"></i> <p>Pedidos y Compras</p></a>
+      </nav>
+    </aside>
+
+    <main>
+      
     <section class="h_section scrollable-section" id="mainSection">
         <h2 class="fw-bolder">Listado de categorias</h2>
         <div class="container-fluid" id="break_nav">
@@ -12,7 +67,7 @@
                         <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
                             <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
                         </button>
-                        <a href="{{ url_for('formulario_agregar_categoria') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
+                        <a href="/agregar_categoria" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
                         
                     </div>
             </div>
@@ -21,110 +76,116 @@
         <table border="0" cellspacing="0" cellpadding="8" class="product_if">
             <thead>
                 <tr>
+                    <th>ID Cat</th>
                     <th>Categoria</th>
-                    <th>Icono</th>
-                    <th>Disponibilidad</th>
-                    <th>Acción</th>
+                    <th>Icono Cat</th>
+                    <th>Disponibilidad Cat</th>
+                    <th>Opciones Cat</th>
+                    <th>ID Sub</th>
+                    <th>Subcategoria</th>
+                    <th>Icono Sub</th>
+                    <th>Disponibilidad Sub</th>
+                    <th>Opciones Sub</th>
                 </tr>
             </thead>
             <tbody>
-                {% for categoria in categorias %}
+                
+            {% for categoria in categorias %}
+                {% set subcategorias_filtradas = subcategorias | selectattr(4, 'equalto', categoria[0]) | list %}
                 <tr>
-                    <td>{{ categoria[1] }}</td>
-                    <td><i class="{{categoria[2]}}"></i></td>
-                    <td>
+                    <td rowspan="{{ subcategorias_filtradas | length }}">{{ categoria[0] }}</td>
+                    <td rowspan="{{ subcategorias_filtradas | length }}">{{ categoria[1] }}</td>
+                    <td rowspan="{{ subcategorias_filtradas | length }}">
+                        <i class="{{ categoria[2] }}"></i>
+                    </td>
+                    <td rowspan="{{ subcategorias_filtradas | length }}">
                         {% if categoria[3] == 1 %}
                         <span>Disponible</span>
                         {% else %}
                         <span>No Disponible</span>
                         {% endif %}
-                    </td>    
-                               
-                    <td class="acciones">
-                        <a href="{{ url_for('editar_categoria', id=categoria[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
-                        <form action="{{ url_for('eliminar_categoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                            <input type="hidden" name="id" value="{{ categoria[0] }}">
-                            <button type="submit">
-                                <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
-                            </button>
-                        </form>
+                    </td>
+                    
+                    <td rowspan="{{ subcategorias_filtradas | length }}">
+                        <div  class="acciones">
+                            <a href="{{url_for('categoria', id=categoria[0])}}"><i class="fa-solid fa-eye"></i></a>
+                            <a href="{{ url_for('editar_categoria', id=categoria[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
+                            <form action="{{ url_for('eliminar_categoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                                <input type="hidden" name="id" value="{{ categoria[0] }}">
+                                <button type="submit">
+                                    <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                                </button>
+                            </form>
+                        </div>                        
+                    </td>
+
+                    <td>{{ subcategorias_filtradas[0][0] if subcategorias_filtradas else '' }}</td>
+                    <td>{{ subcategorias_filtradas[0][1] if subcategorias_filtradas else '' }}</td>
+                    <td><i class="{{ subcategorias_filtradas[0][2] if subcategorias_filtradas else '' }}"></i></td>
+                    <td>
+                        {% if subcategorias_filtradas[0][3] == 1 %}
+                        <span>Disponible</span>
+                        {% else %}
+                        <span>No Disponible</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="acciones">                            
+                            <a href="{{ url_for('editar_subcategoria', id=subcategorias_filtradas[0][0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
+                            <form action="{{ url_for('eliminar_subcategoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                                <input type="hidden" name="id" value="{{ subcategorias_filtradas[0][0] }}">
+                                <button type="submit">
+                                    <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <h2 class="fw-bolder">Listado de SubCategorias</h2>
-        <div class="container-fluid" id="break_nav">
-                <div class="col">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
-                        <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
-                            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
-                        </button>
-                        <a href="{{ url_for('formulario_agregar_subcategoria') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
-                        
-                    </div>
-            </div>
-        </div>
-
-        <table border="0" cellspacing="0" cellpadding="8" class="product_if">
-            <thead>
+                
+                {% for subcategoria in subcategorias_filtradas[1:] %}
                 <tr>
-                    <th>Nombre</th>
-                    <th>Icono SubCategoria</th>
-                    <th>Disponibilidad</th>
-                    <th>Categoria</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for subcategoria in subcategorias %}
-                <tr>
+                    <td>{{ subcategoria[0] }}</td>
                     <td>{{ subcategoria[1] }}</td>
-                    <td><i class="{{subcategoria[2]}}"></td>
+                    <td><i class="{{ subcategoria[2] }}"></i></td>
                     <td>
                         {% if subcategoria[3] == 1 %}
                         <span>Disponible</span>
                         {% else %}
                         <span>No Disponible</span>
                         {% endif %}
-                    </td>     
-                    {% for categoria in categorias %}
-                        {% if categoria[0] == subcategoria[4] %}
-                        <td>{{categoria[1]}}</td> 
-                        {% endif %}
-                    {% endfor %}             
-                    <td class="acciones">
-                        <a href="{{ url_for('editar_subcategoria', id=subcategoria[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
-                        <form action="{{ url_for('eliminar_subcategoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                            <input type="hidden" name="id" value="{{ subcategoria[0] }}">
-                            <button type="submit">
-                                <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
-                            </button>
-                        </form>
+                    </td>
+                    <td>
+                        <div class="acciones">                            
+                            <a href="{{ url_for('editar_subcategoria', id=subcategoria[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
+                            <form action="{{ url_for('eliminar_subcategoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                                <input type="hidden" name="id" value="{{ subcategoria[0] }}">
+                                <button type="submit">
+                                    <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
+            {% endfor %}
+                
             </tbody>
         </table>
 
 
     </section>
-</div>
-    
 
-<style>
-    .Catective{
-        background-color: rgb(255, 255, 255);
-        color:#00095c;
-    }
-</style>
-<!-- JavaScript para la confirmación de eliminación -->
+    </main>
+
+    <script src="static/js/maestra_administradora.js"></script>
+     
 <script>
     function confirmarEliminacion() {
         return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
     }
 </script>
 <script src="/static/js/admin_productos.js"></script>
-{% endblock %}
+
+
+  </body>
+</html>

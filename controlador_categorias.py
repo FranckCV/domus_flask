@@ -22,10 +22,6 @@ def obtener_categoria_por_id(id):
     return categoria
 
 
-
-
-
-
 def obtener_categorias_subcategorias():
     conexion = obtener_conexion()
     categorias = []
@@ -35,7 +31,7 @@ def obtener_categorias_subcategorias():
             id, 
             categoria, 
             faicon_cat, 
-            disponibilidad 
+            disponibilidad
         FROM categoria 
         where disponibilidad = 1
         '''
@@ -54,6 +50,15 @@ def obtener_categorias_subcategorias():
 
     conexion.close()
     return categorias_lista
+
+
+def obtener_categoriasXnombre():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id ,categoria,faicon_cat,disponibilidad FROM categoria order by categoria")
+        categorias = cursor.fetchall()
+    conexion.close()
+    return categorias
 
 
 def insertar_categoria(categoria,faicon_cat,disponibilidad):

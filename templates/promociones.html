@@ -12,11 +12,7 @@
     {% block contenido %}
     <main>
         <div class="grid-container">
-            
-<!--
-            
--->
-
+   
             {% for promo in promociones %}    
 
             <a href="{{url_for('promocion', id=promo[0])}}">
@@ -33,115 +29,6 @@
 
             {% endfor %}
             
-            <!-- <a href="promocionSelect.html?promo=audifonos-sony">
-                <div class="promo-card">
-                    <div class="promo-image-container">
-                        <img src="static/img/imgLeo/audifonos.jpg" alt="Audífonos Sony">
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-tag">Hasta</div>
-                        <h2>30% DSCTO</h2>
-                        <p>En audífonos Sony</p>
-                    </div>
-                </div>
-            </a> -->
-
-
-
-
-
-            <a href="promocionSelect.html?promo=medias-nike">
-                <div class="promo-card">
-                    <div class="promo-image-container">
-                        <img src="img/imgLeo/mediasNike.png" alt="Medias Nike">
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-tag">Promoción</div>
-                        <h2>3X2</h2>
-                        <p>En medias deportivas Nike</p>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="promocionSelect.html?promo=smartwatch-apple">
-                <div class="promo-card">
-                    <div class="promo-image-container">
-                        <img src="img/imgLeo/smartwatch.png" alt="Smart watch Apple">
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-tag">Desde</div>
-                        <h2>S/.899</h2>
-                        <p>En smartwatchs de Apple</p>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="promocionSelect.html?promo=xiaomi-pad">
-                <div class="promo-card">
-                    <div class="promo-image-container">
-                        <img src="img/imgLeo/xiaomiPad.png" alt="Xiaomi Pad 6">
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-tag">Promoción</div>
-                        <h2>S/. 1499.99</h2>
-                        <p>Xiaomi Pad 6</p>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="promocionSelect.html?promo=laptop-lenovo">
-                <div class="promo-card">
-                    <div class="promo-image-container">
-                        <img src="img/imgLeo/LQP.webp" alt="Laptop Lenovo">
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-tag">Hasta</div>
-                        <h2>25% DSCTO</h2>
-                        <p>En laptops Lenovo</p>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="promocionSelect.html?promo=extractor-oster">
-                <div class="promo-card">
-                    <div class="promo-image-container">
-                        <img src="img/imgLeo/extractor.png" alt="Extractor Oster">
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-tag">Desde</div>
-                        <h2>S/. 550</h2>
-                        <p>En extractores Oster</p>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="promocionSelect.html?promo=samsung-s24">
-                <div class="promo-card">
-                    <div class="promo-image-container">
-                        <img src="img/imgLeo/samsumg.png" alt="Celular S24 Samsung">
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-tag">Promoción</div>
-                        <h2>S/. 5000</h2>
-                        <p>Samsung S24 Ultra</p>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="promocionSelect.html?promo=vinos-tabernero">
-                <div class="promo-card">
-                    <div class="promo-image-container">
-                        <img src="img/imgLeo/VinoTa.png" alt="Vino Tabernero">
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-tag">Desde</div>
-                        <h2>S/. 20</h2>
-                        <p>En vinos Tabernero</p>
-                    </div>
-                </div>
-            </a>
-            
-
         </div>
     </main>
 

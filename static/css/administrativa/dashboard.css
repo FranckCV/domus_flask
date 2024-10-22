@@ -1,0 +1,324 @@
+:root {
+    --height-header: 100px;
+    --height-nav: 10vh;
+    --width-menu: 250px;
+
+    --size-bubble-cart: 5vw;
+    --size-bubble-cart-tab: 3.5vw;
+    --size-bubble-cart-pc: 2.1vw;
+
+    --border-article: 50px;
+    --border-title: 70px;
+    --border-item: 25px;
+    --border-product: 10px;
+    --border-tag: 25px;
+    --border-menu: 10px;
+    --border-radius-element: 5px;
+
+    --font-icon-cel: 20px;
+    --font-icon-tab: 2.5vw;
+    --font-icon-pc: 1.55vw;
+
+    --background: #ffffff;
+    --color1: #0C0A3E;
+    --color2: #1e1c7a;
+    --color3: #fff;
+    --color4: #2756f0;
+    --color5: #218aec;
+    --color6: #ffffff;
+    --color7: #040136;
+    --color8: #02011f;
+    --color9: #3532d3;
+    --color10: #2709ac;
+    --color-title1: #00095c;
+    --color-title2: #00223d;
+    --font1: #000;
+    --font2: #fff;
+    --font3: #fff;
+}
+
+.body_section {
+    background-color: var(--background);
+    margin: 0px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 90%;
+    min-height: 100vh;
+    color: var(--font1);
+    overflow-x: hidden;
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: var(--height-header) auto;
+    grid-template-areas: 
+        "header header"
+        "aside main";
+}
+
+header {
+    grid-area: header;
+    background-color: var(--color1);
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    z-index: 1501;
+    top: 0;
+    height: var(--height-header);
+}
+
+.header_item {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    color: var(--font2);
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.header_option {
+    display: flex;
+    align-items: center;
+    transition: color 0.1s ease;
+    font-size: 1rem; 
+    gap: 10px;
+}
+
+.header_option i {
+    font-size: 1.5rem;
+}
+
+.header_option:hover {
+    color: var(--color5);
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes header_item_floating {
+    0%,
+    100% {
+        transform: translateY(-10%);
+    }
+
+    50% {
+        transform: translateY(10%);
+    }
+}
+
+header p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+#index_logo img {
+    transition: transform 0.25s ease;
+    width: 200px;
+}
+
+#index_logo img:hover {
+    transform: scale(1.10);
+}
+
+/* Sidebar menu */
+aside {
+    /* grid-area: aside;  */
+    width: var(--width-menu);
+    background-color: #092eaa;
+    padding: 20px;
+    padding-top: calc(var(--height-header) + 20px);
+    color: var(--font2);
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    position: fixed;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+aside::-webkit-scrollbar {
+    display: none;
+}
+
+#usuario{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+aside img {
+    width: 120px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+aside p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.menu_items {
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu_items a {
+    padding-inline: 15px;
+    padding-block: 7px;
+    /* margin-bottom: 10px; */
+    text-decoration: none;
+    color: var(--font2);
+    background-color: #071866;
+    border-radius: var(--border-radius-element);
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    justify-content: left;
+}
+
+.menu_items a:hover {
+    background-color: var(--color5);
+}
+
+.menu_items .selected {
+    background-color: var(--color4);
+}
+
+.menu_items a p {
+    margin: 0;
+}
+
+main {
+    grid-area: main; 
+    padding-block: 20px;
+    padding-inline: 30px;
+    background-color: var(--background);
+    margin-left: var(--width-menu);
+}
+
+/*******************PARA EL DESPLEGABLE****************/
+.header_option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dropdown_menu {
+    display: none; 
+    position: absolute;
+    top: 100%; 
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    width: 150px;
+    z-index: 1000;
+}
+
+.dropdown_menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown_menu ul li {
+    padding: 10px;
+}
+
+.dropdown_menu ul li a {
+    text-decoration: none;
+    color: var(--color1);
+    display: block;
+}
+
+.dropdown_menu ul li a:hover {
+    background-color: var(--color5);
+    color: white;
+}
+
+.header_option.active .dropdown_menu {
+    display: block;
+}
+
+.active {
+    background-color: #1e1c7a; 
+    color: white; 
+    font-weight: bold; 
+}
+
+/* DASHBOARD */
+
+.dashboard_content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+
+.dashboard_item {
+    width: 100%;
+    border: 1px solid #2c4677;
+    background-color: #032a66;
+    color: white;
+    border-radius: 20px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    transition: 0.1s ease-in-out;
+    display: grid;
+    gap: 2px;
+    grid-template-columns: 15% 85%;
+    grid-template-rows: 100%;
+    grid-template-areas: "db_nom db_link";
+}
+
+.dashboard_item:hover {
+    scale: 1.025;
+    background-color: #00124e;
+    color: white;
+}
+
+.dashboard_item p {
+    padding: 0;
+    margin: 0;
+    grid-area: db_nom;
+}
+
+.dshbd_item_content {
+    background-color: #2b72db;
+    height: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-items: center;
+    gap: 10px;
+}
+
+.dshbd_item_content a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #02011f;
+    color: white;
+    padding-inline: 10px;
+    padding-block: 5px;
+    border-radius: 10px;
+}
+
+.dshbd_item_content a:hover {
+    background-color: #ffffff;
+    color: #000;
+}
+
+
+
+
+
+

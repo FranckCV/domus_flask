@@ -14,7 +14,7 @@ def obtener_por_id(id):
                 pr.price_regular, 
                 pr.precio_online, 
                 pr.precio_oferta, 
-                pr.calificacion, 
+                pr.id, 
                 pr.info_adicional, 
                 pr.stock, 
                 pr.fecha_registro, 
@@ -252,14 +252,14 @@ def obtener_en_tarjetas_categoria(id,categoria, limit):
 
 # CRUD
 
-def insertar_producto(nombre, price_regular, price_online, precio_oferta, calificacion, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id):
+def insertar_producto(nombre, price_regular, price_online, precio_oferta, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            INSERT INTO producto(nombre, price_regular, precio_online, precio_oferta, calificacion, info_adicional, stock, fecha_registro, disponibilidad, MARCAid, SUBCATEGORIAid)
+            INSERT INTO producto(nombre, price_regular, precio_online, precio_oferta, info_adicional, stock, fecha_registro, disponibilidad, MARCAid, SUBCATEGORIAid)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         '''
-        cursor.execute(sql, (nombre, price_regular, price_online, precio_oferta, calificacion, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id))
+        cursor.execute(sql, (nombre, price_regular, price_online, precio_oferta, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id))
     conexion.commit()
     conexion.close()
 
@@ -268,7 +268,7 @@ def obtener_productos():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            SELECT id, nombre, price_regular, precio_online, precio_oferta, calificacion, info_adicional, stock, fecha_registro, disponibilidad, MARCAid, SUBCATEGORIAid 
+            SELECT id, nombre, price_regular, precio_online, precio_oferta, id, info_adicional, stock, fecha_registro, disponibilidad, MARCAid, SUBCATEGORIAid 
             FROM producto
         '''
         cursor.execute(sql)
@@ -286,14 +286,14 @@ def eliminar_producto(id):
     conexion.close()
 
 
-def actualizar_producto(nombre, price_regular, price_online, precio_oferta, calificacion, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id, id):
+def actualizar_producto(nombre, price_regular, price_online, precio_oferta, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id, id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
             UPDATE producto 
-            SET nombre = %s, price_regular = %s, precio_online = %s, precio_oferta = %s, calificacion = %s, info_adicional = %s, stock = %s, fecha_registro = %s, disponibilidad = %s, MARCAid = %s, SUBCATEGORIAid = %s 
+            SET nombre = %s, price_regular = %s, precio_online = %s, precio_oferta = %s, info_adicional = %s, stock = %s, fecha_registro = %s, disponibilidad = %s, MARCAid = %s, SUBCATEGORIAid = %s 
             WHERE id = %s
         '''
-        cursor.execute(sql, (nombre, price_regular, price_online, precio_oferta, calificacion, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id, id))
+        cursor.execute(sql, (nombre, price_regular, price_online, precio_oferta, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id, id))
     conexion.commit()
     conexion.close()
