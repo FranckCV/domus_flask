@@ -79,7 +79,7 @@ def promociones():
 @app.route('/anuncios')
 def anuncios():
     anuncios = controlador_novedades.mostrarNovedadesAnuncios()
-    return render_template('anuncios.html')
+    return render_template('anuncios.html', anuncios=anuncios)
 
 
 @app.route("/error") 
