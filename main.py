@@ -632,7 +632,7 @@ def formulario_agregar_img_novedad(novedad_id):
     
 #     return redirect("/novedades_listado")
 
-@app.route("/img_novedades_listado/<int:novedad_id>")
+@app.route("/img_novedades_listado=<int:novedad_id>")
 def img_novedades_listado(novedad_id):
     img_novedades = controlador_novedades.obtenerImagenesNovedad(novedad_id)
     return render_template("img_novedades_listado.html", img_novedades=img_novedades, novedad_id=novedad_id)
