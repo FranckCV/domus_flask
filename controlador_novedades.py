@@ -336,7 +336,7 @@ def promoselect(id):
     return elemento_promo
 
 #Mostrar novedad Anuncio
-def mostrarNovedadesAnuncio():
+def mostrarNovedadesAnuncios():
     conexion = obtener_conexion()
     elementos = []
     with conexion.cursor() as cursor:
@@ -347,7 +347,7 @@ def mostrarNovedadesAnuncio():
                     nov.titulo
                 FROM novedad nov
                 INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
-                WHERE nov.disponibilidad = 1 and nov.TIPO_NOVEDADid = 3
+                WHERE nov.disponibilidad = 1 and nov.TIPO_NOVEDADid = 1
                 Group by nov.id
                 order by nov.fecha_registro desc;
             '''
@@ -387,7 +387,7 @@ def anuncioselect(id):
             FROM `novedad` nov
             INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
             INNER JOIN marca mar on mar.id = nov.MARCAid
-            WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 3 and nov.id = '''+str(id)+'''
+            WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 1 and nov.id = '''+str(id)+'''
             Group by nov.id
         '''
         cursor.execute(sql)

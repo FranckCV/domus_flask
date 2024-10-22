@@ -76,8 +76,10 @@ def promociones():
     promociones = controlador_novedades.mostrarNovedadesPromociones()
     return render_template("promociones.html" , promociones = promociones)
 
-
-
+@app.route('/anuncios')
+def anuncios():
+    anuncios = controlador_novedades.mostrarNovedadesAnuncios()
+    return render_template('anuncios.html')
 
 
 @app.route("/error") 
