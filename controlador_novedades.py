@@ -372,39 +372,19 @@ def anuncioselect(id):
     anuncio = None
     with conexion.cursor() as cursor:
         sql = '''
-            SELECT 
-                nov.id, 
-                nov.titulo,
-                nov.fecha_inicio, 
-                nov.fecha_vencimiento, 
-                nov.terminos, 
-                nov.MARCAid, 
-                nov.SUBCATEGORIAid,
-                MIN(imgnov.imagen),
-                mar.marca
+            SELECT nov.id, nov.titulo, nov.fecha_inicio, nov.fecha_vencimiento, nov.terminos, nov.MARCAid, nov.SUBCATEGORIAid, MIN(imgnov.imagen), mar.marca
             FROM novedad nov
-            INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
-            INNER JOIN marca mar on mar.id = nov.MARCAid
-            WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 1 and nov.id = %s
-            Group by nov.id
+            INNER JOIN img_novedad imgnov ON nov.id = imgnov.NOVEDADid
+            INNER JOIN marca mar ON mar.id = nov.MARCAid
+            WHERE nov.id = %s
+            GROUP BY nov.id
         '''
         cursor.execute(sql, (id,))
         anuncio = cursor.fetchone()
 
-    conexion.close()
-
     if anuncio:
-        pro_id, pro_titulo, pro_fecini, pro_fecven, pro_ter, pro_mar, pro_sub, pro_img, mar_nom = anuncio
-
-        # Convertir imagen a base64 si existe
-        if pro_img:
-            logo_base64 = base64.b64encode(pro_img).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = "" 
-
-        return (pro_id, pro_titulo, pro_fecini, pro_fecven, pro_ter, pro_mar, pro_sub, logo_url, mar_nom)
-
+        # Devuelve los datos en la forma que Jinja2 espera
+        return (anuncio[0], anuncio[1], anuncio[2], anuncio[3], anuncio[4], anuncio[5], anuncio[6], anuncio[7], anuncio[8])
     return None
 
 
@@ -533,42 +513,3 @@ def obtenerNovedadPorId(novedadId):
 #         cursor.execute(sql, (nomImagen, imagen, tipo_img_novedad_id, id))
 #     conexion.commit()
 #     conexion.close()
-
-<<<<<<< HEAD
-=======
-# def eliminarImagenNovedad(id):
-#     conexion = obtener_conexion()
-#     with conexion.cursor() as cursor:
-#         sql = '''
-#             DELETE FROM IMG_NOVEDAD
-#             WHERE id = %s
-#         '''
-#         cursor.execute(sql, (id,))
-#     conexion.commit()
-#     conexion.close()
-<<<<<<< HEAD
-
-=======
-=======
->>>>>>> 268e3f29b2fba982d5235a18436b557895fb559f
-def eliminarImagenNovedad(id):
-    conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        sql = '''
-            DELETE FROM IMG_NOVEDAD
-            WHERE id = %s
-        '''
-        cursor.execute(sql, (id,))
-    conexion.commit()
-    conexion.close()
-<<<<<<< HEAD
-=======
-
-
-
-<<<<<<< HEAD
-=======
->>>>>>> 2ee3b118972bc40c1f40dc85a0c666692f8de4d5
->>>>>>> 39abbc4fe3a351630f765f251ef0014f904ecd6b
->>>>>>> 92f60971c3c108a681ddd9e8bb3b1ea6980e3ada
->>>>>>> 268e3f29b2fba982d5235a18436b557895fb559f
