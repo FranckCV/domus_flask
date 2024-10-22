@@ -255,9 +255,12 @@
                             <div class="product_option product_option_fav button" id="heart">
                                 <i class="fa-regular fa-heart"></i>
                             </div>
-                            <div class="product_option product_option_add">
-                                <i class="fa-solid fa-plus"></i>
-                            </div>
+                            <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
+                                <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
+                                <button type="submit" class="product_option product_option_add" id="cant_aumentar">
+                                  <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
                         </div>
 
                         {% endfor %}
