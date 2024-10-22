@@ -544,9 +544,3 @@ def eliminarImagenNovedad(id):
         cursor.execute(sql, (id,))
     conexion.commit()
     conexion.close()
-
-<<<<<<< HEAD
-=======
-
-
->>>>>>> ff174a22fd35b3a6e3bfbe2aa1a0dd11306a4d8b

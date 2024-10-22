@@ -120,3 +120,18 @@ def aumentar_producto(pedido_id, producto_id):
     
     conexion.commit()
     conexion.close()
+
+#Ultimo pedido
+def ultimoPedido(usuario_id):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = "SELECT MAX(id) FROM pedido WHERE USUARIOid = %s"
+            cursor.execute(sql, (usuario_id,))
+            resultado = cursor.fetchone()
+            return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Error al obtener el último pedido: {e}")
+        return None
+    finally:
+        conexion.close()

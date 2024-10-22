@@ -10,46 +10,20 @@ function eliminarTodos() {
     actualizarDatos();
 }
 function agregarResumen() {
-    const carrito = obtenerCarrito();
-    const tabla = document.getElementById('tabla-contenido');
     const elementosTotal = document.getElementsByClassName('total');
+    const costoEnvio = document.getElementById('costo_envio');
+    let costo = parseFloat(costoEnvio.value); 
 
-    if (tabla) {
-        tabla.innerHTML = '';
-        let contadorProductos = 1;
-        let total = 0;
-        let unidades = 0;
+    let acumulador = 0;
 
-        for (let nombre in carrito) {
-            const producto = carrito[nombre];
-            const subtotal = producto.precio * producto.cantidad;
-            total += subtotal;
-            unidades += producto.cantidad;
-
-            const tablaHTML = `
-                <tr>
-                    <th scope="row">${contadorProductos++}</th>
-                    <td class="producto">
-                        <img class="product_pic" src="${producto.img}" alt="">
-                        <span>${nombre}</span>
-                    </td>
-                    <td>s/.${producto.precio.toFixed(2)}</td>
-                    <td>${producto.cantidad}</td>
-                    <td>s/.${subtotal.toFixed(2)}</td>
-                </tr>`;
-            tabla.insertAdjacentHTML('beforeend', tablaHTML);
-        }
-
-        document.getElementById('subtotal').innerText = `S/. ${total.toFixed(2)}`;
-
-        for (let i = 0; i < elementosTotal.length; i++) {
-            elementosTotal[i].innerText = `S/. ${total.toFixed(2)}`;
-        }
-
-    } else {
-        console.error('No se encontró un elemento con el ID "tabla-contenido".');
+    for (let i = 0; i < elementosTotal.length; i++) {
+        acumulador += parseFloat(elementosTotal[i].innerText); 
     }
+
+    document.getElementById('total').innerText = `S/. ${(costo + acumulador).toFixed(2)}`; 
+    document.getElementById('subtotal').innerText = `S/. ${acumulador.toFixed(2)}`;
 }
+
 
 function cancelarCompra(button) {
     window.location.href = 'carrito.html';

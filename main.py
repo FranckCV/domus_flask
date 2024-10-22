@@ -253,7 +253,7 @@ def agregar_carrito():
     controlador_carrito.insertar_detalle(producto_id, pedido_id)
     
     # Redirige a la vista del carrito
-    return redirect('/carrito')
+    return redirect(request.referrer)
 
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
@@ -290,14 +290,35 @@ def disminuir_carro():
 #PARA CONFIRMAR CARRE
 @app.route("/confirmar_carrito", methods=["POST"])
 def confirmar_carrito():
-    estado = 2  
-    usuario_id = 1 
-    controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+    estado = 1
+    usuario_id = 1  
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+    print(pedido_id)
+    existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    print(existencias)
+    if existencias and len(existencias) > 0:  
+     estado=2
+     controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+     return render_template("resumen_de_pedido.html",existencias=existencias)
+    else:
+     return redirect('carrito')
 
-    # Redirigir a una página de confirmación de compra o al carrito
-    return redirect('carrito_confirmacion')
+
 
 ######################################FIN CARRO#############################################    
+#######################################RESUMEN DE CARRITO##############################################
+@app.route("/resumen_de_pedido") #falta
+def resumen_de_pedido():
+    usuario=1
+    pedido_id=controlador_carrito.ultimoPedido(usuario)
+    existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    return render_template("resumen_de_pedido.html",existencias=existencias)
+
+
+
+
+
+#############################################################################################################
 # PAGINAS USUARIO EMPLEADO
 
 

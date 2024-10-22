@@ -11,8 +11,9 @@ def obtener_Detalle():
             SELECT IMP.imagen, P.nombre, DP.cantidad, DP.PRODUCTOid 
             FROM detalles_pedido DP
             INNER JOIN producto P ON P.id = DP.PRODUCTOid
+            inner join pedido Pe on Pe.id=DP.PEDIDOid
             INNER JOIN img_producto IMP ON P.id = IMP.PRODUCTOid
-            WHERE IMP.imgPrincipal = 1
+            WHERE IMP.imgPrincipal = 1 and Pe.ESTADO_PEDIDOid=1
         '''
         cursor.execute(sql)
         productos = cursor.fetchall()
@@ -44,4 +45,64 @@ def obtener_Detalle():
             productos_lista.append((imagen, nombre, precio_final, cantidad, producto_id))
     
     conexion.close()
+    return productos_lista
+
+
+########################################
+import base64
+
+def obtener_Detalle_por_Id(id):
+    conexion = obtener_conexion()
+    productos_lista = []
+
+    try:
+        with conexion.cursor() as cursor:
+            # Consulta principal
+            sql = '''
+                SELECT IMP.imagen, P.nombre, DP.cantidad, DP.PRODUCTOid 
+                FROM detalles_pedido DP
+                INNER JOIN producto P ON P.id = DP.PRODUCTOid
+                INNER JOIN pedido PE ON PE.id = DP.PEDIDOid
+                INNER JOIN img_producto IMP ON P.id = IMP.PRODUCTOid
+                WHERE IMP.imgPrincipal = 1 AND PE.id = %s
+            '''
+            cursor.execute(sql, (id,))  # Asegúrate de que 'id' se pasa como tupla
+            productos = cursor.fetchall()
+
+            for producto in productos:
+                # Consulta de precios
+                sql_precios = "SELECT price_regular, precio_online, precio_oferta FROM producto WHERE id = %s"
+                cursor.execute(sql_precios, (producto[3],)) 
+                precios = cursor.fetchone()
+
+                if precios is not None:
+                    if precios[2] is not None:  # precio_oferta
+                        precio_final = precios[2]
+                    elif precios[1] is not None:  # precio_online
+                        precio_final = precios[1]
+                    else:  # precio_regular
+                        precio_final = precios[0]
+                else:
+                    # Si no se encuentra el precio, asignar algún valor por defecto o manejar el error
+                    precio_final = 0
+
+                # Codificar la imagen en base64
+                img_binario = producto[0]
+                if img_binario:
+                    imagen_base64 = base64.b64encode(img_binario).decode('utf-8')
+                    imagen = f"data:image/png;base64,{imagen_base64}"
+                else:
+                    imagen = ""
+
+                nombre = producto[1]
+                cantidad = producto[2]
+                producto_id = producto[3]
+
+                productos_lista.append((imagen, nombre, precio_final, cantidad, producto_id))
+
+    except Exception as e:
+        print(f"Error al obtener detalles: {e}")
+    finally:
+        conexion.close()  
+
     return productos_lista
