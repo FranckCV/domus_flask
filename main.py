@@ -232,8 +232,6 @@ def registrate():
 # PAGINAS USUARIO CLIENTE
 
 
-<<<<<<< HEAD
-=======
 ######################CARRO######################
 @app.route("/carrito") 
 def carrito():
@@ -246,7 +244,6 @@ def agregar_carrito():
     producto_id = request.form["producto_id"] 
     estado = 1
     usuario_id = 1
->>>>>>> 4583280e9c39dd6a47faaa4ed2f3f8c4c9a51aa1
     
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
     
@@ -301,7 +298,6 @@ def confirmar_carrito():
     return redirect('carrito_confirmacion')
 
 ######################################FIN CARRO#############################################    
->>>>>>> 4583280e9c39dd6a47faaa4ed2f3f8c4c9a51aa1
 # PAGINAS USUARIO EMPLEADO
 
 
