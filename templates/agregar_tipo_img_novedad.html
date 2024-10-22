@@ -1,0 +1,48 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+Agregar Tipo de Imagen de Novedad
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Tipo de Imagen de Novedad</h2>
+    <form action="{{ url_for('guardar_tipo_img_novedad') }}" method="post">
+      <div class="form-grid" id="col_add">
+        <!-- Nombre del Tipo de Imagen -->
+        <div class="row">
+          <div class="col">
+            <label for="tipo">Tipo de Imagen:</label><br>
+            <input required type="text" class="input" placeholder="Tipo de imagen" name="tipo" id="tipo">
+          </div>
+        </div>
+
+        <!-- Disponibilidad -->
+        <div class="row">
+          <div class="col">
+            <label for="disponibilidad">Disponibilidad:</label><br>
+            <label>
+              <input type="radio" name="disponibilidad" value="1" checked> Disponible
+            </label>
+            <label>
+              <input type="radio" name="disponibilidad" value="0"> No Disponible
+            </label>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('tipos_img_novedad_listado') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}

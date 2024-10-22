@@ -60,58 +60,53 @@
           </div>
 
           <div class="cart_list_body" id="carrito-contenido"></div>
-            {% for producto in productos %}
-              <div class="product_item">
-                <div class="product_item_info">
+          {% for producto in productos %}
+            <div class="product_item">
+              <div class="product_item_info">
+                <img src="{{ producto.0 }}" class="product_item_pic" alt="Imagen del Producto" />
 
-                  <img src="{{producto[0]}}" class="product_item_pic" alt="Imagen del Producto" />
-                  
-                  <div class="product_item_name">
-                    <p class="nombreProducto">{{ producto[1] }}</p>
-                    <p class="vendido-por">
-                      Vendido por: <strong>Domus</strong>
-                    </p>
-                  </div>
-                </div>
-            
-                <div class="product_item_price_unit">
-                  <p class="precioProducto">S/ {{ producto[2] }}</p>
-                </div>
-            
-                <!-- Controles de cantidades -->
-                <div class="cantidades">
-                  <!-- Disminuir cantidad -->
-                  <form class="product_item_count" action="{{ url_for('disminuir_carro') }}" method="post">
-                    <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id"/> <!-- Campo oculto con el producto_id -->
-                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="disminuir(this)">
-                      <span class="signo">-</span>
-                    </button>
-                  </form>
-            
-                  <!-- Mostrar cantidad actual -->
-                  <span class="cant">{{ producto[3] }}</span>
-            
-                  <!-- Aumentar cantidad -->
-                  <form class="product_item_count" action="{{ url_for('aumentar_carro') }}" method="post">
-                    <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id" /> 
-                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="aumentar(this)">
-                      <span class="signo">+</span>
-                    </button>
-                  </form>
-                </div>
-            
-                <div class="product_item_price_total">
-                  <p class="total">
-                      S/ 
-                      {% if producto[2] is not none and producto[3] is not none %}
-                          {{ producto[3] * producto[2] }}
-                      {% else %}
-                          Error en precio o cantidad
-                      {% endif %}
+                <div class="product_item_name">
+                  <p class="nombreProducto">{{ producto.1 }}</p>
+                  <p class="vendido-por">
+                    Vendido por: <strong>Domus</strong>
                   </p>
+                </div>
               </div>
+
+              <div class="product_item_price_unit">
+                <p class="precioProducto">S/ {{ producto.2 }}</p>
               </div>
-            {% endfor %}  
+
+              <!-- Controles de cantidades -->
+              <div class="cantidades">
+                <!-- Disminuir cantidad -->
+                <form class="product_item_count" action="{{ url_for('disminuir_carro') }}" method="post">
+                  <input type="hidden" name="producto_id" value="{{ producto.4 }}" id="producto_id" /> <!-- Campo oculto con el producto_id -->
+                  <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="disminuir(this)"><span class="signo">-</span></button>
+                </form>
+
+                <!-- Mostrar cantidad actual -->
+                <span class="cant">{{ producto.3 }}</span>
+
+                <!-- Aumentar cantidad -->
+                <form class="product_item_count" action="{{ url_for('aumentar_carro') }}" method="post">
+                  <input type="hidden" name="producto_id" value="{{ producto.4 }}" id="producto_id" />
+                  <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="aumentar(this)"><span class="signo">+</span></button>
+                </form>
+              </div>
+
+              <div class="product_item_price_total">
+                <p class="total">
+                  S/{% if producto[2] is not none and producto[3] is not none %}
+                    {{ producto[3] * producto[2] }}
+                  {% else %}
+                    Error en precio o cantidad
+                  {% endif %}
+                </p>
+                
+              </div>
+            </div>
+          {% endfor %}
         </div>
 
         <div class="cart_space">
@@ -141,14 +136,13 @@
               </p>
             </div>
 
-            <!--  <div class="actions">
+            <!--   <div class="actions">
                             <a class="checkout" onclick="validarCarro()">Continuar</a>
-                        </div>  -->
+                        </div>   -->
 
-            <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post">
+            <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post" onsubmit="return validarCarro();">
               <input type="hidden" id="estado_pedido" value="2" />
-
-              <a class="checkout" onclick="validarCarro()">Continuar</a>
+              <button type="submit" class="checkout">Continuar</button>
             </form>
           </div>
         </div>
@@ -201,13 +195,10 @@
               <div class="product_option product_option_fav button">
                 <i class="fa-regular fa-heart"></i>
               </div>
-              <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
-                <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
-                <button type="submit" class="product_option product_option_add" id="cant_aumentar">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
+              <form class="product_form_add" action="{{ url_for('agregar_carrito') }}" method="post">
+                <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
+                <button type="submit" class="product_option product_option_add" id="cant_aumentar"><i class="fa-solid fa-plus"></i></button>
               </form>
-
             </div>
           {% endfor %}
         </div>
@@ -218,7 +209,6 @@
 {% endblock %}
 
 {% block scripts %}
-
   <script src="static/js/carrito.js"></script>
   <script src="static/js/scriptListProduct.js"></script>
 {% endblock %}

@@ -291,7 +291,7 @@ function validarCarro() {
     for (let nombre in carrito) {
         if (carrito[nombre].cantidad > 0) {
             disponible = true;
-            break;
+            return disponible;
         }
     }
 

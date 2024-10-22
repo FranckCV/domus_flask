@@ -85,12 +85,12 @@ def anuncios():
 def anuncio(id):
     try:
         anuncio = controlador_novedades.anuncioselect(id)
-        
         if anuncio:
             return render_template("selectedAnuncio.html", anuncio=anuncio)
         else:
             return redirect("/error")
-    except:
+    except Exception as e:
+        print(f"Error: {e}")
         return redirect("/error")
 
 
@@ -267,7 +267,7 @@ def agregar_carrito():
     controlador_carrito.insertar_detalle(producto_id, pedido_id)
     
     # Redirige a la vista del carrito
-    return redirect('/carrito')
+    return redirect(request.referrer)
 
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
@@ -304,14 +304,35 @@ def disminuir_carro():
 #PARA CONFIRMAR CARRE
 @app.route("/confirmar_carrito", methods=["POST"])
 def confirmar_carrito():
-    estado = 2  
-    usuario_id = 1 
-    controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+    estado = 1
+    usuario_id = 1  
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+    print(pedido_id)
+    existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    print(existencias)
+    if existencias and len(existencias) > 0:  
+     estado=2
+     controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+     return render_template("resumen_de_pedido.html",existencias=existencias)
+    else:
+     return redirect('carrito')
 
-    # Redirigir a una página de confirmación de compra o al carrito
-    return redirect('carrito_confirmacion')
+
 
 ######################################FIN CARRO#############################################    
+#######################################RESUMEN DE CARRITO##############################################
+@app.route("/resumen_de_pedido") #falta
+def resumen_de_pedido():
+    usuario=1
+    pedido_id=controlador_carrito.ultimoPedido(usuario)
+    existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    return render_template("resumen_de_pedido.html",existencias=existencias)
+
+
+
+
+
+#############################################################################################################
 # PAGINAS USUARIO EMPLEADO
 
 
@@ -687,13 +708,53 @@ def actualizar_img_novedad():
 
     imagen = request.files["imagen"].read() if "imagen" in request.files else None
 
-    print(f"ID: {id}")
-    print(f"Nombre de Imagen: {nom_imagen}")
-    print(f"Tipo de Imagen ID: {tipo_img_novedad_id}")
-    print(f"Novedad ID: {novedad_id}")
+    # print(f"ID: {id}")
+    # print(f"Nombre de Imagen: {nom_imagen}")
+    # print(f"Tipo de Imagen ID: {tipo_img_novedad_id}")
+    # print(f"Novedad ID: {novedad_id}")
 
     controlador_imagenes_novedades.actualizar_imagen_novedad(id, nom_imagen, imagen, tipo_img_novedad_id, novedad_id)
     return redirect(f"/img_novedades_listado={novedad_id}")
+
+#######################################para tipo IMG NOVEDAD##################
+
+@app.route("/tipos_img_novedad_listado")
+def tipos_img_novedad_listado():
+    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad()
+    return render_template("tipos_img_novedad_listado.html", tipos_img_novedad=tipos_img_novedad)
+
+@app.route("/agregar_tipo_img_novedad")
+def formulario_agregar_tipo_img_novedad():
+    return render_template("agregar_tipo_img_novedad.html")
+
+@app.route("/guardar_tipo_img_novedad", methods=["POST"])
+def guardar_tipo_img_novedad():
+    tipo = request.form["tipo"]
+    disponibilidad = int(request.form["disponibilidad"])
+    controlador_tipos_img_novedad.insertar_tipo_img_novedad(tipo, disponibilidad)
+    return redirect("/tipos_img_novedad_listado")
+
+@app.route("/formulario_editar_tipo_img_novedad=<int:id>")
+def editar_tipo_img_novedad(id):
+    tipo_img_novedad = controlador_tipos_img_novedad.obtener_tipo_img_novedad_por_id(id)
+    return render_template("editar_tipo_img_novedad.html", tipo_img_novedad=tipo_img_novedad)
+
+@app.route("/actualizar_tipo_img_novedad", methods=["POST"])
+def actualizar_tipo_img_novedad():
+    id = request.form["id"]
+    tipo = request.form["tipo"]
+    disponibilidad = int(request.form["disponibilidad"])
+    controlador_tipos_img_novedad.actualizar_tipo_img_novedad(id, tipo, disponibilidad)
+    return redirect("/tipos_img_novedad_listado")
+
+@app.route("/eliminar_tipo_img_novedad", methods=["POST"])
+def eliminar_tipo_img_novedad():
+    id = request.form["id"]
+    controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
+    return redirect("/tipos_img_novedad_listado")
+
+#########################3FIN TIPO_IMG NOVEDAD#########################
+
 
 #########################FIN NOVEDAD####################################
 
