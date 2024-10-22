@@ -2,12 +2,198 @@
 {% block titulo %} Dashboard {% endblock %}
 {% block contenido %}
 
-<main class="content">
-    <header class="content-header">
-        <h1>Aquí habrá un dashboard</h1>
-    </header>
-    <section class="product-list">
+<section class="dashboard_content">
 
-</main>
+    <div class="dashboard_item">
+        <p>Nuestros Productos</p>
+        <div class="dshbd_item_content">
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Productos</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Marcas</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Novedades</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard_item">
+        <p>Nuestros Clientes</p>
+        <div class="dshbd_item_content">
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Clientes</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Compras y Pedidos</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Comentarios</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard_item">
+        <p>Informacion de Empresa</p>
+        <div class="dshbd_item_content">
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Informacion Principal</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Empleados</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Garantias</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Puntos de venta</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Preguntas y Respuestas</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Terminos y Condiciones</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Reclamos</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Redes Sociales</p>
+            </a>
+        </div>
+    </div>
+    
+    <div class="dashboard_item">
+        <p>Datos Adicionales</p>
+        <div class="dshbd_item_content"> 
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Categorias y Subcategorias</p>
+            </a>          
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Caracteristicas de Productos</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Tipos de Novedades</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Tipos de Imagenes de Novedades</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Motivos de Comentarios</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Tipos de Usuarios</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Metodos de Pago</p>
+            </a>
+            <a href="{{url_for('dashboard')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Estados de Pedido</p>
+            </a>
+        </div>
+    </div>
+    
+
+
+
+
+
+<!-- 
+
+
+    <div class="dashboard_item">
+        <p>Productos</p>
+        <div class="dshbd_item_content">
+            a
+        </div>
+    </div>
+
+    <div class="dashboard_item">
+        <p>Marcas</p>
+        <div class="dshbd_item_content">
+            a
+        </div>
+    </div>
+
+    <div class="dashboard_item">
+        <p>Categorias y Subcategorias</p>
+        <div class="dshbd_item_content">
+            a
+        </div>
+    </div>
+
+    <div class="dashboard_item">
+        <p>Comentarios</p>
+        <div class="dshbd_item_content">
+            a
+        </div>
+    </div>
+
+    <div class="dashboard_item">
+        <p>Novedades</p>
+        <div class="dshbd_item_content">
+            a
+        </div>
+    </div>
+    
+    <div class="dashboard_item">
+        <p>Clientes</p>
+        <div class="dshbd_item_content">
+            a
+        </div>
+    </div>
+
+    <div class="dashboard_item">
+        <p>Compras y Pedidos</p>
+        <div class="dshbd_item_content">
+            a
+        </div>
+    </div>
+
+    <div class="dashboard_item">
+        <p>Empleados</p>
+        <div class="dshbd_item_content">
+            a
+        </div>        
+    </div>
+
+    <div class="dashboard_item">
+        <p>Informacion de Empresa</p>
+        <div class="dshbd_item_content">
+            a
+        </div>
+    </div>
+    
+     -->
+    
+    
+    
+    
+
+
+</section>
 
 {% endblock %}

@@ -319,7 +319,6 @@ def cuenta_administrativa():
 def dashboard():
     return render_template("dashboard.html")
 
-########## INICIO MARCAS ##########
 
 @app.route("/agregar_marca")
 def formulario_agregar_marca():
@@ -343,7 +342,7 @@ def eliminar_marca():
     controlador_marcas.eliminar_marca(request.form["id"])
     return redirect("/marcas")
 
-@app.route("/formulario_editar_marca/<int:id>")
+@app.route("/formulario_editar_marca=<int:id>")
 def editar_marca(id):
     marca = controlador_marcas.obtener_marca_por_id(id)
     return render_template("editar_marca.html", marca=marca)
@@ -357,9 +356,7 @@ def actualizar_marca():
     controlador_marcas.actualizar_marca(marca,logo_binario,id)
     return redirect("/marcas")
 
-########## FIN MARCAS ##########
 
-########## INICIO CATEGORIA ##########
 @app.route("/agregar_categoria")
 def formulario_agregar_categoria():
     return render_template("agregar_categoria.html")
@@ -383,7 +380,7 @@ def eliminar_categoria():
     controlador_categorias.eliminar_categoria(request.form["id"])
     return redirect("/categorias")
 
-@app.route("/formulario_editar_categoria/<int:id>")
+@app.route("/formulario_editar_categoria=<int:id>")
 def editar_categoria(id):
     categoria = controlador_categorias.obtener_categoria_por_id(id)
     return render_template("editar_categoria.html", categoria=categoria)
@@ -396,9 +393,8 @@ def actualizar_categoria():
     disponibilidad = request.form["disponibilidad"] 
     controlador_categorias.actualizar_categoria(categoria,faicon_cat,disponibilidad,id)
     return redirect("/categorias")
-########## FIN CATEGORIA ##########
 
-########## INICIO SUB-CATEGORIA ##########
+
 @app.route("/agregar_subcategoria")
 def formulario_agregar_subcategoria():
     categorias = controlador_categorias.obtener_categorias()
@@ -418,7 +414,7 @@ def eliminar_subcategoria():
     controlador_subcategorias.eliminar_subcategoria(request.form["id"])
     return redirect("/categorias")
 
-@app.route("/formulario_editar_subcategoria/<int:id>")
+@app.route("/formulario_editar_subcategoria=<int:id>")
 def editar_subcategoria(id):
     subcategoria = controlador_subcategorias.obtener_subcategoria_por_id(id)
     categorias = controlador_categorias.obtener_categorias()
@@ -472,7 +468,7 @@ def eliminar_producto():
     controlador_productos.eliminar_producto(request.form["id"])
     return redirect("/productos")
 
-@app.route("/formulario_editar_producto/<int:id>")
+@app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
     producto = controlador_productos.obtener_por_id(id)
     marcas = controlador_marcas.obtener_marcas()
@@ -514,7 +510,7 @@ def eliminar_tipo_novedad():
     controlador_tipos_novedad.eliminar_tipo_novedad(request.form["id"])
     return redirect("/novedades_listado")
 
-@app.route("/formulario_editar_tipo_novedad/<int:id>")
+@app.route("/formulario_editar_tipo_novedad=<int:id>")
 def editar_tipo_novedad(id):
     tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
     return render_template("editar_tipo_novedad.html", tipos_novedad=tipo_novedad)
@@ -581,7 +577,7 @@ def eliminar_novedad():
     controlador_novedades.eliminarNovedad(request.form["id"])
     return redirect("/novedades_listado")
 
-@app.route("/formulario_editar_novedad/<int:id>")
+@app.route("/formulario_editar_novedad=<int:id>")
 def editar_novedad(id):
     novedad = controlador_novedades.obtenerNovedadPorId(id)
     marcas = controlador_marcas.obtener_marcas()
@@ -708,10 +704,10 @@ def eliminar_img_novedad():
     novedad_id = request.form["novedad_id"]
     return redirect(f"/img_novedades_listado/{novedad_id}")
 
-@app.route("/formulario_editar_img_novedad/<int:id>")
+@app.route("/formulario_editar_img_novedad=<int:id>")
 def editar_img_novedad(id):
-    img_novedad = controlador_novedades.obtenerImagenNovedadPorId(id)
-    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
+    img_novedad = controlador_novedades.obtenerImagenesNovedad(id)
+    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles() ####falta hacer funcionar esto con todas las imgs
     return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad)
 
 @app.route("/actualizar_img_novedad", methods=["POST"])
