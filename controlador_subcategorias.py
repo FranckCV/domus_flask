@@ -22,6 +22,28 @@ def obtenerSubcategoriasXCategoria(categoria):
     return categorias
 
 
+def obtenerCategoriasXSubcategoria(subcategoria):
+    conexion = obtener_conexion()
+    categorias = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT
+                ca.id,
+                ca.categoria,
+                ca.faicon_cat,
+                su.id, 
+                su.subcategoria , 
+                su.faicon_subcat
+            FROM categoria ca
+            inner join subcategoria su on su.CATEGORIAid = ca.id
+            where su.disponibilidad = 1 and ca.disponibilidad = 1 and su.id = '''+str(subcategoria)+'''
+            order by su.subcategoria;
+        '''
+        cursor.execute(sql)
+        categorias = cursor.fetchone()    
+    return categorias
+
+
 def obtenerSubcategoriasXMarca(marca):
     conexion = obtener_conexion()
     categorias = []
@@ -40,6 +62,7 @@ def obtenerSubcategoriasXMarca(marca):
         cursor.execute(sql)
         categorias = cursor.fetchall()    
     return categorias
+
 
 def obtener_subcategoriasXnombre():
     conexion = obtener_conexion()

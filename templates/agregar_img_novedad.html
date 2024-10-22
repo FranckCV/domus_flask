@@ -1,0 +1,75 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Agregar Imágenes de Novedad
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Imágenes a la Novedad</h2>
+    
+    <!-- Mostrar el ID de la novedad -->
+    <label for="novedad_id">Novedad ID: {{ novedad_id }}</label><br>
+
+    <form id="formAgregarImagen" action="{{ url_for('guardar_img_novedad') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="novedad_id" value="{{ novedad_id }}"> <!-- Campo oculto para el id de la novedad -->
+      <div class="form-grid" id="col_add">
+        <!-- Formulario para agregar imágenes -->
+        <div class="row">
+          <div class="col">
+            <label for="nomImagen">Nombre de la Imagen:</label><br />
+            <input required type="text" class="input" placeholder="Nombre de la imagen" name="nomImagen" id="nomImagen" />
+          </div>
+
+          <div class="col">
+            <label for="tipo_img_novedad">Tipo de Imagen:</label><br />
+            <select class="input" name="tipo_img_novedad" id="tipo_img_novedad">
+              <option value="" disabled selected>Selecciona un tipo de imagen</option>
+              {% for tipo in tipos_img_novedad %}
+                <option value="{{ tipo[0] }}">{{ tipo[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="imagen">Subir Imagen:</label><br />
+            <input required type="file" class="input" name="imagen" id="imagen" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('novedades') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Agregar Imagen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  {% if imagen_agregada %}
+    <script>
+      // Mostrar un cuadro de confirmación si ya se agregó una imagen
+      window.onload = function() {
+        if (confirm("La imagen ha sido agregada exitosamente. ¿Quieres agregar otra imagen?")) {
+          // Limpiar el formulario si el usuario quiere agregar otra imagen
+          document.getElementById("formAgregarImagen").reset();
+        } else {
+          // Redirigir al listado de novedades si el usuario no quiere agregar otra imagen
+          window.location.href = "{{ url_for('novedades_listado') }}";
+        }
+      };
+    </script>
+  {% endif %}
+{% endblock %}

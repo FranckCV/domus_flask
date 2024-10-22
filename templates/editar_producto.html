@@ -1,7 +1,7 @@
 
 {% extends "maestra_administrador.html" %}
 {% block titulo %}
-    Agregar producto
+    Editar producto
 {% endblock %}
 
 {% block estilos %}
@@ -61,8 +61,8 @@
                 <div class="col">
                     <label for="disponibilidad">Disponibilidad:</label><br>
                     <select required class="input" name="disponibilidad" id="disponibilidad">
-                        <option value=1 {% if producto[9]==1 %} checked {% endif %}>Disponible</option>
-                        <option value=0 {% if producto[9]==0 %} checked {% endif %}>No Disponible</option>
+                        <option value=1 {% if producto[11]==1 %} selected {% endif %}>Disponible</option>
+                        <option value=0 {% if producto[11]==0 %} selected {% endif %}>No Disponible</option>
                     </select>
                 </div>
 
@@ -73,26 +73,36 @@
                     <label for="marca_id">Marca:</label><br>
                     <select required class="input" name="marca_id" id="marca_id" style="width: 67%;">
                         {% for marca in marcas %}
-                        <option value="{{marca[0]}}" {% if marca[0]==producto[10] %} selected {% endif %}>{{marca[1]}}
+                        <option value="{{marca[0]}}" {% if marca[0] == producto[9] %} selected {% endif %}>{{marca[1]}}
                         </option>
                         {% endfor %}
                     </select>
-                    <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a
+                    <!-- <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a
                             href="{{url_for ('formulario_agregar_marca')}}"
-                            style=" color: #ffffff;">Agregar</a></button>
+                            style=" color: #ffffff;">Agregar</a></button> -->
+                </div>
+
+                <div class="col">
+                    <label for="categorySelect">Categoría:</label><br>
+                    <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
+                        <option value="0" selected>Todos</option>
+                      {% for categoria in categorias %}
+                        <option value="{{categoria[0]}}">{{categoria[1]}}</option>
+                      {% endfor %}
+                    </select>
                 </div>
 
                 <div class="col">
                     <label for="subcategoria_id">Subcategoría:</label><br>
-                    <select required class="input" name="subcategoria_id" id="subcategoria_id" style="width: 67%;">
+                    <select required class="input" name="subcategorySelect" id="subcategorySelect" style="width: 67%;">
                         {% for subcategoria in subcategorias %}
-                        <option value="{{subcategoria[0]}}" {% if subcategoria[0]==producto[11] %} selected {% endif %}>
+                        <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}" {% if subcategoria[0]==producto[10] %} selected {% endif %}>
                             {{subcategoria[1]}}</option>
                         {% endfor %}
                     </select>
-                    <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a
+                    <!-- <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a
                             href="{{url_for ('formulario_agregar_subcategoria')}}"
-                            style=" color: #ffffff;">Agregar</a></button>
+                            style=" color: #ffffff;">Agregar</a></button> -->
                 </div>
 
                
@@ -133,5 +143,5 @@
 
 {% block scripts %}
 <script src="/static/js/admin_productos.js"></script>
-
+<script src="/static/js/filtroCRUDListado.js"></script>
 {% endblock %}

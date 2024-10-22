@@ -119,6 +119,38 @@ def obtener_todas_imagenes_novedad():
             img_base64 = base64.b64encode(img_binario).decode('utf-8')
             img_url = f"data:image/png;base64,{img_base64}"
         else:
+            img_url = "" 
+
+        imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id, novedad_id))
+    
+    conexion.close()
+    return imagenes_lista
+
+def obtener_imagenes_novedad_por_id(novedad_id):
+    conexion = obtener_conexion()
+    imagenes = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                id, 
+                nomImagen, 
+                imagen, 
+                TIPO_IMG_NOVEDADid, 
+                NOVEDADid 
+            FROM IMG_NOVEDAD
+            WHERE NOVEDADid = %s
+            ORDER BY id DESC
+        '''
+        cursor.execute(sql, (novedad_id,))
+        imagenes = cursor.fetchall()
+
+    imagenes_lista = []
+    for imagen in imagenes:
+        img_id, img_nombre, img_binario, tipo_img_id, novedad_id = imagen
+        if img_binario:
+            img_base64 = base64.b64encode(img_binario).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
             img_url = ""  # Placeholder si no hay imagen
 
         imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id, novedad_id))

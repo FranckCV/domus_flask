@@ -60,16 +60,28 @@
                 <option value="{{ marca.0 }}">{{ marca.1 }}</option>
               {% endfor %}
             </select>
-            <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a href="{{ url_for('formulario_agregar_marca') }}" style=" color: #ffffff;">Agregar</a></button>
+            <!-- <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a href="{{ url_for('formulario_agregar_marca') }}" style=" color: #ffffff;">Agregar</a></button> -->
           </div>
+
           <div class="col">
-            <label for="subcategoria_id">Subcategoría:</label><br />
-            <select required class="input" name="subcategoria_id" id="subcategoria_id" style="width: 67%;">
-              {% for subcategoria in subcategorias %}
-                <option value="{{ subcategoria.0 }}">{{ subcategoria.1 }}</option>
+            <p class="fw-bolder lblchoosie">Categoría</p>
+            <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
+                <option value="0" selected>Todos</option>
+              {% for categoria in categorias %}
+                <option value="{{categoria[0]}}">{{categoria[1]}}</option>
               {% endfor %}
             </select>
-            <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a href="{{ url_for('guardar_subcategoria') }}" style=" color: #ffffff;">Agregar</a></button>
+          </div>
+
+          <div class="col">
+            <label for="subcategorySelect">Subcategoría:</label><br />
+            <select required class="form-select choosie" aria-label="Default select example" name="subcategorySelect" id="subcategorySelect">
+              <option value="0" data-category="0" selected>Todos</option>
+              {% for subcategoria in subcategorias %}
+                <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}">{{subcategoria[1]}}</option>
+              {% endfor %}
+            </select>
+            <!-- <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a href="{{ url_for('guardar_subcategoria') }}" style=" color: #ffffff;">Agregar</a></button> -->
           </div>
         </div>
         <div class="row">
@@ -101,4 +113,5 @@
 
 {% block scripts %}
   <script src="/static/js/admin_productos.js"></script>
+  <script src="/static/js/filtroCRUDListado.js"></script>
 {% endblock %}
