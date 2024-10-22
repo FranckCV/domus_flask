@@ -223,3 +223,14 @@ def obtener_novedad_id_por_imagen_id(imagen_id):
 
 
 
+def eliminarImagenNovedad(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            DELETE FROM IMG_NOVEDAD
+            WHERE id = %s
+        '''
+        cursor.execute(sql, (id,))
+    conexion.commit()
+    conexion.close()
+
