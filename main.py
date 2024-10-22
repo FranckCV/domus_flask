@@ -128,14 +128,15 @@ def marca(id):
 def producto(id):
     try:
         producto = controlador_productos.obtener_por_id(id)
-        if producto and producto[11] == 1: 
+        if producto and producto[11] == 1:
+            categoria = controlador_subcategorias.obtenerCategoriasXSubcategoria(producto[10])
             marca = controlador_marcas.obtener_marca_disponible_por_id(producto[9])
             imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(id)
             caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
             caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
             productosSimilares = controlador_productos.obtener_en_tarjetas_subcategoria(id,producto[10],12)
             productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,producto[9],12)
-            return render_template("selectedProducto.html" , productosSimilares = productosSimilares , productosMarca = productosMarca , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
+            return render_template("selectedProducto.html" , productosSimilares = productosSimilares , productosMarca = productosMarca , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias, categoria = categoria)
         else:
             return redirect("/error")
     except:
@@ -243,10 +244,11 @@ def agregar_carrito():
     producto_id = request.form["producto_id"] 
     estado = 1
     usuario_id = 1
+    
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
     
     if pedido_id is None:
-        pedido_id = controlador_carrito.insertar_pedido(producto_id, 1)
+        pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
     
     controlador_carrito.insertar_detalle(producto_id, pedido_id)
     
@@ -255,20 +257,16 @@ def agregar_carrito():
 
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
-    # Obtener el producto_id desde el formulario
     producto_id = request.form.get("producto_id")
-    print(f"Producto ID recibido: {producto_id}")  # Agregar un print para verificar el producto_id
+    print(f"Producto ID recibido: {producto_id}") 
+    usuario_id = 1 
+    estado = 1 
 
-    usuario_id = 1  # Ajustar según la autenticación del usuario
-    estado = 1  # Estado activo del pedido
-    
-    # Verificar si el pedido existe
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    print(f"Pedido ID encontrado: {pedido_id}")  # Verificar si el pedido_id es correcto
+    print(f"Pedido ID encontrado: {pedido_id}")  
 
     if pedido_id:
-        # Aumentar la cantidad del producto
-        controlador_carrito.aumentar_producto(producto_id, pedido_id)
+        controlador_carrito.aumentar_producto(pedido_id,producto_id)
         print("Producto aumentado correctamente.")
     else:
         print("No se encontró un pedido activo.")
@@ -285,17 +283,15 @@ def disminuir_carro():
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
 
     if pedido_id:
-        controlador_carrito.eliminar_producto(producto_id, pedido_id)
+        controlador_carrito.eliminar_producto(pedido_id,producto_id)
     
-    # Redirige a la vista del carrito
     return redirect('/carrito')
+
 #PARA CONFIRMAR CARRE
 @app.route("/confirmar_carrito", methods=["POST"])
 def confirmar_carrito():
-    estado = 2  # Estado 2 indica que el pedido ha sido confirmado
-    usuario_id = 1  # Reemplaza esto con la identificación del usuario autenticado si tienes autenticación
-
-    # Cambiar el estado del pedido a 2 para confirmar
+    estado = 2  
+    usuario_id = 1 
     controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
 
     # Redirigir a una página de confirmación de compra o al carrito
@@ -310,6 +306,9 @@ def confirmar_carrito():
 # PAGINAS USUARIO ADMINISTRADOR
 
 
+@app.route("/error_adm") 
+def error_adm():
+    return render_template("error_admin.html")
 
 @app.route('/cuenta_administrativa')
 def cuenta_administrativa():
@@ -437,8 +436,9 @@ def actualizar_subcategoria():
 @app.route("/agregar_producto")
 def formulario_agregar_producto():
     marcas = controlador_marcas.obtener_marcas()
-    subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("agregar_producto.html", marcas = marcas, subcategorias = subcategorias)
+    categorias = controlador_categorias.obtener_categoriasXnombre()
+    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+    return render_template("agregar_producto.html", marcas = marcas, subcategorias = subcategorias , categorias = categorias)
 
 @app.route("/guardar_producto", methods=["POST"])
 def guardar_producto():
@@ -451,7 +451,7 @@ def guardar_producto():
     fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
-    subcategoria_id= request.form["subcategoria_id"]  
+    subcategoria_id= request.form["subcategorySelect"]  
     controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
     return redirect("/productos")
 
@@ -472,8 +472,9 @@ def eliminar_producto():
 def editar_producto(id):
     producto = controlador_productos.obtener_por_id(id)
     marcas = controlador_marcas.obtener_marcas()
-    subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias)
+    categorias = controlador_categorias.obtener_categoriasXnombre()
+    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+    return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias,categorias = categorias)
 
 @app.route("/actualizar_producto", methods=["POST"])
 def actualizar_producto(): 
@@ -487,7 +488,7 @@ def actualizar_producto():
     fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
-    subcategoria_id= request.form["subcategoria_id"]  
+    subcategoria_id= request.form["subcategorySelect"]  
     controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
     return redirect("/productos")
 

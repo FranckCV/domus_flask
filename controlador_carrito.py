@@ -101,10 +101,9 @@ def verificarIdPedido(usuario_id, estado_pedido):
             cursor.execute(query, (usuario_id, estado_pedido))
             resultado = cursor.fetchone() 
 
-            # Retornar el id del pedido si existe, o None si no se encontró
             return resultado[0] if resultado else None
     except Exception as e:
-        conexion.rollback()  # Deshacer cambios si algo falla (aunque es SELECT, por si acaso)
+        conexion.rollback() 
         raise e
     finally:
         conexion.close()
@@ -117,7 +116,7 @@ def aumentar_producto(pedido_id, producto_id):
     with conexion.cursor() as cursor:
         sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
         cursor.execute(sql, (producto_id, pedido_id))
-        print(f"Filas afectadas: {cursor.rowcount}")  # Agrega esto para depurar
+        print(f"Filas afectadas: {cursor.rowcount}") 
     
     conexion.commit()
     conexion.close()

@@ -257,7 +257,7 @@ def insertar_producto(nombre, price_regular, price_online, precio_oferta, info_a
     with conexion.cursor() as cursor:
         sql = '''
             INSERT INTO producto(nombre, price_regular, precio_online, precio_oferta, info_adicional, stock, fecha_registro, disponibilidad, MARCAid, SUBCATEGORIAid)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         '''
         cursor.execute(sql, (nombre, price_regular, price_online, precio_oferta, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id))
     conexion.commit()
@@ -297,3 +297,33 @@ def actualizar_producto(nombre, price_regular, price_online, precio_oferta, info
         cursor.execute(sql, (nombre, price_regular, price_online, precio_oferta, info_adicional, stock, fecha_registro, disponibilidad, marca_id, subcategoria_id, id))
     conexion.commit()
     conexion.close()
+
+
+def obtener_por_nombre(nombre):
+    conexion = obtener_conexion()
+    producto = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                pr.id, 
+                pr.nombre, 
+                pr.price_regular, 
+                pr.precio_online, 
+                pr.precio_oferta, 
+                pr.id, 
+                pr.info_adicional, 
+                pr.stock, 
+                pr.fecha_registro, 
+                pr.MARCAid, 
+                pr.SUBCATEGORIAid,
+                pr.disponibilidad
+            FROM producto pr
+            WHERE pr.nombre LIKE '%'''+str(nombre)+'''%' and pr.disponibilidad = 1
+        '''
+        cursor.execute(sql)
+        producto = cursor.fetchall()
+    conexion.close()
+    return producto
+
+
+
