@@ -239,6 +239,7 @@
 .product_option_add {
   border-bottom-right-radius: var(--border-product);
   grid-area: plus;
+  width: 100%;
 }
 
 .product_option {
@@ -246,6 +247,7 @@
   color: var(--color-button-product);
   background-color: white;
   cursor: pointer;
+  border: 0;
 }
 
 .product_option:hover {
@@ -311,6 +313,5 @@
     width: var(--size-product-pic-tab);
   }  
 }
-
 
 

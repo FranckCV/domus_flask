@@ -83,7 +83,7 @@
                   <!-- Disminuir cantidad -->
                   <form class="product_item_count" action="{{ url_for('disminuir_carro') }}" method="post">
                     <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id"/> <!-- Campo oculto con el producto_id -->
-                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3">
+                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="disminuir(this)">
                       <span class="signo">-</span>
                     </button>
                   </form>
@@ -94,7 +94,7 @@
                   <!-- Aumentar cantidad -->
                   <form class="product_item_count" action="{{ url_for('aumentar_carro') }}" method="post">
                     <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id" /> 
-                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3">
+                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="aumentar(this)">
                       <span class="signo">+</span>
                     </button>
                   </form>
@@ -198,14 +198,16 @@
                   </div>
                 {% endif %}
               </a>
-              <div class="product_option product_option_fav button" id="heart">
+              <div class="product_option product_option_fav button">
                 <i class="fa-regular fa-heart"></i>
               </div>
-
-              <form class="product_option product_option_add" action="{{ url_for('agregar_carrito') }}" method="post">
-                <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
-                <button type="submit" class="fa-solid fa-plus" id="cant_aumentar"></button>
+              <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
+                <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
+                <button type="submit" class="product_option product_option_add" id="cant_aumentar">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
               </form>
+
             </div>
           {% endfor %}
         </div>

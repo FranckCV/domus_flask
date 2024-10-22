@@ -5,14 +5,14 @@ document.getElementById('categorySelect').addEventListener('change', function() 
     const options = document.querySelectorAll('#subcategorySelect option');
 
     options.forEach(option => {
-        const productCategory = option ? option.getAttribute('data-category') : null;
-  
-        // Si el valor seleccionado es "0", mostrar todas las filas
-        if (selectedCategory === "0" || productCategory === selectedCategory) {
-            option.style.display = '';
-        } else {
-            option.style.display = 'none';
-        }
+      const optionCategory = option ? option.getAttribute('data-category') : null;
+
+      // Si el valor seleccionado es "0", mostrar todas las filas
+      if (selectedCategory === "0" || optionCategory === selectedCategory) {
+          option.style.display = '';
+      } else {
+          option.style.display = 'none';
+      }
     });
 
     rows.forEach(row => {
