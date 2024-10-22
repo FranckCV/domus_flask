@@ -537,7 +537,6 @@ def obtenerNovedadPorId(novedadId):
 #     conexion.commit()
 #     conexion.close()
 
-<<<<<<< HEAD
 # def eliminarImagenNovedad(id):
 #     conexion = obtener_conexion()
 #     with conexion.cursor() as cursor:
@@ -548,18 +547,4 @@ def obtenerNovedadPorId(novedadId):
 #         cursor.execute(sql, (id,))
 #     conexion.commit()
 #     conexion.close()
-=======
-def eliminarImagenNovedad(id):
-    conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        sql = '''
-            DELETE FROM IMG_NOVEDAD
-            WHERE id = %s
-        '''
-        cursor.execute(sql, (id,))
-    conexion.commit()
-    conexion.close()
 
-
-
->>>>>>> 2ee3b118972bc40c1f40dc85a0c666692f8de4d5
