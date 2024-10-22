@@ -1,11 +1,4 @@
-h_section {
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-}
-
 h2 {
-    font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
     color: #1e1c7a;
@@ -15,6 +8,7 @@ h2 {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    font-size: 13px;
 }
 
 #break_nav .col {
@@ -22,8 +16,12 @@ h2 {
     flex-direction: column;
 }
 
+.form-control ,
+.form-select {
+    font-size: 100%;
+}
+
 .lblchoosie {
-    font-size: 16px;
     margin-bottom: 10px;
 }
 
@@ -32,40 +30,41 @@ h2 {
     border: 1px solid #ddd;
     border-radius: 5px;
     width: 200px;
-    font-size: 14px;
 }
 
 .input-group {
     display: flex;
     align-items: center;
     width: 100%;
+    font-size: 12px;
+    /* gap: 5px; */
 }
 
 .input-group input {
     width: 250px;
     border-radius: 5px;
     padding: 10px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+    /* border: 1px solid #ccc; */
 }
 
 .searchi {
     background-color: #1e1c7a;
     border: none;
     padding: 10px 15px;
-    margin-left: -5px;
-    border-radius: 0 5px 5px 0;
+    border-radius: 12px;
     cursor: pointer;
+}
+
+.input-group #button-addon2 {
+    border-radius: 12px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 .search_loupe {
     width: 18px;
     height: 18px;
     filter: brightness(0) invert(1); 
-}
-
-.add-btn {
-    margin-left: 20px;
 }
 
 #add_btn {
@@ -75,7 +74,6 @@ h2 {
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
     margin-left: 10px;
 }
 
@@ -87,15 +85,16 @@ h2 {
 .table-container {
     background-color: white;
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px #0000006c;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    /* border-collapse: collapse; */
     font-size: 11px;
     color: #333;
+    border: 1px solid grey;
+    border-radius: 20px;
 }
 
 table thead {
@@ -113,7 +112,7 @@ table th {
     text-align: center;
 }
 
-tr{
+tr {
     border-bottom: 1px solid #ddd;
     text-align: center; 
     vertical-align: middle;
@@ -125,6 +124,11 @@ table tbody tr:hover {
 
 table td i {
     font-size: 18px;
+}
+
+table td:not(.celda_texto_amplio) ,
+table td:not(.celda_texto_amplio) {
+    text-align: center;
 }
 
 table .celda_texto_amplio {
@@ -146,8 +150,7 @@ tr .celda_texto_bloque {
 .celda_texto_bloque img {
     width: 4vw;
     border-radius: 5px;
-    /* box-shadow: 1px 1px 5px; */
-    border: 1px solid rgb(211, 211, 211);
+    border: 1px solid #d3d3d3;
 }
 
 .acciones {
@@ -155,6 +158,16 @@ tr .celda_texto_bloque {
     gap: 10px;
     justify-content: space-between;
     align-items: center;
+    flex-direction: column;
+}
+
+.acciones * {
+    display: flex;
+}
+
+.acciones a {
+    color: black;
+    text-decoration: none;
 }
 
 .acciones img {
@@ -167,10 +180,15 @@ tr .celda_texto_bloque {
     opacity: 0.7;
 }
 
-form button {
+.acciones form {
+    display: flex;
+}
+
+.acciones form button {
     background-color: transparent;
     border: none;
     cursor: pointer;
+    display: flex;
 }
 
 button {
@@ -184,6 +202,8 @@ button:hover img {
 }
 
 
-.acciones form button img {
-    margin-right: 30px;
+.opciones_column {
+    position: sticky;
 }
+
+

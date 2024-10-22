@@ -1,8 +1,7 @@
 :root {
-    --height-header1: 8vh;
-    --height-header2: 10vh;
+    --height-header: 100px;
     --height-nav: 10vh;
-    --height-main-header: calc(var(--height-header1) + var(--height-header2) + var(--height-nav));
+    --width-menu: 250px;
 
     --size-bubble-cart: 5vw;
     --size-bubble-cart-tab: 3.5vw;
@@ -45,10 +44,11 @@
     font-size: 90%;
     min-height: 100vh;
     color: var(--font1);
-    display: grid;
-    grid-template-columns: auto 1fr; 
     overflow-x: hidden;
     position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: var(--height-header) auto;
     grid-template-areas: 
         "header header"
         "aside main";
@@ -61,16 +61,16 @@ header {
     justify-content: space-between; 
     align-items: center;
     width: 100%;
-    position: sticky;
+    position: fixed;
     z-index: 1501;
     top: 0;
+    height: var(--height-header);
 }
 
 .header_item {
     display: flex;
     justify-content: center;
     text-align: center;
-    /* flex-direction: column; */
     align-items: center;
     color: var(--font2);
     padding: 10px 20px;
@@ -91,7 +91,6 @@ header {
 
 .header_option:hover {
     color: var(--color5);
-    /* animation-name: header_item_floating; */
     animation-duration: 0.5s;
     animation-iteration-count: infinite;
 }
@@ -123,16 +122,22 @@ header p {
 
 /* Sidebar menu */
 aside {
-    grid-area: aside; 
-    width: 250px;
-    background-color: var(--color7);
+    /* grid-area: aside;  */
+    width: var(--width-menu);
+    background-color: #092eaa;
     padding: 20px;
+    padding-top: calc(var(--height-header) + 20px);
     color: var(--font2);
     display: flex;
     flex-direction: column;
     height: auto;
     position: fixed;
     height: 100%;
+    overflow-y: scroll;
+}
+
+aside::-webkit-scrollbar {
+    display: none;
 }
 
 #usuario{
@@ -143,8 +148,7 @@ aside {
 }
 
 aside img {
-    width: 150px;
-    height: 150px;
+    width: 120px;
     border-radius: 50%;
     margin-bottom: 10px;
 }
@@ -154,16 +158,25 @@ aside p {
     margin-bottom: 20px;
 }
 
+.menu_items {
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
 .menu_items a {
-    padding: 10px;
-    margin-bottom: 10px;
+    padding-inline: 15px;
+    padding-block: 7px;
+    /* margin-bottom: 10px; */
     text-decoration: none;
     color: var(--font2);
-    background-color: var(--color2);
+    background-color: #071866;
     border-radius: var(--border-radius-element);
     transition: background-color 0.3s ease;
     display: flex;
     align-items: center;
+    gap: 7px;
+    justify-content: left;
 }
 
 .menu_items a:hover {
@@ -174,16 +187,16 @@ aside p {
     background-color: var(--color4);
 }
 
-.menu_items a i {
-    margin-right: 10px;
+.menu_items a p {
+    margin: 0;
 }
 
 main {
     grid-area: main; 
-    padding: 40px;
+    padding-block: 20px;
+    padding-inline: 30px;
     background-color: var(--background);
-    margin-left: 250px;
-    font-size: 50%;
+    margin-left: var(--width-menu);
 }
 
 /*******************PARA EL DESPLEGABLE****************/
@@ -232,10 +245,80 @@ main {
     display: block;
 }
 
-
-/****************/
 .active {
     background-color: #1e1c7a; 
     color: white; 
     font-weight: bold; 
 }
+
+/* DASHBOARD */
+
+.dashboard_content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+
+.dashboard_item {
+    width: 100%;
+    border: 1px solid #2c4677;
+    background-color: #032a66;
+    color: white;
+    border-radius: 20px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    transition: 0.1s ease-in-out;
+    display: grid;
+    gap: 2px;
+    grid-template-columns: 15% 85%;
+    grid-template-rows: 100%;
+    grid-template-areas: "db_nom db_link";
+}
+
+.dashboard_item:hover {
+    scale: 1.025;
+    background-color: #00124e;
+    color: white;
+}
+
+.dashboard_item p {
+    padding: 0;
+    margin: 0;
+    grid-area: db_nom;
+}
+
+.dshbd_item_content {
+    background-color: #2b72db;
+    height: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-items: center;
+    gap: 10px;
+}
+
+.dshbd_item_content a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #02011f;
+    color: white;
+    padding-inline: 10px;
+    padding-block: 5px;
+    border-radius: 10px;
+}
+
+.dshbd_item_content a:hover {
+    background-color: #ffffff;
+    color: #000;
+}
+
+
+
+
+
+
