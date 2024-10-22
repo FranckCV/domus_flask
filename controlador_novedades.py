@@ -534,8 +534,6 @@ def obtenerNovedadPorId(novedadId):
 #     conexion.commit()
 #     conexion.close()
 
-<<<<<<< HEAD
-=======
 # def eliminarImagenNovedad(id):
 #     conexion = obtener_conexion()
 #     with conexion.cursor() as cursor:
@@ -547,7 +545,6 @@ def obtenerNovedadPorId(novedadId):
 #     conexion.commit()
 #     conexion.close()
 
-<<<<<<< HEAD
 # def eliminarImagenNovedad(id):
 #     conexion = obtener_conexion()
 #     with conexion.cursor() as cursor:
