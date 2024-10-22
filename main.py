@@ -527,8 +527,10 @@ def eliminar_tipo_novedad():
 
 @app.route("/formulario_editar_tipo_novedad=<int:id>")
 def editar_tipo_novedad(id):
-    tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
-    return render_template("editar_tipo_novedad.html", tipos_novedad=tipo_novedad)
+    #tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+
+    return render_template("editar_tipo_novedad.html", tipos_novedad=tipos_novedad)
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
 def actualizar_tipo_novedad(): 
@@ -588,7 +590,7 @@ def guardar_img_novedad():
 @app.route("/novedades_listado")
 def novedades_listado():
     novedades = controlador_novedades.obtenerTodasLasNovedades()
-    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()  # Añade esto
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
     marcas = controlador_marcas.obtener_listado_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     return render_template("novedades_listado.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias)
@@ -605,7 +607,7 @@ def editar_novedad(id):
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     tiposNovedad = controlador_tipos_novedad.obtener_tipos_novedad()
     print(tiposNovedad)
-    return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tiposNovedad=tiposNovedad, novedad_id = id)
+    return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tipos_novedad=tiposNovedad, novedad_id = id)
 
 @app.route("/actualizar_novedad", methods=["POST"])
 def actualizar_novedad():
@@ -632,7 +634,7 @@ def formulario_agregar_img_novedad(novedad_id):
 
 @app.route("/img_novedades_listado=<int:novedad_id>")
 def img_novedades_listado(novedad_id):
-    img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)  # Llamada a la función
+    img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)
     return render_template("img_novedades_listado.html", img_novedades=img_novedades, novedad_id=novedad_id)
 
 
