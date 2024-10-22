@@ -387,27 +387,30 @@ def anuncioselect(id):
             FROM `novedad` nov
             INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
             INNER JOIN marca mar on mar.id = nov.MARCAid
-            WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 1 and nov.id = '''+str(id)+'''
+            WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 1 and nov.id = %s
             Group by nov.id
         '''
-        cursor.execute(sql)
+        cursor.execute(sql, (id,))
         promo = cursor.fetchone()
 
-        elemento_promo = None
-
-        if promo:
-            pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , pro_img , mar_nom = promo
-
-            if pro_img:
-                logo_base64 = base64.b64encode(pro_img).decode('utf-8')
-                logo_url = f"data:image/png;base64,{logo_base64}"
-            else:
-                logo_url = "" 
-
-        elemento_promo = (pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , logo_url , mar_nom)
-
     conexion.close()
-    return elemento_promo
+
+    if promo:
+        pro_id, pro_titulo, pro_fecini, pro_fecven, pro_ter, pro_mar, pro_sub, pro_img, mar_nom = promo
+
+        # Si hay una imagen, la convertimos
+        if pro_img:
+            logo_base64 = base64.b64encode(pro_img).decode('utf-8')
+            logo_url = f"data:image/png;base64,{logo_base64}"
+        else:
+            logo_url = "" 
+
+        # Retornamos los datos en forma de tupla
+        return (pro_id, pro_titulo, pro_fecini, pro_fecven, pro_ter, pro_mar, pro_sub, logo_url, mar_nom)
+
+    # Si no se encuentra ningún resultado, retornamos None o un valor por defecto
+    return None
+
 
 
 # Insertar una novedad
@@ -545,8 +548,5 @@ def eliminarImagenNovedad(id):
     conexion.commit()
     conexion.close()
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> ff174a22fd35b3a6e3bfbe2aa1a0dd11306a4d8b
