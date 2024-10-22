@@ -618,7 +618,7 @@ def formulario_agregar_img_novedad(novedad_id):
 
 @app.route("/img_novedades_listado=<int:novedad_id>")
 def img_novedades_listado(novedad_id):
-    img_novedades = controlador_imagenes_novedades.obtener_todas_imagenes_novedad()  # Llamada a la función
+    img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)  # Llamada a la función
     return render_template("img_novedades_listado.html", img_novedades=img_novedades, novedad_id=novedad_id)
 
 
@@ -626,25 +626,27 @@ def img_novedades_listado(novedad_id):
 def eliminar_img_novedad():
     controlador_novedades.eliminarImagenNovedad(request.form["id"])
     novedad_id = request.form["novedad_id"]
-    return redirect(f"/img_novedades_listado/{novedad_id}")
+    return redirect(f"/img_novedades_listado={novedad_id}")
 
 @app.route("/formulario_editar_img_novedad=<int:id>")
 def editar_img_novedad(id):
-    img_novedad = controlador_novedades.obtenerImagenesNovedad(id)
+    img_novedad = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(id)
+    novedad_id = controlador_imagenes_novedades.obtener_novedad_id_por_imagen_id(id)
+    print(novedad_id)
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
-    return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad)
+    return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad, novedad_id = novedad_id)
 
 @app.route("/actualizar_img_novedad", methods=["POST"])
 def actualizar_img_novedad():
     id = request.form["id"]
     nom_imagen = request.form["nomImagen"]
     tipo_img_novedad_id = request.form["tipo_img_novedad"]
-    
+    novedad_id = request.form["novedad_id"]
+
     imagen = request.files["imagen"].read() if "imagen" in request.files else None
 
-    controlador_novedades.actualizarImagenNovedad(nom_imagen, imagen, tipo_img_novedad_id, id)
-    novedad_id = request.form["novedad_id"]
-    return redirect(f"/img_novedades_listado/{novedad_id}")
+    controlador_imagenes_novedades.actualizar_imagen_novedad(id, nom_imagen, imagen, tipo_img_novedad_id, novedad_id)
+    return redirect(f"/img_novedades_listado={novedad_id}")
 
 #########################FIN NOVEDAD####################################
 

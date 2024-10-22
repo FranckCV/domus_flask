@@ -17,7 +17,9 @@ Editar Imagen de Novedad
         <div class="form-grid" id="col_add">
             <!-- Primera columna -->
             <div class="row">
-                <input type="hidden" name="novedad_id" value="{{ img_novedad[4] }}">
+                <input type="hidden" name="novedad_id" value="{{ novedad_id }}">
+                <p>Novedad ID: {{ novedad_id }}</p>
+
                 <div class="col">
                     <label for="nomImagen">Nombre de la Imagen:</label><br>
                     <input value="{{ img_novedad[1] }}" required type="text" class="input" placeholder="Nombre de la imagen" name="nomImagen" id="nomImagen">

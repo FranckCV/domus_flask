@@ -43,11 +43,6 @@ def obtener_imagenes_por_producto(id):
     return imagenes_lista
 
 
-
-
-
-
-
 # def obtenerEnTarjetasxMarca(marca):
 #     conexion = obtener_conexion()
 #     productos = []
@@ -188,3 +183,5 @@ def obtener_imagenes_por_producto(id):
 #                        (codigo, nombre, artista, precio, genero, id))
 #     conexion.commit()
 #     conexion.close()
+
+
