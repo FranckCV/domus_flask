@@ -81,6 +81,10 @@ def anuncios():
     anuncios = controlador_novedades.mostrarNovedadesAnuncios()
     return render_template('anuncios.html', anuncios=anuncios)
 
+@app.route("/anuncio/<int:id>")
+def anuncio(id):
+    anuncio = controlador_novedades.anuncioselect(id)  
+    return render_template('anuncioSelect.html', anuncio=anuncio)
 
 @app.route("/error") 
 def error():

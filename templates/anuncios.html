@@ -6,35 +6,27 @@
 
 {% block estilos %} 
     <link rel="stylesheet" href="static/css/anuncios.css">
+{% endblock %}
 
-    {% endblock %}
-
-    {% block contenido %}
+{% block contenido %}
     <main>
         <div class="grid-container">
-   
             {% for anuncio in anuncios %}    
-
-            <a href="{{url_for('anuncios', id=anuncio[0])}}">
-                <div class="anuncios-grids">
-                    <div class="anuncios-item grande">
-                        <img src="{{anuncio[1]}}" alt="black friday">
+                <a href="{{url_for('anuncio', id=anuncio[0])}}">
+                    <div class="anuncio-card">
+                        <div class="anuncio-image-container">
+                            <img src="{{anuncio[1]}}" alt="Imagen de anuncio">
+                        </div>
+                        <div class="anuncio-details">
+                            <h2>{{anuncio[2]}}</h2>
+                        </div>
                     </div>
-                    <div class="anuncios-item">
-                        <h2>{{anuncio[2]}}</h2>
-                        
-                    </div>
-                </div>
-            </a>
-
+                </a>
             {% endfor %}
-            
         </div>
     </main>
+{% endblock %}
 
-    {% endblock %}
-
-    {% block scripts %} 
-    
-    <!-- <script src="static/js/promociones.js"></script> -->
-    {% endblock %}
+{% block scripts %} 
+    <!-- Aquí puedes agregar tus scripts personalizados si los necesitas -->
+{% endblock %}
