@@ -71,7 +71,7 @@
               <option value="" disabled selected>Selecciona una marca</option>
               {% for marca in marcas %}
                 <!-- <option value="{{ marca.id }}">{{ marca.marca }}</option> -->
-                <option value="{{ marca.0 }}">{{ marca.1 }}</option>
+                <option value="{{ marca[0] }}">{{ marca[1] }}</option>
                 <!-- <script>console.log('{{ marca.id }}: {{ marca.marca }}');</script> -->
               {% endfor %}
             </select>
@@ -102,8 +102,8 @@
 
         <div class="row">
           <div class="col">
-            <label for="imagenes">Subir Imágenes:</label><br />
-            <input type="file" class="input" name="imagenes" id="imagenes" multiple />
+            <!-- <label for="imagenes">Subir Imágenes:</label><br /> -->
+            <!-- <input type="file" class="input" name="imagenes" id="imagenes" multiple /> -->
           </div>
         </div>
 
