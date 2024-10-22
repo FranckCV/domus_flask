@@ -338,16 +338,25 @@ def resumen_de_pedido():
 
 
 
-# PAGINAS USUARIO ADMINISTRADOR
 
+
+
+
+
+
+
+
+# PAGINAS USUARIO ADMINISTRADOR
 
 @app.route("/error_adm") 
 def error_adm():
     return render_template("error_admin.html")
 
+
 @app.route('/cuenta_administrativa')
 def cuenta_administrativa():
     return render_template('cuenta_administrativa.html')
+
 
 @app.route("/dashboard")
 def dashboard():
@@ -358,6 +367,7 @@ def dashboard():
 def formulario_agregar_marca():
     return render_template("agregar_marca.html")
 
+
 @app.route("/guardar_marca", methods=["POST"])
 def guardar_marca():
     marca = request.form["marca"] 
@@ -366,20 +376,24 @@ def guardar_marca():
     controlador_marcas.insertar_marca(marca,logo_binario)
     return redirect("/marcas")
 
-@app.route("/marcas")
+
+@app.route("/listado_marcas")
 def marcas():
     marcas = controlador_marcas.obtener_listado_marcas()
-    return render_template("marcas.html", marcas=marcas, active='marcas')
+    return render_template("listado_marcas.html", marcas=marcas, active='marcas')
+
 
 @app.route("/eliminar_marca", methods=["POST"])
 def eliminar_marca():
     controlador_marcas.eliminar_marca(request.form["id"])
     return redirect("/marcas")
 
+
 @app.route("/formulario_editar_marca=<int:id>")
 def editar_marca(id):
     marca = controlador_marcas.obtener_marca_por_id(id)
     return render_template("editar_marca.html", marca=marca)
+
 
 @app.route("/actualizar_marca", methods=["POST"])
 def actualizar_marca():
@@ -395,6 +409,7 @@ def actualizar_marca():
 def formulario_agregar_categoria():
     return render_template("agregar_categoria.html")
 
+
 @app.route("/guardar_categoria", methods=["POST"])
 def guardar_categoria():
     categoria = request.form["categoria"] 
@@ -403,21 +418,25 @@ def guardar_categoria():
     controlador_categorias.insertar_categoria(categoria,faicon_cat,disponibilidad)
     return redirect("/categorias")
     
-@app.route("/categorias")
+
+@app.route("/listado_categorias")
 def categorias():
     categorias = controlador_categorias.obtener_categorias()
     subcategorias =controlador_subcategorias.obtener_subcategorias()
-    return render_template("categorias.html", categorias=categorias,subcategorias = subcategorias)
+    return render_template("listado_categorias.html", categorias=categorias,subcategorias = subcategorias)
+
 
 @app.route("/eliminar_categoria", methods=["POST"])
 def eliminar_categoria():
     controlador_categorias.eliminar_categoria(request.form["id"])
     return redirect("/categorias")
 
+
 @app.route("/formulario_editar_categoria=<int:id>")
 def editar_categoria(id):
     categoria = controlador_categorias.obtener_categoria_por_id(id)
     return render_template("editar_categoria.html", categoria=categoria)
+
 
 @app.route("/actualizar_categoria", methods=["POST"])
 def actualizar_categoria():
@@ -434,6 +453,7 @@ def formulario_agregar_subcategoria():
     categorias = controlador_categorias.obtener_categorias()
     return render_template("agregar_subcategoria.html",categorias=categorias,active='categorias')
 
+
 @app.route("/guardar_subcategoria", methods=["POST"])
 def guardar_subcategoria():
     nombre = request.form["nombre"] 
@@ -443,16 +463,19 @@ def guardar_subcategoria():
     controlador_subcategorias.insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id)
     return redirect("/categorias")
 
+
 @app.route("/eliminar_subcategoria", methods=["POST"])
 def eliminar_subcategoria():
     controlador_subcategorias.eliminar_subcategoria(request.form["id"])
     return redirect("/categorias")
+
 
 @app.route("/formulario_editar_subcategoria=<int:id>")
 def editar_subcategoria(id):
     subcategoria = controlador_subcategorias.obtener_subcategoria_por_id(id)
     categorias = controlador_categorias.obtener_categorias()
     return render_template("editar_subcategoria.html", subcategoria=subcategoria, categorias=categorias)
+
 
 @app.route("/actualizar_subcategoria", methods=["POST"])
 def actualizar_subcategoria():
@@ -464,6 +487,7 @@ def actualizar_subcategoria():
     controlador_subcategorias.actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id,id)
     return redirect("/categorias")
 ########## FIN SUB-CATEGORIA ##########
+
 
 
 ########## INICIO PRODUCTOS ##########
@@ -490,13 +514,13 @@ def guardar_producto():
     controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
     return redirect("/productos")
 
-@app.route("/productos")
+@app.route("/listado_productos")
 def productos():
     productos = controlador_productos.obtener_productos()
     marcas = controlador_marcas.obtener_marcasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
     categorias = controlador_categorias.obtener_categoriasXnombre()
-    return render_template("productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias , categorias = categorias)
+    return render_template("listado_productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias , categorias = categorias)
 
 @app.route("/eliminar_producto", methods=["POST"])
 def eliminar_producto():
@@ -608,18 +632,20 @@ def guardar_img_novedad():
 
 
 
-@app.route("/novedades_listado")
+@app.route("/listado_novedades")
 def novedades_listado():
     novedades = controlador_novedades.obtenerTodasLasNovedades()
     tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
     marcas = controlador_marcas.obtener_listado_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("novedades_listado.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias)
+    return render_template("listado_novedades.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias)
+
 
 @app.route("/eliminar_novedad", methods=["POST"])
 def eliminar_novedad():
     controlador_novedades.eliminarNovedad(request.form["id"])
     return redirect("/novedades_listado")
+
 
 @app.route("/formulario_editar_novedad=<int:id>")
 def editar_novedad(id):

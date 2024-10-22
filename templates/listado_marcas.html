@@ -12,14 +12,16 @@
   <section class="h_section" id="mainSection">
     <h2 class="fw-bolder">Listado de marcas</h2>
     <div class="container-fluid" id="break_nav">
-      <div class="col">
+
+      <!-- <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
         <select class="form-select choosie" aria-label="Default select example">
           <option selected>Tecnología</option>
           <option value="1">Ropa</option>
           <option value="2">Accesorios</option>
         </select>
-      </div>
+      </div> -->
+      
       <div class="col">
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
@@ -40,6 +42,7 @@
             <th>Fecha Registro</th>
             <th>Disponiblidad</th>
             <th>Cant. Productos</th>
+            <th>Cant. Novedades</th>
             <th>Opciones</th>
           </tr>
         </thead>
@@ -81,6 +84,8 @@
 
               <td>{{ marca.6 }}</td>
 
+              <td>{{ marca.7 }}</td>
+
               <td class="opciones_column">
                 <div class="acciones">
                   <a href="{{url_for('marca', id=marca[0])}}"><i class="fa-solid fa-eye"></i></a>
@@ -113,5 +118,5 @@
       return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
     }
   </script>
-  <!-- <script src="/static/js/admin_productos.js"></script> -->
+  <script src="/static/js/admin_productos.js"></script>
 {% endblock %}
