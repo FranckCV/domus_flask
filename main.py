@@ -255,20 +255,16 @@ def agregar_carrito():
 
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
-    # Obtener el producto_id desde el formulario
     producto_id = request.form.get("producto_id")
-    print(f"Producto ID recibido: {producto_id}")  # Agregar un print para verificar el producto_id
+    print(f"Producto ID recibido: {producto_id}") 
+    usuario_id = 1 
+    estado = 1 
 
-    usuario_id = 1  # Ajustar según la autenticación del usuario
-    estado = 1  # Estado activo del pedido
-    
-    # Verificar si el pedido existe
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    print(f"Pedido ID encontrado: {pedido_id}")  # Verificar si el pedido_id es correcto
+    print(f"Pedido ID encontrado: {pedido_id}")  
 
     if pedido_id:
-        # Aumentar la cantidad del producto
-        controlador_carrito.aumentar_producto(producto_id, pedido_id)
+        controlador_carrito.aumentar_producto(pedido_id,producto_id)
         print("Producto aumentado correctamente.")
     else:
         print("No se encontró un pedido activo.")
@@ -285,17 +281,15 @@ def disminuir_carro():
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
 
     if pedido_id:
-        controlador_carrito.eliminar_producto(producto_id, pedido_id)
+        controlador_carrito.eliminar_producto(pedido_id,producto_id)
     
-    # Redirige a la vista del carrito
     return redirect('/carrito')
+
 #PARA CONFIRMAR CARRE
 @app.route("/confirmar_carrito", methods=["POST"])
 def confirmar_carrito():
-    estado = 2  # Estado 2 indica que el pedido ha sido confirmado
-    usuario_id = 1  # Reemplaza esto con la identificación del usuario autenticado si tienes autenticación
-
-    # Cambiar el estado del pedido a 2 para confirmar
+    estado = 2  
+    usuario_id = 1 
     controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
 
     # Redirigir a una página de confirmación de compra o al carrito
@@ -693,7 +687,7 @@ def formulario_agregar_img_novedad(novedad_id):
     
 #     return redirect("/novedades_listado")
 
-@app.route("/img_novedades_listado/<int:novedad_id>")
+@app.route("/img_novedades_listado=<int:novedad_id>")
 def img_novedades_listado(novedad_id):
     img_novedades = controlador_novedades.obtenerImagenesNovedad(novedad_id)
     return render_template("img_novedades_listado.html", img_novedades=img_novedades, novedad_id=novedad_id)
