@@ -38,11 +38,7 @@
       <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por subcategoría</p>
         <select class="form-select choosie" aria-label="Default select example" id="subcategorySelect">
-<<<<<<< HEAD
             <option value="0" data-category="0" selected>Todos</option>
-=======
-          <option value="0" selected>Todos</option>
->>>>>>> 4583280e9c39dd6a47faaa4ed2f3f8c4c9a51aa1
           {% for subcategoria in subcategorias %}
             <option value="{{ subcategoria.0 }}" data-category="{{ subcategoria.4 }}">{{ subcategoria.1 }}</option>
           {% endfor %}

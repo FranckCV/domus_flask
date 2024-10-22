@@ -139,7 +139,10 @@ def obtener_todas_marcas_recientes():
                 SELECT 
                     id,
                     marca, 
-                    img_logo 
+                    img_logo, 
+                    img_banner,
+                    fecha_registro,
+                    disponibilidad
                 FROM marca 
                 where disponibilidad = 1
                 order by fecha_registro desc
@@ -149,7 +152,7 @@ def obtener_todas_marcas_recientes():
     
     marcas_lista = []
     for marca in marcas:
-        marca_id, marca_nombre, logo_binario = marca
+        marca_id, marca_nombre, logo_binario, img_bin , fec , disp= marca
         if logo_binario:
             logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
             logo_url = f"data:image/png;base64,{logo_base64}"
@@ -199,10 +202,22 @@ def insertar_marca(marca, logo):
     conexion.close()
 
 
-def obtener_marcas():
+def obtener_listado_marcas():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id, marca, img_logo FROM marca")
+        cursor.execute('''
+               SELECT 
+                    m.id,
+                    m.marca, 
+                    m.img_logo, 
+                    m.img_banner,
+                    m.fecha_registro,
+                    m.disponibilidad,
+                    COUNT(p.id) AS cantidad_productos
+                FROM marca m
+                LEFT JOIN producto p ON m.id = p.MARCAid
+                GROUP BY m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad
+                ''')
         marcas = cursor.fetchall()
         
         # Convertir el logo binario a base64 para cada marca
@@ -211,15 +226,24 @@ def obtener_marcas():
             id_marca = marca[0]
             nombre_marca = marca[1]
             logo_binario = marca[2]
+            banner_binario = marca[3]
+            fecha = marca[4]
+            disp = marca[5]
+            cant = marca[6]
             
-            # Convertir el logo binario a una cadena base64
             if logo_binario:
                 logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
                 logo_formato = f"data:image/png;base64,{logo_base64}" 
             else:
-                logo_formato = None 
+                logo_formato = None
+
+            if banner_binario:
+                logo_base64 = base64.b64encode(banner_binario).decode('utf-8')
+                banner_formato = f"data:image/png;base64,{logo_base64}" 
+            else:
+                banner_formato = "" 
             
-            marcas_procesadas.append((id_marca, nombre_marca, logo_formato))
+            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cant))
     
     conexion.close()
     return marcas_procesadas

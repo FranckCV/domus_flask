@@ -33,29 +33,65 @@
       <table border="0" cellspacing="0" cellpadding="8" class="product_if">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Marca</th>
             <th>Logo</th>
-            <th>Acción</th>
+            <th>Banner</th>
+            <th>Fecha Registro</th>
+            <th>Disponiblidad</th>
+            <th>Cant. Productos</th>
+            <th>Opciones</th>
           </tr>
         </thead>
         <tbody>
           {% for marca in marcas %}
             <tr>
+              <td>{{ marca.0 }}</td>
               <td>{{ marca.1 }}</td>
+
               <td>
-                {% if marca.2 %}
-                  <img src="{{ marca.2 }}" alt="Logo de {{ marca.1 }}" width="100" height="100" /> <!-- Logo de la marca -->
+                <div class="celda_texto_bloque">
+                  {% if marca.2 %}
+                    <img src="{{ marca.2 }}" alt="Logo de {{ marca.1 }}" class="img-fluid"/> <!-- Logo de la marca -->
+                  {% else %}
+                    <span>Sin logo</span> <!-- Texto alternativo si no hay logo -->
+                  {% endif %}
+                </div>
+              </td>
+
+              <td>
+                <div class="celda_texto_bloque">
+                  {% if marca.3 %}
+                    <img src="{{ marca.3 }}" alt="Banner de {{ marca.1 }}" class="img-fluid"/> <!-- Logo de la marca -->
+                  {% else %}
+                    <span>Sin banner</span> <!-- Texto alternativo si no hay logo -->
+                  {% endif %}
+                </div>
+              </td>
+
+              <td>{{ marca.4 }}</td>
+
+              <td>
+                {% if marca.5 == 1 %}
+                  <span>Disponible</span>
                 {% else %}
-                  <span>Sin logo</span> <!-- Texto alternativo si no hay logo -->
+                  <span>No Disponible</span>
                 {% endif %}
               </td>
-              <td class="acciones">
-                <a href="{{ url_for('editar_marca', id=marca.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                <form action="{{ url_for('eliminar_marca') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                  <input type="hidden" name="id" value="{{ marca.0 }}" />
-                  <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
-                </form>
+
+              <td>{{ marca.6 }}</td>
+
+              <td class="opciones_column">
+                <div class="acciones">
+                  <a href="{{url_for('marca', id=marca[0])}}"><i class="fa-solid fa-eye"></i></a>
+                  <a href="{{ url_for('editar_marca', id=marca.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
+                  <form action="{{ url_for('eliminar_marca') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <input type="hidden" name="id" value="{{ marca.0 }}" />
+                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                  </form>
+                </div>
               </td>
+
             </tr>
           {% endfor %}
         </tbody>
