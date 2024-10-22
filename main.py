@@ -11,6 +11,7 @@ import controlador_usuario_cliente
 import controlador_novedades
 import controlador_tipos_img_novedad
 import controlador_carrito
+import controlador_detalle
 
 app = Flask(__name__)
 
@@ -229,17 +230,77 @@ def registrate():
 
 # PAGINAS USUARIO CLIENTE
 
-@app.route("/carrito") #falta
-def carrito():
-    productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-    return render_template("carrito.html" , productosPopulares = productosPopulares)
 
 ######################CARRO######################
+@app.route("/carrito") 
+def carrito():
+    productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
+    productos = controlador_detalle.obtener_Detalle()  # Obtener los productos en el carrito
+    return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos)
+
+@app.route("/agregar_carrito", methods=["POST"]) 
+def agregar_carrito():
+    producto_id = request.form["producto_id"] 
+    estado = 1
+    usuario_id = 1
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
     
+    if pedido_id is None:
+        pedido_id = controlador_carrito.insertar_pedido(producto_id, 1)
     
+    controlador_carrito.insertar_detalle(producto_id, pedido_id)
     
+    # Redirige a la vista del carrito
+    return redirect('/carrito')
+
+@app.route("/aumentar_carro", methods=["POST"])
+def aumentar_carro():
+    # Obtener el producto_id desde el formulario
+    producto_id = request.form.get("producto_id")
+    print(f"Producto ID recibido: {producto_id}")  # Agregar un print para verificar el producto_id
+
+    usuario_id = 1  # Ajustar según la autenticación del usuario
+    estado = 1  # Estado activo del pedido
     
+    # Verificar si el pedido existe
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+    print(f"Pedido ID encontrado: {pedido_id}")  # Verificar si el pedido_id es correcto
+
+    if pedido_id:
+        # Aumentar la cantidad del producto
+        controlador_carrito.aumentar_producto(producto_id, pedido_id)
+        print("Producto aumentado correctamente.")
+    else:
+        print("No se encontró un pedido activo.")
     
+    return redirect('/carrito')
+
+
+@app.route("/disminuir_carro", methods=["POST"])
+def disminuir_carro():
+    producto_id = request.form["producto_id"]
+    usuario_id = 1
+    estado = 1
+
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+
+    if pedido_id:
+        controlador_carrito.eliminar_producto(producto_id, pedido_id)
+    
+    # Redirige a la vista del carrito
+    return redirect('/carrito')
+#PARA CONFIRMAR CARRE
+@app.route("/confirmar_carrito", methods=["POST"])
+def confirmar_carrito():
+    estado = 2  # Estado 2 indica que el pedido ha sido confirmado
+    usuario_id = 1  # Reemplaza esto con la identificación del usuario autenticado si tienes autenticación
+
+    # Cambiar el estado del pedido a 2 para confirmar
+    controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+
+    # Redirigir a una página de confirmación de compra o al carrito
+    return redirect('carrito_confirmacion')
+
 ######################################FIN CARRO#############################################    
 # PAGINAS USUARIO EMPLEADO
 
