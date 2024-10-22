@@ -335,6 +335,79 @@ def promoselect(id):
     conexion.close()
     return elemento_promo
 
+#Mostrar novedad Anuncio
+def mostrarNovedadesAnuncio():
+    conexion = obtener_conexion()
+    elementos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    nov.id, 
+                    MIN(imgnov.imagen),
+                    nov.titulo
+                FROM novedad nov
+                INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
+                WHERE nov.disponibilidad = 1 and nov.TIPO_NOVEDADid = 3
+                Group by nov.id
+                order by nov.fecha_registro desc;
+            '''
+        cursor.execute(sql)
+        elementos = cursor.fetchall()   
+
+    img_lista = []
+    for dato in elementos:
+        nov_id, nov_img, nov_nom  = dato
+        if nov_img:
+            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
+            img_url = f"data:image/png;base64,{logo_base64}"
+        else:
+            img_url = ""
+        
+        img_lista.append((nov_id, img_url, nov_nom))
+    conexion.close()
+    return img_lista
+
+# Anuncio Seleccionado
+
+def anuncioselect(id):
+    conexion = obtener_conexion()
+    promo = None
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                nov.`id`, 
+                nov.titulo,
+                nov.`fecha_inicio`, 
+                nov.`fecha_vencimiento`, 
+                nov.`terminos`, 
+                nov.`MARCAid`, 
+                nov.`SUBCATEGORIAid`,
+                MIN(imgnov.imagen),
+                mar.marca
+            FROM `novedad` nov
+            INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
+            INNER JOIN marca mar on mar.id = nov.MARCAid
+            WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 3 and nov.id = '''+str(id)+'''
+            Group by nov.id
+        '''
+        cursor.execute(sql)
+        promo = cursor.fetchone()
+
+        elemento_promo = None
+
+        if promo:
+            pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , pro_img , mar_nom = promo
+
+            if pro_img:
+                logo_base64 = base64.b64encode(pro_img).decode('utf-8')
+                logo_url = f"data:image/png;base64,{logo_base64}"
+            else:
+                logo_url = "" 
+
+        elemento_promo = (pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , logo_url , mar_nom)
+
+    conexion.close()
+    return elemento_promo
 
 
 # Insertar una novedad
@@ -472,8 +545,5 @@ def eliminarImagenNovedad(id):
     conexion.commit()
     conexion.close()
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> ff174a22fd35b3a6e3bfbe2aa1a0dd11306a4d8b
