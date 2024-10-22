@@ -243,10 +243,11 @@ def agregar_carrito():
     producto_id = request.form["producto_id"] 
     estado = 1
     usuario_id = 1
+    
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
     
     if pedido_id is None:
-        pedido_id = controlador_carrito.insertar_pedido(producto_id, 1)
+        pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
     
     controlador_carrito.insertar_detalle(producto_id, pedido_id)
     

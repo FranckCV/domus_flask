@@ -83,7 +83,7 @@
                   <!-- Disminuir cantidad -->
                   <form class="product_item_count" action="{{ url_for('disminuir_carro') }}" method="post">
                     <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id"/> <!-- Campo oculto con el producto_id -->
-                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3">
+                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="disminuir(this)">
                       <span class="signo">-</span>
                     </button>
                   </form>
@@ -94,7 +94,7 @@
                   <!-- Aumentar cantidad -->
                   <form class="product_item_count" action="{{ url_for('aumentar_carro') }}" method="post">
                     <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id" /> 
-                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3">
+                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="aumentar(this)">
                       <span class="signo">+</span>
                     </button>
                   </form>

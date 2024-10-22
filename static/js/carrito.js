@@ -179,7 +179,7 @@ function disminuir(button) {
     //obtenemos la etiqueta de descuento porque si va a eliminar productos, entonces su descuento ya no es válido
     const descuentoElement = document.getElementById('descuento');
     let carrito = obtenerCarrito();
-
+    
     if (carrito[nombreProducto]) {
         carrito[nombreProducto].cantidad -= 1;
         descuentoElement.querySelector('span').innerText = `S/.00.00`;
@@ -190,6 +190,7 @@ function disminuir(button) {
         guardarCarrito(carrito);
         actualizarCarrito();
         actualizarCantidadCarrito();
+        console.log(carrito[nombreProducto].cantidad)
     }
 }
 
