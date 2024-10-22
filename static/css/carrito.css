@@ -3,7 +3,11 @@
     /* --color-cart: #4e4e8c; */
     --color-cart: #144ba2;
 }
-
+.cantidades{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .page_cart {
     padding-inline: 2rem;
 }
@@ -500,4 +504,11 @@
 
 .title_cart_products {
     color: #000;
+}
+
+
+#cant_aumentar{
+    background-color: white;
+    border: none;
+    
 }

@@ -1,0 +1,54 @@
+{% extends 'carrito.html' %}
+
+{% block titulo %}
+  Tu Carrito
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/carrito.css" />
+{% endblock %}
+
+{% block carritoContenido %}
+  {% for producto in productos %}
+    <div class="product_item">
+      <div class="product_item_info">
+        <img src="{{ producto.0 }}" class="product_item_pic" alt="Imagen del Producto" />
+
+        <div class="product_item_name">
+          <p class="nombreProducto">{{ producto.1 }}</p>
+          <p class="vendido-por">
+            Vendido por: <strong>Domus</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="product_item_price_unit">
+        <p class="precioProducto">S/ {{ producto.2 }}</p>
+      </div>
+
+      <div class="cantidades">
+        <form class="product_item_count" action="{{ url_for('disminuir_carro') }}" method="post">
+            <input type="hidden" name="producto_id" value="{{ producto[4] }}" /> <!-- Campo oculto con el producto_id -->
+            <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">-</span></button>
+          </form>
+          
+          <span class="cant">{{ producto[3] }}</span>
+          
+          <form class="product_item_count" action="{{ url_for('aumentar_carro') }}" method="post">
+            <input type="hidden" name="producto_id" value="{{ producto[4] }}" /> <!-- Campo oculto con el producto_id -->
+            <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">+</span></button>
+          </form>
+      </div>
+
+      <div class="product_item_price_total">
+        <p class="total">S/ {{ producto[3] * producto[2] }}</p>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script src="static/js/carrito.js"></script>
+<script src="static/js/scriptListProduct.js"></script>
+
+{% endblock %}

@@ -25,13 +25,12 @@
     </div>
 
     <div class="container-fluid" id="break_nav">
-
       <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
         <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
-            <option value="0" selected>Todos</option>
+          <option value="0" selected>Todos</option>
           {% for categoria in categorias %}
-            <option value="{{categoria[0]}}">{{categoria[1]}}</option>
+            <option value="{{ categoria.0 }}">{{ categoria.1 }}</option>
           {% endfor %}
         </select>
       </div>
@@ -39,9 +38,9 @@
       <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por subcategoría</p>
         <select class="form-select choosie" aria-label="Default select example" id="subcategorySelect">
-            <option value="0" selected>Todos</option>
+          <option value="0" selected>Todos</option>
           {% for subcategoria in subcategorias %}
-            <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}">{{subcategoria[1]}}</option>
+            <option value="{{ subcategoria.0 }}" data-category="{{ subcategoria.4 }}">{{ subcategoria.1 }}</option>
           {% endfor %}
         </select>
       </div>
@@ -49,9 +48,9 @@
       <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por marca</p>
         <select class="form-select choosie" aria-label="Default select example" id="brandSelect">
-            <option value="0" selected>Todos</option>
+          <option value="0" selected>Todos</option>
           {% for marca in marcas %}
-            <option value="{{marca[0]}}">{{marca[1]}}</option>
+            <option value="{{ marca.0 }}">{{ marca.1 }}</option>
           {% endfor %}
         </select>
       </div>
@@ -84,8 +83,8 @@
                 <td>{{ producto.1 }}</td>
                 <td>{{ producto.2 }}</td>
                 <td>{{ producto.3 }}</td>
-                {% if producto.4 == 0 %}
-                  <td>-</td>
+                {% if producto[4] == 0 or producto[4] is none %}
+                  <td>---</td>
                 {% else %}
                   <td>{{ producto.4 }}</td>
                 {% endif %}
@@ -103,8 +102,8 @@
                 <td>
                   {% for marca in marcas %}
                     {% if marca.0 == producto.10 %}
-                      <div class="celda_texto_bloque" data-brand="{{marca.0}}">
-                        <img class="img-fluid" src="{{marca.2}}" alt="">
+                      <div class="celda_texto_bloque" data-brand="{{ marca.0 }}">
+                        <img class="img-fluid" src="{{ marca.2 }}" alt="" />
                         <span>{{ marca.1 }}</span>
                       </div>
                     {% endif %}
@@ -113,20 +112,20 @@
                 <td>
                   {% for subcategoria in subcategorias %}
                     {% if subcategoria.0 == producto.11 %}
-                      <div class="celda_texto_bloque" data-category="{{subcategoria.4}}">
-                        <i class="{{ subcategoria.6 }}"></i> 
+                      <div class="celda_texto_bloque" data-category="{{ subcategoria.4 }}">
+                        <i class="{{ subcategoria.6 }}"></i>
                         <span>{{ subcategoria.5 }}</span>
-                      </div>                  
+                      </div>
                     {% endif %}
                   {% endfor %}
                 </td>
                 <td>
                   {% for subcategoria in subcategorias %}
                     {% if subcategoria.0 == producto.11 %}
-                    <div class="celda_texto_bloque" data-subcategory="{{producto.11}}">
-                      <i class="{{ subcategoria.2 }}"></i> 
-                      <span>{{ subcategoria.1 }}</span>
-                    </div>
+                      <div class="celda_texto_bloque" data-subcategory="{{ producto.11 }}">
+                        <i class="{{ subcategoria.2 }}"></i>
+                        <span>{{ subcategoria.1 }}</span>
+                      </div>
                     {% endif %}
                   {% endfor %}
                 </td>
