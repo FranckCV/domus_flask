@@ -527,8 +527,10 @@ def eliminar_tipo_novedad():
 
 @app.route("/formulario_editar_tipo_novedad=<int:id>")
 def editar_tipo_novedad(id):
-    tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
-    return render_template("editar_tipo_novedad.html", tipos_novedad=tipo_novedad)
+    #tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+
+    return render_template("editar_tipo_novedad.html", tipos_novedad=tipos_novedad)
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
 def actualizar_tipo_novedad(): 
@@ -579,7 +581,7 @@ def guardar_img_novedad():
     
     if "imagen" in request.files:
         imagen = request.files["imagen"].read()
-        controlador_novedades.insertarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, novedad_id)
+        controlador_imagenes_novedades.insertar_imagen_novedad(nomImagen, imagen, tipo_img_novedad_id, novedad_id)
     
     return render_template("agregar_img_novedad.html", novedad_id=novedad_id, tipos_img_novedad=controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles(), imagen_agregada=True)
 
@@ -588,7 +590,7 @@ def guardar_img_novedad():
 @app.route("/novedades_listado")
 def novedades_listado():
     novedades = controlador_novedades.obtenerTodasLasNovedades()
-    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()  # Añade esto
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
     marcas = controlador_marcas.obtener_listado_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     return render_template("novedades_listado.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias)
@@ -605,7 +607,7 @@ def editar_novedad(id):
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     tiposNovedad = controlador_tipos_novedad.obtener_tipos_novedad()
     print(tiposNovedad)
-    return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tiposNovedad=tiposNovedad, novedad_id = id)
+    return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tipos_novedad=tiposNovedad, novedad_id = id)
 
 @app.route("/actualizar_novedad", methods=["POST"])
 def actualizar_novedad():
@@ -625,20 +627,20 @@ def actualizar_novedad():
     controlador_novedades.actualizarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id, imagen, id)
     return redirect("/novedades_listado")
 
-@app.route("/agregar_img_novedad/<int:novedad_id>")
+@app.route("/agregar_img_novedad=<int:novedad_id>")
 def formulario_agregar_img_novedad(novedad_id):
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
     return render_template("agregar_img_novedad.html", novedad_id=novedad_id, tipos_img_novedad=tipos_img_novedad)
 
 @app.route("/img_novedades_listado=<int:novedad_id>")
 def img_novedades_listado(novedad_id):
-    img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)  # Llamada a la función
+    img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)
     return render_template("img_novedades_listado.html", img_novedades=img_novedades, novedad_id=novedad_id)
 
 
 @app.route("/eliminar_img_novedad", methods=["POST"])
 def eliminar_img_novedad():
-    controlador_imagenes_novedades.eliminarImagenNovedad(request.form["id"])
+    controlador_imagenes_novedades.eliminar_imagen_novedad(request.form["id"])
     novedad_id = request.form["novedad_id"]
     return redirect(f"/img_novedades_listado={novedad_id}")
 
@@ -648,7 +650,7 @@ def editar_img_novedad(id):
     novedad_id = controlador_imagenes_novedades.obtener_novedad_id_por_imagen_id(id)
     print(novedad_id)
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
-    return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad, novedad_id = novedad_id)
+    return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad, novedad_id = novedad_id, id=id)
 
 @app.route("/actualizar_img_novedad", methods=["POST"])
 def actualizar_img_novedad():
@@ -658,6 +660,11 @@ def actualizar_img_novedad():
     novedad_id = request.form["novedad_id"]
 
     imagen = request.files["imagen"].read() if "imagen" in request.files else None
+
+    print(f"ID: {id}")
+    print(f"Nombre de Imagen: {nom_imagen}")
+    print(f"Tipo de Imagen ID: {tipo_img_novedad_id}")
+    print(f"Novedad ID: {novedad_id}")
 
     controlador_imagenes_novedades.actualizar_imagen_novedad(id, nom_imagen, imagen, tipo_img_novedad_id, novedad_id)
     return redirect(f"/img_novedades_listado={novedad_id}")

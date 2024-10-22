@@ -12,7 +12,7 @@ Editar Imagen de Novedad
 <section class="h_section" id="mainSection">
     <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Imagen de Novedad</h2><br><br><br>
     <form action="{{ url_for('actualizar_img_novedad') }}" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="{{ img_novedad[0] }}">
+        <input type="hidden" name="id" value="{{ id }}">
         
         <div class="form-grid" id="col_add">
             <!-- Primera columna -->
@@ -22,7 +22,7 @@ Editar Imagen de Novedad
 
                 <div class="col">
                     <label for="nomImagen">Nombre de la Imagen:</label><br>
-                    <input value="{{ img_novedad[1] }}" required type="text" class="input" placeholder="Nombre de la imagen" name="nomImagen" id="nomImagen">
+                    <input value="{{ img_novedad[1][1] }}" required type="text" class="input" placeholder="Nombre de la imagen" name="nomImagen" id="nomImagen">
                 </div>
             </div>
 

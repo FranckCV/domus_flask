@@ -9,24 +9,21 @@
 {% endblock %}
 
 {% block contenido %}
-    <main>
-        <div class="grid-container">
-            {% for anuncio in anuncios %}    
-                <a href="{{ url_for('anuncio', id=anuncio[0]) }}">
-                    <div class="promo-card">
-                        <div class="promo-image-container">
-                            <img src="{{ anuncio[1] }}" alt="{{ anuncio[2] }}">
-                        </div>
-                        <div class="promo-details">
-                            <h2>{{ anuncio[2] }}</h2>
-                        </div>
+<main>
+    <div class="anuncios-grid">
+        {% for anuncio in anuncios %}
+            <a href="{{url_for('anuncio', id=anuncio[0])}}">
+                <div class="anuncio-item {% if loop.index == 1 %}grande{% endif %}">
+                    <div class="anuncio-image-container">
+                        <img src="{{anuncio[1]}}" alt="{{anuncio[2]}}">
                     </div>
-                </a>
-            {% endfor %}
-        </div>
-    </main>
-{% endblock %}
-
-{% block scripts %} 
-
+                    <div class="anuncio-details">
+                        <h3>{{anuncio[2]}}</h3>
+                        <p>{{anuncio[5]}}</p> <!-- Usamos anuncio[5] para los términos y condiciones -->
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</main> 
 {% endblock %}
