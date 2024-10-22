@@ -645,8 +645,8 @@ def eliminar_img_novedad():
 
 @app.route("/formulario_editar_img_novedad=<int:id>")
 def editar_img_novedad(id):
-    img_novedad = controlador_novedades.obtenerImagenNovedadPorId(id)
-    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
+    img_novedad = controlador_novedades.obtenerImagenesNovedad(id)
+    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles() ####falta hacer funcionar esto con todas las imgs
     return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad)
 
 @app.route("/actualizar_img_novedad", methods=["POST"])
