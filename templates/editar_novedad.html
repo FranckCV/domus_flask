@@ -93,10 +93,14 @@ Editar Novedad
 
             <div class="row">
                 <div class="col">
-                    <label for="imagen">Subir Imagen:</label><br>
-                    <input type="file" class="input" name="imagen" id="imagen">
+                  <label for="imagen">Imágenes:</label><br>
+                  <!-- Botón que redirige a la lista de imágenes de la novedad -->
+                  <a href="{{ url_for('img_novedades_listado', novedad_id = novedad[0]) }}" class="button is-primary">
+                    Gestionar Imágenes
+                  </a>
                 </div>
-            </div>
+              </div>
+              
 
             <div class="row">
                 <div class="col" id="sbmt">
