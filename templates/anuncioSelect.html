@@ -1,35 +1,35 @@
 {% extends "maestra_general.html" %}
 
 {% block titulo %} 
-    {{anuncio[1]}} 
+    {{ anuncio[1] }}  <!-- Título del anuncio -->
 {% endblock %}
 
 {% block estilos %}
-    <link rel="stylesheet" href="static/css/anuncioSelect.css">
+    <link rel="stylesheet" href="/static/css/anuncioSelect.css">
 {% endblock %}
 
-{% block contenido %}
+{% block contenido %}   
     <main id="anuncioM">
         <section id="anuncio-section">
-            <a href="{{url_for('anuncios')}}" class="anuncio-link">Ver todos los anuncios</a>
+            <a href="{{ url_for('anuncios') }}" class="anuncio-link">Ver todos los anuncios</a>
             <div class="anuncio">
                 <div class="anuncio-content">
-                    <img src="{{anuncio[7]}}" alt="Imagen del anuncio" class="anuncio-img">
+                    <img src="{{ anuncio[7] }}" alt="{{ anuncio[1] }}" class="anuncio-img">
                     <div class="anuncio-text">
-                        <h2>{{anuncio[1]}}</h2>
-                        <p>{{anuncio[8]}}</p>
+                        <h2>{{ anuncio[1] }}</h2>  <!-- Título del anuncio -->
+                        <p>{{ anuncio[4] }}</p>  <!-- Términos del anuncio -->
                     </div>
                 </div>
             </div>
             <div class="terms">
-                <h3><i class="fa-solid fa-file-contract"></i> Información del Anuncio</h3>
-                <p>Valido desde el <b>{{anuncio[2]}}</b> al <b>{{anuncio[3]}}</b></p>
-                <p>{{anuncio[4]}}</p>
+                <h3><i class="fa-solid fa-file-contract"></i> TÉRMINOS Y CONDICIONES</h3>
+                <p>Válido desde el <b>{{ anuncio[2] }}</b> al <b>{{ anuncio[3] }}</b></p>
+                <p>{{ anuncio[4] }}</p>  <!-- Términos y condiciones -->
             </div>
         </section>
     </main>
 {% endblock %}
 
 {% block scripts %}
-    <!-- Aquí puedes agregar tus scripts personalizados si los necesitas -->
+    <!-- Scripts personalizados, si es necesario -->
 {% endblock %}
