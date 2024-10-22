@@ -291,15 +291,16 @@ function validarCarro() {
     for (let nombre in carrito) {
         if (carrito[nombre].cantidad > 0) {
             disponible = true;
+
             return disponible;
         }
     }
 
     if (disponible) {
-        // Si hay productos, enviar el estado del pedido al servidor
+        // localStorage.clear();
         const data = {
-            USUARIOid: 1,  // Aquí deberías usar el ID del usuario actual
-            ESTADO_PEDIDOid: 2  // Cambiar el estado del pedido a 2
+            USUARIOid: 1,  
+            ESTADO_PEDIDOid: 2  
         };
 
         fetch('/actualizar_estado_pedido', {
@@ -312,8 +313,7 @@ function validarCarro() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Redirigir al siguiente paso (por ejemplo, a la página de pago)
-                    window.location.href = '/resumen_pedido';  // Redirige a la página de entrega o siguiente paso
+                    window.location.href = '/resumen_pedido';  
                 } else {
                     console.error('Error al actualizar el estado del pedido:', data.message);
                 }

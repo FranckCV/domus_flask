@@ -753,7 +753,7 @@ def eliminar_tipo_img_novedad():
     controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
     return redirect("/tipos_img_novedad_listado")
 
-#########################3FIN TIPO_IMG NOVEDAD#########################
+#########################FIN TIPO_IMG NOVEDAD#########################
 
 
 #########################FIN NOVEDAD####################################
@@ -790,6 +790,15 @@ def login():
 
 
 #####################FIN INICIO DE SESIÓN######################
+###################################CONFIRMAR PEDIDO###############################
+@app.route("/confirmar_compra", methods=['POST'])
+def confirmar_compra():
+    return redirect("/")
+
+# @app.route("/cancelar_compra")
+
+############################CANCELAR PEDIDO#########################
+
 # EJECUTAR
 
 
