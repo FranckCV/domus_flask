@@ -1,36 +1,31 @@
 {% extends "maestra_general.html" %}
 
 {% block titulo %} 
-    {{ anuncio[1] }} 
+    {{anuncio[1]}}
 {% endblock %}
 
 {% block estilos %}
-    <link rel="stylesheet" href="/static/css/anuncioSelect.css">
+    <link rel="stylesheet" href="static/css/anuncios.css">
 {% endblock %}
 
-{% block contenido %}
-    <main id="anunciosM">
-        <section id="promotion-section">
-            <a href="{{ url_for('anuncios') }}" class="promo-link">Ver todos los anuncios</a>
-            <div class="promotion">
-                <div class="promo-content">
-                    <img src="{{ anuncio[7] }}" alt="{{ anuncio[1] }}" class="promo-img">
-                    <div class="promo-text">
-                        <h2>{{ anuncio[1] }}</h2>
-                        <h1>{{ anuncio[8] }}</h1>
-                        <p></p>
-                    </div>
+{% block contenido %}   
+<main id="anunciosM">
+    <section id="anuncio-section">
+        <a href="{{url_for('anuncios')}}" class="anuncio-link">Ver todos los anuncios</a>
+        <div class="anuncio-item grande">
+            <div class="anuncio-content">
+                <img src="{{anuncio[7]}}" alt="{{anuncio[1]}}" class="anuncio-img">
+                <div class="anuncio-text">
+                    <h2>{{anuncio[1]}}</h2>
+                    <p class="vigencia">Vigente desde {{anuncio[2]}} hasta {{anuncio[3]}}</p>
+                    <p>{{anuncio[4]}}</p>
                 </div>
             </div>
-            <div class="terms">
-                <h3><i class="fa-solid fa-file-contract"></i> TÉRMINOS Y CONDICIONES</h3>
-                <p>Valido desde el <b>{{ anuncio[2] }}</b> al <b>{{ anuncio[3] }}</b></p>
-                <p>{{ anuncio[4] }}</p>
-            </div>
-        </section>
-    </main>
-{% endblock %}
-
-{% block scripts %}
-    <!-- <script src="static/js/anuncios.js"></script> -->
+        </div>
+        <div class="terms">
+            <h3><i class="fa-solid fa-file-contract"></i> TÉRMINOS Y CONDICIONES</h3>
+            <p>{{anuncio[4]}}</p>
+        </div>
+    </section>
+</main>
 {% endblock %}

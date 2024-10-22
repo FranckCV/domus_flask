@@ -335,7 +335,6 @@ def promoselect(id):
     conexion.close()
     return elemento_promo
 
-#Mostrar novedad Anuncio
 def mostrarNovedadesAnuncios():
     conexion = obtener_conexion()
     elementos = []
@@ -367,49 +366,47 @@ def mostrarNovedadesAnuncios():
     conexion.close()
     return img_lista
 
-# Anuncio Seleccionado
 
 def anuncioselect(id):
     conexion = obtener_conexion()
-    promo = None
+    anuncio = None
     with conexion.cursor() as cursor:
         sql = '''
             SELECT 
-                nov.`id`, 
+                nov.id, 
                 nov.titulo,
-                nov.`fecha_inicio`, 
-                nov.`fecha_vencimiento`, 
-                nov.`terminos`, 
-                nov.`MARCAid`, 
-                nov.`SUBCATEGORIAid`,
+                nov.fecha_inicio, 
+                nov.fecha_vencimiento, 
+                nov.terminos, 
+                nov.MARCAid, 
+                nov.SUBCATEGORIAid,
                 MIN(imgnov.imagen),
                 mar.marca
-            FROM `novedad` nov
+            FROM novedad nov
             INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
             INNER JOIN marca mar on mar.id = nov.MARCAid
             WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 1 and nov.id = %s
             Group by nov.id
         '''
         cursor.execute(sql, (id,))
-        promo = cursor.fetchone()
+        anuncio = cursor.fetchone()
 
     conexion.close()
 
-    if promo:
-        pro_id, pro_titulo, pro_fecini, pro_fecven, pro_ter, pro_mar, pro_sub, pro_img, mar_nom = promo
+    if anuncio:
+        pro_id, pro_titulo, pro_fecini, pro_fecven, pro_ter, pro_mar, pro_sub, pro_img, mar_nom = anuncio
 
-        # Si hay una imagen, la convertimos
+        # Convertir imagen a base64 si existe
         if pro_img:
             logo_base64 = base64.b64encode(pro_img).decode('utf-8')
             logo_url = f"data:image/png;base64,{logo_base64}"
         else:
             logo_url = "" 
 
-        # Retornamos los datos en forma de tupla
         return (pro_id, pro_titulo, pro_fecini, pro_fecven, pro_ter, pro_mar, pro_sub, logo_url, mar_nom)
 
-    # Si no se encuentra ningún resultado, retornamos None o un valor por defecto
     return None
+
 
 
 
@@ -537,6 +534,8 @@ def obtenerNovedadPorId(novedadId):
 #     conexion.commit()
 #     conexion.close()
 
+<<<<<<< HEAD
+=======
 # def eliminarImagenNovedad(id):
 #     conexion = obtener_conexion()
 #     with conexion.cursor() as cursor:
@@ -548,6 +547,7 @@ def obtenerNovedadPorId(novedadId):
 #     conexion.commit()
 #     conexion.close()
 
+<<<<<<< HEAD
 # def eliminarImagenNovedad(id):
 #     conexion = obtener_conexion()
 #     with conexion.cursor() as cursor:
@@ -558,3 +558,29 @@ def obtenerNovedadPorId(novedadId):
 #         cursor.execute(sql, (id,))
 #     conexion.commit()
 #     conexion.close()
+=======
+=======
+=======
+>>>>>>> 268e3f29b2fba982d5235a18436b557895fb559f
+def eliminarImagenNovedad(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            DELETE FROM IMG_NOVEDAD
+            WHERE id = %s
+        '''
+        cursor.execute(sql, (id,))
+    conexion.commit()
+    conexion.close()
+<<<<<<< HEAD
+=======
+
+
+
+<<<<<<< HEAD
+=======
+>>>>>>> 2ee3b118972bc40c1f40dc85a0c666692f8de4d5
+>>>>>>> 39abbc4fe3a351630f765f251ef0014f904ecd6b
+>>>>>>> 92f60971c3c108a681ddd9e8bb3b1ea6980e3ada
+>>>>>>> 268e3f29b2fba982d5235a18436b557895fb559f
+>>>>>>> 05dcb8d7bd19927758011f3c36a7264c091212ce
