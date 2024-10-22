@@ -274,8 +274,6 @@ def aumentar_carro():
     else:
         print("No se encontró un pedido activo.")
     
-<<<<<<< HEAD
-=======
     return redirect('/carrito')
 
 
