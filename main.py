@@ -85,12 +85,12 @@ def anuncios():
 def anuncio(id):
     try:
         anuncio = controlador_novedades.anuncioselect(id)
-        
         if anuncio:
             return render_template("selectedAnuncio.html", anuncio=anuncio)
         else:
             return redirect("/error")
-    except:
+    except Exception as e:
+        print(f"Error: {e}")
         return redirect("/error")
 
 
