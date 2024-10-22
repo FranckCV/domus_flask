@@ -11,6 +11,7 @@ import controlador_usuario_cliente
 import controlador_novedades
 import controlador_tipos_img_novedad
 import controlador_carrito
+import controlador_detalle
 
 app = Flask(__name__)
 
@@ -230,16 +231,79 @@ def registrate():
 
 # PAGINAS USUARIO CLIENTE
 
-@app.route("/carrito") #falta
+
+<<<<<<< HEAD
+=======
+######################CARRO######################
+@app.route("/carrito") 
 def carrito():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-    return render_template("carrito.html" , productosPopulares = productosPopulares)
+    productos = controlador_detalle.obtener_Detalle()  # Obtener los productos en el carrito
+    return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos)
 
+@app.route("/agregar_carrito", methods=["POST"]) 
+def agregar_carrito():
+    producto_id = request.form["producto_id"] 
+    estado = 1
+    usuario_id = 1
+>>>>>>> 4583280e9c39dd6a47faaa4ed2f3f8c4c9a51aa1
     
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
     
+    if pedido_id is None:
+        pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
     
+    controlador_carrito.insertar_detalle(producto_id, pedido_id)
     
+    # Redirige a la vista del carrito
+    return redirect('/carrito')
+
+@app.route("/aumentar_carro", methods=["POST"])
+def aumentar_carro():
+    producto_id = request.form.get("producto_id")
+    print(f"Producto ID recibido: {producto_id}") 
+    usuario_id = 1 
+    estado = 1 
+
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+    print(f"Pedido ID encontrado: {pedido_id}")  
+
+    if pedido_id:
+        controlador_carrito.aumentar_producto(pedido_id,producto_id)
+        print("Producto aumentado correctamente.")
+    else:
+        print("No se encontró un pedido activo.")
     
+<<<<<<< HEAD
+=======
+    return redirect('/carrito')
+
+
+@app.route("/disminuir_carro", methods=["POST"])
+def disminuir_carro():
+    producto_id = request.form["producto_id"]
+    usuario_id = 1
+    estado = 1
+
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+
+    if pedido_id:
+        controlador_carrito.eliminar_producto(pedido_id,producto_id)
+    
+    return redirect('/carrito')
+
+#PARA CONFIRMAR CARRE
+@app.route("/confirmar_carrito", methods=["POST"])
+def confirmar_carrito():
+    estado = 2  
+    usuario_id = 1 
+    controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+
+    # Redirigir a una página de confirmación de compra o al carrito
+    return redirect('carrito_confirmacion')
+
+######################################FIN CARRO#############################################    
+>>>>>>> 4583280e9c39dd6a47faaa4ed2f3f8c4c9a51aa1
 # PAGINAS USUARIO EMPLEADO
 
 
@@ -636,7 +700,7 @@ def formulario_agregar_img_novedad(novedad_id):
     
 #     return redirect("/novedades_listado")
 
-@app.route("/img_novedades_listado/<int:novedad_id>")
+@app.route("/img_novedades_listado=<int:novedad_id>")
 def img_novedades_listado(novedad_id):
     img_novedades = controlador_novedades.obtenerImagenesNovedad(novedad_id)
     return render_template("img_novedades_listado.html", img_novedades=img_novedades, novedad_id=novedad_id)

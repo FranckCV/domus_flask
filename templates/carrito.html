@@ -1,187 +1,222 @@
-{% extends "maestra_general.html" %}
+{% extends 'maestra_general.html' %}
 
-{% block titulo %} 
-    Tu Carrito
+{% block titulo %}
+  Tu Carrito
 {% endblock %}
 
-{% block estilos %}  
-    <link rel="stylesheet" href="static/css/stylesProductCard.css">
-    <link rel="stylesheet" href="static/css/carrito.css">
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/stylesProductCard.css" />
+  <link rel="stylesheet" href="static/css/carrito.css" />
 {% endblock %}
 
 {% block contenido %}
-    <main class="page_cart">
-        <article class="cart_container">
-            <div class="head_info_cart">
+  <main class="page_cart">
+    <article class="cart_container">
+      <div class="head_info_cart">
+        <div class="head_cart_title">
+          <i class="fa-solid fa-cart-shopping"></i>
 
-                <div class="head_cart_title ">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    
-                    <h1>
-                        Mi Carrito
-                    </h1>
+          <h1>Mi Carrito</h1>
 
-                    <span>
-                        (
-                            <span id="unidades">
-                                x
-                            </span>
-                        unidades)
-                    </span>
-                    
+          <span>
+            (
+            <span id="unidades">x</span>
+            unidades)
+          </span>
+        </div>
+
+        <div class="head_cart_progress">
+          <div class="step-progress">
+            <div class="step active">
+              <div class="circle"></div>
+              <div class="label">Carrito</div>
+            </div>
+            <div class="step">
+              <div class="circle"></div>
+              <div class="label">Entrega</div>
+            </div>
+            <div class="step">
+              <div class="circle"></div>
+              <div class="label">Pago</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="head_cart_continue">
+          <button id="seguir" onclick="window.location.href='catalogo.html'">
+            <i class="fa-solid fa-arrow-left"></i>
+            Seguir Comprando
+          </button>
+        </div>
+      </div>
+
+      <div class="content_cart">
+        <div class="cart_list">
+          <div class="cart_list_head">
+            <div class="header-item">Producto</div>
+            <div class="header-item">Precio</div>
+            <div class="header-item">Cantidad</div>
+            <div class="header-item">Total</div>
+          </div>
+
+          <div class="cart_list_body" id="carrito-contenido"></div>
+            {% for producto in productos %}
+              <div class="product_item">
+                <div class="product_item_info">
+
+                  <img src="{{producto[0]}}" class="product_item_pic" alt="Imagen del Producto" />
+                  
+                  <div class="product_item_name">
+                    <p class="nombreProducto">{{ producto[1] }}</p>
+                    <p class="vendido-por">
+                      Vendido por: <strong>Domus</strong>
+                    </p>
+                  </div>
                 </div>
-
-                <div class="head_cart_progress">
-                    <div class="step-progress">
-                        <div class="step active">
-                            <div class="circle"></div>
-                            <div class="label">Carrito</div>
-                        </div>
-                        <div class="step">
-                            <div class="circle"></div>
-                            <div class="label">Entrega</div>
-                        </div>
-                        <div class="step">
-                            <div class="circle"></div>
-                            <div class="label">Pago</div>
-                        </div>
-                    </div>
+            
+                <div class="product_item_price_unit">
+                  <p class="precioProducto">S/ {{ producto[2] }}</p>
                 </div>
-
-                <div class="head_cart_continue">
-                    <button id="seguir" onclick="window.location.href='catalogo.html'"> 
-                        <i class="fa-solid fa-arrow-left"></i> 
-                        Seguir Comprando
+            
+                <!-- Controles de cantidades -->
+                <div class="cantidades">
+                  <!-- Disminuir cantidad -->
+                  <form class="product_item_count" action="{{ url_for('disminuir_carro') }}" method="post">
+                    <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id"/> <!-- Campo oculto con el producto_id -->
+                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="disminuir(this)">
+                      <span class="signo">-</span>
                     </button>
+                  </form>
+            
+                  <!-- Mostrar cantidad actual -->
+                  <span class="cant">{{ producto[3] }}</span>
+            
+                  <!-- Aumentar cantidad -->
+                  <form class="product_item_count" action="{{ url_for('aumentar_carro') }}" method="post">
+                    <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id" /> 
+                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="aumentar(this)">
+                      <span class="signo">+</span>
+                    </button>
+                  </form>
                 </div>
+            
+                <div class="product_item_price_total">
+                  <p class="total">
+                      S/ 
+                      {% if producto[2] is not none and producto[3] is not none %}
+                          {{ producto[3] * producto[2] }}
+                      {% else %}
+                          Error en precio o cantidad
+                      {% endif %}
+                  </p>
+              </div>
+              </div>
+            {% endfor %}  
+        </div>
 
+        <div class="cart_space">
+          <div class="vr"></div>
+        </div>
+
+        <div class="cart_total">
+          <div class="cart-summary">
+            <div class="discount-code">
+              <label for="coupon">¿Tienes algún cupón de descuento?</label>
+              <div class="d-flex">
+                <input type="text" id="coupon" value="DOMUSESMICASA50" />
+                <button id="aplicar" onclick="aplicarDescuento()">Aplicar</button>
+              </div>
+              <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
             </div>
 
-            <div class="content_cart">
+            <div class="resumen">
+              <p id="subtotal">
+                Subtotal: <span></span>
+              </p>
+              <p id="descuento">
+                Descuento: <span>s/. 00.00</span>
+              </p>
+              <p id="total">
+                Total: <span></span>
+              </p>
+            </div>
 
-                <div class="cart_list">
-
-                    <div class="cart_list_head">
-                        <div class="header-item ">Producto</div>
-                        <div class="header-item ">Precio</div>
-                        <div class="header-item ">Cantidad</div>
-                        <div class="header-item ">Total</div>
-                    </div>
-
-                    <div class="cart_list_body" id="carrito-contenido">                    
-                    </div>
-
-                </div>
-
-                <div class="cart_space">
-                    <div class="vr"></div>
-                </div>
-
-                <div class="cart_total">
-                    <div class="cart-summary">
-                        <div class="discount-code ">
-                            <label for="coupon">¿Tienes algún cupón de descuento?</label>
-                            <div class="d-flex">
-                                <input type="text" id="coupon" value="DOMUSESMICASA50">
-                                <button id="aplicar" onclick="aplicarDescuento()">Aplicar</button>
-                            </div>
-                            <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son
-                                de uso único, no son reutilizables.</p>
-                        </div>
-                        
-                        <div class="resumen">
-                            <p id="subtotal">Subtotal: <span></span></p>
-                            <p id="descuento">Descuento: <span>s/. 00.00</span></p>
-                            <p id="total">Total: <span></span></p>
-                        </div>
-
-                        <div class="actions">
+            <!--  <div class="actions">
                             <a class="checkout" onclick="validarCarro()">Continuar</a>
-                        </div>
-                    </div>
+                        </div>  -->
+
+            <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post">
+              <input type="hidden" id="estado_pedido" value="2" />
+
+              <a class="checkout" onclick="validarCarro()">Continuar</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr class="" />
+
+    <article class="article_products article_product_popular">
+      <h1 class="title_cart_products">¿Algo más? Agrégalo ahora</h1>
+
+      <div class="slider_product">
+        <i class="btn_slider_product fas fa-angle-left"></i>
+        <div class="list_product">
+          {% for producto in productosPopulares %}
+            <div class="product" data-subcategory="{{ producto.6 }}" data-product-id="{{ producto.0 }}">
+              <a class="product_info" href="{{ url_for('producto', id=producto.0) }}">
+                <img class="product_pic" src="{{ producto.7 }}" alt="{{ producto.1 }}" />
+
+                <p class="product_name">{{ producto.1 }}</p>
+
+                {% if producto.2 %}
+                  <div class="product_price price_regular">
+                    <p class="product_price_title">Regular</p>
+                    <p class="product_price_number">
+                      S/. {{ producto.2|int }}
+                      <sup>.{{ '{:.2f}'.format(producto.2).split('.').1 }}</sup>
+                    </p>
+                  </div>
+                {% endif %}
+
+                <div class="product_price price_online">
+                  <p class="product_price_title">Online</p>
+                  <p class="product_price_number">
+                    S/. {{ producto.3|int }}
+                    <sup>.{{ '{:.2f}'.format(producto.3).split('.').1 }}</sup>
+                  </p>
                 </div>
+
+                {% if producto.4 %}
+                  <div class="product_price price_for_sale">
+                    <p class="product_price_title">Oferta</p>
+                    <p class="product_price_number">
+                      S/. {{ producto.4|int }}
+                      <sup>.{{ '{:.2f}'.format(producto.4).split('.').1 }}</sup>
+                    </p>
+                  </div>
+                {% endif %}
+              </a>
+              <div class="product_option product_option_fav button" id="heart">
+                <i class="fa-regular fa-heart"></i>
+              </div>
+
+              <form class="product_option product_option_add" action="{{ url_for('agregar_carrito') }}" method="post">
+                <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
+                <button type="submit" class="fa-solid fa-plus" id="cant_aumentar"></button>
+              </form>
             </div>
-
-        </article>
-
-        <hr class="">
-        
-        <article class="article_products article_product_popular">
-            <h1 class="title_cart_products">¿Algo más? Agrégalo ahora</h1>
-
-            <div class="slider_product">
-                <i class="btn_slider_product fas fa-angle-left"></i>
-                <div class="list_product">
-                    
-                    {% for producto in productosPopulares %}
-
-                    <div class="product" data-subcategory="{{producto[6]}}" data-product-id="{{producto[0]}}">
-                        <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
-                            <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
-
-                            <p class="product_name">
-                                {{producto[1]}}
-                            </p>
-
-                            {% if producto[2] %}
-                                <div class="product_price price_regular">
-                                    <p class="product_price_title">
-                                        Regular
-                                    </p>
-                                    <p class="product_price_number">
-                                        S/. {{  producto[2] | int  }}
-                                        <sup>.{{ "{:.2f}".format(producto[2]).split('.')[1] }}</sup>
-                                    </p>
-                                </div>
-                            {% endif %}
-
-                            <div class="product_price price_online">
-                                <p class="product_price_title">
-                                    Online
-                                </p>
-                                <p class="product_price_number">
-                                    S/. {{ producto[3] | int }}
-                                    <sup>.{{ "{:.2f}".format(producto[3]).split('.')[1] }}</sup>
-                                </p>
-                            </div>
-
-                            {% if producto[4] %}
-                                <div class="product_price price_for_sale">
-                                    <p class="product_price_title">
-                                        Oferta
-                                    </p>
-                                    <p class="product_price_number">
-                                        S/. {{ producto[4] | int }}
-                                        <sup>.{{ "{:.2f}".format(producto[4]).split('.')[1] }}</sup>
-                                    </p>
-                                </div>
-                            {% endif %}
-
-                        </a>
-                        <div class="product_option product_option_fav button" id="heart">
-                            <i class="fa-regular fa-heart"></i>
-                        </div>
-
-                        <div class="product_option product_option_add">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                        
-                    </div>
-
-                    {% endfor %}
-
-                </div>
-                <i class="btn_slider_product fas fa-angle-right"></i>
-            </div>
-
-        </article>      
-
-    </main>
+          {% endfor %}
+        </div>
+        <i class="btn_slider_product fas fa-angle-right"></i>
+      </div>
+    </article>
+  </main>
 {% endblock %}
 
 {% block scripts %}
-    <script src="static/js/carrito.js"></script>
-    <script src="static/js/scriptListProduct.js"></script>
+
+  <script src="static/js/carrito.js"></script>
+  <script src="static/js/scriptListProduct.js"></script>
 {% endblock %}
-    
-    
