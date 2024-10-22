@@ -7,7 +7,6 @@ def obtener_Detalle():
     productos_lista = []
 
     with conexion.cursor() as cursor:
-        # Consulta para obtener los productos y su imagen principal
         sql = '''
             SELECT IMP.imagen, P.nombre, DP.cantidad, DP.PRODUCTOid 
             FROM detalles_pedido DP
@@ -18,10 +17,9 @@ def obtener_Detalle():
         cursor.execute(sql)
         productos = cursor.fetchall()
         
-        # Iterar sobre los productos obtenidos
         for producto in productos:
             sql_precios = "SELECT price_regular, precio_online, precio_oferta FROM producto WHERE id = %s"
-            cursor.execute(sql_precios, (producto[3],))  # Nota: Se debe pasar como una tupla
+            cursor.execute(sql_precios, (producto[3],))  # Se debe pasar como una tuplita
             precios = cursor.fetchone()
 
             if precios[2] is not None:  # precio_oferta
@@ -31,19 +29,18 @@ def obtener_Detalle():
             else:  # precio_regular
                 precio_final = precios[0]
 
-            # Codificar la imagen en base64 (si está en formato binario)
+            # Codificar la imagen en base64 porque está en binarie
             img_binario = producto[0] 
             if img_binario:
                 imagen_base64 = base64.b64encode(img_binario).decode('utf-8')
                 imagen = f"data:image/png;base64,{imagen_base64}"
             else:
-                imagen = ""  # Si no hay imagen
+                imagen = "" 
 
             nombre = producto[1]  
             cantidad = producto[2]  
             producto_id = producto[3]  
 
-            # Agregar a la lista de productos
             productos_lista.append((imagen, nombre, precio_final, cantidad, producto_id))
     
     conexion.close()
