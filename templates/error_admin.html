@@ -1,0 +1,22 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %} 
+    Error 
+{% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/error.css">
+{% endblock %}
+
+{% block contenido %}
+    <section>
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Intento ingresar a una pagina que no existe o no se encuentra disponible <br>
+        <!-- <b>NO HAY NADA ACA PS CAOSA</b> -->
+        <b><a href="{{url_for('dashboard')}}">Volver al DASHBOARD</a></b>
+    </section>
+{% endblock %}
+
+{% block scripts %} 
+{% endblock %}
+    

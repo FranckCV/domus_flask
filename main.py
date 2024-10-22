@@ -127,14 +127,15 @@ def marca(id):
 def producto(id):
     try:
         producto = controlador_productos.obtener_por_id(id)
-        if producto and producto[11] == 1: 
+        if producto and producto[11] == 1:
+            categoria = controlador_subcategorias.obtenerCategoriasXSubcategoria(producto[10])
             marca = controlador_marcas.obtener_marca_disponible_por_id(producto[9])
             imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(id)
             caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
             caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
             productosSimilares = controlador_productos.obtener_en_tarjetas_subcategoria(id,producto[10],12)
             productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,producto[9],12)
-            return render_template("selectedProducto.html" , productosSimilares = productosSimilares , productosMarca = productosMarca , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias)
+            return render_template("selectedProducto.html" , productosSimilares = productosSimilares , productosMarca = productosMarca , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias, categoria = categoria)
         else:
             return redirect("/error")
     except:
@@ -234,13 +235,11 @@ def carrito():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
     return render_template("carrito.html" , productosPopulares = productosPopulares)
 
-######################CARRO######################
     
     
     
     
     
-######################################FIN CARRO#############################################    
 # PAGINAS USUARIO EMPLEADO
 
 
@@ -249,6 +248,9 @@ def carrito():
 # PAGINAS USUARIO ADMINISTRADOR
 
 
+@app.route("/error_adm") 
+def error_adm():
+    return render_template("error_admin.html")
 
 @app.route('/cuenta_administrativa')
 def cuenta_administrativa():
@@ -376,8 +378,9 @@ def actualizar_subcategoria():
 @app.route("/agregar_producto")
 def formulario_agregar_producto():
     marcas = controlador_marcas.obtener_marcas()
-    subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("agregar_producto.html", marcas = marcas, subcategorias = subcategorias)
+    categorias = controlador_categorias.obtener_categoriasXnombre()
+    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+    return render_template("agregar_producto.html", marcas = marcas, subcategorias = subcategorias , categorias = categorias)
 
 @app.route("/guardar_producto", methods=["POST"])
 def guardar_producto():
@@ -390,7 +393,7 @@ def guardar_producto():
     fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
-    subcategoria_id= request.form["subcategoria_id"]  
+    subcategoria_id= request.form["subcategorySelect"]  
     controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
     return redirect("/productos")
 
@@ -411,8 +414,9 @@ def eliminar_producto():
 def editar_producto(id):
     producto = controlador_productos.obtener_por_id(id)
     marcas = controlador_marcas.obtener_marcas()
-    subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias)
+    categorias = controlador_categorias.obtener_categoriasXnombre()
+    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+    return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias,categorias = categorias)
 
 @app.route("/actualizar_producto", methods=["POST"])
 def actualizar_producto(): 
@@ -426,7 +430,7 @@ def actualizar_producto():
     fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
-    subcategoria_id= request.form["subcategoria_id"]  
+    subcategoria_id= request.form["subcategorySelect"]  
     controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
     return redirect("/productos")
 
