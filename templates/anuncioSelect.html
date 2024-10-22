@@ -1,35 +1,36 @@
 {% extends "maestra_general.html" %}
 
 {% block titulo %} 
-    {{ anuncio[1] }}  <!-- Título del anuncio -->
+    {{ anuncio[1] }} 
 {% endblock %}
 
 {% block estilos %}
     <link rel="stylesheet" href="/static/css/anuncioSelect.css">
 {% endblock %}
 
-{% block contenido %}   
-    <main id="anuncioM">
-        <section id="anuncio-section">
-            <a href="{{ url_for('anuncios') }}" class="anuncio-link">Ver todos los anuncios</a>
-            <div class="anuncio">
-                <div class="anuncio-content">
-                    <img src="{{ anuncio[7] }}" alt="{{ anuncio[1] }}" class="anuncio-img">
-                    <div class="anuncio-text">
-                        <h2>{{ anuncio[1] }}</h2>  <!-- Título del anuncio -->
-                        <p>{{ anuncio[4] }}</p>  <!-- Términos del anuncio -->
+{% block contenido %}
+    <main id="anunciosM">
+        <section id="promotion-section">
+            <a href="{{ url_for('anuncios') }}" class="promo-link">Ver todos los anuncios</a>
+            <div class="promotion">
+                <div class="promo-content">
+                    <img src="{{ anuncio[7] }}" alt="{{ anuncio[1] }}" class="promo-img">
+                    <div class="promo-text">
+                        <h2>{{ anuncio[1] }}</h2>
+                        <h1>{{ anuncio[8] }}</h1>
+                        <p></p>
                     </div>
                 </div>
             </div>
             <div class="terms">
                 <h3><i class="fa-solid fa-file-contract"></i> TÉRMINOS Y CONDICIONES</h3>
-                <p>Válido desde el <b>{{ anuncio[2] }}</b> al <b>{{ anuncio[3] }}</b></p>
-                <p>{{ anuncio[4] }}</p>  <!-- Términos y condiciones -->
+                <p>Valido desde el <b>{{ anuncio[2] }}</b> al <b>{{ anuncio[3] }}</b></p>
+                <p>{{ anuncio[4] }}</p>
             </div>
         </section>
     </main>
 {% endblock %}
 
 {% block scripts %}
-    <!-- Scripts personalizados, si es necesario -->
+    <!-- <script src="static/js/anuncios.js"></script> -->
 {% endblock %}
