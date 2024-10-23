@@ -161,15 +161,16 @@ def promocion(id):
 
 @app.route("/selectedAnuncio=<int:id>")
 def anuncio(id):
-    try:
-        anuncio = controlador_novedades.anuncioselect(id)
-        if anuncio:
-            return render_template("selectedAnuncio.html", anuncio=anuncio)
-        else:
-            return redirect("/error")
-    except Exception as e:
-        print(f"Error: {e}")
-        return redirect("/error")
+    # try:
+        anuncio = controlador_novedades.anuncioSelect(id)
+        return render_template("selectedAnuncio.html", anuncio=anuncio)
+
+    #     if anuncio:
+    #         return render_template("selectedAnuncio.html", anuncio=anuncio)
+    #     else:
+    #         return redirect("/error")
+    # except :
+    #     return redirect("/error")
 
 
 

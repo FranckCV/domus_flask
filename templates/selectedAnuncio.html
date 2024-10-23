@@ -1,0 +1,35 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    {{anuncio[1]}}
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="static/css/anuncios.css">    
+    <link rel="stylesheet" href="/static/css/promoSelect.css">
+
+{% endblock %}
+
+{% block contenido %}
+<main id="anunciosM">
+    <section id="anuncio-section">
+        <a href="{{url_for('anuncios')}}" class="promo-link">Ver todas los anuncios</a>
+        <div class="promotion">
+            <div class="promo-content">
+
+                <img src="{{anuncio[7]}}" alt="Laptop Lenovo" class="promo-img">
+                <div class="promo-text">
+                    <h1>{{anuncio[1]}}</h1>
+                    <p></p>
+                </div>
+
+            </div>
+        </div>
+        <div class="terms">
+            <h3><i class="fa-solid fa-file-contract"></i> TÉRMINOS Y CONDICIONES</h3>
+            <p>Valido desde el <b>{{anuncio[2]}}</b> al <b>{{anuncio[3]}}</b></p>
+            <p>{{anuncio[4]}}</p>
+        </div>
+    </section>
+</main>
+{% endblock %}
