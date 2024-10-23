@@ -139,12 +139,9 @@
             </a>
             <hr>
             <div id="social">
-                <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://www.twitter.com"><i class="fa-brands fa-twitter"></i></a>
-                <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.whatsapp.com"><i class="fa-brands fa-whatsapp"></i></a>
-                <a href="https://www.tiktok.com"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+                {% for red_footer in redes_footer %}
+                    <a href="{{red_footer[3]}}"><i class="{{red_footer[2]}}"></i></a>
+                {% endfor %}
             </div>
         </div>
         <div id="footer_contactanos" class="footer_column">

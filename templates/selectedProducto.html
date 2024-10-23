@@ -176,6 +176,7 @@
                 </div>
             </div>
     
+            {% if producto[6]  and caracteristicasSecundarias %}
             <div class="product_details">
                 <div class="product_page_title product_details_title">
                     MÁS DETALLES
@@ -203,15 +204,19 @@
                     <div class="space"></div>
                     {% endif %}
 
+                    {% if producto[6] %}
                     <div class="product_additional">
                         <strong>Información adicional</strong>
                         <div class="product_additional_content">{{ producto[6] | safe }}
                         </div>                        
                     </div>
+                    {% endif %}
+
                 </div>                
 
                 <!-- <button class="product_details_more">Ver más</button> -->
             </div>
+            {% endif %}
 
         </article>
 

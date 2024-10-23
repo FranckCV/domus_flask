@@ -1,0 +1,41 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+Editar Estado de Pedido
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Estado de Pedido</h2><br><br><br>
+    <form action="{{ url_for('actualizar_estado_pedido') }}" method="post">
+        <input type="hidden" name="id" value="{{ estado[0] }}"> 
+        
+        <div class="form-grid" id="col_add">
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">Nombre:</label><br>
+                    <input required type="text" class="input" placeholder="Nombre" name="nombre" id="nombre" value="{{ estado[1] }}">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" id="sbmt">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('listado_estado_pedido') }}" id="backbtn">Volver</a>
+                        <button type="submit" class="button is-primary">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %} 
+<script src="/static/js/admin_motivos_comentario.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
