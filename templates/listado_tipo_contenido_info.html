@@ -1,0 +1,75 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Listado de Secciones de Contenido Informativo
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Listado de Secciones de Contenido Informativo</h2>
+    <div class="container-fluid" id="break_nav">
+           
+    </div>
+
+    <div class="table-containersy">
+      <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Seccion</th>
+            <th>Icono</th>
+            <th>Descripcion</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          {% for tipo in tipos %}
+            <tr>
+              <td>{{ tipo.0 }}</td>
+              <td>{{ tipo.1 }}</td>
+              <td><i class="{{ tipo.3 }}"></i></td>
+              <td>{{ tipo.2 }}</td>
+
+
+              <td class="opciones_column">
+                <div class="acciones">
+                  <a href="{{ url_for('editar_marca', id=marca.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
+                  <form action="{{ url_for('eliminar_marca') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <input type="hidden" name="id" value="{{ marca.0 }}" />
+                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                  </form>
+                </div>
+              </td>
+
+
+
+
+            </tr>
+          {% endfor %}
+        
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <style>
+    .datoctive {
+      background-color: rgb(255, 255, 255);
+      color: #00095c;
+    }
+  </style>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+    }
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
+{% endblock %}

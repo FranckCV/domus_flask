@@ -10,7 +10,7 @@
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder">Listado de datos</h2>
+    <h2 class="fw-bolder">Listado de Contenido Informativo</h2>
     <div class="container-fluid" id="break_nav">
            
     </div>
@@ -21,9 +21,7 @@
           <tr>
             <th>ID</th>
             <th>Seccion</th>
-            <th>Icono</th>
-            <th>Descripcion</th>
-            <th>ID</th>
+            <th>ID Cont</th>
             <th>Titulo</th>
             <th>Cuerpo</th>
             <th>Opciones</th>
@@ -31,19 +29,44 @@
         </thead>
         <tbody>
           {% for seccion in secciones %}
-          {% set datos_lista = datos | selectattr(4, 'equalto', seccion[0]) | list %}
+          {% set datos_lista = datos | selectattr(3, 'equalto', seccion[0]) | list %}
+          {% if datos_lista | length > 0 %}
             <tr>
-              <td rowspan="{{ datos_lista | length }}">{{ seccion.0 }}</td>
+              <td rowspan="{{ datos_lista | length }}">{{ seccion[0] }}</td>
               <td rowspan="{{ datos_lista | length }}">
                 <div class="celda_texto_bloque">
-                  <i class="{{ seccion.3 }}"></i>
-                  <span>{{ seccion.1 }}</span>
+                  <i class="{{ seccion[3] }}"></i>
+                  <span>{{ seccion[1] }}</span>
                 </div>
               </td>
-              <td rowspan="{{ datos_lista | length }}">{{ seccion.4 }}</td>
-              
+
+              <td>{{ datos_lista[0][0] }}</td>
+              <td>{{ datos_lista[0][1] }}</td>
+              <td>{{ datos_lista[0][2] }}</td>
             </tr>
-          {% endfor %}
+
+            {% for dato in datos_lista[1:] %}
+              <tr>
+                <td>{{ dato[0] }}</td>
+                <td>{{ dato[1] }}</td>
+                <td>{{ dato[2] }}</td>
+              </tr>
+            {% endfor %}
+
+          {% else %}
+            <tr>
+              <td>{{ seccion[0] }}</td>
+              <td>
+                <div class="celda_texto_bloque">
+                  <i class="{{ seccion[3] }}"></i>
+                  <span>{{ seccion[1] }}</span>
+                </div>
+              </td>
+              <td>{{ seccion[4] }}</td>
+              <td colspan="3">No hay datos aún</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
         </tbody>
       </table>
     </div>

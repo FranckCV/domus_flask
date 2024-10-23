@@ -812,10 +812,16 @@ def eliminar_tipo_img_novedad():
 
 
 
+@app.route("/listado_tipo_contenido_info")
+def listado_tipo_contenido_info():
+    tipos = controlador_contenido_info.obtener_listado_tipos_contenido()
+    return render_template("listado_tipo_contenido_info.html", tipos = tipos)
+
+
 
 @app.route("/listado_contenido_info")
 def listado_contenido_info():
-    datos = controlador_contenido_info.obtener_datos_contenido_info()
+    datos = controlador_contenido_info.obtener_datos_contenido()
     secciones = controlador_contenido_info.obtener_tipos_contenido()
     return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
 
