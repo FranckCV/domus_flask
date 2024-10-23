@@ -91,7 +91,7 @@ h2 {
 table {
     width: 100%;
     /* border-collapse: collapse; */
-    font-size: 11px;
+    font-size: 12px;
     color: #333;
     border: 1px solid grey;
     border-radius: 20px;
@@ -149,6 +149,7 @@ tr .celda_texto_bloque {
 
 .celda_texto_bloque img {
     height: 4vw;
+    width: 4vw;
     border-radius: 5px;
     border: 1px solid #d3d3d3;
 }

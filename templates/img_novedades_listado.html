@@ -57,8 +57,8 @@
                                 <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
                             </a>
                             <form action="{{ url_for('eliminar_img_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                                <input type="hidden" name="id" value="{{ img_novedad[0] }}">
-                                <input type="hidden" name="novedad_id" value="{{ novedad_id }}">
+                                <input type="hidden" name="id" id="id" value="{{ img_novedad[0] }}">
+                                <input type="hidden" name="novedad_id" id="novedad_id" value="{{ novedad_id }}">
                                 <button type="submit">
                                     <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
                                 </button>

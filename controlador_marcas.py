@@ -191,9 +191,6 @@ def obtener_marcasXnombre():
 
 
 
-
-
-
 def insertar_marca(marca, logo):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -282,6 +279,7 @@ def actualizar_marca(marca,logo, id):
     conexion.commit()
     conexion.close()
 
+
 def obtener_id_marca(marca):
     conexion = obtener_conexion()
     marca_id = None
@@ -292,6 +290,7 @@ def obtener_id_marca(marca):
             marca_id = resultado[0]
     conexion.close()
     return marca_id
+
 
 def marcas_para_novedad():
     conexion = obtener_conexion()

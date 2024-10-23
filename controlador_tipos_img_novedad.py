@@ -10,7 +10,7 @@ def obtener_tipos_img_novedad():
                 tipo, 
                 disponibilidad 
             FROM TIPO_IMG_NOVEDAD
-            ORDER BY id DESC
+            ORDER BY id asc
         '''
         cursor.execute(sql)
         tipos_img = cursor.fetchall()

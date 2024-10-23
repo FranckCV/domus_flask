@@ -335,6 +335,7 @@ def promoselect(id):
     conexion.close()
     return elemento_promo
 
+
 def mostrarNovedadesAnuncios():
     conexion = obtener_conexion()
     elementos = []
@@ -498,9 +499,9 @@ def obtenerNovedadPorId(novedadId):
 #         '''
 #         cursor.execute(sql, (id,))
 #         imagen_novedad = cursor.fetchone()
-    
-    conexion.close()
-    return imagen_novedad
+
+    # conexion.close()
+    # return imagen_novedad
 
 def actualizarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, id):
     conexion = obtener_conexion()
@@ -524,6 +525,8 @@ def eliminarImagenNovedad(id):
         cursor.execute(sql, (id,))
     conexion.commit()
     conexion.close()
+
+    
 #     conexion.close()
 #     return imagen_novedad
 
@@ -548,8 +551,6 @@ def eliminarImagenNovedad(id):
 #         '''
 #         cursor.execute(sql, (id,))
 #     conexion.commit()
-#     conexion.close()
-#     conexion.close()
 #     conexion.close()
 
 

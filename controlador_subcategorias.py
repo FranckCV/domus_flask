@@ -40,7 +40,7 @@ def obtenerCategoriasXSubcategoria(subcategoria):
             order by su.subcategoria;
         '''
         cursor.execute(sql)
-        categorias = cursor.fetchone()    
+        categorias = cursor.fetchone()
     return categorias
 
 
@@ -84,6 +84,7 @@ def obtener_subcategoriasXnombre():
     conexion.close()
     return subcategorias
 
+
 def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -91,13 +92,26 @@ def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
     conexion.commit()
     conexion.close()
 
+
 def obtener_subcategorias():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT sub.id , sub.subcategoria ,sub.faicon_subcat,sub.disponibilidad,sub.categoriaid , cat.categoria ,cat.faicon_cat FROM subcategoria sub INNER JOIN categoria cat on cat.id = sub.categoriaid")
+        cursor.execute('''
+                        SELECT 
+                            sub.id , 
+                            sub.subcategoria , 
+                            sub.faicon_subcat ,
+                            sub.disponibilidad ,
+                            sub.categoriaid , 
+                            cat.categoria ,
+                            cat.faicon_cat 
+                        FROM subcategoria sub 
+                        INNER JOIN categoria cat on cat.id = sub.categoriaid
+                       ''')
         subcategorias = cursor.fetchall()
     conexion.close()
     return subcategorias
+
 
 def eliminar_subcategoria(id):
     conexion = obtener_conexion()
@@ -105,6 +119,7 @@ def eliminar_subcategoria(id):
         cursor.execute("DELETE FROM subcategoria WHERE id = %s", (id,))
     conexion.commit()
     conexion.close()
+
 
 def obtener_subcategoria_por_id(id):
     conexion = obtener_conexion()
@@ -114,6 +129,7 @@ def obtener_subcategoria_por_id(id):
         subcategoria = cursor.fetchone()
     conexion.close()
     return subcategoria
+
 
 def actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid, id):
     conexion = obtener_conexion()
@@ -134,3 +150,7 @@ def obtener_id_subcategoria(subcategoria):
             subcategoria_id = resultado[0]
     conexion.close()
     return subcategoria_id
+
+
+
+
