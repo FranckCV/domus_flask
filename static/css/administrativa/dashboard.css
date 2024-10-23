@@ -328,3 +328,26 @@ main {
 }
 
 
+.form_info_domus .img_logo_domus {
+    background-color: #b3b3b3;
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    border: 2px dashed #d8d8d8;
+}
+
+.form_info_domus img {
+    height: 100px;
+    /* border: 1px solid white; */
+}
+
+.form_info_domus .titulo_form {
+    text-align: center;
+    color: darkblue;
+}
+
+.form_info_domus textarea {
+    height: 200px;
+}
+

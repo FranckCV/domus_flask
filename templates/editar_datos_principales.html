@@ -1,0 +1,137 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Editar Datos Principales
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Editar Datos Principales (Información de Domus Market)</h2>
+    <form action="{{ url_for('actualizar_datos_principales') }}" method="post"  enctype="multipart/form-data" class="form_info_domus">
+      <input type="hidden" name="id" value="{{ info.0 }}"> 
+      <div class="form-grid" id="col_add">
+
+        <div class="titulo_form row">
+          <h3>Imagenes Generales</h3>
+        </div>
+
+        <div class="row">
+          <div class="col seccionImg">
+            <label for="imglogo">Logo de Domus:</label> <br>
+            <input type="file" class="campoImg" name="imglogo" id="imglogo" value="{{info.3}}"/>
+            <div class="img_logo_domus">
+              <img id="previewImg" src="{{info.3}}" alt="">
+            </div>
+          </div>
+
+          <div class="col seccionImg">
+            <label for="imgicon">Icono de Domus:</label>            
+            <input type="file" class="campoImg" name="imgicon" id="imgicon" value="{{info.4}}"/>
+            <div class="img_logo_domus">
+              <img id="previewImg" src="{{info.4}}" alt="">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="titulo_form row">
+            <h3>Información de Contacto</h3>
+          </div>
+        </div>
+
+        <div class="row">          
+
+          <div class="col">
+            <label for="categoria">Numero de Contacto:</label>
+            <input required type="text" class="input" placeholder="" name="numero" id="numero" value="{{info.2}}"/>
+          </div>
+
+          <div class="col">
+            <label for="categoria">Correo de Contacto:</label>
+            <input required type="text" class="input" placeholder="" name="correo" id="correo" value="{{info.1}}"/>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="titulo_form row">
+            <h3>Información Sobre Nosotros</h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="descripcion">Descripción:</label><br />
+            <textarea name="descripcion" id="descripcion">{{info.5}}</textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="historia">Historia:</label><br />
+            <textarea name="historia" id="historia">{{info.6}}</textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="vision">Visión:</label><br />
+            <textarea name="vision" id="vision">{{info.7}}</textarea>
+          </div>
+          
+          <div class="col" id="space_info">
+            <label for="valores">Valores:</label><br />
+            <textarea name="valores" id="valores">{{info.8}}</textarea>
+          </div>
+          
+          <div class="col" id="space_info">
+            <label for="mision">Misión:</label><br />
+            <textarea name="mision" id="mision">{{info.9}}</textarea>
+          </div>
+        </div>        
+
+        <div class="row">
+          <div class="col" id="sbmt">
+              <div class="form-buttons">
+                  <a href="{{ url_for('listado_datos_principales') }}" id="backbtn">Volver</a>
+                  <button type="submit" class="button is-primary">Actualizar</button>
+              </div>
+          </div>
+      </div>
+
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/admin_productos.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Select2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="/static/js/imgsCRUDvistaprevia.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#faicon-cat').select2({
+        templateResult: formatIcon,
+        templateSelection: formatIcon,
+        width: '100%' // Ajusta el ancho si es necesario
+      })
+    
+      function formatIcon(option) {
+        if (!option.id) {
+          return option.text
+        }
+        var $option = $('<span><i class="' + $(option.element).data('icon') + '"></i> ' + option.text + '</span>')
+        return $option
+      }
+    })
+
+    
+
+  </script>
+{% endblock %}

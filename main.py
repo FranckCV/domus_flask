@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify
+import base64
 import datetime
 import controlador_marcas
 import controlador_categorias
@@ -24,6 +25,7 @@ import controlador_comentario
 import controlador_estado_pedido
 import controlador_metodo_pago
 import controlador_redes_sociales
+import controlador_informacion_domus
 
 app = Flask(__name__)
 
@@ -37,11 +39,10 @@ def inject_globals():
     marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
     logo_foto = logo_domus
     redes_footer = controlador_redes_sociales.obtener_redes_sociales()
+    conts_info_footer = controlador_contenido_info.obtener_tipos_contenido()
+    datos_domus_main = controlador_informacion_domus.obtener_informacion_domus()
 
-    # Administrativa
-    gogogogogog = logo_domus
-
-    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , gogogogogog = gogogogogog , redes_footer = redes_footer)
+    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , redes_footer = redes_footer , conts_info_footer = conts_info_footer , datos_domus_main = datos_domus_main)
 
 
 # PAGINAS GENERALES
@@ -65,21 +66,13 @@ def nuestras_marcas():
 @app.route("/catalogo") #falta
 def catalogo():
     productos = controlador_productos.obtenerEnTarjetasMasRecientes()
-    categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()
-    
-    # novedades
-    # productos
-    # filtro categoria
-    # filtro subcategoria
-
+    categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()    
     return render_template("catalogo.html", productos = productos, categoriasFiltro = categoriasFiltro)
-
 
 @app.route("/novedades") #falta
 def novedades():
     productosOfertas = controlador_productos.obtenerEnTarjetasOfertas()
     return render_template("novedades.html" , productosOfertas = productosOfertas)
-
 
 @app.route("/promociones") #falta
 def promociones():
@@ -90,19 +83,6 @@ def promociones():
 def anuncios():
     anuncios = controlador_novedades.mostrarNovedadesAnuncios()
     return render_template('anuncios.html', anuncios=anuncios)
-
-@app.route("/selectedAnuncio=<int:id>")
-def anuncio(id):
-    try:
-        anuncio = controlador_novedades.anuncioselect(id)
-        if anuncio:
-            return render_template("selectedAnuncio.html", anuncio=anuncio)
-        else:
-            return redirect("/error")
-    except Exception as e:
-        print(f"Error: {e}")
-        return redirect("/error")
-
 
 @app.route("/error") 
 def error():
@@ -179,14 +159,17 @@ def promocion(id):
         return redirect("/error")
 
 
-
-# @app.route("/selectedNovedad?<int:tipo_id>=<int:id>")  #falta
-# def novedad(id,tipo_id):
-#     if tipo_id == 3:
-#         return render_template("promocionSelect.html")
-#     else:
-#         return redirect("/novedades")
-
+@app.route("/selectedAnuncio=<int:id>")
+def anuncio(id):
+    try:
+        anuncio = controlador_novedades.anuncioselect(id)
+        if anuncio:
+            return render_template("selectedAnuncio.html", anuncio=anuncio)
+        else:
+            return redirect("/error")
+    except Exception as e:
+        print(f"Error: {e}")
+        return redirect("/error")
 
 
 
@@ -195,51 +178,27 @@ def promocion(id):
 
 @app.route("/servicio_cliente") #falta
 def servicio_cliente():
-    return render_template("servicioCliente.html")
+    tipos = controlador_contenido_info.obtener_tipos_contenido()
+    return render_template("servicioCliente.html" , tipos = tipos)
 
+@app.route("/selectedContenidoInformativo=<int:id>") #falta
+def selectedContenidoInformativo(id):
+    tipo = controlador_contenido_info.obtener_tipo_contenido_info_por_id(id)
+    datos = controlador_contenido_info.obtener_datos_contenido_por_tipo(id)
+    return render_template("selectedContenidoInfo.html" , tipo = tipo , datos = datos)
 
 @app.route("/nosotros") #falta
 def nosotros():
-    return render_template("nosotros.html")
-
-
-@app.route("/devoluciones") #falta
-def devoluciones():
-    return render_template("devoluciones.html")
-
-
-@app.route("/terminos") #falta
-def terminos():
-    return render_template("terminos.html")
-
-
-@app.route("/faq") #falta
-def faq():
-    return render_template("faq.html")
-
-
-@app.route("/reclamos") #falta
-def reclamos():
-    return render_template("reclamos.html")
-
-
-@app.route("/garantias") #falta
-def garantias():
-    return render_template("garantias.html")
-
-
-@app.route("/puntos_venta") #falta
-def puntos_venta():
-    return render_template("puntosVenta.html")
-
-
+    info_domus = controlador_informacion_domus.obtener_informacion_domus()
+    return render_template("nosotros.html" , info_domus = info_domus)
 
 
 # PAGINAS FORMULARIOS
 
-@app.route("/contactanos") #falta   
+@app.route("/contactanos")
 def contactanos():
-    return render_template("contactanos.html")
+    motivos_comentario = controlador_motivo_comentario.obtener_motivos_disponibles()
+    return render_template("contactanos.html", motivos=motivos_comentario)
 
 
 @app.route("/iniciar_sesion") #falta
@@ -1120,7 +1079,6 @@ def eliminar_metodo_pago():
 ################### REDES SOCIALES ####################
 
 
-
 @app.route("/listado_redes_sociales")
 def listado_redes_sociales():
     redes = controlador_redes_sociales.obtener_redes_sociales()
@@ -1165,8 +1123,49 @@ def eliminar_redes_sociales():
 
 
 
+############### DATOS PRINCIPALES ############################
+
+@app.route("/listado_datos_principales")
+def listado_datos_principales():
+    info = controlador_informacion_domus.obtener_informacion_domus()
+    return render_template("listado_datos_principales.html", info = info)
 
 
+@app.route("/formulario_editar_datos_principales=<int:id>")
+def editar_datos_principales(id):
+    info = controlador_informacion_domus.obtener_informacion_domus_por_id(id)
+    return render_template("editar_datos_principales.html", info = info)
+
+
+@app.route("/actualizar_datos_principales", methods=["POST"])
+def actualizar_datos_principales():
+    id = request.form["id"]
+    
+    info = controlador_informacion_domus.obtener_imgs_informacion_domus_por_id(id)
+
+    correo = request.form["correo"]
+    numero = request.form["numero"]
+    descripcion = request.form["descripcion"]
+    historia = request.form["historia"]
+    vision = request.form["vision"]
+    valores = request.form["valores"]
+    mision = request.form["mision"]
+    
+    imgLogo = request.files["imglogo"]    
+    imgIcon = request.files["imgicon"]
+
+    if imgLogo.filename == '':
+        logo = info[1]
+    else:
+        logo = imgLogo.read()
+    
+    if imgIcon.filename == '':
+        icon = info[2]
+    else:
+        icon = imgIcon.read()
+
+    controlador_informacion_domus.actualizar_informacion_domus_por_id(correo,numero,logo,icon,descripcion,historia,vision,valores,mision,id)
+    return redirect("/listado_datos_principales")
 
 
 

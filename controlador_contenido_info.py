@@ -66,7 +66,21 @@ def obtener_datos_contenido():
     conexion.close()
     return datos
 
-
+def obtener_datos_contenido_por_tipo(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            cont.id,
+                            cont.titulo,
+                            cont.cuerpo,
+                            cont.TIPO_CONTENIDO_INFOid 
+                        FROM contenido_info cont
+                        WHERE TIPO_CONTENIDO_INFOid = '''+str(id)+'''
+                       ''')
+        datos = cursor.fetchall()
+    conexion.close()
+    return datos
 
 
 def insertar_tipo_contenido_info(nombre , descripcion , faicon_cont):
