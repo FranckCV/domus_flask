@@ -1,0 +1,52 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Agregar Tipo de Contenido Informativo
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Tipo:</h2><br /><br /><br />
+    <form action="{{ url_for('guardar_tipo_contenido_info') }}" method="post" enctype="multipart/form-data">
+      <div class="form-grid" id="col_add">
+
+        <div class="row">
+          <div class="col">
+            <label for="nombre">Nombre:</label><br />
+            <input required type="text" class="input" placeholder="Nombre" name="nombre" id="nombre" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="nombre">Icono:</label><br />
+            <input required type="text" class="input" placeholder="Icono FontAwesome" name="faicon_cont" id="faicon_cont" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="descripcion">Descripción:</label><br />
+            <textarea name="descripcion" id="descripcion" placeholder="Descripcion"></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('listado_tipo_contenido_info') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary" style="border-radius: 20px;">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/admin_productos.js"></script>
+{% endblock %}

@@ -810,12 +810,53 @@ def eliminar_tipo_img_novedad():
     controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
     return redirect("/tipos_img_novedad_listado")
 
-
+#################  TIPO CONTENIDO INFO  ####################### 
 
 @app.route("/listado_tipo_contenido_info")
 def listado_tipo_contenido_info():
     tipos = controlador_contenido_info.obtener_listado_tipos_contenido()
     return render_template("listado_tipo_contenido_info.html", tipos = tipos)
+
+
+@app.route("/agregar_tipo_contenido_info")
+def formulario_agregar_tipo_contenido_info():
+    return render_template("agregar_tipo_contenido_info.html")
+
+
+@app.route("/guardar_tipo_contenido_info", methods=["POST"])
+def guardar_tipo_contenido_info():
+    nombre = request.form["nombre"] 
+    descripcion = request.form["descripcion"] 
+    faicon_cont = request.form["faicon_cont"]
+    controlador_contenido_info.insertar_tipo_contenido_info(nombre , descripcion , faicon_cont)
+    return redirect("/listado_tipo_contenido_info")
+
+
+@app.route("/actualizar_tipo_contenido_info", methods=["POST"])
+def actualizar_tipo_contenido_info():
+    id = request.form["id"]
+    nombre = request.form["nombre"]
+    faicon_cont = request.form["faicon_cont"] 
+    descripcion = request.form["descripcion"]
+    controlador_contenido_info.actualizar_tipo_contenido_info_por_id(nombre,faicon_cont,descripcion,id)
+    return redirect("/listado_tipo_contenido_info")
+
+
+@app.route("/formulario_editar_tipo_contenido_info=<int:id>")
+def editar_tipo_contenido_info(id):
+    tipo = controlador_contenido_info.obtener_tipo_contenido_info_por_id(id)
+    return render_template("editar_tipo_contenido_info.html", tipo=tipo)
+
+
+@app.route("/eliminar_tipo_contenido_info", methods=["POST"])
+def eliminar_tipo_contenido_info():
+    controlador_contenido_info.eliminar_tipo_contenido_info(request.form["id"])
+    return redirect("/listado_tipo_contenido_info")
+
+
+
+
+
 
 
 
@@ -824,45 +865,6 @@ def listado_contenido_info():
     datos = controlador_contenido_info.obtener_datos_contenido()
     secciones = controlador_contenido_info.obtener_tipos_contenido()
     return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
-
-
-
-# @app.route("/agregar_contenido_info")
-# def formulario_agregar_contenido_info():
-#     return render_template("agregar_contenido_info.html")
-
-
-# @app.route("/guardar_contenido_info", methods=["POST"])
-# def guardar_contenido_info():
-#     marca = request.form["marca"] 
-#     logo= request.files["logo"] 
-#     logo_binario = logo.read()
-#     controlador_marcas.insertar_marca(marca,logo_binario)
-#     return redirect("/listado_contenido_info")
-
-
-# @app.route("/eliminar_contenido_info", methods=["POST"])
-# def eliminar_contenido_info():
-#     controlador_marcas.eliminar_marca(request.form["id"])
-#     return redirect("/listado_contenido_info")
-
-
-# @app.route("/formulario_editar_contenido_info=<int:id>")
-# def editar_contenido_info(id):
-#     marca = controlador_marcas.obtener_marca_por_id(id)
-#     return render_template("editar_contenido_info.html", marca=marca)
-
-
-# @app.route("/actualizar_contenido_info", methods=["POST"])
-# def actualizar_contenido_info():
-#     id = request.form["id"]
-#     marca = request.form["marca"] 
-#     logo= request.files["logo"] 
-#     logo_binario = logo.read()  
-#     controlador_marcas.actualizar_marca(marca,logo_binario,id)
-#     return redirect("/listado_contenido_info")
-
-
 
 
 

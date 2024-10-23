@@ -12,17 +12,25 @@
   <section class="h_section" id="mainSection">
     <h2 class="fw-bolder">Listado de Secciones de Contenido Informativo</h2>
     <div class="container-fluid" id="break_nav">
-           
+      <div class="col">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
+          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
+          <a href="{{ url_for('formulario_agregar_tipo_contenido_info') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
+        </div>
+      </div>
+
     </div>
 
     <div class="table-containersy">
-      <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+      <table cellspacing="0" cellpadding="8" class="product_if">
         <thead>
           <tr>
             <th>ID</th>
             <th>Seccion</th>
             <th>Icono</th>
             <th>Descripcion</th>
+            <th># Elementos</th>
             <th>Opciones</th>
           </tr>
         </thead>
@@ -34,20 +42,17 @@
               <td>{{ tipo.1 }}</td>
               <td><i class="{{ tipo.3 }}"></i></td>
               <td>{{ tipo.2 }}</td>
-
+              <td>{{ tipo.4 }}</td>
 
               <td class="opciones_column">
                 <div class="acciones">
-                  <a href="{{ url_for('editar_marca', id=marca.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                  <form action="{{ url_for('eliminar_marca') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                    <input type="hidden" name="id" value="{{ marca.0 }}" />
+                  <a href="{{ url_for('editar_tipo_contenido_info', id=tipo.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
+                  <form action="{{ url_for('eliminar_tipo_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <input type="hidden" name="id" value="{{ tipo.0 }}" />
                     <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
                   </form>
                 </div>
               </td>
-
-
-
 
             </tr>
           {% endfor %}
