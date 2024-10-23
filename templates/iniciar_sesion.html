@@ -56,16 +56,16 @@
 
         <div class="container-input form-field">
           <i class="fa-solid fa-venus-mars"></i>
-          <select id="genero" name="genero" required>
+          <select id="genero" name="genero" required onchange="cambiarColor(this)" >
               <option value="" disabled selected>Género</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Femenino">Femenino</option>
+              <option value="1">Masculino</option>
+              <option value="0">Femenino</option>
           </select>
         </div>
 
         <div class="container-input form-field">
           <i class="fa-solid fa-calendar-days"></i>
-          <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento" required>
+          <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento" onchange="cambiarColor(this)"  required>
         </div>
 
         <div class="container-input form-field">

@@ -145,3 +145,12 @@ h1 {
         width: 100%;
     }
 }
+
+select, input[type="date"] {
+    color: grey;
+  }
+  
+  select.has-value, input[type="date"].has-value {
+    color: black;
+  }
+  

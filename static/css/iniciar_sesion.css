@@ -3,28 +3,32 @@
     --success-color: #28a745;
     --warning-color: #ffc107;
 }
+
 .login_body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: auto;
     margin: 0;
-    font-family:Poppins, sans-serif;
+    font-family: Poppins, sans-serif;
     padding-block: 15px;
 }
-.container{
+
+.container {
     width: 800px;
     height: 500px;
     display: flex;
     position: relative;
-    --bs-gutter-x:0;
+    --bs-gutter-x: 0;
     box-shadow: -10px 0px 20px rgba(0, 0, 0, 0.2);
 }
-.login_body .container-form{
+
+.login_body .container-form {
     width: 100%;
     overflow: hidden;
 }
-.login_body .container-form form{
+
+.login_body .container-form form {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -32,36 +36,40 @@
     align-items: center;
     transition: transform 0.5s ease-in;
 }
-.container-form h2{
+
+.container-form h2 {
     font-weight: 900;
     margin-top: 10px;
     margin-bottom: 15px;
     font-size: 25px;
 }
-.container-form span{
+
+.container-form span {
     font-size: 12px;
     margin-bottom: 15px;
 }
 
-.container-input input{
-    border:none;
+.container-input input {
+    border: none;
     outline: none;
     width: 100%;
     height: 100%;
     background-color: inherit;
     padding-left: 10px;
 }
-.container-form a{
-    color:black;
+
+.container-form a {
+    color: black;
     font-size: 14px;
     margin-bottom: 20px;
     margin-top: 5px;
 }
-.button{
+
+.button {
     width: 170px;
     height: 40px;
     font-size: 15px;
-    border:none;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
@@ -69,33 +77,40 @@
     background-color: #0d0d4a;
     color: white;
 }
-.button:hover{
+
+.button:hover {
     background-color: #6d6dfb;
     color: black;
 }
+
 .container-input select {
-    width: 100%; 
+    width: 100%;
     height: 100%;
     border: none;
     outline: none;
-    background-color: inherit; 
-    color:gray;
+    background-color: inherit;
+    color: gray;
     padding-left: 8px;
 }
-#fecha_nacimiento{
-    color:gray;
+
+#fecha_nacimiento {
+    color: gray;
 }
-.sign-up{
+
+.sign-up {
     transform: translateX(-100%);
-} 
-.container.toggle .sign-in{
+}
+
+.container.toggle .sign-in {
     transform: translateX(100%);
 }
-.container.toggle .sign-up{
+
+.container.toggle .sign-up {
     transform: translateX(0);
 }
+
 /*Welcome*/
-.container-welcome{
+.container-welcome {
     background-color: #0b0e5f;
     position: absolute;
     width: 50%;
@@ -107,51 +122,60 @@
     overflow: hidden;
     transition: transform 0.5s ease-in-out;
 }
-.container-welcome .welcome{
+
+.container-welcome .welcome {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap:20px;
+    gap: 20px;
     padding: 0 50px;
     transition: transform 0.5s ease-in-out;
 }
-.welcome-sign-in{
+
+.welcome-sign-in {
     transform: translateX(100%);
 }
-.container-welcome h3{
+
+.container-welcome h3 {
     font-size: 40px;
     font-weight: 800;
 }
-.container-welcome p{
+
+.container-welcome p {
     font-size: 14px;
     text-align: center;
 }
-.container-welcome .button{
-    box-shadow:2px 2px 3px white ;
+
+.container-welcome .button {
+    box-shadow: 2px 2px 3px white;
 }
-.container.toggle .welcome-sign-in{
+
+.container.toggle .welcome-sign-in {
     transform: translateX(0);
 }
-.container.toggle .welcome-sign-up{
+
+.container.toggle .welcome-sign-up {
     transform: translateX(-100%);
 }
-.container.toggle .container-welcome{
+
+.container.toggle .container-welcome {
     transform: translateX(0);
 }
+
 /* PARA EL INPUT*/
 
-.container-input{
+.container-input {
     width: 300px;
     height: 40px;
     margin-bottom: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap:8px;
+    gap: 8px;
     padding: 0 15px;
     background-color: #EEE;
-    border: 2px solid transparent; 
+    border: 2px solid transparent;
     border-radius: 4px;
     transition: border-color 0.3s ease;
 }
@@ -171,14 +195,15 @@
 }
 
 .container-input.error small {
-    visibility: visible; 
+    visibility: visible;
 }
 
 .container-input.success small {
-    visibility: hidden; 
+    visibility: hidden;
     color: green;
 }
-.check a{
+
+.check a {
     font-size: 12px;
     padding-bottom: 10px;
 }
@@ -186,6 +211,14 @@
 .check.error small {
     color: red;
 }
-.check small{
+
+.check small {
     display: block;
+}
+
+
+
+select.has-value,
+input[type="date"].has-value {
+    color: black;
 }
