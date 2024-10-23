@@ -1,87 +1,115 @@
 {% extends 'maestra_administrador.html' %}
 {% block titulo %}
-  Listado de Clientes
+Listado de Clientes
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+<link rel="stylesheet" href="static/css/administrativa/listados.css" />
 {% endblock %}
 
 {% block contenido %}
 
 <section class="h_section scrollable-section" id="mainSection">
-    <h2 class="fw-bolder">Listado de Clientes</h2>
-    <div class="container-fluid" id="break_nav">
-        <div class="col">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
-                    <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
-                </button>
-                <a href="{{ url_for('formulario_agregar_usuario_cliente') }}" class="button is-success add-btn">
-                    <button type="button" id="add_btn">Agregar</button>
-                </a>
-            </div>
-        </div>
+  <h2 class="fw-bolder">Listado de Clientes</h2>
+  <div class="container-fluid" id="break_nav">
+    <div class="col">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username"
+          aria-describedby="button-addon2">
+        <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+          <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
+        </button>
+        <a href="{{ url_for('formulario_agregar_usuario_cliente') }}" class="button is-success add-btn">
+          <button type="button" id="add_btn">Agregar</button>
+        </a>
+      </div>
     </div>
+  </div>
 
-    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
-        <thead>
-            <tr>
-                <th>Nombre Completo</th>
-                <th>Documento de Identidad</th>
-                <th>Correo Electrónico</th>
-                <th>Teléfono</th>
-                <th>Disponibilidad</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for usuario in usuarios_clientes %}
-            <tr>
-                <td>{{ usuario[1] }} {{ usuario[2] }}</td>
-                <td>{{ usuario[3] }}</td>
-                <td>{{ usuario[8] }}</td>
-                <td>{{ usuario[6] }}</td>
-                <td>
-                    {% if usuario[10] == 1 %}
-                    <span>No Disponible</span>
-                    {% else %}
-                    <span>Disponible</span>
-                    {% endif %}
-                </td>
-                <td class="acciones">
-                    <a href="{{ url_for('editar_cliente', id=usuario[0]) }}">
-                        <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
-                    </a>
-                    <form action="{{ url_for('eliminar_cliente') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                        <input type="hidden" name="id" value="{{ usuario[0] }}">
-                        <button type="submit">
-                            <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+    <thead>
+      <tr>
+        <th>Nombre Completo</th>
+        <th>Documento de Identidad</th>
+        <th>Correo Electrónico</th>
+        <th>Teléfono</th>
+        <th>Disponibilidad</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for usuario in usuarios_clientes %}
+      <tr>
+        <td>{{ usuario[1] }} {{ usuario[2] }}</td>
+        <td>{{ usuario[3] }}</td>
+        <td>{{ usuario[8] }}</td>
+        <td>{{ usuario[6] }}</td>
+        <td>
+          {% if usuario[10] == 1 %}
+          <span>No Disponible</span>
+          {% else %}
+          <span>Disponible</span>
+          {% endif %}
+        </td>
+        <td class="acciones">
+          <a href="{{ url_for('editar_cliente', id=usuario[0]) }}">
+            <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
+          </a>
+          <form action="{{ url_for('eliminar_cliente') }}" method="POST" onsubmit="return confirmarEliminacion()"
+            id="deleteF">
+            <input type="hidden" name="id" value="{{ usuario[0] }}">
+            <button type="submit">
+              <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="errorModalLabel">Error al eliminar pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ error }} <!-- Aquí se muestra el error que pasaste desde el backend -->
+        </div>
+      </div>
+    </div>
+  </div>
 
 </section>
 
 <style>
-    .Catective {
-        background-color: rgb(255, 255, 255);
-        color: #00095c;
-    }
+  .Catective {
+    background-color: rgb(255, 255, 255);
+    color: #00095c;
+  }
 </style>
 
 {% endblock %}
 
 {% block scripts %}
-  <script>
-    function confirmarEliminacion() {
-      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
-    }
-  </script>
-  <script src="/static/js/admin_productos.js"></script>
+
+{% if show_modal %}
+<script>
+  var modal = new bootstrap.Modal(document.getElementById('errorModal'));
+  modal.show();
+
+  setTimeout(function () {
+    window.location.href = "/listado_categorias";
+  }, 1500);
+</script>
+{% endif %}
+
+<script>
+  function confirmarEliminacion() {
+    return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+  }
+</script>
+<script src="/static/js/admin_productos.js"></script>
 {% endblock %}

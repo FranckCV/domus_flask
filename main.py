@@ -498,8 +498,18 @@ def categorias():
 
 @app.route("/eliminar_categoria", methods=["POST"])
 def eliminar_categoria():
-    controlador_categorias.eliminar_categoria(request.form["id"])
-    return redirect("/listado_categorias")
+    id = request.form["id"]
+    # Verificamos si la categoría tiene elementos asociados
+    result = controlador_categorias.obtener_categoria_por_id(id)
+    
+    if result:
+        # Si hay elementos asociados, mostramos el error
+        return render_template("listado_categorias.html", error="La categoría tiene elementos asociados y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+    else:
+        # Si no hay elementos asociados, procedemos a eliminar
+        controlador_categorias.eliminar_categoria(id)
+        return redirect("/listado_categorias")
+
 
 
 @app.route("/formulario_editar_categoria=<int:id>")
@@ -1273,6 +1283,8 @@ def eliminar_cliente():
     id = request.form["id"]
     controlador_usuario_cliente.eliminar_usuario_cliente(id)
     return redirect("/listado_clientes")
+
+
 
 
 ####################FIN CLIENTES########################
