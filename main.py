@@ -867,9 +867,6 @@ def listado_contenido_info():
     secciones = controlador_contenido_info.obtener_tipos_contenido()
     return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
 
-
-
-<<<<<<< HEAD
 # @app.route("/agregar_contenido_info")
 # def formulario_agregar_contenido_info():
 #     return render_template("agregar_contenido_info.html")
@@ -919,9 +916,6 @@ def listado_tipos_usuario():
     #     print(f"descripción: {tipos_usuario[0][2]}")
     # else:
     #     print("No se encontraron registros en la tabla TIPO_USUARIO")
-=======
->>>>>>> 34d32bada1192793b7a90f6a9eedc861768ad4ac
-
     return render_template("listado_tipos_usuario.html", tipos_usuario=tipos_usuario)
 
 @app.route("/agregar_tipo_usuario")
