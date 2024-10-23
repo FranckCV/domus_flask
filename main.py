@@ -15,6 +15,7 @@ import controlador_tipos_img_novedad
 import controlador_carrito
 import controlador_detalle
 import controlador_contenido_info
+import controlador_tipos_usuario
 
 app = Flask(__name__)
 
@@ -864,6 +865,40 @@ def listado_contenido_info():
     secciones = controlador_contenido_info.obtener_tipos_contenido()
     return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
 
+# @app.route("/agregar_contenido_info")
+# def formulario_agregar_contenido_info():
+#     return render_template("agregar_contenido_info.html")
+
+
+# @app.route("/guardar_contenido_info", methods=["POST"])
+# def guardar_contenido_info():
+#     marca = request.form["marca"] 
+#     logo= request.files["logo"] 
+#     logo_binario = logo.read()
+#     controlador_marcas.insertar_marca(marca,logo_binario)
+#     return redirect("/listado_contenido_info")
+
+
+# @app.route("/eliminar_contenido_info", methods=["POST"])
+# def eliminar_contenido_info():
+#     controlador_marcas.eliminar_marca(request.form["id"])
+#     return redirect("/listado_contenido_info")
+
+
+# @app.route("/formulario_editar_contenido_info=<int:id>")
+# def editar_contenido_info(id):
+#     marca = controlador_marcas.obtener_marca_por_id(id)
+#     return render_template("editar_contenido_info.html", marca=marca)
+
+
+# @app.route("/actualizar_contenido_info", methods=["POST"])
+# def actualizar_contenido_info():
+#     id = request.form["id"]
+#     marca = request.form["marca"] 
+#     logo= request.files["logo"] 
+#     logo_binario = logo.read()  
+#     controlador_marcas.actualizar_marca(marca,logo_binario,id)
+#     return redirect("/listado_contenido_info")
 
 @app.route("/agregar_contenido_info")
 def formulario_agregar_contenido_info():
@@ -902,6 +937,51 @@ def eliminar_contenido_info():
     controlador_contenido_info.eliminar_contenido_info(request.form["id"])
     return redirect("/listado_contenido_info")
 
+
+
+##########################PARA TIPOS USUARIO################
+@app.route("/listado_tipos_usuario")
+def listado_tipos_usuario():
+    tipos_usuario = controlador_tipos_usuario.obtener_tipos_usuario()
+    # if tipos_usuario:
+    #     print(f"id: {tipos_usuario[0][0]}")
+    #     print(f"nombre: {tipos_usuario[0][1]}")
+    #     print(f"descripción: {tipos_usuario[0][2]}")
+    # else:
+    #     print("No se encontraron registros en la tabla TIPO_USUARIO")
+    return render_template("listado_tipos_usuario.html", tipos_usuario=tipos_usuario)
+
+@app.route("/agregar_tipo_usuario")
+def formulario_agregar_tipo_usuario():
+    return render_template("agregar_tipo_usuario.html")
+
+@app.route("/guardar_tipo_usuario", methods=["POST"])
+def guardar_tipo_usuario():
+    tipo = request.form["tipo"]
+    descripcion = request.form["descripcion"]
+    controlador_tipos_usuario.insertar_tipo_usuario(tipo, descripcion)
+    return redirect("/listado_tipos_usuario")
+
+@app.route("/formulario_editar_tipo_usuario=<int:id>")
+def editar_tipo_usuario(id):
+    tipo_usuario = controlador_tipos_usuario.obtener_tipo_usuario_por_id(id)
+    return render_template("editar_tipo_usuario.html", tipo_usuario=tipo_usuario)
+
+@app.route("/actualizar_tipo_usuario", methods=["POST"])
+def actualizar_tipo_usuario():
+    id = request.form["id"]
+    tipo = request.form["tipo"]
+    descripcion = request.form["descripcion"]
+    controlador_tipos_usuario.actualizar_tipo_usuario(id, tipo, descripcion)
+    return redirect("/listado_tipos_usuario")
+
+@app.route("/eliminar_tipo_usuario", methods=["POST"])
+def eliminar_tipo_usuario():
+    id = request.form["id"]
+    controlador_tipos_usuario.eliminar_tipo_usuario(id)
+    return redirect("/listado_tipos_usuario")
+
+####################FIN TIPOS USUARIO########################
 
 
 

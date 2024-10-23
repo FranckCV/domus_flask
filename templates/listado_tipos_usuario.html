@@ -1,0 +1,73 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+  Listado de Tipos de Usuario
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Tipos de Usuario</h2>
+
+    <!-- Input para búsqueda y botón para agregar un nuevo tipo de usuario -->
+    <div class="col">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Buscar por tipo" aria-label="Buscar por tipo" aria-describedby="button-addon2" />
+          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+          </button>
+          <a href="{{ url_for('formulario_agregar_tipo_usuario') }}" class="button is-success add-btn">
+            <button type="button" id="add_btn">Agregar</button>
+          </a>
+        </div>
+      </div>
+
+    <!-- Tabla con los tipos de usuario -->
+    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tipo</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for tipo_usuario in tipos_usuario %}
+        <tr>
+          <td>{{ tipo_usuario[0] }}</td>
+          <td>{{ tipo_usuario[1] }}</td>
+          <td>{{ tipo_usuario[2] }}</td>
+
+          <!-- Acciones: Editar y Eliminar -->
+          <td class="acciones">
+            <a href="{{ url_for('editar_tipo_usuario', id=tipo_usuario[0]) }}">
+                <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
+            </a>
+            <form action="{{ url_for('eliminar_tipo_usuario') }}" method="POST" onsubmit="return confirmarEliminacion()" style="display:inline;">
+                <input type="hidden" name="id" value="{{ tipo_usuario[0] }}">
+                <button type="submit">
+                    <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+    }
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
+{% endblock %}

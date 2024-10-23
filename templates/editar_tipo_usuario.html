@@ -1,0 +1,43 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+  Editar Tipo de Usuario
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Tipo de Usuario</h2>
+    <form action="{{ url_for('actualizar_tipo_usuario') }}" method="post">
+      <input type="hidden" name="id" value="{{ tipo_usuario[0] }}">
+      <div class="form-grid" id="col_add">
+
+        <div class="row">
+          <div class="col">
+            <label for="tipo">Tipo de Usuario:</label><br>
+            <input value="{{ tipo_usuario[1] }}" required type="text" class="input" placeholder="Tipo de usuario" name="tipo" id="tipo">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="descripcion">Descripción:</label><br>
+            <textarea required class="input" placeholder="Descripción del tipo de usuario" name="descripcion" id="descripcion">{{ tipo_usuario[2] }}</textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('listado_tipos_usuario') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Guardar Cambios</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </section>
+{% endblock %}
