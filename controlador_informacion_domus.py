@@ -132,30 +132,3 @@ def actualizar_informacion_domus_por_id(correo,numero,imgLogo,imgIcon,descripcio
 
 
 
-# def insertar_informacion_domus(nombre):
-#     conexion = obtener_conexion()
-#     with conexion.cursor() as cursor:
-#         cursor.execute('''
-#                        INSERT INTO informacion_domus (metodo,disponibilidad) VALUES (%s,1)
-#                        ''', 
-#                        (nombre))
-#     conexion.commit()
-#     conexion.close()
-
-
-# def eliminar_informacion_domus(id):
-#     conexion = obtener_conexion()
-#     with conexion.cursor() as cursor:
-#         cursor.execute("DELETE FROM informacion_domus WHERE id = %s", (id))
-#     conexion.commit()
-#     conexion.close()
-
-
-# def obtener_informacion_domus_por_id(id):
-#     conexion = obtener_conexion()
-#     tipo = None
-#     with conexion.cursor() as cursor:
-#         cursor.execute("SELECT id, metodo,disponibilidad FROM informacion_domus WHERE id = %s", (id))
-#         tipo = cursor.fetchone()
-#     conexion.close()
-#     return tipo
