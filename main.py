@@ -283,7 +283,7 @@ def disminuir_carro():
 #PARA CONFIRMAR CARRE
 @app.route("/confirmar_carrito", methods=["POST"])
 def confirmar_carrito():
-    estado = 1
+    estado = 2
     usuario_id = 1
     
     # Obtener los valores del formulario
