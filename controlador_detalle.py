@@ -114,11 +114,61 @@ def editar_detalle(producto_id, pedido_id, nueva_cantidad):
     try:
         with conexion.cursor() as cursor:
             # Actualizamos la cantidad de un producto en un pedido específico.
-            sql = "UPDATE detalles_pedido SET cantidad=%s WHERE PRODUCTOid=%s AND PEDIDOid=%s"
-            cursor.execute(sql, (nueva_cantidad, producto_id, pedido_id))
+            sql = "UPDATE detalles_pedido set PRODUCTOid=%s, cantidad=%s WHERE PRODUCTOid=%s AND PEDIDOid=%s"
+            cursor.execute(sql, (producto_id,nueva_cantidad, producto_id, pedido_id))
             conexion.commit()
             print(f"Detalle del producto {producto_id} en el pedido {pedido_id} actualizado correctamente.")
     except Exception as e:
         print(f"Error al editar detalle: {e}")
     finally:
         conexion.close()
+#OBTENER DETALLE CON ID PEDIDO Y PRODUCTO
+def obtener_detalle_por_ids(producto_id, pedido_id):
+    conexion = obtener_conexion()
+    productos_lista = []
+
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+                SELECT P.nombre, DP.cantidad, DP.PRODUCTOid, DP.PEDIDOid  
+                FROM detalles_pedido DP
+                INNER JOIN producto P ON P.id = DP.PRODUCTOid
+                INNER JOIN pedido PE ON PE.id = DP.PEDIDOid
+                WHERE DP.PRODUCTOid = %s AND DP.PEDIDOid = %s
+            '''
+            cursor.execute(sql, (producto_id, pedido_id))
+            
+            producto = cursor.fetchone()
+            
+            if producto:
+                productos_lista.append(producto)
+
+    except Exception as e:
+        print(f"Error al obtener detalles: {e}")
+    finally:
+        conexion.close()
+
+    return productos_lista
+
+
+def obtenerProductos():
+    conexion = obtener_conexion()
+    producto = []
+
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+                SELECT P.nombre, P.id
+                FROM producto P
+            '''
+            cursor.execute(sql)
+            
+            producto = cursor.fetchall()
+            
+
+    except Exception as e:
+        print(f"Error al obtener detalles: {e}")
+    finally:
+        conexion.close()
+
+    return producto

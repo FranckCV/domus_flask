@@ -41,14 +41,15 @@
               <td>{{ producto[3] }}</td>
               <td>S/. {{ producto[2] * producto[3] }}</td>
               <td>
-                <!-- Botón de Editar -->
-                <form action="{{ url_for('editar_detalle', producto_id=producto[4], pedido_id=pedido_id) }}" method="GET">
+
+
+                <form action="{{ url_for('editar_detalle', producto_id=producto[4], pedido_id=pedido_id) }}" method="POST">
                   <input type="hidden" name="producto_id" value="{{ producto[4] }}">
                   <input type="hidden" name="pedido_id" value="{{ pedido_id }}">
                   <button type="submit" class="btn btn-primary">Editar</button>
                 </form>
+                
 
-                <!-- Botón de Eliminar -->
                 <form action="{{ url_for('eliminar_detalle_pedido') }}" method="POST" onsubmit="return confirmarEliminacion();">
                   <input type="hidden" name="producto_id" value="{{ producto[4] }}">
                   <input type="hidden" name="pedido_id" value="{{ pedido_id }}">
@@ -59,6 +60,15 @@
           {% endfor %}
         </tbody>
       </table>
+    </div>
+
+    <div class="row">
+      <div class="col" id="sbmt">
+        <div class="form-buttons">
+          <!-- Botón de Volver -->
+          <a href="{{ url_for('pedido')}}" id="backbtn" class="btn btn-secondary">Volver</a>
+        </div>
+      </div>
     </div>
   </section>
 
