@@ -1217,8 +1217,48 @@ def eliminar_tipo_usuario():
 
 ####################FIN TIPOS USUARIO########################
 
+####################PARA CLIENTES#######################
+
+@app.route("/listado_clientes")
+def listado_clientes():
+    usuarios_clientes = controlador_usuario_cliente.obtener_usuarios_clientes()
+    return render_template("listado_clientes.html", usuarios_clientes=usuarios_clientes)
 
 
+@app.route("/agregar_usuario_cliente")
+def formulario_agregar_usuario_cliente():
+    return render_template("iniciar_sesion.html") ##falta miau
+
+
+@app.route("/formulario_editar_cliente=<int:id>")
+def editar_cliente(id):
+    usuario_cliente = controlador_usuario_cliente.obtener_usuario_cliente_por_id(id) 
+    return render_template("editar_cliente.html", usuario_cliente=usuario_cliente)
+
+
+@app.route("/actualizar_cliente", methods=["POST"])
+def actualizar_cliente():
+    id = request.form["id"]
+    nombres = request.form["nombres"]
+    apellidos = request.form["apellidos"]
+    doc_identidad = request.form["doc_identidad"]
+    genero = request.form["genero"]
+    fecha_nacimiento = request.form["fecha_nacimiento"]
+    telefono = request.form["telefono"]
+    correo = request.form["correo"]
+    disponibilidad = request.form["disponibilidad"]
+    controlador_usuario_cliente.actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad)
+    return redirect("/listado_clientes")
+
+
+@app.route("/eliminar_cliente", methods=["POST"])
+def eliminar_cliente():
+    id = request.form["id"]
+    controlador_usuario_cliente.eliminar_usuario_cliente(id)
+    return redirect("/listado_clientes")
+
+
+####################FIN CLIENTES########################
 
 
 
