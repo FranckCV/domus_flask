@@ -20,9 +20,20 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div class="col seccionImg">
             <label for="logo">Subir logo de marca:</label>
-            <input type="file" name="logo" id="logo" required/>
+            <input type="file" class="campoImg" name="logo" id="logo" required/>
+            <div class="espacio_img">
+              <img id="previewImg" src="" alt="">
+            </div>
+          </div>
+
+          <div class="col seccionImg">
+            <label for="banner">Subir banner de marca: (Opcional)</label>
+            <input type="file" class="campoImg" name="banner" id="banner"/>
+            <div class="espacio_img">
+              <img id="previewImg" src="" alt="">
+            </div>
           </div>
         </div>
         <div class="row">
@@ -40,4 +51,5 @@
 
 {% block scripts %}
   <script src="/static/js/admin_productos.js"></script>
+  <script src="/static/js/imgsCRUDvistaprevia.js"></script>
 {% endblock %}

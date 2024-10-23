@@ -1,0 +1,106 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+Agregar Empleado
+{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section" id="mainSection">
+  <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Empleado</h2><br /><br /><br />
+
+  <!-- Mostrar mensaje de error si existe -->
+  {% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form action="{{ url_for('guardar_empleado') }}" method="post" enctype="multipart/form-data">
+    <div class="form-grid" id="col_add">
+      <!-- Primera columna -->
+      <div class="row">
+        <div class="col">
+          <label for="nombres">Nombres:</label><br />
+          <input required type="text" class="input" placeholder="Nombres del empleado" name="nombres" id="nombres"
+            value="{{ nombres }}">
+        </div>
+        <div class="col">
+          <label for="apellidos">Apellidos:</label><br />
+          <input required type="text" class="input" placeholder="Apellidos del empleado" name="apellidos" id="apellidos"
+            value="{{ apellidos }}">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="doc_identidad">Documento de Identidad:</label><br />
+          <input required type="text" class="input" placeholder="Documento de identidad" name="doc_identidad"
+            id="doc_identidad" value="{{ doc_identidad }}">
+        </div>
+        <div class="col">
+          <label for="telefono">Teléfono:</label><br />
+          <input required type="text" class="input" placeholder="Teléfono" name="telefono" id="telefono"
+            value="{{ telefono }}">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="correo">Correo Electrónico:</label><br />
+          <input required type="email" class="input" placeholder="Correo" name="correo" id="correo"
+            value="{{ correo }}">
+        </div>
+        <div class="col">
+          <label for="fecha_nacimiento">Fecha de Nacimiento:</label><br />
+          <input required type="date" class="input" placeholder="Fecha de nacimiento" name="fecha_nacimiento"
+            id="fecha_nacimiento" value="{{ fecha_nacimiento }}">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="contraseña">Contraseña:</label><br />
+          <input required type="password" class="input" placeholder="Contraseña" name="contraseña" id="contraseña"
+            value="{{ contraseña }}">
+        </div>
+        <div class="col">
+          <label for="genero">Género:</label><br />
+          <select name="genero" id="genero" class="input" required>
+            <option value="1" {% if genero=='1' %}selected{% endif %}>Masculino</option>
+            <option value="0" {% if genero=='0' %}selected{% endif %}>Femenino</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="disponibilidad">Disponibilidad:</label><br>
+          <select name="disponibilidad" id="disponibilidad" class="input" required>
+            <option value="1" {% if disponibilidad==1 %}selected{% endif %}>Disponible</option>
+            <option value="0" {% if disponibilidad==0 %}selected{% endif %}>No Disponible</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="img_usuario">Imagen de Usuario (opcional):</label><br>
+          <input type="file" class="input" name="img_usuario" id="img_usuario">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col" id="sbmt">
+          <div class="form-buttons">
+            <a href="{{ url_for('empleados_listado') }}" id="backbtn">Volver</a>
+            <button type="submit" class="button is-primary">Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin_usuarios.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
