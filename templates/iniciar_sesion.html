@@ -94,14 +94,14 @@
         
         <!-- <div class="check">
           <input type="checkbox" name="terminos" value="1" id="terminos">
-          <a href="#">Acepta</a><a href="{{url_for('terminos')}}" > términos y condiciones</a>
+          <a href="#">Acepta</a><a href="{{url_for('selectedContenidoInformativo',id=1)}}" > términos y condiciones</a>
         <small></small>
         </div> -->
 
         <div class="check">
           <input type="checkbox" name="terminos" value="1" id="terminos">
           <a href="#" onclick="toggleCheckbox(); return false;">Acepta</a>
-          <a href="{{ url_for('terminos') }}"> términos y condiciones</a>
+          <a href="{{ url_for('selectedContenidoInformativo',id=1) }}"> términos y condiciones</a>
           <small></small>
         </div>
 
