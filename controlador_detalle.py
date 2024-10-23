@@ -49,7 +49,6 @@ def obtener_Detalle():
 
 
 ########################################
-import base64
 
 def obtener_Detalle_por_Id(id):
     conexion = obtener_conexion()
@@ -57,7 +56,6 @@ def obtener_Detalle_por_Id(id):
 
     try:
         with conexion.cursor() as cursor:
-            # Consulta principal
             sql = '''
                 SELECT IMP.imagen, P.nombre, DP.cantidad, DP.PRODUCTOid 
                 FROM detalles_pedido DP
@@ -66,11 +64,10 @@ def obtener_Detalle_por_Id(id):
                 INNER JOIN img_producto IMP ON P.id = IMP.PRODUCTOid
                 WHERE IMP.imgPrincipal = 1 AND PE.id = %s
             '''
-            cursor.execute(sql, (id,))  # Asegúrate de que 'id' se pasa como tupla
+            cursor.execute(sql, (id,)) 
             productos = cursor.fetchall()
 
             for producto in productos:
-                # Consulta de precios
                 sql_precios = "SELECT price_regular, precio_online, precio_oferta FROM producto WHERE id = %s"
                 cursor.execute(sql_precios, (producto[3],)) 
                 precios = cursor.fetchone()

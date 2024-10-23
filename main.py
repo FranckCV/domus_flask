@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify
+import datetime
 import controlador_marcas
 import controlador_categorias
 import controlador_productos
@@ -16,6 +17,8 @@ import controlador_carrito
 import controlador_detalle
 import controlador_contenido_info
 import controlador_tipos_usuario
+import controlador_pedido
+import controlador_metodo_pago
 
 app = Flask(__name__)
 
@@ -310,16 +313,39 @@ def disminuir_carro():
 def confirmar_carrito():
     estado = 1
     usuario_id = 1  
+    total = request.form.get('total_form')
+    
+    if total:
+        total = float(total)
+    
+    print(f"Total del pedido: {total}")
+    
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    print(pedido_id)
     existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
-    print(existencias)
-    if existencias and len(existencias) > 0:  
-     estado=2
-     controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
-     return render_template("resumen_de_pedido.html",existencias=existencias)
+    fecha_compra = datetime.date.today()
+    productos_carrito = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    
+    subtotal = 0
+    for producto in productos_carrito:
+        cantidad = producto['cantidad']
+        precio_unitario = producto['precio']
+        descuento = producto.get('descuento', 0)
+        total_producto = cantidad * (precio_unitario - descuento)
+        subtotal += total_producto
+    
+    # Actualiza el pedido si hay existencias
+    if existencias and len(existencias) > 0:
+        estado = 2
+        controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+        controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal)
+
+        # Renderiza el resumen de pedido con el total y existencias
+        return render_template("resumen_de_pedido.html", 
+                               existencias=existencias, 
+                               total_pagar=total, 
+                               descuento_aplicado=(descuento > 0))
     else:
-     return redirect('carrito')
+        return redirect('carrito')
 
 
 
@@ -329,11 +355,19 @@ def confirmar_carrito():
 def resumen_de_pedido():
     usuario=1
     pedido_id=controlador_carrito.ultimoPedido(usuario)
+    
+    metodos_pago =controlador_metodo_pago.obtener_Metodo_pago()
     existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
-    return render_template("resumen_de_pedido.html",existencias=existencias)
+    return render_template("resumen_de_pedido.html", metodos_pago=metodos_pago, existencias=existencias)
 
+@app.route('/cancelar_compra', methods=['POST'])
+def cancelar_compra():
+    usuario_id = 1  
+    estado_cancelado = 1
 
+    controlador_carrito.actualizar_estado_pedido(usuario_id, estado_cancelado)
 
+    return redirect('carrito')
 
 
 #############################################################################################################
@@ -1030,10 +1064,6 @@ def login():
 def confirmar_compra():
     return redirect("/")
 
-# @app.route("/cancelar_compra")
-@app.route("/cancelar_compra", methods=['POST'])
-def cancelar_compra():
-    return redirect("/")
 
 ############################CANCELAR PEDIDO#########################
 
