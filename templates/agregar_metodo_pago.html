@@ -1,0 +1,38 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Agregar Metodo de Pago
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Metodo de Pago</h2><br /><br /><br />
+    <form action="{{ url_for('guardar_metodo_pago') }}" method="post">
+      <div class="form-grid" id="col_add">
+
+        <div class="row">
+          <div class="col">
+            <label for="motivo">Nombre:</label><br />
+            <input required type="text" class="input" placeholder="Nombre" name="nombre" id="nombre" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('listado_metodo_pago') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}

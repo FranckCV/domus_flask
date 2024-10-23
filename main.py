@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify
+import datetime
 import controlador_marcas
 import controlador_categorias
 import controlador_productos
@@ -16,13 +17,17 @@ import controlador_carrito
 import controlador_detalle
 import controlador_contenido_info
 import controlador_tipos_usuario
+import controlador_pedido
+import controlador_metodo_pago
+import controlador_motivo_comentario
+import controlador_comentario
+import controlador_estado_pedido
+import controlador_metodo_pago
+import controlador_redes_sociales
 
 app = Flask(__name__)
 
 logo_domus = 'img/elementos/logoDomus.png'
-
-
-
 
 
 @app.context_processor
@@ -31,11 +36,12 @@ def inject_globals():
     categoriasMenu = controlador_categorias.obtener_categorias_disponibles()
     marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
     logo_foto = logo_domus
+    redes_footer = controlador_redes_sociales.obtener_redes_sociales()
 
     # Administrativa
     gogogogogog = logo_domus
 
-    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , gogogogogog = gogogogogog)
+    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , gogogogogog = gogogogogog , redes_footer = redes_footer)
 
 
 # PAGINAS GENERALES
@@ -310,16 +316,39 @@ def disminuir_carro():
 def confirmar_carrito():
     estado = 1
     usuario_id = 1  
+    total = request.form.get('total_form')
+    
+    if total:
+        total = float(total)
+    
+    print(f"Total del pedido: {total}")
+    
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    print(pedido_id)
     existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
-    print(existencias)
-    if existencias and len(existencias) > 0:  
-     estado=2
-     controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
-     return render_template("resumen_de_pedido.html",existencias=existencias)
+    fecha_compra = datetime.date.today()
+    productos_carrito = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    
+    subtotal = 0
+    for producto in productos_carrito:
+        cantidad = producto['cantidad']
+        precio_unitario = producto['precio']
+        descuento = producto.get('descuento', 0)
+        total_producto = cantidad * (precio_unitario - descuento)
+        subtotal += total_producto
+    
+    # Actualiza el pedido si hay existencias
+    if existencias and len(existencias) > 0:
+        estado = 2
+        controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+        controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal)
+
+        # Renderiza el resumen de pedido con el total y existencias
+        return render_template("resumen_de_pedido.html", 
+                               existencias=existencias, 
+                               total_pagar=total, 
+                               descuento_aplicado=(descuento > 0))
     else:
-     return redirect('carrito')
+        return redirect('carrito')
 
 
 
@@ -329,11 +358,19 @@ def confirmar_carrito():
 def resumen_de_pedido():
     usuario=1
     pedido_id=controlador_carrito.ultimoPedido(usuario)
+    
+    metodos_pago =controlador_metodo_pago.obtener_Metodo_pago()
     existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
-    return render_template("resumen_de_pedido.html",existencias=existencias)
+    return render_template("resumen_de_pedido.html", metodos_pago=metodos_pago, existencias=existencias)
 
+@app.route('/cancelar_compra', methods=['POST'])
+def cancelar_compra():
+    usuario_id = 1  
+    estado_cancelado = 1
 
+    controlador_carrito.actualizar_estado_pedido(usuario_id, estado_cancelado)
 
+    return redirect('carrito')
 
 
 #############################################################################################################
@@ -546,9 +583,6 @@ def actualizar_subcategoria():
 
 
 
-
-import controlador_motivo_comentario
-import controlador_comentario
 
 ######################### PARA COMENTARIO ##############################
 
@@ -992,6 +1026,146 @@ def eliminar_contenido_info():
     return redirect("/listado_contenido_info")
 
 
+################### ESTADOS DE PEDIDO ####################
+
+
+@app.route("/listado_estado_pedido")
+def listado_estado_pedido():
+    estados = controlador_estado_pedido.obtener_estados_pedido()
+    return render_template("listado_estados_pedidos.html", estados = estados)
+
+
+@app.route("/formulario_agregar_estado_pedido")
+def formulario_agregar_estado_pedido():
+    return render_template("agregar_estado_pedido.html")
+
+
+@app.route("/guardar_estado_pedido", methods=["POST"])
+def guardar_estado_pedido():
+    nombre = request.form["nombre"]
+    controlador_estado_pedido.insertar_estado_pedido(nombre)
+    return redirect("/listado_estado_pedido")
+
+
+@app.route("/actualizar_estado_pedido", methods=["POST"])
+def actualizar_estado_pedido():
+    id = request.form["id"]
+    nombre = request.form["nombre"]
+    controlador_estado_pedido.actualizar_estado_pedido_por_id(nombre,id)
+    return redirect("/listado_estado_pedido")
+
+
+@app.route("/formulario_editar_estado_pedido=<int:id>")
+def editar_estado_pedido(id):
+    estado = controlador_estado_pedido.obtener_estado_pedido_por_id(id)
+    return render_template("editar_estado_pedido.html", estado=estado)
+
+
+@app.route("/eliminar_estado_pedido", methods=["POST"])
+def eliminar_estado_pedido():
+    controlador_estado_pedido.eliminar_estado_pedido(request.form["id"])
+    return redirect("/listado_estado_pedido")
+
+
+
+################### METODOS PAGO ####################
+
+
+@app.route("/listado_metodo_pago")
+def listado_metodo_pago():
+    metodos = controlador_metodo_pago.obtener_metodo_pago()
+    return render_template("listado_metodo_pago.html", metodos = metodos)
+
+
+@app.route("/formulario_agregar_metodo_pago")
+def formulario_agregar_metodo_pago():
+    return render_template("agregar_metodo_pago.html")
+
+
+@app.route("/guardar_metodo_pago", methods=["POST"])
+def guardar_metodo_pago():
+    nombre = request.form["nombre"]
+    controlador_metodo_pago.insertar_metodo_pago(nombre)
+    return redirect("/listado_metodo_pago")
+
+
+@app.route("/actualizar_metodo_pago", methods=["POST"])
+def actualizar_metodo_pago():
+    id = request.form["id"]
+    nombre = request.form["nombre"]
+    disponibilidad = request.form["disponibilidad"]
+    controlador_metodo_pago.actualizar_metodo_pago_por_id(nombre,disponibilidad,id)
+    return redirect("/listado_metodo_pago")
+
+
+@app.route("/formulario_editar_metodo_pago=<int:id>")
+def editar_metodo_pago(id):
+    metodo = controlador_metodo_pago.obtener_metodo_pago_por_id(id)
+    return render_template("editar_metodo_pago.html", metodo=metodo)
+
+
+@app.route("/eliminar_metodo_pago", methods=["POST"])
+def eliminar_metodo_pago():
+    controlador_metodo_pago.eliminar_metodo_pago(request.form["id"])
+    return redirect("/listado_metodo_pago")
+
+
+
+################### REDES SOCIALES ####################
+
+
+
+@app.route("/listado_redes_sociales")
+def listado_redes_sociales():
+    redes = controlador_redes_sociales.obtener_redes_sociales()
+    return render_template("listado_redes_sociales.html", redes = redes)
+
+
+@app.route("/formulario_agregar_redes_sociales")
+def formulario_agregar_redes_sociales():
+    return render_template("agregar_redes_sociales.html")
+
+
+@app.route("/guardar_redes_sociales", methods=["POST"])
+def guardar_redes_sociales():
+    nombre = request.form["nombre"]
+    enlace = request.form["enlace"]
+    icono = request.form["icono"]
+    controlador_redes_sociales.insertar_redes_sociales(nombre,icono,enlace)
+    return redirect("/listado_redes_sociales")
+
+
+@app.route("/actualizar_redes_sociales", methods=["POST"])
+def actualizar_redes_sociales():
+    id = request.form["id"]
+    nombre = request.form["nombre"]
+    enlace = request.form["enlace"]
+    icono = request.form["icono"]
+    controlador_redes_sociales.actualizar_redes_sociales_por_id(nombre,icono,enlace,id)
+    return redirect("/listado_redes_sociales")
+
+
+@app.route("/formulario_editar_redes_sociales=<int:id>")
+def editar_redes_sociales(id):
+    red = controlador_redes_sociales.obtener_redes_sociales_por_id(id)
+    return render_template("editar_redes_sociales.html", red=red)
+
+
+@app.route("/eliminar_redes_sociales", methods=["POST"])
+def eliminar_redes_sociales():
+    controlador_redes_sociales.eliminar_redes_sociales(request.form["id"])
+    return redirect("/listado_redes_sociales")
+
+
+
+
+
+
+
+
+
+
+
 
 ##########################PARA TIPOS USUARIO################
 @app.route("/listado_tipos_usuario")
@@ -1092,10 +1266,6 @@ def login():
 def confirmar_compra():
     return redirect("/")
 
-# @app.route("/cancelar_compra")
-@app.route("/cancelar_compra", methods=['POST'])
-def cancelar_compra():
-    return redirect("/")
 
 ############################CANCELAR PEDIDO#########################
 

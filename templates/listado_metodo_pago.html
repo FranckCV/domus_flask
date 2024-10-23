@@ -1,0 +1,76 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+  Listado de Metodos de Pago
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css">
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section scrollable-section" id="mainSection">
+    <h2 class="fw-bolder">Listado de Metodos de Pago</h2>
+    <div class="container-fluid" id="break_nav">
+      <div class="col">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Buscar por motivo" aria-label="Recipient's username" aria-describedby="button-addon2">
+          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
+          </button>
+          <a href="{{ url_for('formulario_agregar_metodo_pago') }}" class="button is-success add-btn">
+            <button type="button" id="add_btn">Agregar</button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Metodo</th>
+          <th>Disponibilidad</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for metodo in metodos %}
+        <tr>
+          <td>{{ metodo[0] }}</td>
+          <td>{{ metodo[1] }}</td>
+          <td>
+            {% if metodo.2 == 1 %}
+              <span>Disponible</span>
+            {% else %}
+              <span>No Disponible</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="acciones">
+              <a href="{{ url_for('editar_metodo_pago', id=metodo[0]) }}">
+                <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
+              </a>
+              <form action="{{ url_for('eliminar_metodo_pago') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                <input type="hidden" name="id" value="{{ metodo[0] }}">
+                <button type="submit">
+                  <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function confirmarEliminacion() {
+    return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+  }
+</script>
+<script src="/static/js/admin_motivos_comentario.js"></script>
+{% endblock %}

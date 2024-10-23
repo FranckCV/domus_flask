@@ -1,11 +1,5 @@
 let bloquearNavegacion = true;  // Variable para controlar cuándo bloquear
 
-window.addEventListener('beforeunload', function (event) {
-    if (bloquearNavegacion) {
-        event.preventDefault();
-        event.returnValue = '';  // Muestra advertencia solo si está permitido
-    }
-});
 
 // Evitar retroceso
 window.history.pushState(null, null, window.location.href);
@@ -41,11 +35,19 @@ function cancelarCompra(button) {
 
 
 function confirmarCompra(button) {
+    // Obtener el método de pago seleccionado
+    var metodoPago = document.getElementById('metodo_pago').value;
+    
+    // Validar que se haya seleccionado un método de pago
+    if (!metodoPago) {
+        alert('Por favor, selecciona un método de pago antes de confirmar la compra.');
+        return;  
+    }
+
     bloquearNavegacion = false;
     let $square = $('.square'),
         $modal = $('.modal-thank');
 
-    // Crear la animación de confirmación con mojs
     var shape = new mojs.Shape({
         shape: 'circle',
         isShowStart: true,
@@ -60,14 +62,19 @@ function confirmarCompra(button) {
         duration: 500,
     });
 
-    // Activar los elementos visuales
     $square.addClass('active');
     shape.play();
     $modal.addClass('active');
 
-    // Redirigir y limpiar el carrito después de la animación
     setTimeout(function () {
-        eliminarTodos(); // Eliminar el carrito
-        window.location.href = '/'; // Redirigir
+        eliminarTodos(); 
+        window.location.href = '/'; 
     }, 2500);
 }
+
+
+function cancelarCompra(button) {
+    // Redirigir a la ruta para cancelar la compra en Flask
+    window.location.href = '/cancelar_compra';
+}
+

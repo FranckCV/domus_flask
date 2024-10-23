@@ -5,14 +5,13 @@
 {% endblock %}
 
 {% block estilos %}
-<link rel="stylesheet" href="static/css/resumenDePedido.css">
+  <link rel="stylesheet" href="static/css/resumenDePedido.css" />
 {% endblock %}
 
 {% block contenido %}
   <section class="body_page">
     <h2 class="title_page">Pedido #<span></span></h2>
     <div class="container mb-4">
-      
       <div class="row justify-content-center my-3">
         <table class="table caption-top">
           <thead>
@@ -26,29 +25,28 @@
           </thead>
 
           <tbody id="tabla-contenido">
-
-            {% for existencia in existencias  %}
-            <tr>
-                <th scope="row">{{ existencia[4] }}</th>
+            {% for existencia in existencias %}
+              <tr>
+                <th scope="row">{{ existencia.4 }}</th>
 
                 <td class="existencia">
-                    <img class="product_pic" src="{{ existencia[0] }}" alt="">
-                    <span>{{ existencia[1] }}</span>
+                  <img class="product_pic" src="{{ existencia.0 }}" alt="" />
+                  <span>{{ existencia.1 }}</span>
                 </td>
 
-                <td>s/.{{ existencia[2] }}</td>
+                <td>s/.{{ existencia.2 }}</td>
 
-                <td>{{ existencia[3] }}</td>
+                <td>{{ existencia.3 }}</td>
 
-                <td class="total">S/{% if existencia[2] is not none and existencia[3] is not none %}
-                    {{ existencia[3] * existencia[2] }}
+                <td class="total">
+                  S/{% if existencia.2 is not null and existencia.3 is not null %}
+                    {{ existencia.3 * existencia.2 }}
                   {% else %}
                     Error en precio o cantidad
-                  {% endif %}</td>
-
-            </tr>
+                  {% endif %}
+                </td>
+              </tr>
             {% endfor %}
-
           </tbody>
         </table>
       </div>
@@ -66,31 +64,43 @@
             </div>
           </div>
         </div>
+
         <div class="col-md-4">
           <div class="card text-center shadow-sm">
             <div class="card-body">
               <h5 class="card-title">Método de pago</h5>
-              <p class="card-text">
-                <i class="fa-solid fa-credit-card"></i>
-                Tarjeta de Crédito con final 8516
-              </p>
-              <p class="total card-text total">S/</p>
+              <select id="metodo_pago" name="metodo_pago" class="form-select">
+                {% for metodo in metodos_pago %}
+                  <option value="{{ metodo.0 }}">{{ metodo.1 }}</option>
+                {% endfor %}
+              </select>
+              <p class="total card-text total_pagar">S/</p>
             </div>
           </div>
         </div>
+
         <div class="col-md-4">
           <div class="card text-center shadow-sm">
             <div class="card-body">
               <h5 class="card-title">Resumen</h5>
               <div class="card-text-total">
-                <p>Subtotal</p><span id="subtotal"></span>
+                <p>Subtotal</p><span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
               </div>
               <div class="card-text-total">
                 <p>Costo de envío</p><span id="costo_envio">s/.10.00</span>
               </div>
               <div class="card-text-total">
-                <p>Total</p><span id="total"></span>
+                <p>Total</p><span id="total_sumado">S/{{ total_pagar + 10 }}</span>
               </div>
+              {% if descuento_aplicado %}
+                <div class="card-text-total">
+                  <p>Descuento aplicado</p><span>S/ {{ descuento }}</span>
+                </div>
+              {% else %}
+                <div class="card-text-total">
+                  <p>No se aplicó descuento</p>
+                </div>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -126,6 +136,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="static/js/resumenPedido.js"></script>
+  <script src="static/js/resumenPedido.js"></script>
 {% endblock %}
-

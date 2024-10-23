@@ -3,93 +3,19 @@ import base64
 import controlador_productos
 tabla = 'pedido'
 
-def obtener_pedidos_menu(valor):
+
+def actualizarPedido(pedido_id, fecha_compra, subtotal):
     conexion = obtener_conexion()
-    pedidos = []
+    pedido = None
     with conexion.cursor() as cursor:
-        sql = '''
-            SELECT 
-                `id`,
-                `fecha_compra`,
-                `fecha_envio`,
-                `fecha_entrega`,
-                `subtotal`,
-                `METODO_PAGOid`,
-                `USUARIOid`,
-                `ESTADO_PEDIDOid`
-            FROM ''' + tabla + ''' 
-            WHERE disponibilidad = 1 
-            ORDER BY fecha_registro DESC
-            LIMIT ''' + str(valor)
-        cursor.execute(sql)
-        pedidos = cursor.fetchall()
+        query = """
+            UPDATE pedido
+            SET fecha_compra = %s, subtotal = %s
+            WHERE id = %s
+        """
+        cursor.execute(query, fecha_compra, subtotal, pedido_id)
+    cursor.commit()
 
-    pedidos_lista = []
-    for pedido in pedidos:
-        pedido_id, fecha_compra, fecha_envio, fecha_entrega, subtotal, metodo_pago, usuario_id, estado_pedido = pedido
-        pedidos_lista.append((pedido_id, fecha_compra, fecha_envio, fecha_entrega, subtotal, metodo_pago, usuario_id, estado_pedido))
-    
-    conexion.close()
-    return pedidos_lista
-
-
-
-def obtener_pedidos_index(cant):
-    conexion = obtener_conexion()
-    pedidos = []
-    with conexion.cursor() as cursor:
-        sql = '''
-            SELECT 
-                ma.id, 
-                ma.pedido, 
-                ma.img_logo, 
-                nov.id AS novedad_id, 
-                nov.tipo_novedadid, 
-                ino.imagen
-            FROM 
-                pedido ma
-            INNER JOIN 
-                novedad nov ON nov.pedidoid = ma.id
-            INNER JOIN 
-                img_novedad ino ON ino.novedadid = nov.id
-            WHERE 
-                ma.disponibilidad = 1 
-                AND nov.disponibilidad = 1 
-                AND ino.tipo_img_novedadid = 2
-                AND   
-                    (SELECT COUNT(*) 
-                    FROM producto p 
-                    WHERE p.pedidoid = ma.id) > 4
-            ORDER BY 
-                ma.fecha_registro DESC, nov.fecha_registro DESC
-            LIMIT 3;
-            '''
-        cursor.execute(sql)
-        pedidos = cursor.fetchall()
-    
-    pedidos_lista = []
-    for pedido in pedidos:
-        pedido_id, pedido_nombre, logo_binario , nov_id, nov_tip, img_nov = pedido
-
-        productospedido = controlador_productos.obtener_en_tarjetas_pedido(0 , pedido_id , cant)
-
-        if logo_binario:
-            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = ""
-
-        if img_nov:
-            img_nov_base64 = base64.b64encode(img_nov).decode('utf-8')
-            img_nov_url = f"data:image/png;base64,{img_nov_base64}"
-        else:
-            img_nov_url = "" 
-
-        
-        pedidos_lista.append((pedido_id, pedido_nombre, logo_url, nov_id, nov_tip, img_nov_url, productospedido))
-    
-    conexion.close()
-    return pedidos_lista
 
 
 def obtener_pedido_disponible_por_id(id):

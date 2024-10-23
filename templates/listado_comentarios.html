@@ -21,7 +21,7 @@ Listado de Comentarios
                     
                     <!-- ComboBox para filtrar por motivo -->
                     <select id="motivoSelect" class="form-select" aria-label="Filtrar por motivo" style="height: 50px;">
-                        <option value="0" selected>Filtrar por motivo</option>
+                        <option value="0" selected>Todos</option>
                         {% for motivo in motivos %}
                         <option value="{{ motivo[1] }}">{{ motivo[1] }}</option> <!-- motivo[1] es el nombre del motivo -->
                         {% endfor %}

@@ -179,7 +179,7 @@ function disminuir(button) {
     //obtenemos la etiqueta de descuento porque si va a eliminar productos, entonces su descuento ya no es válido
     const descuentoElement = document.getElementById('descuento');
     let carrito = obtenerCarrito();
-    
+
     if (carrito[nombreProducto]) {
         carrito[nombreProducto].cantidad -= 1;
         descuentoElement.querySelector('span').innerText = `S/.00.00`;
@@ -207,43 +207,43 @@ function actualizarCarrito() {
         total += totalProducto;
         unidades += producto.cantidad;
 
-//         const productoHTML = `
-//             <div class="product_item">
-//                 <div class="product_item_info">
-//                     <img src="${producto.img}" class="product_item_pic" alt="Imagen del Producto">
-                    
-//                     <div class="product_item_name">
-//                         <p class="nombreProducto">${nombre}</p>
-//                         <p class="vendido-por">Vendido por: <strong>Domus</strong></p>
-//                     </div>
-//                 </div>
+        //         const productoHTML = `
+        //             <div class="product_item">
+        //                 <div class="product_item_info">
+        //                     <img src="${producto.img}" class="product_item_pic" alt="Imagen del Producto">
 
-//                 <div class="product_item_price_unit">
-//                     <p class="precioProducto">S/ ${producto.precio.toFixed(2)}</p>
-//                 </div>
+        //                     <div class="product_item_name">
+        //                         <p class="nombreProducto">${nombre}</p>
+        //                         <p class="vendido-por">Vendido por: <strong>Domus</strong></p>
+        //                     </div>
+        //                 </div>
 
-//                 <div class="cantidades">
-//                 <form class="product_item_count"method="post">
-//                     <input type="hidden" name="producto_id" value="${producto.id}"> <!-- Campo oculto con el producto_id -->
-//                     <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">-</span></button>
-//                 </form>
+        //                 <div class="product_item_price_unit">
+        //                     <p class="precioProducto">S/ ${producto.precio.toFixed(2)}</p>
+        //                 </div>
 
-//                     <span class="cant">${producto.cantidad}</span>
+        //                 <div class="cantidades">
+        //                 <form class="product_item_count"method="post">
+        //                     <input type="hidden" name="producto_id" value="${producto.id}"> <!-- Campo oculto con el producto_id -->
+        //                     <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">-</span></button>
+        //                 </form>
 
-//                 <form class="product_item_count" action="${aumentarCarro}" method="post">
-//                     <input type="hidden" name="producto_id" value="${producto.id}"> <!-- Campo oculto con el producto_id -->
-//                     <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">+</span></button>
-//                 </form>
+        //                     <span class="cant">${producto.cantidad}</span>
 
-//                 </div>
+        //                 <form class="product_item_count" action="${aumentarCarro}" method="post">
+        //                     <input type="hidden" name="producto_id" value="${producto.id}"> <!-- Campo oculto con el producto_id -->
+        //                     <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">+</span></button>
+        //                 </form>
 
-//                 <div class="product_item_price_total">
-//                     <p class="total"> S/ ${totalProducto.toFixed(2)}</p>
-//                 </div>
-//             </div>
-//         `;
+        //                 </div>
 
-//         carritoContenido.insertAdjacentHTML('beforeend', productoHTML);
+        //                 <div class="product_item_price_total">
+        //                     <p class="total"> S/ ${totalProducto.toFixed(2)}</p>
+        //                 </div>
+        //             </div>
+        //         `;
+
+        //         carritoContenido.insertAdjacentHTML('beforeend', productoHTML);
     }
 
     document.getElementById('subtotal').querySelector('span').innerText = `S/. ${total.toFixed(2)}`;
@@ -299,8 +299,8 @@ function validarCarro() {
     if (disponible) {
         // localStorage.clear();
         const data = {
-            USUARIOid: 1,  
-            ESTADO_PEDIDOid: 2  
+            USUARIOid: 1,
+            ESTADO_PEDIDOid: 2
         };
 
         fetch('/actualizar_estado_pedido', {
@@ -313,7 +313,7 @@ function validarCarro() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = '/resumen_pedido';  
+                    window.location.href = '/resumen_pedido';
                 } else {
                     console.error('Error al actualizar el estado del pedido:', data.message);
                 }
@@ -326,6 +326,23 @@ function validarCarro() {
     }
 }
 
+function obtenerDescuento() {
+    // Obtén el valor del span
+    var totalTexto = document.getElementById("total_fijo").innerText;
+
+    // Reemplaza 'S/. ' y las comas
+    var totalValor = totalTexto.replace('S/. ', '').replace(',', '');
+
+    // Convertir el valor a un número flotante si es necesario
+    var totalNumero = parseFloat(totalValor) || 0;
+
+    console.log(totalNumero);
+
+    // Actualizar el valor del campo oculto
+    document.getElementById("descuento_form").value = totalNumero;
+
+    return totalNumero;
+}
 
 /***************************************PARA EL CONTADOR DE PRODUCTOS*****************************************************/
 function actualizarCantidadCarrito() {
