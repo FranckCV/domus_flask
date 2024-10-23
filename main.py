@@ -894,6 +894,38 @@ def login():
     return render_template('iniciar_sesion.html')
 
 
+#####################FIN INICIO DE SESIÓN######################
+###################################CONFIRMAR PEDIDO###############################
+@app.route("/confirmar_compra", methods=['POST'])
+def confirmar_compra():
+    return redirect("/")
+
+# @app.route("/cancelar_compra")
+
+############################CANCELAR PEDIDO#########################
+
+#####################################LISTADO PEDIDOS#######################################
+@app.route("/listado_pedidos")
+def pedido():
+    marcas = controlador_marcas.obtener_listado_marcas()
+    return render_template("listado_marcas.html", marcas=marcas, active='marcas')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # EJECUTAR
 

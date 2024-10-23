@@ -1,0 +1,110 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Pedidos
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Listado de pedido</h2>
+    <div class="container-fluid" id="break_nav">
+      <div class="col">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
+          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
+          <a href="{{ url_for('formulario_agregar_marca') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-containersy">
+      <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha de compra</th>
+            <th>Fecha de envío</th>
+            <th>Subtotal</th>
+            <th>Método de pago</th>
+            <th>Usuario</th>
+            <th>Estado de pedido</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for marca in pedido %}
+            <tr>
+              <td>{{ marca.0 }}</td>
+              <td>{{ marca.1 }}</td>
+
+              <td>
+                <div class="celda_texto_bloque">
+                  {% if marca.2 %}
+                    <img src="{{ marca.2 }}" alt="Logo de {{ marca.1 }}" class="img-fluid"/> <!-- Logo de la marca -->
+                  {% else %}
+                    <span>Sin logo</span> <!-- Texto alternativo si no hay logo -->
+                  {% endif %}
+                </div>
+              </td>
+
+              <td>
+                <div class="celda_texto_bloque">
+                  {% if marca.3 %}
+                    <img src="{{ marca.3 }}" alt="Banner de {{ marca.1 }}" class="img-fluid"/> <!-- Logo de la marca -->
+                  {% else %}
+                    <span>Sin banner</span> <!-- Texto alternativo si no hay logo -->
+                  {% endif %}
+                </div>
+              </td>
+
+              <td>{{ marca.4 }}</td>
+
+              <td>
+                {% if marca.5 == 1 %}
+                  <span>Disponible</span>
+                {% else %}
+                  <span>No Disponible</span>
+                {% endif %}
+              </td>
+
+              <td>{{ marca.6 }}</td>
+
+              <td>{{ marca.7 }}</td>
+
+              <td class="opciones_column">
+                <div class="acciones">
+                  <a href="{{url_for('marca', id=marca[0])}}"><i class="fa-solid fa-eye"></i></a>
+                  <a href="{{ url_for('editar_marca', id=marca.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
+                  <form action="{{ url_for('eliminar_marca') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <input type="hidden" name="id" value="{{ marca.0 }}" />
+                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                  </form>
+                </div>
+              </td>
+
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <style>
+    .MarcActive {
+      background-color: rgb(255, 255, 255);
+      color: #00095c;
+    }
+  </style>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+    }
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
+{% endblock %}

@@ -12,7 +12,7 @@
   <section class="body_page">
     <h2 class="title_page">Pedido #<span></span></h2>
     <div class="container mb-4">
-      <!-- table -->
+      
       <div class="row justify-content-center my-3">
         <table class="table caption-top">
           <thead>
@@ -24,22 +24,29 @@
               <th scope="col">Subtotal</th>
             </tr>
           </thead>
+
           <tbody id="tabla-contenido">
+
             {% for existencia in existencias  %}
             <tr>
                 <th scope="row">{{ existencia[4] }}</th>
+
                 <td class="existencia">
                     <img class="product_pic" src="{{ existencia[0] }}" alt="">
                     <span>{{ existencia[1] }}</span>
                 </td>
+
                 <td>s/.{{ existencia[2] }}</td>
+
                 <td>{{ existencia[3] }}</td>
+
                 <td class="total">S/{% if existencia[2] is not none and existencia[3] is not none %}
                     {{ existencia[3] * existencia[2] }}
                   {% else %}
                     Error en precio o cantidad
                   {% endif %}</td>
-            </tr>`;
+
+            </tr>
             {% endfor %}
 
           </tbody>
@@ -119,6 +126,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="js/resumenPedido.js"></script>
+<script src="static/js/resumenPedido.js"></script>
 {% endblock %}
 
