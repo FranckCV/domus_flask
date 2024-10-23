@@ -1367,7 +1367,9 @@ def eliminar_detalle_pedido():
 def editar_detalle(producto_id, pedido_id):
     detalle = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
     
-    return render_template("editar_detalle.html", detalle=detalle)
+    # Verifica que estás enviando pedido_id a la plantilla
+    return render_template("editar_detalle.html", detalle=detalle, producto_id=producto_id, pedido_id=pedido_id)
+
 
 
 @app.route("/actualizar_detalle_pedido", methods=["POST"])
