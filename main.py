@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify
+import base64
 import controlador_marcas
 import controlador_categorias
 import controlador_productos
@@ -21,6 +22,7 @@ import controlador_comentario
 import controlador_estado_pedido
 import controlador_metodo_pago
 import controlador_redes_sociales
+import controlador_informacion_domus
 
 app = Flask(__name__)
 
@@ -1080,7 +1082,6 @@ def eliminar_metodo_pago():
 ################### REDES SOCIALES ####################
 
 
-
 @app.route("/listado_redes_sociales")
 def listado_redes_sociales():
     redes = controlador_redes_sociales.obtener_redes_sociales()
@@ -1125,8 +1126,49 @@ def eliminar_redes_sociales():
 
 
 
+############### DATOS PRINCIPALES ############################
+
+@app.route("/listado_datos_principales")
+def listado_datos_principales():
+    info = controlador_informacion_domus.obtener_informacion_domus()
+    return render_template("listado_datos_principales.html", info = info)
 
 
+@app.route("/formulario_editar_datos_principales=<int:id>")
+def editar_datos_principales(id):
+    info = controlador_informacion_domus.obtener_informacion_domus_por_id(id)
+    return render_template("editar_datos_principales.html", info = info)
+
+
+@app.route("/actualizar_datos_principales", methods=["POST"])
+def actualizar_datos_principales():
+    id = request.form["id"]
+    
+    info = controlador_informacion_domus.obtener_imgs_informacion_domus_por_id(id)
+
+    correo = request.form["correo"]
+    numero = request.form["numero"]
+    descripcion = request.form["descripcion"]
+    historia = request.form["historia"]
+    vision = request.form["vision"]
+    valores = request.form["valores"]
+    mision = request.form["mision"]
+    
+    imgLogo = request.files["imglogo"]    
+    imgIcon = request.files["imgicon"]
+
+    if imgLogo.filename == '':
+        logo = info[1]
+    else:
+        logo = imgLogo.read()
+    
+    if imgIcon.filename == '':
+        icon = info[2]
+    else:
+        icon = imgIcon.read()
+
+    controlador_informacion_domus.actualizar_informacion_domus_por_id(correo,numero,logo,icon,descripcion,historia,vision,valores,mision,id)
+    return redirect("/listado_datos_principales")
 
 
 

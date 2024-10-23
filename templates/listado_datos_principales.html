@@ -1,0 +1,137 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Listar Datos Principales
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Listar Datos Principales (Información de Domus Market)</h2>
+    <form class="form_info_domus">
+      <div class="form-grid" id="col_add">
+
+        <div class="titulo_form row">
+          <h3>Imagenes Generales</h3>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="logo">Logo de Domus:</label> <br>
+            <div class="img_logo_domus">
+              <img src="{{info.3}}" alt="">
+            </div>
+          </div>
+
+          <div class="col">
+            <label for="logo">Icono de Domus:</label>
+            <div class="img_logo_domus">
+              <img src="{{info.4}}" alt="">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="titulo_form row">
+            <h3>Información de Contacto</h3>
+          </div>
+        </div>
+
+        <div class="row">          
+
+          <div class="col">
+            <label for="categoria">Numero de Contacto:</label>
+            <input required type="text" class="input" disabled placeholder="" name="" id="" value="{{info.2}}"/>
+          </div>
+
+          <div class="col">
+            <label for="categoria">Correo de Contacto:</label>
+            <input required type="text" class="input" disabled placeholder="" name="" id="" value="{{info.1}}"/>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="titulo_form row">
+            <h3>Información Sobre Nosotros</h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="descripcion">Descripción:</label><br />
+            <textarea name="descripcion" id="descripcion" disabled>{{info.5}}</textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="historia">Historia:</label><br />
+            <textarea name="historia" id="historia" disabled>{{info.6}}</textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="vision">Visión:</label><br />
+            <textarea name="vision" id="vision" disabled>{{info.7}}</textarea>
+          </div>
+          
+          <div class="col" id="space_info">
+            <label for="valores">Valores:</label><br />
+            <textarea name="valores" id="valores" disabled>{{info.8}}</textarea>
+          </div>
+          
+          <div class="col" id="space_info">
+            <label for="mision">Misión:</label><br />
+            <textarea name="mision" id="mision" disabled>{{info.9}}</textarea>
+          </div>
+        </div>
+
+        
+
+        <div class="row">
+
+          <div class="col">
+            <div class="form-buttons">
+              <a href="{{ url_for('nosotros') }}" id="backbtn">Ver página</a>
+              <a class="button is-primary" href="{{ url_for('editar_datos_principales', id=info.0) }}">
+                Editar
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/admin_productos.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Select2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('#faicon-cat').select2({
+        templateResult: formatIcon,
+        templateSelection: formatIcon,
+        width: '100%' // Ajusta el ancho si es necesario
+      })
+    
+      function formatIcon(option) {
+        if (!option.id) {
+          return option.text
+        }
+        var $option = $('<span><i class="' + $(option.element).data('icon') + '"></i> ' + option.text + '</span>')
+        return $option
+      }
+    })
+  </script>
+{% endblock %}
