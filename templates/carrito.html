@@ -113,47 +113,42 @@
         </div>
 
         <div class="cart_total">
-          <div class="cart-summary">
-            <div class="discount-code">
-              <label for="coupon">¿Tienes algún cupón de descuento?</label>
-              <div class="d-flex">
-                <form action="{{ url_for('confirmar_carrito') }}" method="post" id="form_descuento">
-                  <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
-                  
-                  <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" />
-              
-                  <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
-              
-              </form>
-              
+          <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post" onsubmit="return validarCarro();">
+            <div class="cart-summary">
+              <div class="discount-code">
+                <label for="coupon">¿Tienes algún cupón de descuento?</label>
+                <div class="d-flex">
+                  <form action="{{ url_for('confirmar_carrito') }}" method="post" id="form_descuento" onsubmit="return validarCarro();">
+                    <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
+
+                    <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" />
+
+                    <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
+                  </form>
+                </div>
+                <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
               </div>
-              <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
+
+              <div class="resumen">
+                <p id="subtotal">
+                  Subtotal: <span></span>
+                </p>
+                <p id="descuento">
+                  Descuento: <span id="descuentoValor">s/. 00.00</span>
+                </p>
+                <p id="total">
+                  Total: <span id="total_fijo"></span>
+                </p>
+              </div>
+
+              <div>
+                <input type="hidden" id="total_form" name="total_form" value="" />
+                <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" />
+                <input type="hidden" id="estado_pedido" name="estado_pedido" value="2" />
+                <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal();">Continuar</button>
+              </div>
             </div>
-
-            <div class="resumen">
-              <p id="subtotal">
-                Subtotal: <span></span>
-              </p>
-              <p id="descuento">
-                Descuento: <span id="descuentoValor">s/. 00.00</span>
-              </p>
-              <p id="total">
-                Total: <span id="total_fijo"></span>
-              </p>
-            </div>
-
-            <!--    <div class="actions">
-                            <a class="checkout" onclick="validarCarro()">Continuar</a>
-                        </div>    -->
-
-                        <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post" onsubmit="return validarCarro();">
-                          <input type="hidden" id="total_form" name="total_form" value="" />
-                          <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" /> 
-                          <input type="hidden" id="estado_pedido" name="estado_pedido" value="2" />
-                          <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal();">Continuar</button>
-                      </form>
-                      
-          </div>
+          </form>
         </div>
       </div>
     </article>

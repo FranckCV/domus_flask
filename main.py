@@ -323,7 +323,7 @@ def confirmar_carrito():
                                descuento_aplicado=(descuento_aplicado == '1'),
                                metodos_pago=metodos_pago)
     else:
-        return redirect('carrito')
+        return redirect('/carrito')
 
 
 
@@ -332,21 +332,22 @@ def confirmar_carrito():
 @app.route("/resumen_de_pedido")
 def resumen_de_pedido():
     usuario=1
-    pedido_id=controlador_carrito.ultimoPedido(usuario)
-    
+    pedido_id=controlador_carrito.ultimoPedido(usuario)    
     metodos_pago =controlador_metodo_pago.obtener_metodo_pago()
     print("los metoods son:",metodos_pago)
     existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    # metodoID = request.form["metodo_pago"]
+    # controlador_pedido.actualizar_MetPago_Pedido(pedido_id,metodoID)
     return render_template("resumen_de_pedido.html", metodos_pago=metodos_pago, existencias=existencias)
 
-@app.route('/cancelar_compra', methods=['POST'])
+@app.route('/cancelar_compra')
 def cancelar_compra():
     usuario_id = 1  
     estado_cancelado = 1
 
     controlador_carrito.actualizar_estado_pedido(usuario_id, estado_cancelado)
 
-    return redirect('carrito')
+    return redirect('/carrito')
 
 
 #############################################################################################################
@@ -1338,6 +1339,8 @@ def login():
 ###################################CONFIRMAR PEDIDO###############################
 @app.route("/confirmar_compra", methods=['POST'])
 def confirmar_compra():
+    metodo=request.form["metodo_pago"]
+    controlador_pedido.actualizar_MetPago_Pedido(metodo)
     return redirect("/")
 
 
@@ -1354,7 +1357,7 @@ def eliminar_pedido():
     id = request.form["id"]
     result=controlador_pedido.buscar_pedido_por_id(id)
     if result:
-        return render_template("listado_pedidos.html", error="El pedido tiene detalles asociados y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+        return render_template("listado_pedidos.html", error="El pedido tiene detalles asociados y no se puede eliminar. Redirigiendo...", show_modal=True)
     else:
         controlador_pedido.eliminar_pedido(id)
         return redirect("/listado_pedidos")
@@ -1362,7 +1365,7 @@ def eliminar_pedido():
 @app.route("/detalle_pedido=<int:id>")
 def detalle_pedido(id):
     detalles = controlador_detalle.obtener_Detalle_por_Id(id)  
-    return render_template("listado_detalle_pedido.html", detalles=detalles)
+    return render_template("listado_detalle_pedido.html", detalles=detalles , pedido_id=id )
 
 
 
@@ -1373,14 +1376,21 @@ def eliminar_detalle_pedido():
     pedido_id = request.form["pedido_id"]  
     controlador_detalle.eliminar_detalle(producto_id, pedido_id)
     
-    return redirect(url_for('detalle_pedido', id=pedido_id))
-
-@app.route("/editar_detalle/<int:producto_id>/<int:pedido_id>", methods=["GET", "POST"])
-def editar_detalle(producto_id, pedido_id):
-    detalle = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    existencia=controlador_detalle.obtener_Detalle_por_Id(pedido_id)
     
-    # Verifica que estás enviando pedido_id a la plantilla
-    return render_template("editar_detalle.html", detalle=detalle, producto_id=producto_id, pedido_id=pedido_id)
+    if existencia and len(existencia) > 0:
+        return render_template('listado_detalle_pedido.html',id=pedido_id)
+    else:
+        controlador_pedido.eliminar_pedido(pedido_id)
+        return redirect('listado_pedidos')
+
+@app.route("/editar_detalle=<int:producto_id>&editar_detalle=<int:pedido_id>", methods=["GET", "POST"])
+def editar_detalle(producto_id, pedido_id):
+    detalle = controlador_detalle.obtener_detalle_por_ids(producto_id, pedido_id)
+    
+    productos =controlador_detalle.obtenerProductos()
+
+    return render_template("editar_detalle.html", detalle=detalle, productos=productos, producto_id=producto_id, pedido_id=pedido_id)
 
 
 
@@ -1388,14 +1398,10 @@ def editar_detalle(producto_id, pedido_id):
 def actualizar_detalle_pedido():
     producto_id = request.form["producto_id"]
     pedido_id = request.form["pedido_id"]
-    nueva_cantidad = request.form["nueva_cantidad"]
+    cantidad = request.form["cantidad"]
         
-    controlador_detalle.editar_detalle(producto_id, pedido_id, nueva_cantidad)
+    controlador_detalle.editar_detalle(producto_id, pedido_id, cantidad)
         
-    producto_id = request.form["producto_id"]
-    pedido_id = request.form["pedido_id"]  
-    controlador_detalle.eliminar_detalle(producto_id, pedido_id)
-    
     return redirect(url_for('detalle_pedido', id=pedido_id))
 
 

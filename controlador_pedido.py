@@ -3,6 +3,18 @@ import base64
 import controlador_productos
 tabla = 'pedido'
 
+def actualizar_MetPago_Pedido(pedido_id, metodo):
+    conexion = obtener_conexion()
+    pedido = None
+    with conexion.cursor() as cursor:
+        query = """
+            UPDATE pedido
+            SET metodo_pagoid = %s  
+            WHERE id = %s
+        """
+        cursor.execute(query, (metodo, pedido_id))
+    conexion.commit()
+    conexion.close()
 
 def actualizarPedido(pedido_id, fecha_compra, subtotal):
     conexion = obtener_conexion()
@@ -10,7 +22,7 @@ def actualizarPedido(pedido_id, fecha_compra, subtotal):
     with conexion.cursor() as cursor:
         query = """
             UPDATE pedido
-            SET fecha_compra = %s, subtotal = %s
+            SET fecha_compra = %s, subtotal = %s  
             WHERE id = %s
         """
         cursor.execute(query, (fecha_compra, subtotal, pedido_id))
@@ -46,14 +58,6 @@ def eliminar_pedido(id):
     conexion.close()
 
 
-
-def actualizar_pedido(pedido,logo, id):
-    conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        cursor.execute("UPDATE pedido SET pedido = %s ,img_logo = %s WHERE id =%s",
-                       (pedido,logo, id))
-    conexion.commit()
-    conexion.close()
 
 def obtener_id_pedido(pedido):
     conexion = obtener_conexion()

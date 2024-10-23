@@ -64,17 +64,14 @@
             </div>
           </div>
         </div>
-
+        <form>
         <div class="col-md-4">
           <div class="card text-center shadow-sm">
             <div class="card-body">
               <h5 class="card-title">Método de pago</h5>
               <select id="metodo_pago" name="metodo_pago" class="form-select">
                 {% for metodo in metodos_pago %}
-                    <option value="Seleccione un método de pago" disabled>
-                    <option value="{{ metodo[0] }}">{{ metodo[1] }}</option>
-                {% else %}
-                    <option disabled>No hay métodos de pago disponibles</option>
+                  <option value="{{metodo[0]}}">{{ metodo[1] }}</option>
                 {% endfor %}
               </select>
                 
@@ -118,6 +115,7 @@
           <div class="text hvr-wobble-horizontal">¡Gracias por su compra!</div>
         </div>
       </div>
+    </form>
       <!-- modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
