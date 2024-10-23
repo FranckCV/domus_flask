@@ -1,4 +1,9 @@
 from bd import obtener_conexion
+<<<<<<< HEAD
+=======
+import base64
+
+>>>>>>> 8b028fdb6a27e1bb9ccb2dae6254de580b62df4a
 
 def obtener_metodo_pago():
     conexion = obtener_conexion()

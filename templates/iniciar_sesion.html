@@ -92,10 +92,17 @@
           <small></small>
         </div>
         
+        <!-- <div class="check">
+          <input type="checkbox" name="terminos" value="1" id="terminos">
+          <a href="#">Acepta</a><a href="{{url_for('terminos')}}" > términos y condiciones</a>
+        <small></small>
+        </div> -->
+
         <div class="check">
           <input type="checkbox" name="terminos" value="1" id="terminos">
-        <a href="{{url_for('terminos')}}" >Acepta términos y condiciones</a>
-        <small></small>
+          <a href="#" onclick="toggleCheckbox(); return false;">Acepta</a>
+          <a href="{{ url_for('terminos') }}"> términos y condiciones</a>
+          <small></small>
         </div>
 
         <button type="submit" class="button">Registrarse</button>
@@ -143,6 +150,14 @@
 {% block scripts %}
   <script src="static/js/inicio_sesion.js"></script>
   <script src="static/js/validar_formulario.js"></script>
+
+  <script>
+    function toggleCheckbox() {
+      var checkbox = document.getElementById('terminos');
+      checkbox.checked = !checkbox.checked;
+    }
+  </script>
+
   {%if mostrar%}
     <script src="static/js/animacion.js"></script>
     {% elif mostrar == False %}

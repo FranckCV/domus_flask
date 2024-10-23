@@ -368,25 +368,44 @@ def mostrarNovedadesAnuncios():
     return img_lista
 
 
-def anuncioselect(id):
+def anuncioSelect(id):
     conexion = obtener_conexion()
-    anuncio = None
     with conexion.cursor() as cursor:
         sql = '''
-            SELECT nov.id, nov.titulo, nov.fecha_inicio, nov.fecha_vencimiento, nov.terminos, nov.MARCAid, nov.SUBCATEGORIAid, MIN(imgnov.imagen), mar.marca
-            FROM novedad nov
-            INNER JOIN img_novedad imgnov ON nov.id = imgnov.NOVEDADid
-            INNER JOIN marca mar ON mar.id = nov.MARCAid
-            WHERE nov.id = %s
-            GROUP BY nov.id
+            SELECT 
+                nov.`id`, 
+                nov.titulo,
+                nov.`fecha_inicio`, 
+                nov.`fecha_vencimiento`, 
+                nov.`terminos`, 
+                nov.`MARCAid`, 
+                nov.`SUBCATEGORIAid`,
+                MIN(imgnov.imagen),
+                mar.marca
+            FROM `novedad` nov
+            LEFT JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
+            LEFT JOIN marca mar on mar.id = nov.MARCAid
+            WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 1 and nov.id = '''+str(id)+'''
+            Group by nov.id
         '''
-        cursor.execute(sql, (id,))
-        anuncio = cursor.fetchone()
+        cursor.execute(sql)
+        promo = cursor.fetchone()
 
-    if anuncio:
-        # Devuelve los datos en la forma que Jinja2 espera
-        return (anuncio[0], anuncio[1], anuncio[2], anuncio[3], anuncio[4], anuncio[5], anuncio[6], anuncio[7], anuncio[8])
-    return None
+        elemento_promo = None
+
+        if promo:
+            pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , pro_img , mar_nom = promo
+
+            if pro_img:
+                logo_base64 = base64.b64encode(pro_img).decode('utf-8')
+                logo_url = f"data:image/png;base64,{logo_base64}"
+            else:
+                logo_url = "" 
+
+        elemento_promo = (pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , logo_url , mar_nom)
+
+    conexion.close()
+    return elemento_promo
 
 
 

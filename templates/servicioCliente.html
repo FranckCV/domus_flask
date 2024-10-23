@@ -15,84 +15,19 @@
       <div class="help-center">
         <div class="row">
 
-          <div class="col-md-6 mb-4">
-            <a href="{{url_for('terminos')}}" class="help-item-link">
-              <div class="help-item p-4 text-center">
-                <i class="fa-solid fa-file-contract"></i>
-                <h3 class="mt-3">Términos y condiciones</h3>
-                <p>
-                  Infórmate sobre los términos y condiciones en Domus,
-                  incluyendo detalles sobre nuestras políticas de compra y
-                  venta.
-                </p>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 mb-4">
-            <a href="{{url_for('puntos_venta')}}" class="help-item-link">
-              <div class="help-item p-4 text-center">
-                <i class="fa-solid fa-store"></i>
-                <h3 class="mt-3">Puntos de venta</h3>
-                <p>
-                  Localiza nuestras tiendas físicas y conoce más sobre los
-                  servicios y productos disponibles en cada punto de venta.
-                </p>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 mb-4">
-            <a href="{{url_for('faq')}}" class="help-item-link">
-              <div class="help-item p-4 text-center">
-                <i class="fa-solid fa-circle-question"></i>
-                <h3 class="mt-3">Preguntas frecuentes</h3>
-                <p>
-                  Encuentra respuestas a las preguntas más comunes sobre
-                  nuestra tienda para una mejor experiencia de compra.
-                </p>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 mb-4">
-            <a href="{{url_for('devoluciones')}}" class="help-item-link">
-              <div class="help-item p-4 text-center">
-                <i class="fa-solid fa-undo-alt"></i>
-                <h3 class="mt-3">Devoluciones y cambios</h3>
-                <p>
-                  Obtén información detallada sobre cómo realizar devoluciones
-                  y cambios de productos comprados en Domus Market.
-                </p>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 mb-4">
-            <a href="{{url_for('garantias')}}" class="help-item-link">
-              <div class="help-item p-4 text-center">
-                <i class="fa-solid fa-shield-alt"></i>
-                <h3 class="mt-3">Garantías</h3>
-                <p>
-                  Accede a la información acerca de garantía legal y garantía
-                  extendida de Domus Market, así como de otras marcas.
-                </p>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6 mb-4">
-            <a href="{{url_for('reclamos')}}" class="help-item-link">
-              <div class="help-item p-4 text-center">
-                <i class="fa-solid fa-bullhorn"></i>
-                <h3 class="mt-3">Reclamos</h3>
-                <p>
-                  Entérate sobre el proceso que seguimos para resolver
-                  cualquier inconveniente con nuestros productos o servicios.
-                </p>
-              </div>
-            </a>
-          </div>
+          {% for tipo in tipos %}
+            <div class="col-md-6 mb-4">
+              <a href="{{url_for('selectedContenidoInformativo',id=tipo.0)}}" class="help-item-link">              
+                <div class="help-item p-4 text-center">
+                  <i class="{{tipo.3}}"></i>
+                  <h3 class="mt-3">{{tipo.1}}</h3>
+                  <p>
+                    {{tipo.2}}
+                  </p>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
 
         </div>
       </div>
