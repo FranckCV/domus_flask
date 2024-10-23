@@ -18,7 +18,7 @@ def obtener_tipos_novedad():
         sql = '''
             SELECT id, nomTipo 
             FROM tipo_novedad
-            ORDER BY nomTipo
+            ORDER BY id
         '''
         cursor.execute(sql)
         tipos_novedad = cursor.fetchall()

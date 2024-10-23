@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify
 import base64
+import datetime
 import controlador_marcas
 import controlador_categorias
 import controlador_productos
@@ -17,6 +18,8 @@ import controlador_carrito
 import controlador_detalle
 import controlador_contenido_info
 import controlador_tipos_usuario
+import controlador_pedido
+import controlador_metodo_pago
 import controlador_motivo_comentario
 import controlador_comentario
 import controlador_estado_pedido
@@ -315,16 +318,39 @@ def disminuir_carro():
 def confirmar_carrito():
     estado = 1
     usuario_id = 1  
+    total = request.form.get('total_form')
+    
+    if total:
+        total = float(total)
+    
+    print(f"Total del pedido: {total}")
+    
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    print(pedido_id)
     existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
-    print(existencias)
-    if existencias and len(existencias) > 0:  
-     estado=2
-     controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
-     return render_template("resumen_de_pedido.html",existencias=existencias)
+    fecha_compra = datetime.date.today()
+    productos_carrito = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    
+    subtotal = 0
+    for producto in productos_carrito:
+        cantidad = producto['cantidad']
+        precio_unitario = producto['precio']
+        descuento = producto.get('descuento', 0)
+        total_producto = cantidad * (precio_unitario - descuento)
+        subtotal += total_producto
+    
+    # Actualiza el pedido si hay existencias
+    if existencias and len(existencias) > 0:
+        estado = 2
+        controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
+        controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal)
+
+        # Renderiza el resumen de pedido con el total y existencias
+        return render_template("resumen_de_pedido.html", 
+                               existencias=existencias, 
+                               total_pagar=total, 
+                               descuento_aplicado=(descuento > 0))
     else:
-     return redirect('carrito')
+        return redirect('carrito')
 
 
 
@@ -334,11 +360,19 @@ def confirmar_carrito():
 def resumen_de_pedido():
     usuario=1
     pedido_id=controlador_carrito.ultimoPedido(usuario)
+    
+    metodos_pago =controlador_metodo_pago.obtener_Metodo_pago()
     existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
-    return render_template("resumen_de_pedido.html",existencias=existencias)
+    return render_template("resumen_de_pedido.html", metodos_pago=metodos_pago, existencias=existencias)
 
+@app.route('/cancelar_compra', methods=['POST'])
+def cancelar_compra():
+    usuario_id = 1  
+    estado_cancelado = 1
 
+    controlador_carrito.actualizar_estado_pedido(usuario_id, estado_cancelado)
 
+    return redirect('carrito')
 
 
 #############################################################################################################
@@ -700,6 +734,11 @@ def actualizar_producto():
 
 #########################PARA TIPO NOVEDAD##############################
 
+@app.route("/listado_tipos_novedad")
+def listado_tipos_novedad():
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    return render_template("listado_tipos_novedad.html", tipos_novedad=tipos_novedad)
+
 @app.route("/agregar_tipo_novedad")
 def formulario_agregar_tipo_novedad():
     return render_template("agregar_tipo_novedad.html")
@@ -708,26 +747,27 @@ def formulario_agregar_tipo_novedad():
 def guardar_tipo_novedad():
     nombre_tipo = request.form["nombre_tipo"]
     controlador_tipos_novedad.insertar_tipo_novedad(nombre_tipo)
-    return redirect("/listado_novedades") #aqui debo mostrar todo el listado de novedades y tipos
+    return redirect("/listado_tipos_novedad") #aqui debo mostrar todo el listado de novedades y tipos
 
 @app.route("/eliminar_tipo_novedad", methods=["POST"])
 def eliminar_tipo_novedad():
     controlador_tipos_novedad.eliminar_tipo_novedad(request.form["id"])
-    return redirect("/listado_novedades")
+    return redirect("/listado_tipos_novedad")
 
 @app.route("/formulario_editar_tipo_novedad=<int:id>")
 def editar_tipo_novedad(id):
-    #tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
-    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
+    # tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    id_tipo = id
 
-    return render_template("editar_tipo_novedad.html", tipos_novedad=tipos_novedad)
+    return render_template("editar_tipo_novedad.html", tipo_novedad=tipo_novedad, id_tipo = id_tipo)
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
 def actualizar_tipo_novedad(): 
     id = request.form["id"]
     nombre_tipo = request.form["nombre_tipo"]
     controlador_tipos_novedad.actualizar_tipo_novedad(nombre_tipo, id)
-    return redirect("/listado_novedades")
+    return redirect("/listado_tipos_novedad")
 
 #########################FIN TIPONOVEDAD##############################
 
@@ -1274,10 +1314,6 @@ def login():
 def confirmar_compra():
     return redirect("/")
 
-# @app.route("/cancelar_compra")
-@app.route("/cancelar_compra", methods=['POST'])
-def cancelar_compra():
-    return redirect("/")
 
 ############################CANCELAR PEDIDO#########################
 
