@@ -67,6 +67,8 @@ def obtener_datos_contenido():
     return datos
 
 
+
+
 def insertar_tipo_contenido_info(nombre , descripcion , faicon_cont):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -102,41 +104,36 @@ def actualizar_tipo_contenido_info_por_id(nombre , descripcion , faicon_cont , i
     conexion.close()
 
 
-
-
-
-
-
-def insertar_contenido_info(campo):
+def insertar_contenido_info(titulo , cuerpo , tipo):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO caracteristica (campo, disponibilidad) VALUES (%s, 1)", (campo))
+        cursor.execute("INSERT INTO contenido_info (titulo, cuerpo , tipo_contenido_infoid) VALUES (%s, %s,%s)", (titulo , cuerpo , tipo))
     conexion.commit()
     conexion.close()
 
 
-def eliminar_caracteristica(id):
+def eliminar_contenido_info(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("DELETE FROM caracteristica WHERE id = %s", (id))
+        cursor.execute("DELETE FROM contenido_info WHERE id = %s", (id))
     conexion.commit()
     conexion.close()
 
 
-def obtener_caracteristica_por_id(id):
+def obtener_contenido_info_por_id(id):
     conexion = obtener_conexion()
-    marca = None
+    tipo = None
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT car.id, car.campo, car.disponibilidad FROM caracteristica car WHERE id = %s", (id))
-        marca = cursor.fetchone()
+        cursor.execute("SELECT id, titulo, cuerpo , tipo_contenido_infoid FROM contenido_info WHERE id = %s", (id))
+        tipo = cursor.fetchone()
     conexion.close()
-    return marca
+    return tipo
 
 
-def actualizar_caracteristica(campo, disp, id):
+def actualizar_contenido_info_por_id(titulo , cuerpo , tipo , id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("UPDATE caracteristica SET campo = %s , disponibilidad = %s WHERE id =%s",
-                       (campo, disp, id))
+        cursor.execute("UPDATE contenido_info SET titulo = %s , cuerpo = %s , tipo_contenido_infoid = %s WHERE id = %s",
+                       (titulo , cuerpo , tipo , id))
     conexion.commit()
     conexion.close()

@@ -1,40 +1,46 @@
 {% extends 'maestra_administrador.html' %}
+
 {% block titulo %}
-  Agregar marca
+  Editar Tipo de Contenido Informativo
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
 {% endblock %}
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar marca</h2><br /><br /><br />
-    <form action="{{ url_for('guardar_contenido_info') }}" method="post" enctype="multipart/form-data">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Tipo de Contenido Informativo</h2><br /><br /><br />
+    <form action="{{ url_for('actualizar_contenido_info') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="id" value="{{ tipo.0 }}" />
       <div class="form-grid" id="col_add">
-        
-        <div class="row">
 
+        <div class="row">
           <div class="col">
             <label for="titulo">Titulo:</label><br />
-            <input required type="text" class="input" placeholder="tipo" name="titulo" id="titulo" />
+            <input required type="text" class="input" placeholder="Titulo" name="titulo" id="titulo" value="{{tipo.1}}"/>
           </div>
 
           <div class="col">
             <label for="subcategorySelect">Subcategoría:</label><br />
             <select required class="form-select choosie" aria-label="Default select example" name="tipo" id="tipo">
               {% for seccion in secciones %}
-                <option value="{{seccion[0]}}">{{seccion[1]}}</option>
+                <option value="{{seccion[0]}}"
+                {% if seccion[0] == tipo.3 %}
+                  selected
+                {% endif %}
+                >
+                  {{seccion[1]}}
+                </option>
               {% endfor %}
             </select>
           </div>
-
         </div>
 
         <div class="row">
           <div class="col" id="space_info">
             <label for="cuerpo">Cuerpo:</label><br />
-            <textarea name="cuerpo" id="cuerpo" placeholder="Cuerpo"></textarea>
+            <textarea name="cuerpo" id="cuerpo" placeholder="Cuerpo">{{tipo.2}}</textarea>
           </div>
         </div>
 
@@ -42,7 +48,7 @@
           <div class="col" id="sbmt">
             <div class="form-buttons">
               <a href="{{ url_for('listado_contenido_info') }}" id="backbtn">Volver</a>
-              <button type="submit" class="button is-primary" style="border-radius: 20px;">Agregar</button>
+              <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
             </div>
           </div>
         </div>
@@ -53,5 +59,5 @@
 {% endblock %}
 
 {% block scripts %}
-  <script src="/static/js/admin_productos.js"></script>
+  <!-- <script src="/static/js/admin_productos.js"></script> -->
 {% endblock %}
