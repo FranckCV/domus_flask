@@ -323,7 +323,7 @@ def confirmar_carrito():
                                descuento_aplicado=(descuento_aplicado == '1'),
                                metodos_pago=metodos_pago)
     else:
-        return redirect('carrito')
+        return redirect('/carrito')
 
 
 
@@ -332,11 +332,12 @@ def confirmar_carrito():
 @app.route("/resumen_de_pedido")
 def resumen_de_pedido():
     usuario=1
-    pedido_id=controlador_carrito.ultimoPedido(usuario)
-    
+    pedido_id=controlador_carrito.ultimoPedido(usuario)    
     metodos_pago =controlador_metodo_pago.obtener_metodo_pago()
     print("los metoods son:",metodos_pago)
     existencias = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    # metodoID = request.form["metodo_pago"]
+    # controlador_pedido.actualizar_MetPago_Pedido(pedido_id,metodoID)
     return render_template("resumen_de_pedido.html", metodos_pago=metodos_pago, existencias=existencias)
 
 @app.route('/cancelar_compra', methods=['POST'])
@@ -346,7 +347,7 @@ def cancelar_compra():
 
     controlador_carrito.actualizar_estado_pedido(usuario_id, estado_cancelado)
 
-    return redirect('carrito')
+    return redirect('/carrito')
 
 
 #############################################################################################################
