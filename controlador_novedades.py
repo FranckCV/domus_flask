@@ -382,10 +382,15 @@ def anuncioselect(id):
         cursor.execute(sql, (id,))
         anuncio = cursor.fetchone()
 
+    # Agrega un print para verificar que estás recibiendo la data correcta
     if anuncio:
+        print(f"Datos del anuncio recibido: {anuncio}")  # Imprime los datos que llegan
+
         # Devuelve los datos en la forma que Jinja2 espera
         return (anuncio[0], anuncio[1], anuncio[2], anuncio[3], anuncio[4], anuncio[5], anuncio[6], anuncio[7], anuncio[8])
+    
     return None
+
 
 
 
@@ -512,9 +517,6 @@ def obtenerNovedadPorId(novedadId):
 #         '''
 #         cursor.execute(sql, (nomImagen, imagen, tipo_img_novedad_id, id))
 #     conexion.commit()
-<<<<<<< HEAD
-#     conexion.close()
-=======
 #     conexion.close()
 
 
@@ -550,4 +552,3 @@ def obtenerNovedadPorId(novedadId):
 #         cursor.execute(sql, (id,))
 #     conexion.commit()
 #     conexion.close()
->>>>>>> 40a31e81f8272fdff5273bd27c9a21bfe5ca7164
