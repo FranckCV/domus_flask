@@ -854,9 +854,7 @@ def eliminar_tipo_contenido_info():
     return redirect("/listado_tipo_contenido_info")
 
 
-
-
-
+#################  CONTENIDO INFO  ####################### 
 
 
 
@@ -867,7 +865,42 @@ def listado_contenido_info():
     return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
 
 
+@app.route("/agregar_contenido_info")
+def formulario_agregar_contenido_info():
+    secciones = controlador_contenido_info.obtener_tipos_contenido()
+    return render_template("agregar_contenido_info.html" , secciones = secciones)
 
+
+@app.route("/guardar_contenido_info", methods=["POST"])
+def guardar_contenido_info():
+    titulo = request.form["titulo"] 
+    cuerpo = request.form["cuerpo"] 
+    tipo = request.form["tipo"]
+    controlador_contenido_info.insertar_contenido_info(titulo , cuerpo , tipo)
+    return redirect("/listado_contenido_info")
+
+
+@app.route("/actualizar_contenido_info", methods=["POST"])
+def actualizar_contenido_info():
+    id = request.form["id"]
+    cuerpo = request.form["cuerpo"]
+    titulo = request.form["titulo"] 
+    tipo = request.form["tipo"]
+    controlador_contenido_info.actualizar_contenido_info_por_id(titulo , cuerpo , tipo,id)
+    return redirect("/listado_contenido_info")
+
+
+@app.route("/formulario_editar_contenido_info=<int:id>")
+def editar_contenido_info(id):
+    secciones = controlador_contenido_info.obtener_tipos_contenido()
+    tipo = controlador_contenido_info.obtener_contenido_info_por_id(id)
+    return render_template("editar_contenido_info.html", tipo=tipo , secciones = secciones)
+
+
+@app.route("/eliminar_contenido_info", methods=["POST"])
+def eliminar_contenido_info():
+    controlador_contenido_info.eliminar_contenido_info(request.form["id"])
+    return redirect("/listado_contenido_info")
 
 
 

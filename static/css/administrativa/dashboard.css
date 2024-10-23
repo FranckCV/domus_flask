@@ -262,7 +262,7 @@ main {
 
 .dashboard_item {
     width: 100%;
-    border: 1px solid #2c4677;
+    /* border: 1px solid #2c4677; */
     background-color: #032a66;
     color: white;
     border-radius: 20px;
@@ -322,6 +322,9 @@ main {
     color: #fff;
 }
 
-
+.dshbd_item_content .medio {
+    background-color: #be5c00;
+    color: #fff;
+}
 
 
