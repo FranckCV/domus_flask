@@ -51,71 +51,72 @@
         </table>
       </div>
       <!-- cards -->
-      <div class="row justify-content-center my-4">
-        <div class="col-md-4">
-          <div class="card text-center shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">Dirección</h5>
-              <p class="card-text">Destinatario: Mirtha Paico Moreno</p>
-              <p class="card-text">La niña 170</p>
-              <p class="card-text">La Victoria</p>
-              <p class="card-text">Chiclayo, Lambayeque</p>
-              <p class="card-text">Perú</p>
+      <form action="{{ url_for('confirmar_compra') }}" method="post">
+        <div class="row justify-content-center my-4">
+          <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Dirección</h5>
+                <p class="card-text">Destinatario: Mirtha Paico Moreno</p>
+                <p class="card-text">La niña 170</p>
+                <p class="card-text">La Victoria</p>
+                <p class="card-text">Chiclayo, Lambayeque</p>
+                <p class="card-text">Perú</p>
+              </div>
             </div>
           </div>
-        </div>
-        <form>
-        <div class="col-md-4">
-          <div class="card text-center shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">Método de pago</h5>
-              <select id="metodo_pago" name="metodo_pago" class="form-select">
-                {% for metodo in metodos_pago %}
-                  <option value="{{metodo[0]}}">{{ metodo[1] }}</option>
-                {% endfor %}
-              </select>
-                
-              <p class="total card-text total_pagar">S/{{ total_pagar }}</p>
+
+          <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Método de pago</h5>
+                <select id="metodo_pago" name="metodo_pago" class="form-select">
+                  {% for metodo in metodos_pago %}
+                    <option value="{{ metodo.0 }}">{{ metodo.1 }}</option>
+                  {% endfor %}
+                </select>
+
+                <p class="total card-text total_pagar">S/{{ total_pagar }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Resumen</h5>
+                <div class="card-text-total">
+                  <p>Subtotal</p><span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
+                </div>
+                <div class="card-text-total">
+                  <p>Costo de envío</p><span id="costo_envio">s/.10.00</span>
+                </div>
+                <div class="card-text-total">
+                  <p>Total</p><span id="total_sumado">S/{{ total_pagar|int + 10 }}</span>
+                </div>
+                {% if descuento_aplicado %}
+                  <div class="card-text-total">
+                    <p>Descuento aplicado</p><span>S/ {{ descuento }}</span>
+                  </div>
+                {% else %}
+                  <div class="card-text-total">
+                    <p>No se aplicó descuento</p>
+                  </div>
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="col-md-4">
-          <div class="card text-center shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">Resumen</h5>
-              <div class="card-text-total">
-                <p>Subtotal</p><span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
-              </div>
-              <div class="card-text-total">
-                <p>Costo de envío</p><span id="costo_envio">s/.10.00</span>
-              </div>
-              <div class="card-text-total">
-                <p>Total</p><span id="total_sumado">S/{{ total_pagar | int + 10 }}</span>
-              </div>
-              {% if descuento_aplicado %}
-                <div class="card-text-total">
-                  <p>Descuento aplicado</p><span>S/ {{ descuento }}</span>
-                </div>
-              {% else %}
-                <div class="card-text-total">
-                  <p>No se aplicó descuento</p>
-                </div>
-              {% endif %}
-            </div>
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-primary me-2 cancelar" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Cancelar compra</button>
+          <button class="btn btn-primary confirmar square" type="button" onclick="confirmarCompra(this)">Confirmar compra</button>
+          <span class="circle-expand"></span>
+          <div class="modal-thank">
+            <div class="text hvr-wobble-horizontal">¡Gracias por su compra!</div>
           </div>
         </div>
-      </div>
-
-      <div class="d-flex justify-content-between">
-        <button class="btn btn-primary me-2 cancelar" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Cancelar compra</button>
-        <button class="btn btn-primary confirmar square" type="button" onclick="confirmarCompra(this)">Confirmar compra</button>
-        <span class="circle-expand"></span>
-        <div class="modal-thank">
-          <div class="text hvr-wobble-horizontal">¡Gracias por su compra!</div>
-        </div>
-      </div>
-    </form>
+      </form>
       <!-- modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
