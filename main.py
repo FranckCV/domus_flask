@@ -811,6 +811,7 @@ def eliminar_tipo_img_novedad():
     controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
     return redirect("/tipos_img_novedad_listado")
 
+
 #################  TIPO CONTENIDO INFO  ####################### 
 
 @app.route("/listado_tipo_contenido_info")
