@@ -14,6 +14,7 @@ import controlador_novedades
 import controlador_tipos_img_novedad
 import controlador_carrito
 import controlador_detalle
+import controlador_contenido_info
 
 app = Flask(__name__)
 
@@ -809,10 +810,58 @@ def eliminar_tipo_img_novedad():
     controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
     return redirect("/tipos_img_novedad_listado")
 
-#########################3FIN TIPO_IMG NOVEDAD#########################
 
 
-#########################FIN NOVEDAD####################################
+
+@app.route("/listado_contenido_info")
+def listado_contenido_info():
+    datos = controlador_contenido_info.obtener_datos_contenido_info()
+    secciones = controlador_contenido_info.obtener_tipos_contenido()
+    return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
+
+
+
+# @app.route("/agregar_contenido_info")
+# def formulario_agregar_contenido_info():
+#     return render_template("agregar_contenido_info.html")
+
+
+# @app.route("/guardar_contenido_info", methods=["POST"])
+# def guardar_contenido_info():
+#     marca = request.form["marca"] 
+#     logo= request.files["logo"] 
+#     logo_binario = logo.read()
+#     controlador_marcas.insertar_marca(marca,logo_binario)
+#     return redirect("/listado_contenido_info")
+
+
+# @app.route("/eliminar_contenido_info", methods=["POST"])
+# def eliminar_contenido_info():
+#     controlador_marcas.eliminar_marca(request.form["id"])
+#     return redirect("/listado_contenido_info")
+
+
+# @app.route("/formulario_editar_contenido_info=<int:id>")
+# def editar_contenido_info(id):
+#     marca = controlador_marcas.obtener_marca_por_id(id)
+#     return render_template("editar_contenido_info.html", marca=marca)
+
+
+# @app.route("/actualizar_contenido_info", methods=["POST"])
+# def actualizar_contenido_info():
+#     id = request.form["id"]
+#     marca = request.form["marca"] 
+#     logo= request.files["logo"] 
+#     logo_binario = logo.read()  
+#     controlador_marcas.actualizar_marca(marca,logo_binario,id)
+#     return redirect("/listado_contenido_info")
+
+
+
+
+
+
+
 
 
 #########################INICIO DE SESIÓN####################################
@@ -845,7 +894,7 @@ def login():
     return render_template('iniciar_sesion.html')
 
 
-#####################FIN INICIO DE SESIÓN######################
+
 # EJECUTAR
 
 

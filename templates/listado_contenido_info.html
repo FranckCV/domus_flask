@@ -1,0 +1,67 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Listado de Contenido Informativo
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Listado de datos</h2>
+    <div class="container-fluid" id="break_nav">
+           
+    </div>
+
+    <div class="table-containersy">
+      <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Seccion</th>
+            <th>Icono</th>
+            <th>Descripcion</th>
+            <th>ID</th>
+            <th>Titulo</th>
+            <th>Cuerpo</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for seccion in secciones %}
+          {% set datos_lista = datos | selectattr(4, 'equalto', seccion[0]) | list %}
+            <tr>
+              <td rowspan="{{ datos_lista | length }}">{{ seccion.0 }}</td>
+              <td rowspan="{{ datos_lista | length }}">
+                <div class="celda_texto_bloque">
+                  <i class="{{ seccion.3 }}"></i>
+                  <span>{{ seccion.1 }}</span>
+                </div>
+              </td>
+              <td rowspan="{{ datos_lista | length }}">{{ seccion.4 }}</td>
+              
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <style>
+    .datoctive {
+      background-color: rgb(255, 255, 255);
+      color: #00095c;
+    }
+  </style>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+    }
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
+{% endblock %}
