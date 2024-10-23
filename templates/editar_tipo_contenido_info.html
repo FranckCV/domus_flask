@@ -1,0 +1,55 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Editar Tipo de Contenido Informativo
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Tipo de Contenido Informativo</h2><br /><br /><br />
+    <form action="{{ url_for('actualizar_tipo_contenido_info') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="id" value="{{ tipo.0 }}" />
+      <div class="form-grid" id="col_add">
+
+        <div class="row">
+          <div class="col">
+            <label for="nombre">Nombre:</label><br />
+            <input value="{{ tipo.1 }}" required type="text" class="input" placeholder="Nombre" name="nombre" id="nombre" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="nombre">Icono:</label><br />
+            <input value="{{ tipo.2 }}" required type="text" class="input" placeholder="Icono" name="faicon_cont" id="faicon_cont" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="descripcion">Descripción:</label><br />
+            <textarea  name="descripcion" id="descripcion" placeholder="Descripcion">{{ tipo.3 }}</textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('listado_tipo_contenido_info') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <!-- <script src="/static/js/admin_productos.js"></script> -->
+{% endblock %}

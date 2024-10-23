@@ -87,13 +87,13 @@ def obtener_tipo_contenido_info_por_id(id):
     conexion = obtener_conexion()
     tipo = None
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT nombre, descripcion , faicon_cont FROM tipo_contenido_info WHERE id = %s", (id))
+        cursor.execute("SELECT id, nombre,  faicon_cont ,descripcion FROM tipo_contenido_info WHERE id = %s", (id))
         tipo = cursor.fetchone()
     conexion.close()
     return tipo
 
 
-def actualizar_caracteristica(nombre , descripcion , faicon_cont , id):
+def actualizar_tipo_contenido_info_por_id(nombre , descripcion , faicon_cont , id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         cursor.execute("UPDATE tipo_contenido_info SET nombre = %s , descripcion = %s , faicon_cont = %s WHERE id = %s",

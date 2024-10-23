@@ -811,12 +811,53 @@ def eliminar_tipo_img_novedad():
     controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
     return redirect("/tipos_img_novedad_listado")
 
-
+#################  TIPO CONTENIDO INFO  ####################### 
 
 @app.route("/listado_tipo_contenido_info")
 def listado_tipo_contenido_info():
     tipos = controlador_contenido_info.obtener_listado_tipos_contenido()
     return render_template("listado_tipo_contenido_info.html", tipos = tipos)
+
+
+@app.route("/agregar_tipo_contenido_info")
+def formulario_agregar_tipo_contenido_info():
+    return render_template("agregar_tipo_contenido_info.html")
+
+
+@app.route("/guardar_tipo_contenido_info", methods=["POST"])
+def guardar_tipo_contenido_info():
+    nombre = request.form["nombre"] 
+    descripcion = request.form["descripcion"] 
+    faicon_cont = request.form["faicon_cont"]
+    controlador_contenido_info.insertar_tipo_contenido_info(nombre , descripcion , faicon_cont)
+    return redirect("/listado_tipo_contenido_info")
+
+
+@app.route("/actualizar_tipo_contenido_info", methods=["POST"])
+def actualizar_tipo_contenido_info():
+    id = request.form["id"]
+    nombre = request.form["nombre"]
+    faicon_cont = request.form["faicon_cont"] 
+    descripcion = request.form["descripcion"]
+    controlador_contenido_info.actualizar_tipo_contenido_info_por_id(nombre,faicon_cont,descripcion,id)
+    return redirect("/listado_tipo_contenido_info")
+
+
+@app.route("/formulario_editar_tipo_contenido_info=<int:id>")
+def editar_tipo_contenido_info(id):
+    tipo = controlador_contenido_info.obtener_tipo_contenido_info_por_id(id)
+    return render_template("editar_tipo_contenido_info.html", tipo=tipo)
+
+
+@app.route("/eliminar_tipo_contenido_info", methods=["POST"])
+def eliminar_tipo_contenido_info():
+    controlador_contenido_info.eliminar_tipo_contenido_info(request.form["id"])
+    return redirect("/listado_tipo_contenido_info")
+
+
+
+
+
 
 
 
@@ -828,6 +869,7 @@ def listado_contenido_info():
 
 
 
+<<<<<<< HEAD
 # @app.route("/agregar_contenido_info")
 # def formulario_agregar_contenido_info():
 #     return render_template("agregar_contenido_info.html")
@@ -877,6 +919,8 @@ def listado_tipos_usuario():
     #     print(f"descripción: {tipos_usuario[0][2]}")
     # else:
     #     print("No se encontraron registros en la tabla TIPO_USUARIO")
+=======
+>>>>>>> 34d32bada1192793b7a90f6a9eedc861768ad4ac
 
     return render_template("listado_tipos_usuario.html", tipos_usuario=tipos_usuario)
 
