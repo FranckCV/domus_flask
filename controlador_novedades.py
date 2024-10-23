@@ -335,6 +335,7 @@ def promoselect(id):
     conexion.close()
     return elemento_promo
 
+
 def mostrarNovedadesAnuncios():
     conexion = obtener_conexion()
     elementos = []
@@ -498,10 +499,9 @@ def obtenerNovedadPorId(novedadId):
 #         '''
 #         cursor.execute(sql, (id,))
 #         imagen_novedad = cursor.fetchone()
-    
-<<<<<<< HEAD
-    conexion.close()
-    return imagen_novedad
+
+    # conexion.close()
+    # return imagen_novedad
 
 def actualizarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, id):
     conexion = obtener_conexion()
@@ -525,7 +525,8 @@ def eliminarImagenNovedad(id):
         cursor.execute(sql, (id,))
     conexion.commit()
     conexion.close()
-=======
+
+    
 #     conexion.close()
 #     return imagen_novedad
 
@@ -539,7 +540,6 @@ def eliminarImagenNovedad(id):
 #         '''
 #         cursor.execute(sql, (nomImagen, imagen, tipo_img_novedad_id, id))
 #     conexion.commit()
-<<<<<<< HEAD
 #     conexion.close()
 
 # def eliminarImagenNovedad(id):
@@ -552,24 +552,7 @@ def eliminarImagenNovedad(id):
 #         cursor.execute(sql, (id,))
 #     conexion.commit()
 #     conexion.close()
-=======
-<<<<<<< HEAD
-#     conexion.close()
-=======
-#     conexion.close()
 
->>>>>>> 119a46f99fb2a1c6e498384054459dabbdeac967
-
-# def eliminarImagenNovedad(id):
-#     conexion = obtener_conexion()
-#     with conexion.cursor() as cursor:
-#         sql = '''
-#             DELETE FROM IMG_NOVEDAD
-#             WHERE id = %s
-#         '''
-#         cursor.execute(sql, (id,))
-#     conexion.commit()
-#     conexion.close()
 
 # def eliminarImagenNovedad(id):
 #     conexion = obtener_conexion()
@@ -592,5 +575,14 @@ def eliminarImagenNovedad(id):
 #         cursor.execute(sql, (id,))
 #     conexion.commit()
 #     conexion.close()
->>>>>>> 40a31e81f8272fdff5273bd27c9a21bfe5ca7164
->>>>>>> 5e03a827cda9e0f6b42eef89331ee51912c6c545
+
+# def eliminarImagenNovedad(id):
+#     conexion = obtener_conexion()
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#             DELETE FROM IMG_NOVEDAD
+#             WHERE id = %s
+#         '''
+#         cursor.execute(sql, (id,))
+#     conexion.commit()
+#     conexion.close()

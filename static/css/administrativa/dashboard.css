@@ -317,7 +317,10 @@ main {
     color: #000;
 }
 
-
+.dshbd_item_content .falta {
+    background-color: #7e0000;
+    color: #fff;
+}
 
 
 

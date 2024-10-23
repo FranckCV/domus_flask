@@ -6,6 +6,8 @@ import controlador_imagenes_productos
 import controlador_tipos_novedad
 import controlador_imagenes_novedades
 import controlador_caracteristicas_productos
+import controlador_caracteristicas_subcategorias
+import controlador_caracteristicas
 import controlador_subcategorias
 import controlador_usuario_cliente
 import controlador_novedades
@@ -267,7 +269,7 @@ def agregar_carrito():
     controlador_carrito.insertar_detalle(producto_id, pedido_id)
     
     # Redirige a la vista del carrito
-    return redirect(request.referrer)
+    return '',204
 
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
@@ -374,7 +376,7 @@ def guardar_marca():
     logo= request.files["logo"] 
     logo_binario = logo.read()
     controlador_marcas.insertar_marca(marca,logo_binario)
-    return redirect("/marcas")
+    return redirect("/listado_marcas")
 
 
 @app.route("/listado_marcas")
@@ -386,7 +388,7 @@ def marcas():
 @app.route("/eliminar_marca", methods=["POST"])
 def eliminar_marca():
     controlador_marcas.eliminar_marca(request.form["id"])
-    return redirect("/marcas")
+    return redirect("/listado_marcas")
 
 
 @app.route("/formulario_editar_marca=<int:id>")
@@ -402,8 +404,60 @@ def actualizar_marca():
     logo= request.files["logo"] 
     logo_binario = logo.read()  
     controlador_marcas.actualizar_marca(marca,logo_binario,id)
-    return redirect("/marcas")
+    return redirect("/listado_marcas")
 
+
+
+    # CARACTERISTICAS
+
+@app.route("/listado_caracteristicas")
+def caracteristicas():
+    subcategoriasFiltro = controlador_subcategorias.obtener_subcategoriasXnombre()
+    categoriasFiltro = controlador_categorias.obtener_categoriasXnombre()
+    caracteristicas = controlador_caracteristicas_subcategorias.obtenerCaracteristicas_Subcategorias()    
+    categorias = controlador_categorias.obtener_categorias()
+    subcategorias =controlador_subcategorias.obtener_subcategorias()
+    return render_template("listado_caracteristicas.html", caracteristicas = caracteristicas, categoriasFiltro=categoriasFiltro, subcategoriasFiltro=subcategoriasFiltro , subcategorias=subcategorias , categorias = categorias)
+
+
+@app.route("/agregar_caracteristica")
+def formulario_agregar_caracteristica():
+    return render_template("agregar_caracteristica.html")
+
+
+@app.route("/guardar_caracteristica", methods=["POST"])
+def guardar_caracteristica():
+    campo = request.form["marca"]
+    controlador_caracteristicas.insertar_caracteristica(campo)
+    return redirect("/listado_caracteristicas")
+
+
+@app.route("/eliminar_caracteristica", methods=["POST"])
+def eliminar_caracteristica():
+    controlador_caracteristicas.eliminar_caracteristica(request.form["id"])
+    return redirect("/listado_caracteristicas")
+
+
+@app.route("/formulario_editar_caracteristica=<int:id>")
+def editar_caracteristica(id):
+    carac = controlador_caracteristicas.obtener_caracteristica_por_id(id)
+    return render_template("editar_caracteristica.html", caracteristica=carac)
+
+
+@app.route("/actualizar_caracteristica", methods=["POST"])
+def actualizar_caracteristica():
+    id = request.form["id"]
+    campo = request.form["campo"]
+    disp = request.form["disponibilidad"]
+    controlador_caracteristicas.actualizar_caracteristica(campo, disp, id)
+    return redirect("/listado_caracteristicas")
+
+
+
+
+
+
+    # CATEGORIAS / SUBCATEGORIAS   
 
 @app.route("/agregar_categoria")
 def formulario_agregar_categoria():
@@ -416,8 +470,8 @@ def guardar_categoria():
     faicon_cat = request.form["faicon_cat"] 
     disponibilidad = request.form["disponibilidad"] 
     controlador_categorias.insertar_categoria(categoria,faicon_cat,disponibilidad)
-    return redirect("/categorias")
-    
+    return redirect("/listado_categorias")
+
 
 @app.route("/listado_categorias")
 def categorias():
@@ -429,7 +483,7 @@ def categorias():
 @app.route("/eliminar_categoria", methods=["POST"])
 def eliminar_categoria():
     controlador_categorias.eliminar_categoria(request.form["id"])
-    return redirect("/categorias")
+    return redirect("/listado_categorias")
 
 
 @app.route("/formulario_editar_categoria=<int:id>")
@@ -445,7 +499,7 @@ def actualizar_categoria():
     faicon_cat = request.form["faicon_cat"] 
     disponibilidad = request.form["disponibilidad"] 
     controlador_categorias.actualizar_categoria(categoria,faicon_cat,disponibilidad,id)
-    return redirect("/categorias")
+    return redirect("/listado_categorias")
 
 
 @app.route("/agregar_subcategoria")
@@ -461,13 +515,13 @@ def guardar_subcategoria():
     disponibilidad = request.form["disponibilidad"] 
     categoria_id = request.form["categoria_id"] 
     controlador_subcategorias.insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id)
-    return redirect("/categorias")
+    return redirect("/listado_categorias")
 
 
 @app.route("/eliminar_subcategoria", methods=["POST"])
 def eliminar_subcategoria():
     controlador_subcategorias.eliminar_subcategoria(request.form["id"])
-    return redirect("/categorias")
+    return redirect("/listado_categorias")
 
 
 @app.route("/formulario_editar_subcategoria=<int:id>")
@@ -485,7 +539,7 @@ def actualizar_subcategoria():
     disponibilidad = request.form["disponibilidad"] 
     categoria_id = request.form["categoria_id"] 
     controlador_subcategorias.actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id,id)
-    return redirect("/categorias")
+    return redirect("/listado_categorias")
 ########## FIN SUB-CATEGORIA ##########
 
 
@@ -512,7 +566,7 @@ def guardar_producto():
     marca_id= request.form["marca_id"] 
     subcategoria_id= request.form["subcategorySelect"]  
     controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
-    return redirect("/productos")
+    return redirect("/listado_productos")
 
 @app.route("/listado_productos")
 def productos():
@@ -525,7 +579,7 @@ def productos():
 @app.route("/eliminar_producto", methods=["POST"])
 def eliminar_producto():
     controlador_productos.eliminar_producto(request.form["id"])
-    return redirect("/productos")
+    return redirect("/listado_productos")
 
 @app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
@@ -549,7 +603,7 @@ def actualizar_producto():
     marca_id= request.form["marca_id"] 
     subcategoria_id= request.form["subcategorySelect"]  
     controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
-    return redirect("/productos")
+    return redirect("/listado_productos")
 
 ########## FIN PRODUCTOS ##########
 
@@ -563,12 +617,12 @@ def formulario_agregar_tipo_novedad():
 def guardar_tipo_novedad():
     nombre_tipo = request.form["nombre_tipo"]
     controlador_tipos_novedad.insertar_tipo_novedad(nombre_tipo)
-    return redirect("/novedades_listado") #aqui debo mostrar todo el listado de novedades y tipos
+    return redirect("/listado_novedades") #aqui debo mostrar todo el listado de novedades y tipos
 
 @app.route("/eliminar_tipo_novedad", methods=["POST"])
 def eliminar_tipo_novedad():
     controlador_tipos_novedad.eliminar_tipo_novedad(request.form["id"])
-    return redirect("/novedades_listado")
+    return redirect("/listado_novedades")
 
 @app.route("/formulario_editar_tipo_novedad=<int:id>")
 def editar_tipo_novedad(id):
@@ -582,7 +636,7 @@ def actualizar_tipo_novedad():
     id = request.form["id"]
     nombre_tipo = request.form["nombre_tipo"]
     controlador_tipos_novedad.actualizar_tipo_novedad(nombre_tipo, id)
-    return redirect("/novedades_listado")
+    return redirect("/listado_novedades")
 
 #########################FIN TIPONOVEDAD##############################
 
@@ -623,9 +677,10 @@ def guardar_img_novedad():
     novedad_id = request.form["novedad_id"]
     nomImagen = request.form["nomImagen"]
     tipo_img_novedad_id = request.form["tipo_img_novedad"]
-    
-    if "imagen" in request.files:
-        imagen = request.files["imagen"].read()
+    img = request.files["imagen"]
+
+    if img:
+        imagen = img.read()
         controlador_imagenes_novedades.insertar_imagen_novedad(nomImagen, imagen, tipo_img_novedad_id, novedad_id)
     
     return render_template("agregar_img_novedad.html", novedad_id=novedad_id, tipos_img_novedad=controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles(), imagen_agregada=True)
@@ -644,7 +699,7 @@ def novedades_listado():
 @app.route("/eliminar_novedad", methods=["POST"])
 def eliminar_novedad():
     controlador_novedades.eliminarNovedad(request.form["id"])
-    return redirect("/novedades_listado")
+    return redirect("/listado_novedades")
 
 
 @app.route("/formulario_editar_novedad=<int:id>")
@@ -672,7 +727,7 @@ def actualizar_novedad():
     imagen = request.files["imagen"].read() if "imagen" in request.files else None
 
     controlador_novedades.actualizarNovedad(nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id, imagen, id)
-    return redirect("/novedades_listado")
+    return redirect("/listado_novedades")
 
 @app.route("/agregar_img_novedad=<int:novedad_id>")
 def formulario_agregar_img_novedad(novedad_id):
@@ -681,6 +736,7 @@ def formulario_agregar_img_novedad(novedad_id):
 
 @app.route("/img_novedades_listado=<int:novedad_id>")
 def img_novedades_listado(novedad_id):
+    novedad_info = novedad_id
     img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)
     return render_template("img_novedades_listado.html", img_novedades=img_novedades, novedad_id=novedad_id)
 

@@ -103,7 +103,7 @@
                   {% for marca in marcas %}
                     {% if marca.0 == producto.10 %}
                       <div class="celda_texto_bloque" data-brand="{{ marca.0 }}">
-                        <img class="img-fluid" src="{{ marca.2 }}" alt="" />
+                        <img src="{{ marca.2 }}" alt="{{ producto.1 }} logo" />
                         <span>{{ marca.1 }}</span>
                       </div>
                     {% endif %}
