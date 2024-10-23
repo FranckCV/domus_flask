@@ -39,7 +39,7 @@
                 <td>{{ existencia.3 }}</td>
 
                 <td class="total">
-                  S/{% if existencia.2 is not null and existencia.3 is not null %}
+                  S/{% if existencia.2 is not none and existencia.3 is not none %}
                     {{ existencia.3 * existencia.2 }}
                   {% else %}
                     Error en precio o cantidad
@@ -71,10 +71,14 @@
               <h5 class="card-title">Método de pago</h5>
               <select id="metodo_pago" name="metodo_pago" class="form-select">
                 {% for metodo in metodos_pago %}
-                  <option value="{{ metodo.0 }}">{{ metodo.1 }}</option>
+                    <option value="Seleccione un método de pago" disabled>
+                    <option value="{{ metodo[0] }}">{{ metodo[1] }}</option>
+                {% else %}
+                    <option disabled>No hay métodos de pago disponibles</option>
                 {% endfor %}
               </select>
-              <p class="total card-text total_pagar">S/</p>
+                
+              <p class="total card-text total_pagar">S/{{ total_pagar }}</p>
             </div>
           </div>
         </div>
@@ -90,7 +94,7 @@
                 <p>Costo de envío</p><span id="costo_envio">s/.10.00</span>
               </div>
               <div class="card-text-total">
-                <p>Total</p><span id="total_sumado">S/{{ total_pagar + 10 }}</span>
+                <p>Total</p><span id="total_sumado">S/{{ total_pagar | int + 10 }}</span>
               </div>
               {% if descuento_aplicado %}
                 <div class="card-text-total">

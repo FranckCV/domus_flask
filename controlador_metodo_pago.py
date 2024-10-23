@@ -1,30 +1,26 @@
 from bd import obtener_conexion
-<<<<<<< HEAD
-def obtener_Metodo_pago():
-    conexion=obtener_conexion()
-    metodo=[]
-    with conexion.cursor() as cursor:
-        sql="select id,metodo from metodo_pago"
-        cursor.execute(sql)
-        metodo=cursor.fetchall
-    conexion.commit
-    return metodo
-=======
-import base64
-
 
 def obtener_metodo_pago():
     conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        cursor.execute('''
+    datos = []
+
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute('''
                 SELECT 
                     met.id,
                     met.metodo,
                     met.disponibilidad
                 FROM metodo_pago met
-                       ''')
-        datos = cursor.fetchall()
-    conexion.close()
+            ''')
+            datos = cursor.fetchall()  
+        
+    except Exception as e:
+        print(f"Error al obtener los métodos de pago: {e}")
+    
+    finally:
+        conexion.close()
+    
     return datos
 
 
@@ -61,4 +57,3 @@ def actualizar_metodo_pago_por_id(nombre,disponibilidad,id):
     conexion.commit()
     conexion.close()
 
->>>>>>> 2fc6d23ce0dc7b276230c9909223336a1e6043ea

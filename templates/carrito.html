@@ -97,7 +97,7 @@
 
               <div class="product_item_price_total">
                 <p class="total">
-                  S/{% if producto.2 is not null and producto.3 is not null %}
+                  S/{% if producto.2 is not none and producto.3 is not none %}
                     {{ producto.3 * producto.2 }}
                   {% else %}
                     Error en precio o cantidad
@@ -117,8 +117,15 @@
             <div class="discount-code">
               <label for="coupon">¿Tienes algún cupón de descuento?</label>
               <div class="d-flex">
-                <input type="text" id="coupon" value="DOMUSESMICASA50" />
-                <button id="aplicar" onclick="aplicarDescuento()">Aplicar</button>
+                <form action="{{ url_for('confirmar_carrito') }}" method="post" id="form_descuento">
+                  <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
+                  
+                  <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" />
+              
+                  <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
+              
+              </form>
+              
               </div>
               <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
             </div>
@@ -139,11 +146,13 @@
                             <a class="checkout" onclick="validarCarro()">Continuar</a>
                         </div>    -->
 
-            <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post" onsubmit="return validarCarro();">
-              <input type="hidden" id="total_form" name="total_form" value="" />
-              <input type="hidden" id="estado_pedido" name="estado_pedido" value="2" />
-              <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal();">Continuar</button>
-            </form>
+                        <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post" onsubmit="return validarCarro();">
+                          <input type="hidden" id="total_form" name="total_form" value="" />
+                          <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" /> 
+                          <input type="hidden" id="estado_pedido" name="estado_pedido" value="2" />
+                          <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal();">Continuar</button>
+                      </form>
+                      
           </div>
         </div>
       </div>

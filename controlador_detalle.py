@@ -50,12 +50,14 @@ def obtener_Detalle():
 
 ########################################
 
+
 def obtener_Detalle_por_Id(id):
     conexion = obtener_conexion()
     productos_lista = []
 
     try:
         with conexion.cursor() as cursor:
+            # Consulta principal para obtener los productos del pedido
             sql = '''
                 SELECT IMP.imagen, P.nombre, DP.cantidad, DP.PRODUCTOid 
                 FROM detalles_pedido DP
@@ -64,32 +66,21 @@ def obtener_Detalle_por_Id(id):
                 INNER JOIN img_producto IMP ON P.id = IMP.PRODUCTOid
                 WHERE IMP.imgPrincipal = 1 AND PE.id = %s
             '''
-            cursor.execute(sql, (id,)) 
+            cursor.execute(sql, (id,))
             productos = cursor.fetchall()
 
             for producto in productos:
                 sql_precios = "SELECT price_regular, precio_online, precio_oferta FROM producto WHERE id = %s"
-                cursor.execute(sql_precios, (producto[3],)) 
+                cursor.execute(sql_precios, (producto[3],))
                 precios = cursor.fetchone()
 
                 if precios is not None:
-                    if precios[2] is not None:  # precio_oferta
-                        precio_final = precios[2]
-                    elif precios[1] is not None:  # precio_online
-                        precio_final = precios[1]
-                    else:  # precio_regular
-                        precio_final = precios[0]
+                    precio_final = precios[2] if precios[2] is not None else precios[1] if precios[1] is not None else precios[0]
                 else:
-                    # Si no se encuentra el precio, asignar algún valor por defecto o manejar el error
-                    precio_final = 0
+                    precio_final = 0  
 
-                # Codificar la imagen en base64
                 img_binario = producto[0]
-                if img_binario:
-                    imagen_base64 = base64.b64encode(img_binario).decode('utf-8')
-                    imagen = f"data:image/png;base64,{imagen_base64}"
-                else:
-                    imagen = ""
+                imagen = f"data:image/png;base64,{base64.b64encode(img_binario).decode('utf-8')}" if img_binario else ""
 
                 nombre = producto[1]
                 cantidad = producto[2]
@@ -100,6 +91,34 @@ def obtener_Detalle_por_Id(id):
     except Exception as e:
         print(f"Error al obtener detalles: {e}")
     finally:
-        conexion.close()  
+        conexion.close() 
 
     return productos_lista
+
+def eliminar_detalle(producto_id, pedido_id):
+    conexion = obtener_conexion()
+
+    try:
+        with conexion.cursor() as cursor:
+            sql = "DELETE FROM detalles_pedido WHERE PRODUCTOid=%s AND PEDIDOid=%s"
+            cursor.execute(sql, (producto_id, pedido_id))
+            conexion.commit() 
+    except Exception as e:
+        print(f"Error al eliminar detalle: {e}")
+    finally:
+        conexion.close()
+
+def editar_detalle(producto_id, pedido_id, nueva_cantidad):
+    conexion = obtener_conexion()
+
+    try:
+        with conexion.cursor() as cursor:
+            # Actualizamos la cantidad de un producto en un pedido específico.
+            sql = "UPDATE detalles_pedido SET cantidad=%s WHERE PRODUCTOid=%s AND PEDIDOid=%s"
+            cursor.execute(sql, (nueva_cantidad, producto_id, pedido_id))
+            conexion.commit()
+            print(f"Detalle del producto {producto_id} en el pedido {pedido_id} actualizado correctamente.")
+    except Exception as e:
+        print(f"Error al editar detalle: {e}")
+    finally:
+        conexion.close()
