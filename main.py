@@ -546,6 +546,93 @@ def actualizar_subcategoria():
 
 
 
+
+import controlador_motivo_comentario
+import controlador_comentario
+
+######################### PARA COMENTARIO ##############################
+
+@app.route("/comentarios_listado")
+def comentarios_listado():
+    comentarios = controlador_comentario.obtener_comentarios()
+    motivos = controlador_motivo_comentario.obtener_motivos_disponibles()
+
+    return render_template("listado_comentarios.html", comentarios=comentarios, motivos=motivos)
+
+
+@app.route("/guardar_comentario", methods=["POST"])
+def guardar_comentario():
+    nombres = request.form["nombres"]
+    apellidos = request.form["apellidos"]
+    email = request.form["email"]
+    telefono = request.form["telefono"]
+    motivo_comentario_id = request.form["motivo_comentario_id"]
+    mensaje = request.form["mensaje"]
+    
+    # Estado por defecto: pendiente (1)
+    estado = 1
+
+    # Usuario id como null (si no está disponible)
+    usuario_id = None
+
+    controlador_comentario.insertar_comentario(nombres, apellidos, email, telefono, mensaje, estado, motivo_comentario_id, usuario_id)
+    
+    return redirect("/contactanos")
+
+@app.route("/eliminar_comentario", methods=["POST"])
+def eliminar_comentario():
+    controlador_comentario.eliminar_comentario(request.form["id"])
+    return redirect("/comentarios_listado")
+
+@app.route("/estado_comentario", methods=["POST"])
+def estado_comentario():
+    controlador_comentario.estado_comentario(request.form["id"])
+    return redirect("/comentarios_listado")
+
+######################### FIN COMENTARIO ##############################
+
+@app.route("/motivos_comentario_listado")
+def motivos_comentario_listado():
+    motivos = controlador_motivo_comentario.obtener_motivos()
+    return render_template("listado_motivos_comentarios.html", motivos=motivos)
+
+@app.route("/agregar_motivo_comentario")
+def formulario_agregar_motivo_comentario():
+    return render_template("agregar_motivo_comentario.html")
+
+@app.route("/guardar_motivo_comentario", methods=["POST"])
+def guardar_motivo_comentario():
+    motivo = request.form["motivo"]
+    disponibilidad = request.form["disponibilidad"]
+    controlador_motivo_comentario.insertar_motivo(motivo, disponibilidad)
+    return redirect("/motivos_comentario_listado")
+
+@app.route("/eliminar_motivo_comentario", methods=["POST"])
+def eliminar_motivo_comentario():
+    controlador_motivo_comentario.eliminar_motivo(request.form["id"])
+    return redirect("/motivos_comentario_listado")
+
+@app.route("/formulario_editar_motivo_comentario=<int:id>")
+def editar_motivo_comentario(id):
+    motivo_comentario = controlador_motivo_comentario.obtener_motivo_por_id(id)
+    return render_template("editar_motivo_comentario.html", motivo_comentario=motivo_comentario)
+
+@app.route("/actualizar_motivo_comentario", methods=["POST"])
+def actualizar_motivo_comentario(): 
+    id = request.form["id"]
+    motivo = request.form["motivo"]
+    disponibilidad = request.form["disponibilidad"]
+    controlador_motivo_comentario.actualizar_motivo(motivo, disponibilidad, id)
+    return redirect("/motivos_comentario_listado")
+
+######################### FIN MOTIVO COMENTARIO ##############################
+
+
+
+
+
+
+
 ########## INICIO PRODUCTOS ##########
 
 @app.route("/agregar_producto")
@@ -865,40 +952,6 @@ def listado_contenido_info():
     secciones = controlador_contenido_info.obtener_tipos_contenido()
     return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
 
-# @app.route("/agregar_contenido_info")
-# def formulario_agregar_contenido_info():
-#     return render_template("agregar_contenido_info.html")
-
-
-# @app.route("/guardar_contenido_info", methods=["POST"])
-# def guardar_contenido_info():
-#     marca = request.form["marca"] 
-#     logo= request.files["logo"] 
-#     logo_binario = logo.read()
-#     controlador_marcas.insertar_marca(marca,logo_binario)
-#     return redirect("/listado_contenido_info")
-
-
-# @app.route("/eliminar_contenido_info", methods=["POST"])
-# def eliminar_contenido_info():
-#     controlador_marcas.eliminar_marca(request.form["id"])
-#     return redirect("/listado_contenido_info")
-
-
-# @app.route("/formulario_editar_contenido_info=<int:id>")
-# def editar_contenido_info(id):
-#     marca = controlador_marcas.obtener_marca_por_id(id)
-#     return render_template("editar_contenido_info.html", marca=marca)
-
-
-# @app.route("/actualizar_contenido_info", methods=["POST"])
-# def actualizar_contenido_info():
-#     id = request.form["id"]
-#     marca = request.form["marca"] 
-#     logo= request.files["logo"] 
-#     logo_binario = logo.read()  
-#     controlador_marcas.actualizar_marca(marca,logo_binario,id)
-#     return redirect("/listado_contenido_info")
 
 @app.route("/agregar_contenido_info")
 def formulario_agregar_contenido_info():
@@ -982,6 +1035,14 @@ def eliminar_tipo_usuario():
     return redirect("/listado_tipos_usuario")
 
 ####################FIN TIPOS USUARIO########################
+
+
+
+
+
+
+
+
 
 
 
