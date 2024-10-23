@@ -97,7 +97,7 @@
 
               <div class="product_item_price_total">
                 <p class="total">
-                  S/{% if producto.2 is not null and producto.3 is not null %}
+                  S/{% if producto.2 is not none and producto.3 is not none %}
                     {{ producto.3 * producto.2 }}
                   {% else %}
                     Error en precio o cantidad
