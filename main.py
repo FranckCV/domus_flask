@@ -763,23 +763,32 @@ def eliminar_tipo_img_novedad():
 #PARA GUARDAR
 @app.route("/registrar_cliente", methods=["POST"])
 def registrar_cliente():
+    try:
+        nombres = request.form["nombres"]
+        apellidos = request.form["apellidos"]
+        dni = request.form["dni"]
+        genero = request.form["genero"]
+        fecha_nacimiento = request.form["fecha_nacimiento"]
+        telefono = request.form["telefono"]
+        correo = request.form["correo"]
+        password = request.form["password"]
+        disponibilidad=1
+        tipo_usuario = 3
 
-    nombres = request.form["nombres"]
-    apellidos = request.form["apellidos"]
-    dni = request.form["dni"]
-    genero = request.form["genero"]
-    fecha_nacimiento = request.form["fecha_nacimiento"]
-    telefono = request.form["telefono"]
-    correo = request.form["correo"]
-    password = request.form["password"]
+        result = controlador_usuario_cliente.insertar_usuario(
+            nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, password, disponibilidad, tipo_usuario
+        )
+        print(result)
+        if result == 1:
+            return render_template("iniciar_sesion.html", mostrar=True)
+        elif result == 0:
+            return render_template("iniciar_sesion.html", mostrar=False)
+        else:
+            return "Error al procesar la solicitud", 400 
+    except Exception as e:
+        print(f"Error en registrar_cliente: {e}")
+        return "Error en el servidor", 500 
 
-    result=controlador_usuario_cliente.insertar_usuario(
-        nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, password,True
-    )
-    if(result==1):
-        return render_template("iniciar_sesion.html", mostrar=True)
-    elif(result==0):
-        return render_template("iniciar_sesion.html", mostrar=False)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -796,6 +805,9 @@ def confirmar_compra():
     return redirect("/")
 
 # @app.route("/cancelar_compra")
+@app.route("/cancelar_compra", methods=['POST'])
+def cancelar_compra():
+    return redirect("/")
 
 ############################CANCELAR PEDIDO#########################
 

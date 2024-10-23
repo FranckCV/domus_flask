@@ -2,7 +2,7 @@ from bd import obtener_conexion
 import base64
 
 
-def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad):
+def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario):
     conexion = obtener_conexion() 
     try:
         with conexion.cursor() as cursor:
@@ -13,10 +13,11 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
                 return 0  
 
             cursor.execute(
-                "INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad)
+                "INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, TIPO_USUARIOid) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario)
             )
+
             conexion.commit()  
             return 1
     except Exception as e:
