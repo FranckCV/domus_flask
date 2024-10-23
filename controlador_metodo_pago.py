@@ -1,19 +1,29 @@
 from bd import obtener_conexion
+
 import base64
 
 
 def obtener_metodo_pago():
     conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        cursor.execute('''
+    datos = []
+
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute('''
                 SELECT 
                     met.id,
                     met.metodo,
                     met.disponibilidad
                 FROM metodo_pago met
-                       ''')
-        datos = cursor.fetchall()
-    conexion.close()
+            ''')
+            datos = cursor.fetchall()  
+        
+    except Exception as e:
+        print(f"Error al obtener los métodos de pago: {e}")
+    
+    finally:
+        conexion.close()
+    
     return datos
 
 

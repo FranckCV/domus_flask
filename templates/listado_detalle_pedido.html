@@ -1,0 +1,79 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Detalle del Pedido
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Detalles del Pedido</h2>
+    <div class="container-fluid" id="break_nav">
+      <div class="col">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Buscar por usuario" aria-label="Recipient's username" aria-describedby="button-addon2" />
+          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-containersy">
+      <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Acciones</th> <!-- Columna para acciones -->
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in detalles %}
+            <tr>
+              <td><img src="{{ producto[0] }}" alt="Imagen del Producto" style="width: 100px; height: auto;"></td>
+              <td>{{ producto[1] }}</td>
+              <td>S/. {{ producto[2] }}</td>
+              <td>{{ producto[3] }}</td>
+              <td>S/. {{ producto[2] * producto[3] }}</td>
+              <td>
+                <!-- Botón de Editar -->
+                <form action="{{ url_for('editar_detalle', producto_id=producto[4], pedido_id=pedido_id) }}" method="GET">
+                  <input type="hidden" name="producto_id" value="{{ producto[4] }}">
+                  <input type="hidden" name="pedido_id" value="{{ pedido_id }}">
+                  <button type="submit" class="btn btn-primary">Editar</button>
+                </form>
+
+                <!-- Botón de Eliminar -->
+                <form action="{{ url_for('eliminar_detalle_pedido') }}" method="POST" onsubmit="return confirmarEliminacion();">
+                  <input type="hidden" name="producto_id" value="{{ producto[4] }}">
+                  <input type="hidden" name="pedido_id" value="{{ pedido_id }}">
+                  <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <style>
+    .MarcActive {
+      background-color: rgb(255, 255, 255);
+      color: #00095c;
+    }
+  </style>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este detalle? Esta acción no se puede deshacer.');
+    }
+  </script>
+{% endblock %}

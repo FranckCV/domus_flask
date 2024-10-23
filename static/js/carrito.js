@@ -266,15 +266,20 @@ function aplicarDescuento() {
             break;
         }
     }
+
     if (descuentoAplicado) {
-        alert('Cupon aplicado exitosamente.');
+        alert('Cupón ya aplicado.');
     } else {
         if (cupon === 'DOMUSESMICASA50' && disponible) {
             let total = parseFloat(totalElement.querySelector('span').innerText.replace('S/. ', ''));
-            descuento = total * 0.20;
+            descuento = total * 0.20;  // Aplicar el 20% de descuento
             descuentoElement.querySelector('span').innerText = `S/. ${descuento.toFixed(2)}`;
             total -= descuento;
             totalElement.querySelector('span').innerText = `S/. ${total.toFixed(2)}`;
+            document.getElementById('total_fijo').innerText = `S/. ${total.toFixed(2)}`;
+
+            // **Actualizar el valor del campo oculto de descuento**
+            document.getElementById('descuento_aplicado').value = "1";  // Se ha aplicado el descuento
             descuentoAplicado = true;
         } else {
             alert('Cupón no es válido o el carrito está vacío.');
@@ -282,8 +287,8 @@ function aplicarDescuento() {
     }
 }
 
+
 function validarCarro() {
-    // Obtener el carrito desde tu función existente
     const carrito = obtenerCarrito();
 
     // Verificar si el carrito tiene productos
@@ -291,72 +296,48 @@ function validarCarro() {
     for (let nombre in carrito) {
         if (carrito[nombre].cantidad > 0) {
             disponible = true;
-
-            return disponible;
+            break;
         }
     }
 
     if (disponible) {
-        // localStorage.clear();
-        const data = {
-            USUARIOid: 1,
-            ESTADO_PEDIDOid: 2
-        };
-
-        fetch('/actualizar_estado_pedido', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/resumen_pedido';
-                } else {
-                    console.error('Error al actualizar el estado del pedido:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        obtenerTotal();  
+        return true; 
     } else {
         alert('Agregue productos a su carrito antes de continuar.');
+        return false;  
     }
 }
 
-function obtenerDescuento() {
-    // Obtén el valor del span
+
+function obtenerTotal() {
     var totalTexto = document.getElementById("total_fijo").innerText;
 
-    // Reemplaza 'S/. ' y las comas
     var totalValor = totalTexto.replace('S/. ', '').replace(',', '');
 
-    // Convertir el valor a un número flotante si es necesario
     var totalNumero = parseFloat(totalValor) || 0;
 
-    console.log(totalNumero);
+    console.log("Total a pagar: ", totalNumero);
 
-    // Actualizar el valor del campo oculto
-    document.getElementById("descuento_form").value = totalNumero;
+    document.getElementById("total_form").value = totalNumero;
 
     return totalNumero;
 }
 
+
 /***************************************PARA EL CONTADOR DE PRODUCTOS*****************************************************/
-function actualizarCantidadCarrito() {
-    const carrito = obtenerCarrito();
-    const contadorCarrito = document.getElementById('carrito_cant');
-    let totalCantidad = 0;
+// function actualizarCantidadCarrito() {
+//     const carrito = obtenerCarrito();
+//     const contadorCarrito = document.getElementById('carrito_cant');
+//     let totalCantidad = 0;
 
-    for (let producto in carrito) {
-        totalCantidad += carrito[producto].cantidad;
-    }
+//     for (let producto in carrito) {
+//         totalCantidad += carrito[producto].cantidad;
+//     }
 
-    contadorCarrito.innerText = `${totalCantidad}`;
-    contadorCarrito.classList.add('animate-bounce');
-    setTimeout(() => {
-        contadorCarrito.classList.remove('animate-bounce');
-    }, 500);
-}
+//     contadorCarrito.innerText = `${totalCantidad}`;
+//     contadorCarrito.classList.add('animate-bounce');
+//     setTimeout(() => {
+//         contadorCarrito.classList.remove('animate-bounce');
+//     }, 500);
+// }
