@@ -732,6 +732,11 @@ def actualizar_producto():
 
 #########################PARA TIPO NOVEDAD##############################
 
+@app.route("/listado_tipos_novedad")
+def listado_tipos_novedad():
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    return render_template("listado_tipos_novedad.html", tipos_novedad=tipos_novedad)
+
 @app.route("/agregar_tipo_novedad")
 def formulario_agregar_tipo_novedad():
     return render_template("agregar_tipo_novedad.html")
@@ -740,26 +745,27 @@ def formulario_agregar_tipo_novedad():
 def guardar_tipo_novedad():
     nombre_tipo = request.form["nombre_tipo"]
     controlador_tipos_novedad.insertar_tipo_novedad(nombre_tipo)
-    return redirect("/listado_novedades") #aqui debo mostrar todo el listado de novedades y tipos
+    return redirect("/listado_tipos_novedad") #aqui debo mostrar todo el listado de novedades y tipos
 
 @app.route("/eliminar_tipo_novedad", methods=["POST"])
 def eliminar_tipo_novedad():
     controlador_tipos_novedad.eliminar_tipo_novedad(request.form["id"])
-    return redirect("/listado_novedades")
+    return redirect("/listado_tipos_novedad")
 
 @app.route("/formulario_editar_tipo_novedad=<int:id>")
 def editar_tipo_novedad(id):
-    #tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
-    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
+    # tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    id_tipo = id
 
-    return render_template("editar_tipo_novedad.html", tipos_novedad=tipos_novedad)
+    return render_template("editar_tipo_novedad.html", tipo_novedad=tipo_novedad, id_tipo = id_tipo)
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
 def actualizar_tipo_novedad(): 
     id = request.form["id"]
     nombre_tipo = request.form["nombre_tipo"]
     controlador_tipos_novedad.actualizar_tipo_novedad(nombre_tipo, id)
-    return redirect("/listado_novedades")
+    return redirect("/listado_tipos_novedad")
 
 #########################FIN TIPONOVEDAD##############################
 

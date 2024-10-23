@@ -1,15 +1,4 @@
 from bd import obtener_conexion
-<<<<<<< HEAD
-def obtener_Metodo_pago():
-    conexion=obtener_conexion()
-    metodo=[]
-    with conexion.cursor() as cursor:
-        sql="select id,metodo from metodo_pago"
-        cursor.execute(sql)
-        metodo=cursor.fetchall
-    conexion.commit
-    return metodo
-=======
 import base64
 
 
@@ -61,4 +50,3 @@ def actualizar_metodo_pago_por_id(nombre,disponibilidad,id):
     conexion.commit()
     conexion.close()
 
->>>>>>> 2fc6d23ce0dc7b276230c9909223336a1e6043ea
