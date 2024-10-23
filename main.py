@@ -453,6 +453,23 @@ def eliminar_caracteristica():
     controlador_caracteristicas.eliminar_caracteristica(request.form["id"])
     return redirect("/listado_caracteristicas")
 
+# @app.route("/eliminar_caracteristica", methods=["POST"])
+# def eliminar_caracteristica():
+#     id = request.form["id"]
+    
+#     # Verificamos si la característica está asociada a subcategorías o productos
+#     tiene_subcategorias = controlador_caracteristicas.buscar_en_caracteristica_subcategoria(id)
+#     tiene_productos = controlador_caracteristicas.buscar_en_caracteristica_producto(id)
+
+#     if tiene_subcategorias or tiene_productos:
+#         # Si está asociada, mostramos el error
+#         return render_template("listado_caracteristicas.html", error="La característica está asociada a subcategorías o productos y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+#     else:
+#         # Si no está asociada, procedemos a eliminar
+#         controlador_caracteristicas.eliminar_caracteristica(id)
+#         return redirect("/listado_caracteristicas")
+
+
 
 @app.route("/formulario_editar_caracteristica=<int:id>")
 def editar_caracteristica(id):
