@@ -351,3 +351,14 @@ main {
     height: 200px;
 }
 
+.espacio_img {
+    background-color: #dadada;
+    border: 1px dashed #505050;
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+}
+
+.espacio_img img {
+    height: 100px;
+}

@@ -27,6 +27,7 @@
           <tr>
             <th>ID</th>
             <th>Seccion</th>
+            <th>Opciones</th>
             <th>ID Cont</th>
             <th>Titulo</th>
             <th>Cuerpo</th>
@@ -43,6 +44,16 @@
                 <div class="celda_texto_bloque">
                   <i class="{{ seccion[3] }}"></i>
                   <span>{{ seccion[1] }}</span>
+                </div>
+              </td>
+              <td rowspan="{{ datos_lista | length }}" class="opciones_column">
+                <div class="acciones">
+                  <a href="{{url_for('selectedContenidoInformativo', id=seccion[0])}}"><i class="fa-solid fa-eye"></i></a>
+                  <a href="{{ url_for('editar_tipo_contenido_info', id=seccion[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
+                  <form action="{{ url_for('eliminar_tipo_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <input type="hidden" name="id" value="{{ seccion[0] }}" />
+                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                  </form>
                 </div>
               </td>
 
