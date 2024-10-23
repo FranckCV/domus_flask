@@ -24,21 +24,15 @@
             </div>
         </div>
 
-        <div class="col">
-          <label for="disponibilidad">Disponibilidad</label><br>
-          <div class="radio-group">
-              <label style="color: #000; font-weight: lighter;">
-                  <input type="radio" name="disponibilidad" value="1" id="disponible"
-                  {% if categoria['disponibilidad'] is not none and categoria['disponibilidad'] == 1 %} checked {% endif %}> 
-                  Disponible
-              </label>
-      
-              <label style="color: #000; font-weight: lighter;">
-                  <input type="radio" name="disponibilidad" value="0" id="no_disponible"
-                  {% if categoria['disponibilidad'] is not none and categoria['disponibilidad'] == 0 %} checked {% endif %}> No Disponible
-              </label>
+        <div class="row">
+          <div class="col">
+            <label for="disponibilidad">Disponibilidad:</label><br>
+            <select required class="input" name="disponibilidad" id="disponibilidad">
+              <option value=1 {% if categoria[3]==1 %} selected {% endif %}>Disponible</option>
+              <option value=0 {% if categoria[3]==0 %} selected {% endif %}>No Disponible</option>
+            </select>
           </div>
-      </div>
+        </div>
       
 
 

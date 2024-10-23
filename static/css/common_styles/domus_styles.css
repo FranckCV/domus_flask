@@ -412,8 +412,9 @@ footer h2 {
 #social {
     display: grid;
     grid-template-columns: repeat(3,auto);
-    grid-template-rows: repeat(2,50px);
+    /* grid-template-rows: repeat(2,50px); */
     justify-items: center;
+    row-gap: 15px
 }
 
 #social i {
