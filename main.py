@@ -17,16 +17,13 @@ import controlador_carrito
 import controlador_detalle
 import controlador_contenido_info
 import controlador_tipos_usuario
-<<<<<<< HEAD
 import controlador_pedido
 import controlador_metodo_pago
-=======
 import controlador_motivo_comentario
 import controlador_comentario
 import controlador_estado_pedido
 import controlador_metodo_pago
 import controlador_redes_sociales
->>>>>>> 2fc6d23ce0dc7b276230c9909223336a1e6043ea
 
 app = Flask(__name__)
 
