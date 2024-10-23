@@ -59,14 +59,6 @@ def eliminar_pedido(id):
 
 
 
-def actualizar_pedido(pedido,logo, id):
-    conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        cursor.execute("UPDATE pedido SET pedido = %s ,img_logo = %s WHERE id =%s",
-                       (pedido,logo, id))
-    conexion.commit()
-    conexion.close()
-
 def obtener_id_pedido(pedido):
     conexion = obtener_conexion()
     pedido_id = None

@@ -283,7 +283,7 @@ def disminuir_carro():
 #PARA CONFIRMAR CARRE
 @app.route("/confirmar_carrito", methods=["POST"])
 def confirmar_carrito():
-    estado = 1
+    estado = 2
     usuario_id = 1
     
     # Obtener los valores del formulario
@@ -340,7 +340,7 @@ def resumen_de_pedido():
     # controlador_pedido.actualizar_MetPago_Pedido(pedido_id,metodoID)
     return render_template("resumen_de_pedido.html", metodos_pago=metodos_pago, existencias=existencias)
 
-@app.route('/cancelar_compra', methods=['POST'])
+@app.route('/cancelar_compra')
 def cancelar_compra():
     usuario_id = 1  
     estado_cancelado = 1
@@ -523,8 +523,18 @@ def categorias():
 
 @app.route("/eliminar_categoria", methods=["POST"])
 def eliminar_categoria():
-    controlador_categorias.eliminar_categoria(request.form["id"])
-    return redirect("/listado_categorias")
+    id = request.form["id"]
+    # Verificamos si la categoría tiene elementos asociados
+    result = controlador_categorias.obtener_categoria_por_id(id)
+    
+    if result:
+        # Si hay elementos asociados, mostramos el error
+        return render_template("listado_categorias.html", error="La categoría tiene elementos asociados y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+    else:
+        # Si no hay elementos asociados, procedemos a eliminar
+        controlador_categorias.eliminar_categoria(id)
+        return redirect("/listado_categorias")
+
 
 
 @app.route("/formulario_editar_categoria=<int:id>")
@@ -1382,6 +1392,8 @@ def eliminar_cliente():
     return redirect("/listado_clientes")
 
 
+
+
 ####################FIN CLIENTES########################
 
 
@@ -1434,6 +1446,8 @@ def login():
 ###################################CONFIRMAR PEDIDO###############################
 @app.route("/confirmar_compra", methods=['POST'])
 def confirmar_compra():
+    metodo=request.form["metodo_pago"]
+    controlador_pedido.actualizar_MetPago_Pedido(metodo)
     return redirect("/")
 
 
@@ -1450,7 +1464,7 @@ def eliminar_pedido():
     id = request.form["id"]
     result=controlador_pedido.buscar_pedido_por_id(id)
     if result:
-        return render_template("listado_pedidos.html", error="El pedido tiene detalles asociados y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+        return render_template("listado_pedidos.html", error="El pedido tiene detalles asociados y no se puede eliminar. Redirigiendo...", show_modal=True)
     else:
         controlador_pedido.eliminar_pedido(id)
         return redirect("/listado_pedidos")
@@ -1458,7 +1472,7 @@ def eliminar_pedido():
 @app.route("/detalle_pedido=<int:id>")
 def detalle_pedido(id):
     detalles = controlador_detalle.obtener_Detalle_por_Id(id)  
-    return render_template("listado_detalle_pedido.html", detalles=detalles)
+    return render_template("listado_detalle_pedido.html", detalles=detalles , pedido_id=id )
 
 
 
@@ -1469,14 +1483,21 @@ def eliminar_detalle_pedido():
     pedido_id = request.form["pedido_id"]  
     controlador_detalle.eliminar_detalle(producto_id, pedido_id)
     
-    return redirect(url_for('detalle_pedido', id=pedido_id))
-
-@app.route("/editar_detalle/<int:producto_id>/<int:pedido_id>", methods=["GET", "POST"])
-def editar_detalle(producto_id, pedido_id):
-    detalle = controlador_detalle.obtener_Detalle_por_Id(pedido_id)
+    existencia=controlador_detalle.obtener_Detalle_por_Id(pedido_id)
     
-    # Verifica que estás enviando pedido_id a la plantilla
-    return render_template("editar_detalle.html", detalle=detalle, producto_id=producto_id, pedido_id=pedido_id)
+    if existencia and len(existencia) > 0:
+        return render_template('listado_detalle_pedido.html',id=pedido_id)
+    else:
+        controlador_pedido.eliminar_pedido(pedido_id)
+        return redirect('listado_pedidos')
+
+@app.route("/editar_detalle=<int:producto_id>&editar_detalle=<int:pedido_id>", methods=["GET", "POST"])
+def editar_detalle(producto_id, pedido_id):
+    detalle = controlador_detalle.obtener_detalle_por_ids(producto_id, pedido_id)
+    
+    productos =controlador_detalle.obtenerProductos()
+
+    return render_template("editar_detalle.html", detalle=detalle, productos=productos, producto_id=producto_id, pedido_id=pedido_id)
 
 
 
@@ -1484,14 +1505,10 @@ def editar_detalle(producto_id, pedido_id):
 def actualizar_detalle_pedido():
     producto_id = request.form["producto_id"]
     pedido_id = request.form["pedido_id"]
-    nueva_cantidad = request.form["nueva_cantidad"]
+    cantidad = request.form["cantidad"]
         
-    controlador_detalle.editar_detalle(producto_id, pedido_id, nueva_cantidad)
+    controlador_detalle.editar_detalle(producto_id, pedido_id, cantidad)
         
-    producto_id = request.form["producto_id"]
-    pedido_id = request.form["pedido_id"]  
-    controlador_detalle.eliminar_detalle(producto_id, pedido_id)
-    
     return redirect(url_for('detalle_pedido', id=pedido_id))
 
 
