@@ -799,6 +799,29 @@ def confirmar_compra():
 
 ############################CANCELAR PEDIDO#########################
 
+#####################################LISTADO PEDIDOS#######################################
+@app.route("/listado_pedidos")
+def pedido():
+    marcas = controlador_marcas.obtener_listado_marcas()
+    return render_template("listado_marcas.html", marcas=marcas, active='marcas')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # EJECUTAR
 
 
