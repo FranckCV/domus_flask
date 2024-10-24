@@ -32,7 +32,6 @@ def obtener_por_id(id):
 
 def obtener_info_por_id(id):
     conexion = obtener_conexion()
-    producto = None
     with conexion.cursor() as cursor:
         sql = '''
             SELECT 
@@ -47,15 +46,32 @@ def obtener_info_por_id(id):
                 pr.fecha_registro, 
                 pr.MARCAid, 
                 pr.SUBCATEGORIAid,
-                pr.disponibilidad
+                pr.disponibilidad,
+                img.imagen
             FROM producto pr
-
-            WHERE pr.id = %s
+            INNER JOIN img_producto img on img.PRODUCTOid = pr.id
+            WHERE pr.id = %s AND img.imgPrincipal = 1
         '''
         cursor.execute(sql, (id,))
         producto = cursor.fetchone()
+
+    producto_elemento = None
+
+    if producto:
+        pro_id, nom, reg, onl , ofe , prod_id , pro_info , pro_st , pro_fec , pro_ma , pro_sub , pro_disp ,pro_img = producto
+
+        if pro_img:
+            img_base64 = base64.b64encode(pro_img).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
+            img_url = ""  # Placeholder en caso de que no haya logo
+
+        
+    producto_elemento = (pro_id, nom, reg, onl , ofe , prod_id , pro_info , pro_st , pro_fec , pro_ma , pro_sub , pro_disp, img_url)
+        
+
     conexion.close()
-    return producto
+    return producto_elemento
 
 
 def obtener_informacion_producto(id):

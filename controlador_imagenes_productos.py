@@ -32,6 +32,23 @@ def obtener_imagenes_por_producto(id):
     return imagenes_lista
 
 
+def obtener_img_principal_por_producto(id):
+    conexion = obtener_conexion()
+    imagenes = None
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                ipr.id ,
+                ipr.imagen
+            FROM img_producto ipr
+            where ipr.productoid = '''+str(id)+''' and ipr.imgPrincipal = 1
+            '''
+        cursor.execute(sql)
+        imagenes = cursor.fetchone()
+    conexion.close()
+    return imagenes
+
+
 
 def insertar_img_producto(nombre, imagen, principal, producto_id):
     conexion = obtener_conexion()
@@ -43,6 +60,20 @@ def insertar_img_producto(nombre, imagen, principal, producto_id):
         cursor.execute(sql, (nombre, imagen, principal, producto_id))
     conexion.commit()
     conexion.close()
+
+
+def actualizar_img_producto(imagen, id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            UPDATE img_producto 
+            SET imagen = %s 
+            WHERE productoid = %s and imgPrincipal = 1
+        '''
+        cursor.execute(sql, (imagen, id))
+    conexion.commit()
+    conexion.close()
+
 
 
 
