@@ -797,16 +797,19 @@ def guardar_producto():
     precio_oferta= request.form["precio_oferta"] 
     infoAdicional= request.form["infoAdicional"] 
     stock= request.form["stock"] 
-    fecha_registro= request.form["fecha_registro"]
-    disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
-    subcategoria_id= request.form["subcategorySelect"]  
-    controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id)
+    subcategoria_id= request.form["subcategorySelect"]
+
+    imagen = request.files["imagenProduct"]
+    imagen_bin = imagen.read()
+
+    id_pro = controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta,infoAdicional,stock,marca_id,subcategoria_id)
+    controlador_imagenes_productos.insertar_img_producto(nombre,imagen_bin,1,id_pro)
     return redirect("/listado_productos")
 
 @app.route("/listado_productos")
 def productos():
-    productos = controlador_productos.obtener_productos()
+    productos = controlador_productos.obtener_listado_productos()
     marcas = controlador_marcas.obtener_marcasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
     categorias = controlador_categorias.obtener_categoriasXnombre()
