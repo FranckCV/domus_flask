@@ -1498,8 +1498,10 @@ def login():
 ###################################CONFIRMAR PEDIDO###############################
 @app.route("/confirmar_compra", methods=['POST'])
 def confirmar_compra():
-    metodo=request.form["metodo_pago"]
-    controlador_pedido.actualizar_MetPago_Pedido(metodo)
+    usuario_id=1
+    pedido_id=controlador_carrito.ultimoPedido(usuario_id)
+    metodo_pago = request.form.get('metodo_pago')
+    controlador_pedido.actualizar_MetPago_Pedido(pedido_id,metodo_pago)
     return redirect("/")
 
 

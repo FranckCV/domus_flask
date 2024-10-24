@@ -12,9 +12,8 @@ def obtener_metodo_pago():
             cursor.execute('''
                 SELECT 
                     met.id,
-                    met.metodo,
-                    met.disponibilidad
-                FROM metodo_pago met
+                    met.metodo                
+                    FROM metodo_pago met
             ''')
             datos = cursor.fetchall()  
         
