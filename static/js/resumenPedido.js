@@ -34,7 +34,7 @@ function cancelarCompra(button) {
 }
 
 
-function confirmarCompra(submit) {
+function confirmarCompra(button) {
     // Obtener el método de pago seleccionado
     var metodoPago = document.getElementById('metodo_pago').value;
     
