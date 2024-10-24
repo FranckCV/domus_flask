@@ -75,6 +75,21 @@ def actualizar_img_producto(imagen, id):
 
 
 
+def obtener_img_principal_por_producto(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                count(ipr.id)
+            FROM img_producto ipr
+            where ipr.productoid = '''+str(id)+''' and ipr.imgPrincipal = 1
+            '''
+        cursor.execute(sql)
+        cant = cursor.fetchone()[0]
+        
+    conexion.close()
+    return cant
+
 
 
 
