@@ -2,17 +2,6 @@ from bd import obtener_conexion
 import base64
 tabla = 'producto'
 
-# def obtener():
-#     conexion = obtener_conexion()
-#     productos = []
-#     with conexion.cursor() as cursor:
-#         sql = " SELECT id , nombre , price_regular , precio_online , precio_oferta , calificacion , "
-#         sql += " info_adicional, stock , fecha_registro , MARCAid , SUBCATEGORIAid FROM "+tabla
-#         cursor.execute(sql)
-#         productos = cursor.fetchall()
-#     conexion.close()
-#     return productos
-
 def obtener_imagenes_por_producto(id):
     conexion = obtener_conexion()
     imagenes = None
@@ -41,6 +30,20 @@ def obtener_imagenes_por_producto(id):
 
     conexion.close()
     return imagenes_lista
+
+
+
+def insertar_img_producto(nombre, imagen, principal, producto_id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            INSERT INTO img_producto(img_nombre, imagen, imgprincipal, productoid)
+            VALUES (%s, %s, %s, %s)
+        '''
+        cursor.execute(sql, (nombre, imagen, principal, producto_id))
+    conexion.commit()
+    conexion.close()
+
 
 
 # def obtenerEnTarjetasxMarca(marca):

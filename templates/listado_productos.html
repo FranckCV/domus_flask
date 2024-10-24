@@ -63,10 +63,11 @@
             <tr>
               <th>ID</th>
               <th>Nombre</th>
+              <th>Img Principal</th>
               <th>Precio Regular</th>
               <th>Precio Online</th>
               <th>Precio Oferta</th>
-              <th>Información Adicional</th>
+              <!-- <th>Información Adicional</th> -->
               <th>Stock</th>
               <th>Fecha Registro</th>
               <th>Disponibilidad</th>
@@ -81,6 +82,11 @@
               <tr>
                 <td>{{ producto.0 }}</td>
                 <td>{{ producto.1 }}</td>
+                <td>
+                  <div class="celda_texto_bloque img_pro_celda">
+                    <img src="{{producto.12}}" alt="">
+                  </div>
+                </td>
                 <td>{{ producto.2 }}</td>
                 <td>{{ producto.3 }}</td>
                 {% if producto[4] == 0 or producto[4] is none %}
@@ -89,7 +95,7 @@
                   <td>{{ producto.4 }}</td>
                 {% endif %}
 
-                <td class="celda_texto_amplio">{{ producto.6 }}</td>
+                <!-- <td class="celda_texto_amplio">{{ producto.6 }}</td> -->
                 <td>{{ producto.7 }}</td>
                 <td>{{ producto.8 }}</td>
                 <td>

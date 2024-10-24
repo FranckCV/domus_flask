@@ -207,4 +207,8 @@ button:hover img {
     position: sticky;
 }
 
+.img_pro_celda img{
+    height: 4vw;
+    width: 4vw;
+}
 
