@@ -12,7 +12,7 @@
 
 <section class="h_section" id="mainSection">
     <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Producto</h2><br><br><br>
-    <form action="{{ url_for('actualizar_producto') }}" method="post">
+    <form action="{{ url_for('actualizar_producto') }}" method="post"  enctype="multipart/form-data">
         <input type="hidden" name="id" value="{{ producto[0] }}">
         <div class="form-grid" id="col_add">
             <!-- Primera columna -->
@@ -32,11 +32,7 @@
                     <input required type="number" class="input" placeholder="Cantidad en Stock" name="stock" id="stock"
                         value="{{ producto[7] }}" style="text-align: center;">
                 </div>
-                <div class="col">
-                    <label for="fecha_registro">Fecha de Registro:</label><br>
-                    <input required type="date" class="input" placeholder="Fecha de Registro" name="fecha_registro"
-                        id="fecha_registro" value="{{ producto[8] }}" style="text-align: center;">
-                </div>
+                
                 <div class="col">
                     <label for="price_online">Precio Online:</label><br>
                     <input required type="number" class="input" placeholder="Precio Online" name="price_online"
@@ -122,7 +118,7 @@
                     <label for="banner">Cambiar imagen principal de Producto:</label>
                     <input type="file" class="campoImg" name="imagenProduct" id="imagenProduct"/>
                     <div class="espacio_img">
-                      <img id="previewImg" src="{{}}" alt="">
+                      <img id="previewImg" src="{{producto[12]}}" alt="">
                     </div>
                   </div>
 
@@ -153,4 +149,5 @@
 {% block scripts %}
 <script src="/static/js/admin_productos.js"></script>
 <script src="/static/js/filtroCRUDListado.js"></script>
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
 {% endblock %}

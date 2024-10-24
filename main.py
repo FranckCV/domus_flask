@@ -852,26 +852,38 @@ def eliminar_producto():
 
 @app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
-    producto = controlador_productos.obtener_por_id(id)
+    producto = controlador_productos.obtener_info_por_id(id)
     marcas = controlador_marcas.obtener_listado_marcas()
     categorias = controlador_categorias.obtener_categoriasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
     return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias,categorias = categorias)
 
 @app.route("/actualizar_producto", methods=["POST"])
-def actualizar_producto(): 
+def actualizar_producto():
     id = request.form["id"]
+
+    producto = controlador_imagenes_productos.obtener_img_principal_por_producto(id)
+    
     nombre = request.form["nombre"] 
     price_online= request.form["price_online"] 
     price_regular= request.form["price_regular"] 
     precio_oferta= request.form["precio_oferta"] 
     infoAdicional= request.form["infoAdicional"] 
     stock= request.form["stock"] 
-    fecha_registro= request.form["fecha_registro"]
     disponibilidad= request.form["disponibilidad"] 
     marca_id= request.form["marca_id"] 
     subcategoria_id= request.form["subcategorySelect"]  
-    controlador_productos.actualizar_producto(nombre,price_regular,price_online,precio_oferta ,infoAdicional,stock ,fecha_registro,disponibilidad,marca_id,subcategoria_id, id)
+
+    imagen = request.files["imagenProduct"]
+
+    if imagen.filename == '':
+        imagen_bin = producto[1]
+    else:
+        imagen_bin = imagen.read()
+
+    controlador_productos.actualizar_producto(nombre, price_regular, price_online, precio_oferta, infoAdicional, stock, disponibilidad, marca_id, subcategoria_id, id)
+    controlador_imagenes_productos.actualizar_img_producto(imagen_bin,id)
+    
     return redirect("/listado_productos")
 
 ########## FIN PRODUCTOS ##########
