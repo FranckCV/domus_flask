@@ -344,8 +344,10 @@ def resumen_de_pedido():
 def cancelar_compra():
     usuario_id = 1  
     estado_cancelado = 1
-
-    controlador_carrito.actualizar_estado_pedido(usuario_id, estado_cancelado)
+    
+    pedido_id=controlador_carrito.ultimoPedido(usuario_id)
+    
+    controlador_carrito.cancelar_pedido(usuario_id, estado_cancelado,pedido_id)
 
     return redirect('/carrito')
 
