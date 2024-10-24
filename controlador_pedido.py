@@ -5,11 +5,10 @@ tabla = 'pedido'
 
 def actualizar_MetPago_Pedido(pedido_id, metodo):
     conexion = obtener_conexion()
-    pedido = None
     with conexion.cursor() as cursor:
         query = """
             UPDATE pedido
-            SET metodo_pagoid = %s  
+            SET METODO_PAGOid = %s  
             WHERE id = %s
         """
         cursor.execute(query, (metodo, pedido_id))
