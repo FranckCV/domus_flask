@@ -16,6 +16,4 @@ secciones.forEach(seccion => {
         });
     });
 
-
-
 });

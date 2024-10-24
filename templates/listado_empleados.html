@@ -1,0 +1,129 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+Empleados
+{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="static/css/administrativa/listados.css">
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section scrollable-section" id="mainSection">
+    <h2 class="fw-bolder">Listado de Empleados</h2>
+    <div class="container-fluid" id="break_nav">
+        <div class="col">
+            <!-- Formulario de búsqueda y filtro por tipo de usuario -->
+            <form id="buscarFormulario" method="GET">
+                <div class="input-group mb-3">
+                    <input style="height: 50px;" type="text" class="form-control"
+                        placeholder="Buscar por nombre o apellidos" aria-label="Buscar" name="buscar"
+                        id="buscarUsuario" />
+                    <button style="height: 50px;" class="btn btn-outline-secondary searchi" type="button"
+                        id="button-addon2">
+                        <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+                    </button>
+                    <a href="{{ url_for('formulario_agregar_empleado') }}" class="button is-success add-btn">
+                        <button style="height: 50px;" type="button" id="add_btn">Agregar</button>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+        <thead>
+            <tr>
+                <th>ID Usuario</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Documento de Identidad</th>
+                <th>Género</th>
+                <th>Fecha de nacimiento</th>
+                <th>Celular</th>
+                <th>Correo</th>
+                <th>Contraseña</th>
+                <th>Disponibilidad</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaUsuarios">
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario[0] }}</td>
+                <td>{{ usuario[1] }}</td>
+                <td>{{ usuario[2] }}</td>
+                <td>{{ usuario[3] }}</td>
+                <td>
+                    {% if usuario[5] == 1 %}
+                    <span>Masculino</span>
+                    {% else %}
+                    <span>Femenino</span>
+                    {% endif %}
+                </td>
+                <td>{{ usuario[6] }}</td>
+                <td>{{ usuario[7] }}</td>
+                <td>{{ usuario[8] }}</td>
+                <td>{{ usuario[9] }}</td>
+                <td>
+                    {% if usuario[10] == 1 %}
+                    <span>Disponible</span>
+                    {% else %}
+                    <span>No disponible</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="acciones">
+                        <!-- Enviar el ID como parámetro en la URL -->
+                        <a href="{{ url_for('editar_empleado', id=usuario[0]) }}">
+                            <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
+                        </a>
+
+                        <form action="{{ url_for('eliminar_empleado') }}" method="POST"
+                            onsubmit="return confirmarEliminacion()" id="deleteF">
+                            <input type="hidden" name="id" value="{{ usuario[0] }}">
+                            <button type="submit">
+                                <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Función para confirmar acciones
+    function confirmarEliminacion() {
+        return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+    }
+
+    // Búsqueda dinámica
+    document.getElementById('buscarUsuario').addEventListener('keyup', function () {
+        filtrarUsuarios();
+    });
+
+    function filtrarUsuarios() {
+        const searchTerm = document.getElementById('buscarUsuario').value.toLowerCase();  // Obtenemos el valor de búsqueda en minúsculas
+        const rows = document.querySelectorAll('#tablaUsuarios tr');  // Seleccionamos todas las filas del tbody
+
+        rows.forEach(row => {
+            const nombres = row.querySelector('td:nth-child(2)').textContent.toLowerCase();  // Segunda columna: Nombres
+            const apellidos = row.querySelector('td:nth-child(3)').textContent.toLowerCase();  // Tercera columna: Apellidos
+
+            // Verificamos si el término de búsqueda coincide con el nombre o apellido
+            if (
+                (nombres.includes(searchTerm) || apellidos.includes(searchTerm))
+            ) {
+                row.style.display = '';  // Mostrar la fila si coincide
+            } else {
+                row.style.display = 'none';  // Ocultar la fila si no coincide
+            }
+        });
+    }
+</script>
+{% endblock %}

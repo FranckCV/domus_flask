@@ -316,7 +316,7 @@ def confirmar_carrito():
         estado = 2
         controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
         controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal)
-        
+
         return render_template("resumen_de_pedido.html", 
                                existencias=existencias, 
                                total_pagar=total, 
@@ -388,10 +388,20 @@ def formulario_agregar_marca():
 
 @app.route("/guardar_marca", methods=["POST"])
 def guardar_marca():
-    marca = request.form["marca"] 
-    logo= request.files["logo"] 
+    marca = request.form["marca"]
+
+    logo= request.files["logo"]
     logo_binario = logo.read()
-    controlador_marcas.insertar_marca(marca,logo_binario)
+
+    banner = request.files["banner"]
+
+    if banner.filename == '':
+        banner_binario = ''
+    else:
+        banner_binario = banner.read()
+    
+
+    controlador_marcas.insertar_marca(marca,logo_binario,banner_binario)
     return redirect("/listado_marcas")
 
 
@@ -409,17 +419,32 @@ def eliminar_marca():
 
 @app.route("/formulario_editar_marca=<int:id>")
 def editar_marca(id):
-    marca = controlador_marcas.obtener_marca_por_id(id)
+    marca = controlador_marcas.obtener_listado_marca_por_id(id)
     return render_template("editar_marca.html", marca=marca)
 
 
 @app.route("/actualizar_marca", methods=["POST"])
 def actualizar_marca():
     id = request.form["id"]
-    marca = request.form["marca"] 
-    logo= request.files["logo"] 
-    logo_binario = logo.read()  
-    controlador_marcas.actualizar_marca(marca,logo_binario,id)
+
+    marca_element = controlador_marcas.obtener_imgs_marca_disponible_por_id(id)
+    
+    marca = request.form["marca"]
+    disponibilidad = request.form["disponibilidad"]
+    logo= request.files["logo"]
+    banner = request.files["banner"]
+
+    if logo.filename == '':
+        logo_binario = marca_element[1]
+    else:
+        logo_binario = logo.read()
+
+    if banner.filename == '':
+        banner_binario = marca_element[2]
+    else:
+        banner_binario = banner.read()
+
+    controlador_marcas.actualizar_marca(marca,logo_binario,banner_binario,disponibilidad,id)
     return redirect("/listado_marcas")
 
 
@@ -452,6 +477,23 @@ def guardar_caracteristica():
 def eliminar_caracteristica():
     controlador_caracteristicas.eliminar_caracteristica(request.form["id"])
     return redirect("/listado_caracteristicas")
+
+# @app.route("/eliminar_caracteristica", methods=["POST"])
+# def eliminar_caracteristica():
+#     id = request.form["id"]
+    
+#     # Verificamos si la característica está asociada a subcategorías o productos
+#     tiene_subcategorias = controlador_caracteristicas.buscar_en_caracteristica_subcategoria(id)
+#     tiene_productos = controlador_caracteristicas.buscar_en_caracteristica_producto(id)
+
+#     if tiene_subcategorias or tiene_productos:
+#         # Si está asociada, mostramos el error
+#         return render_template("listado_caracteristicas.html", error="La característica está asociada a subcategorías o productos y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+#     else:
+#         # Si no está asociada, procedemos a eliminar
+#         controlador_caracteristicas.eliminar_caracteristica(id)
+#         return redirect("/listado_caracteristicas")
+
 
 
 @app.route("/formulario_editar_caracteristica=<int:id>")
@@ -649,7 +691,89 @@ def actualizar_motivo_comentario():
 ######################### FIN MOTIVO COMENTARIO ##############################
 
 
+import controlador_empleados
 
+
+######################### PARA USUARIO EMPLEADO ##############################
+
+@app.route("/empleados_listado")
+def empleados_listado():
+    usuarios = controlador_empleados.obtener_usuarios_emp()
+    tipos_usuarios = controlador_tipos_usuario.obtener_tipos_usuario()
+
+    # Renderizar la plantilla con los usuarios y tipos de usuarios
+    return render_template("listado_empleados.html", usuarios=usuarios, tipos_usuarios=tipos_usuarios)
+
+
+@app.route("/agregar_empleado")
+def formulario_agregar_empleado():
+    return render_template("agregar_empleado.html")
+
+
+@app.route("/guardar_empleado", methods=["POST"])
+def guardar_empleado():
+    nombres = request.form["nombres"]
+    apellidos = request.form["apellidos"]
+    doc_identidad = request.form["doc_identidad"]
+    
+    # Verificar si se subió una imagen
+    img_usuario = request.files["img_usuario"].read() if "img_usuario" in request.files and request.files["img_usuario"].filename != '' else None
+    
+    genero = request.form["genero"]
+    fecha_nacimiento = request.form["fecha_nacimiento"]
+    telefono = request.form["telefono"]
+    correo = request.form["correo"]
+    contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
+    
+    disponibilidad = 1
+
+    # Verificar si el correo ya existe
+    if controlador_empleados.verificar_correo_existente(correo):
+        error = "El correo se encuentra registrado. Intente con otro correo."
+        return render_template("agregar_empleado.html", error=error, nombres=nombres, apellidos=apellidos, doc_identidad=doc_identidad, genero=genero, fecha_nacimiento=fecha_nacimiento, telefono=telefono, correo=correo)
+
+    controlador_empleados.insertar_usuario(
+        nombres, apellidos, doc_identidad, img_usuario, genero, 
+        fecha_nacimiento, telefono, correo, contraseña, disponibilidad
+    )
+    return redirect("/empleados_listado")
+
+
+@app.route("/actualizar_empleado", methods=["POST"])
+def actualizar_empleado():
+    id = request.form["id"]
+    nombres = request.form["nombres"]
+    apellidos = request.form["apellidos"]
+    doc_identidad = request.form["doc_identidad"]
+    
+    img_usuario = request.files["img_usuario"].read() if "img_usuario" in request.files and request.files["img_usuario"].filename != '' else None
+    
+    genero = request.form["genero"]
+    fecha_nacimiento = request.form["fecha_nacimiento"]
+    telefono = request.form["telefono"]
+    correo = request.form["correo"]
+    contraseña = request.form["contraseña"]  # Aquí también se mantiene la contraseña sin cifrado
+    disponibilidad = request.form["disponibilidad"]
+
+    controlador_empleados.actualizar_usuario(
+        nombres, apellidos, doc_identidad, img_usuario, genero, 
+        fecha_nacimiento, telefono, correo, contraseña, disponibilidad, id
+    )
+    return redirect("/empleados_listado")
+
+
+@app.route("/formulario_editar_empleado=<int:id>")
+def editar_empleado(id):
+    usuario = controlador_empleados.obtener_usuario_por_id(id)    
+    return render_template("editar_empleado.html", usuario=usuario)
+
+
+@app.route("/eliminar_empleado", methods=["POST"])
+def eliminar_empleado():
+    controlador_empleados.eliminar_usuario(request.form["id"])
+    return redirect("/empleados_listado")
+
+######################### FIN USUARIO EMPLEADO ##############################
 
 
 
@@ -686,10 +810,40 @@ def productos():
     categorias = controlador_categorias.obtener_categoriasXnombre()
     return render_template("listado_productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias , categorias = categorias)
 
+# @app.route("/eliminar_producto", methods=["POST"])
+# def eliminar_producto():
+#     controlador_productos.eliminar_producto(request.form["id"])
+#     return redirect("/listado_productos")
+
 @app.route("/eliminar_producto", methods=["POST"])
 def eliminar_producto():
-    controlador_productos.eliminar_producto(request.form["id"])
-    return redirect("/listado_productos")
+    id_producto = request.form["id"]
+
+    # Verificamos si el producto está asociado a otras tablas
+    tiene_caracteristicas = controlador_productos.buscar_en_caracteristica_producto(id_producto)
+    tiene_img = controlador_productos.buscar_en_img_producto(id_producto)
+    tiene_lista_deseo = controlador_productos.buscar_en_lista_deseos(id_producto)
+    tiene_detalle = controlador_productos.buscar_en_detalles_pedido(id_producto)
+
+    error_message = None
+
+    if tiene_caracteristicas:
+        error_message = "El producto tiene características asociadas y no se puede eliminar."
+    elif tiene_img:
+        error_message = "El producto tiene imágenes asociadas y no se puede eliminar."
+    elif tiene_lista_deseo:
+        error_message = "El producto está en listas de deseos de clientes y no se puede eliminar."
+    elif tiene_detalle:
+        error_message = "El producto está en detalles de pedidos y no se puede eliminar."
+
+    if error_message:
+        # Si el producto está asociado a alguna de las condiciones, mostramos el error
+        return render_template("listado_productos.html", error=error_message + " Redirigiendo en 3 segundos...", show_modal=True)
+    else:
+        # Si no está asociado, procedemos a eliminar
+        controlador_productos.eliminar_producto(id_producto)
+        return redirect("/listado_productos")
+
 
 @app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
@@ -1356,11 +1510,14 @@ def pedido():
 def eliminar_pedido():
     id = request.form["id"]
     result=controlador_pedido.buscar_pedido_por_id(id)
+
     if result:
         return render_template("listado_pedidos.html", error="El pedido tiene detalles asociados y no se puede eliminar. Redirigiendo...", show_modal=True)
     else:
         controlador_pedido.eliminar_pedido(id)
         return redirect("/listado_pedidos")
+    
+
 ################################################################
 @app.route("/detalle_pedido=<int:id>")
 def detalle_pedido(id):

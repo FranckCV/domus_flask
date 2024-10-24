@@ -149,7 +149,7 @@ tr .celda_texto_bloque {
 
 .celda_texto_bloque img {
     height: 4vw;
-    width: 4vw;
+    /* width: 4vw; */
     border-radius: 5px;
     border: 1px solid #d3d3d3;
 }
