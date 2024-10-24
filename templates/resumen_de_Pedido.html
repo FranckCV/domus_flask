@@ -85,16 +85,6 @@
             <div class="card text-center shadow-sm">
               <div class="card-body">
                 <h5 class="card-title">Resumen</h5>
-
-                <div class="row">
-                  <div class="card-text-total justify-content-center">
-                    {% if descuento_aplicado %}
-                      <p>Descuento aplicado</p>
-                    {% else %}
-                      <p>No se aplicó descuento</p>
-                    {% endif %}
-                  </div>
-                </div>
                 <div class="card-text-total">
                   <p>Subtotal</p><span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
                 </div>
@@ -104,7 +94,15 @@
                 <div class="card-text-total">
                   <p>Total</p><span id="total_sumado">S/{{ total_pagar|int + 10 }}</span>
                 </div>
-                
+                {% if descuento_aplicado %}
+                  <div class="card-text-total">
+                    <p>Descuento aplicado</p><span>S/ {{ descuento }}</span>
+                  </div>
+                {% else %}
+                  <div class="card-text-total">
+                    <p>No se aplicó descuento</p>
+                  </div>
+                {% endif %}
               </div>
             </div>
           </div>
