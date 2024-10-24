@@ -411,4 +411,40 @@ def obtener_por_nombre(nombre):
     return producto
 
 
+##validar las eliminaciones físicas
+
+def buscar_en_caracteristica_producto(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT * FROM CARACTERISTICA_PRODUCTO WHERE PRODUCTOid = %s", (id,))
+        result = cursor.fetchone()
+    conexion.close()
+    return result
+
+def buscar_en_img_producto(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT * FROM img_producto WHERE PRODUCTOid = %s", (id,))
+        result = cursor.fetchone()
+    conexion.close()
+    return result
+
+def buscar_en_lista_deseos(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT * FROM lista_deseos WHERE PRODUCTOid = %s", (id,))
+        result = cursor.fetchone()
+    conexion.close()
+    return result
+
+
+def buscar_en_detalles_pedido(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT * FROM detalles_pedido WHERE PRODUCTOid = %s", (id,))
+        result = cursor.fetchone()
+    conexion.close()
+    return result
+
+
 

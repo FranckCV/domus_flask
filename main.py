@@ -344,8 +344,10 @@ def resumen_de_pedido():
 def cancelar_compra():
     usuario_id = 1  
     estado_cancelado = 1
-
-    controlador_carrito.actualizar_estado_pedido(usuario_id, estado_cancelado)
+    
+    pedido_id=controlador_carrito.ultimoPedido(usuario_id)
+    
+    controlador_carrito.cancelar_pedido(usuario_id, estado_cancelado,pedido_id)
 
     return redirect('/carrito')
 
@@ -477,6 +479,23 @@ def guardar_caracteristica():
 def eliminar_caracteristica():
     controlador_caracteristicas.eliminar_caracteristica(request.form["id"])
     return redirect("/listado_caracteristicas")
+
+# @app.route("/eliminar_caracteristica", methods=["POST"])
+# def eliminar_caracteristica():
+#     id = request.form["id"]
+    
+#     # Verificamos si la característica está asociada a subcategorías o productos
+#     tiene_subcategorias = controlador_caracteristicas.buscar_en_caracteristica_subcategoria(id)
+#     tiene_productos = controlador_caracteristicas.buscar_en_caracteristica_producto(id)
+
+#     if tiene_subcategorias or tiene_productos:
+#         # Si está asociada, mostramos el error
+#         return render_template("listado_caracteristicas.html", error="La característica está asociada a subcategorías o productos y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+#     else:
+#         # Si no está asociada, procedemos a eliminar
+#         controlador_caracteristicas.eliminar_caracteristica(id)
+#         return redirect("/listado_caracteristicas")
+
 
 
 @app.route("/formulario_editar_caracteristica=<int:id>")
@@ -796,10 +815,40 @@ def productos():
     categorias = controlador_categorias.obtener_categoriasXnombre()
     return render_template("listado_productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias , categorias = categorias)
 
+# @app.route("/eliminar_producto", methods=["POST"])
+# def eliminar_producto():
+#     controlador_productos.eliminar_producto(request.form["id"])
+#     return redirect("/listado_productos")
+
 @app.route("/eliminar_producto", methods=["POST"])
 def eliminar_producto():
-    controlador_productos.eliminar_producto(request.form["id"])
-    return redirect("/listado_productos")
+    id_producto = request.form["id"]
+
+    # Verificamos si el producto está asociado a otras tablas
+    tiene_caracteristicas = controlador_productos.buscar_en_caracteristica_producto(id_producto)
+    tiene_img = controlador_productos.buscar_en_img_producto(id_producto)
+    tiene_lista_deseo = controlador_productos.buscar_en_lista_deseos(id_producto)
+    tiene_detalle = controlador_productos.buscar_en_detalles_pedido(id_producto)
+
+    error_message = None
+
+    if tiene_caracteristicas:
+        error_message = "El producto tiene características asociadas y no se puede eliminar."
+    elif tiene_img:
+        error_message = "El producto tiene imágenes asociadas y no se puede eliminar."
+    elif tiene_lista_deseo:
+        error_message = "El producto está en listas de deseos de clientes y no se puede eliminar."
+    elif tiene_detalle:
+        error_message = "El producto está en detalles de pedidos y no se puede eliminar."
+
+    if error_message:
+        # Si el producto está asociado a alguna de las condiciones, mostramos el error
+        return render_template("listado_productos.html", error=error_message + " Redirigiendo en 3 segundos...", show_modal=True)
+    else:
+        # Si no está asociado, procedemos a eliminar
+        controlador_productos.eliminar_producto(id_producto)
+        return redirect("/listado_productos")
+
 
 @app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
@@ -1466,11 +1515,14 @@ def pedido():
 def eliminar_pedido():
     id = request.form["id"]
     result=controlador_pedido.buscar_pedido_por_id(id)
+
     if result:
         return render_template("listado_pedidos.html", error="El pedido tiene detalles asociados y no se puede eliminar. Redirigiendo...", show_modal=True)
     else:
         controlador_pedido.eliminar_pedido(id)
         return redirect("/listado_pedidos")
+    
+
 ################################################################
 @app.route("/detalle_pedido=<int:id>")
 def detalle_pedido(id):
