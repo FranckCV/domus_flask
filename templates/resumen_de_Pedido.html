@@ -110,7 +110,7 @@
 
         <div class="d-flex justify-content-between">
           <button class="btn btn-primary me-2 cancelar" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Cancelar compra</button>
-          <button class="btn btn-primary confirmar square" type="submit" onclick="confirmarCompra(this)">Confirmar compra</button>
+          <button class="btn btn-primary confirmar square" type="button" onclick="confirmarCompra(this)">Confirmar compra</button>
           <span class="circle-expand"></span>
           <div class="modal-thank">
             <div class="text hvr-wobble-horizontal">¡Gracias por su compra!</div>
@@ -130,6 +130,24 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver al pedido</button>
               <button type="button" class="btn btn-primary" onclick="cancelarCompra()">Confirmar cancelación</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de confirmación de compra -->
+      <div class="modal fade" id="modalConfirmarCompra" tabindex="-1" aria-labelledby="modalConfirmarCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalConfirmarCompraLabel">Confirmar compra</h5>
+            </div>
+            <div class="modal-body">
+              <p>¿Estás seguro de que deseas confirmar la compra?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" id="btnConfirmarCompra">Confirmar</button>
             </div>
           </div>
         </div>
