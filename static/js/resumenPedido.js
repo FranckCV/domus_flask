@@ -38,38 +38,45 @@ function confirmarCompra(button) {
     // Obtener el método de pago seleccionado
     var metodoPago = document.getElementById('metodo_pago').value;
     
-    // Validar que se haya seleccionado un método de pago
     if (!metodoPago) {
         alert('Por favor, selecciona un método de pago antes de confirmar la compra.');
         return;  
     }
 
-    bloquearNavegacion = false;
-    let $square = $('.square'),
-        $modal = $('.modal-thank');
+    var modalConfirmar = new bootstrap.Modal(document.getElementById('modalConfirmarCompra'));
+    modalConfirmar.show();
 
-    var shape = new mojs.Shape({
-        shape: 'circle',
-        isShowStart: true,
-        fill: '#3847b8',
-        opacity: { 0: 1 },
-        stroke: '#FFF',
-        strokeWidth: 0,
-        duration: 300,
-        delay: 0
-    }).then({
-        scale: { 0.5: 40 },
-        duration: 500,
+    document.getElementById('btnConfirmarCompra').addEventListener('click', function() {
+        bloquearNavegacion = false;
+        let $square = $('.square'),
+            $modal = $('.modal-thank');
+
+        var shape = new mojs.Shape({
+            shape: 'circle',
+            isShowStart: true,
+            fill: '#3847b8',
+            opacity: { 0: 1 },
+            stroke: '#FFF',
+            strokeWidth: 0,
+            duration: 300,
+            delay: 0
+        }).then({
+            scale: { 0.5: 40 },
+            duration: 500,
+        });
+
+        $square.addClass('active');
+        shape.play();
+        $modal.addClass('active');
+
+        setTimeout(function () {
+            eliminarTodos(); 
+            window.location.href = '/'; 
+        }, 2500);
+
+        // Cerrar el modal
+        modalConfirmar.hide();
     });
-
-    $square.addClass('active');
-    shape.play();
-    $modal.addClass('active');
-
-    setTimeout(function () {
-        eliminarTodos(); 
-        window.location.href = '/'; 
-    }, 2500);
 }
 
 
