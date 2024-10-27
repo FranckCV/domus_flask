@@ -98,7 +98,9 @@ def validar_img_principal_por_producto(id):
             '''
         cursor.execute(sql)
         cant = cursor.fetchone()[0]
-        
+        conexion.close()
+        return cant
+
 # def ober_img_principal_por_producto(id):
 #     conexion = obtener_conexion()
 #     with conexion.cursor() as cursor:

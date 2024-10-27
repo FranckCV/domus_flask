@@ -145,11 +145,25 @@
                   <img src="{{producto.12}}" alt="" class="clickable-image">
                 </div>
               </td>
-              <td>{{ producto.2 }}</td>
+              <td>                
+                {% if producto[2] == 0 or producto[2] is none %}
+                <div class="espacio_vacio">
+                  <p>
+                    -
+                  </p>
+                </div> 
+                {% else %}
+                  {{ producto.2 }}
+                {% endif %}
+              </td>
               <td>{{ producto.3 }}</td>
               <td>
                 {% if producto[4] == 0 or producto[4] is none %}
-                  ---
+                <div class="espacio_vacio">
+                  <p>
+                    -
+                  </p>
+                </div> 
                 {% else %}
                   {{ producto.4 }}
                 {% endif %}
@@ -218,7 +232,7 @@
                     <i class="fa-regular fa-pen-to-square"></i>
                   </a>
                   <form class="opciones_fila" action="{{ url_for('eliminar_producto2') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                    <input type="hidden" name="id" value="{{ producto.0 }}" />
+                    <input type="hidden" name="id" id="id" value="{{ producto.0 }}" />
                     <button type="submit">
                       <i class="fa-solid fa-trash-can"></i>
                     </button>

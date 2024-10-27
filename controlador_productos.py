@@ -410,7 +410,9 @@ def obtener_listado_productos():
                     pr.SUBCATEGORIAid,
                     ipr.imagen 
                 FROM `producto` pr 
-                left join img_producto ipr on pr.id = ipr.PRODUCTOid 
+                left join img_producto ipr on pr.id = ipr.PRODUCTOid
+                left join subcategoria sub on sub.id = pr.subcategoriaid
+                left join categoria cat on cat.id = sub.categoriaid
                 where ipr.imgPrincipal = 1
             '''
         cursor.execute(sql)

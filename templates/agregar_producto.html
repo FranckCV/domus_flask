@@ -27,7 +27,7 @@
 
           <div class="col">
             <label for="price_regular">Precio Regular:</label><br />
-            <input required type="number" class="input" placeholder="Precio Regular" name="price_regular" id="price_regular" step="0.01" />
+            <input type="number" class="input" placeholder="Precio Regular (Opcional)" name="price_regular" id="price_regular" step="0.01" />
           </div>
           <div class="col">
             <label for="price_online">Precio Online:</label><br />
@@ -46,6 +46,7 @@
           <div class="col">
             <label for="marca_id">Marca:</label><br />
             <select required class="input" name="marca_id" id="marca_id" style="width: 67%;">
+              <option value="" disabled selected>Seleccione una Marca</option>
               {% for marca in marcas %}
                 <option value="{{ marca.0 }}">{{ marca.1 }}</option>
               {% endfor %}
@@ -66,7 +67,7 @@
           <div class="col">
             <label for="subcategorySelect">Subcategoría:</label><br />
             <select required class="form-select choosie" aria-label="Default select example" name="subcategorySelect" id="subcategorySelect">
-              <option value="0" data-category="0" selected>Todos</option>
+              <option value="" data-category="0" disabled selected>Seleccione una subcategoria</option>
               {% for subcategoria in subcategorias %}
                 <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}">{{subcategoria[1]}}</option>
               {% endfor %}
