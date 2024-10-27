@@ -10,21 +10,30 @@
 {% block contenido %}
   <section class="h_section" id="mainSection">
 
-    <div class="row">
+    <div class="row gap-1 justify-content-center">
+
       <div class="col">
         <h2 class="fw-bolder">Listado de productos</h2>
       </div>
 
-      <div class="col" id="buscarProducto">
+      <form class="col" enctype="multipart/form-data" method="GET" action="{{ url_for('productos_buscar') }}">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarProducto"/>
-          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
-          <a href="{{ url_for('formulario_agregar_producto') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
+          <input required type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarProducto" name="buscarProducto"
+            {% if nombreBusqueda %}
+              value="{{nombreBusqueda}}"
+            {% endif %}
+          />
+          <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2" >
+            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+          </button>
+          <a href="{{ url_for('formulario_agregar_producto') }}" class="button is-success add-btn">
+            <button type="button" id="add_btn">Agregar</button>
+          </a>
         </div>
-      </div>
+      </form>
     </div>
 
-    <div class="container-fluid" id="break_nav">
+    <div class="row container-fluid" id="break_nav">
       <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
         <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
@@ -55,10 +64,34 @@
         </select>
       </div>
 
+      <div class="col">
+        <div id="grid_resultados">
+          <div class="head" >Resultados:</div>
+          <div class="body" id="num_resultados"></div>
+        </div>
+      </div>
+
+      <!-- <div class="col">
+        <table id="grid_resultados">
+          <thead>
+            <tr>
+              <th>Resultados:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="num_resultados">
+
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+
     </div>
 
     <div class="table-container">
-        <table cellspacing="0" cellpadding="8" class="product_if">
+        <table cellspacing="0" class="table_listado product_if">
           <thead>
             <tr>
               <th>ID</th>
@@ -67,7 +100,7 @@
               <th>Precio Regular</th>
               <th>Precio Online</th>
               <th>Precio Oferta</th>
-              <!-- <th>Información Adicional</th> -->
+              <th>Información Adicional</th>
               <th>Stock</th>
               <th>Fecha Registro</th>
               <th>Disponibilidad</th>
@@ -81,7 +114,7 @@
             {% for producto in productos %}
               <tr>
                 <td>{{ producto.0 }}</td>
-                <td>{{ producto.1 }}</td>
+                <td class="celda_texto_amplio">{{ producto.1 }}</td>
                 <td>
                   <div class="celda_texto_bloque img_pro_celda">
                     <img src="{{producto.12}}" alt="">
@@ -95,15 +128,17 @@
                   <td>{{ producto.4 }}</td>
                 {% endif %}
 
-                <!-- <td class="celda_texto_amplio">{{ producto.6 }}</td> -->
+                <td class="celda_texto_amplio">{{ producto.6 }}</td>
                 <td>{{ producto.7 }}</td>
                 <td>{{ producto.8 }}</td>
                 <td>
-                  {% if producto.9 == 1 %}
-                    <span>Disponible</span>
-                  {% else %}
-                    <span>No Disponible</span>
-                  {% endif %}
+                  <div class="celda_estado">
+                    {% if producto.9 == 1 %}
+                      <p class="disponibilidad disp_si">Disponible</p>
+                    {% else %}
+                      <p class="disponibilidad disp_no">No Disponible</p>
+                    {% endif %}
+                  </div>
                 </td>
                 <td>
                   {% for marca in marcas %}
@@ -138,11 +173,17 @@
 
                 <td class="opciones_column">
                   <div class="acciones">
-                    <a href="{{url_for('producto', id=producto[0])}}"><i class="fa-solid fa-eye"></i></a>
-                    <a href="{{ url_for('editar_producto', id=producto.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                    <form action="{{ url_for('eliminar_producto') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <a class="opciones_fila" href="{{url_for('producto', id=producto[0])}}">
+                      <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <a class="opciones_fila" href="{{ url_for('editar_producto', id=producto.0) }}">
+                      <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+                    <form class="opciones_fila" action="{{ url_for('eliminar_producto2') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
                       <input type="hidden" name="id" value="{{ producto.0 }}" />
-                      <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                      <button type="submit">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
                     </form>
                   </div>
                 </td>

@@ -1,31 +1,44 @@
+function cantResultadosFilas() {
+  const numRows = document.querySelectorAll('#productTableBody tr');
+  const numResult = document.getElementById('num_resultados'); 
+
+  const visibleRows = Array.from(numRows).filter(row => {
+    return window.getComputedStyle(row).display !== 'none';
+  });
+  numResult.innerHTML = `${visibleRows.length}`;  
+}
+
+cantResultadosFilas();
+
 document.getElementById('categorySelect').addEventListener('change', function() {
-    const selectedCategory = this.value;
-    const rows = document.querySelectorAll('#productTableBody tr');
+  const selectedCategory = this.value;
+  const rows = document.querySelectorAll('#productTableBody tr');
 
-    const options = document.querySelectorAll('#subcategorySelect option');
+  const options = document.querySelectorAll('#subcategorySelect option');
 
-    options.forEach(option => {
-      const optionCategory = option ? option.getAttribute('data-category') : null;
+  options.forEach(option => {
+    const optionCategory = option ? option.getAttribute('data-category') : null;
 
-      // Si el valor seleccionado es "0", mostrar todas las filas
-      if (selectedCategory === "0" || optionCategory === selectedCategory) {
-          option.style.display = '';
-      } else {
-          option.style.display = 'none';
-      }
-    });
+    if (selectedCategory === "0" || optionCategory === selectedCategory) {
+      option.style.display = '';
+    } else {
+      option.style.display = 'none';
+    }
+  });
 
-    rows.forEach(row => {
-      const categoryDiv = row.querySelector('[data-category]');
-      const productCategory = categoryDiv ? categoryDiv.getAttribute('data-category') : null;
+  rows.forEach(row => {
+    const categoryDiv = row.querySelector('[data-category]');
+    const productCategory = categoryDiv ? categoryDiv.getAttribute('data-category') : null;
 
-      // Si el valor seleccionado es "0", mostrar todas las filas
-      if (selectedCategory === "0" || productCategory === selectedCategory) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
+    if (selectedCategory === "0" || productCategory === selectedCategory) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+
+  cantResultadosFilas();
+
 });
 
 
@@ -44,9 +57,10 @@ document.getElementById('subcategorySelect').addEventListener('change', function
         row.style.display = 'none';
       }
     });
+
+  cantResultadosFilas();
+
 });
-
-
 
 document.getElementById('brandSelect').addEventListener('change', function() {
     const selectedBrand = this.value;
@@ -63,6 +77,8 @@ document.getElementById('brandSelect').addEventListener('change', function() {
         row.style.display = 'none';
       }
     });
+  cantResultadosFilas();
+
 });
 
 

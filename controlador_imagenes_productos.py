@@ -74,8 +74,20 @@ def actualizar_img_producto(imagen, id):
     conexion.close()
 
 
+def eliminar_img_producto(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            DELETE FROM img_producto 
+            WHERE productoid = %s and imgPrincipal = 1
+        '''
+        cursor.execute(sql, (id))
+    conexion.commit()
+    conexion.close()
 
-def obtener_img_principal_por_producto(id):
+
+
+def validar_img_principal_por_producto(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''

@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="product_head">
-                    <div class="product_rating">
+                    <!-- <div class="product_rating">
                         <div class="product_stars">
                             <div class="stars_icon">
                                 <i class="fa-solid fa-star"></i>
@@ -67,11 +67,9 @@
                                 <i class="fa-solid fa-star-half-stroke"></i>
                                 <i class="fa-regular fa-star"></i>
                             </div>
-                            <div class="stars_value">
-                                {{ producto[5] | round(1) }}
-                            </div>
+                            
                         </div>
-                    </div>
+                    </div> -->
                     
                     <div class="product_code">
                         ID: 
@@ -166,9 +164,16 @@
                         </div>
                     </div>                   
 
-                    <div class="product_cart_option product_cart_add">
+                    <!-- <div class="product_cart_option product_cart_add">
                         Agregar al carrito
-                    </div>
+                    </div> -->
+
+                    <form id="compra_a_carrito" class="form_selected_producto" action="{{url_for('agregar_carrito')}}" method="post">
+                        <input type="hidden" name="producto_id" value="{{producto[0]}}" data-product-id="{{ producto.0 }}" />
+                        <button type="submit" class="product_option product_option_add" id="cant_aumentar">
+                          <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </form>
 
                     <div class="product_cart_option product_cart_fav">
                         <i class="fa-regular fa-heart"></i>

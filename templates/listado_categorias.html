@@ -9,22 +9,22 @@
 
 {% block contenido %}
       
-    <section class="h_section scrollable-section" id="mainSection">
-        <h2 class="fw-bolder">Listado de categorias</h2>
-        <div class="container-fluid" id="break_nav">
-                <div class="col">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
-                        <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
-                            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
-                        </button>
-                        <a href="/agregar_categoria" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
-                        
-                    </div>
+  <section class="h_section scrollable-section" id="mainSection">
+    <h2 class="fw-bolder">Listado de categorias</h2>
+      <div class="container-fluid" id="break_nav">
+          <div class="col">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
+              <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+                <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
+              </button>
+              <a href="/agregar_categoria" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
             </div>
-        </div>
+          </div>
+      </div>
 
-        <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+      <div class="table-container">
+        <table cellspacing="0" class="product_if">
             <thead>
                 <tr>
                     <th>ID Cat</th>
@@ -36,7 +36,7 @@
                     <th>Subcategoria</th>
                     <th>Icono Sub</th>
                     <th>Disponibilidad Sub</th>
-                    <th>Opciones Sub</th>
+                    <th class="opciones_column">Opciones Sub</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,7 +80,7 @@
                         <span>No Disponible</span>
                       {% endif %}
                     </td>
-                    <td>
+                    <td class="opciones_column">
                       <div class="acciones">                            
                         <a href="{{ url_for('editar_subcategoria', id=subcategorias_filtradas[0][0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
                         <form action="{{ url_for('eliminar_subcategoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
@@ -105,7 +105,7 @@
                         <span>No Disponible</span>
                       {% endif %}
                     </td>
-                    <td>
+                    <td class="opciones_column">
                       <div class="acciones">                            
                         <a href="{{ url_for('editar_subcategoria', id=subcategoria[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
                         <form action="{{ url_for('eliminar_subcategoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
@@ -127,20 +127,21 @@
                 
             </tbody>
         </table>
+      </div>
 
-        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="errorModalLabel">Error al eliminar pedido</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                {{ error }} <!-- Aquí se muestra el error que pasaste desde el backend -->
-              </div>
+      <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="errorModalLabel">Error al eliminar pedido</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {{ error }} <!-- Aquí se muestra el error que pasaste desde el backend -->
             </div>
           </div>
         </div>
+      </div>
 
     </section>
 
