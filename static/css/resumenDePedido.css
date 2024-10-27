@@ -188,6 +188,11 @@ th,td {
 .form-select option {
   padding: 0.5rem;
 }
+.descuento{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 /* .card-text-total {
   text-align: center;
