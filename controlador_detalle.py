@@ -51,7 +51,7 @@ def obtener_Detalle():
 ########################################
 
 
-def obtener_Detalle_por_Id(id):
+def obtener_Detalle_por_Id_pedido(id):
     conexion = obtener_conexion()
     productos_lista = []
 
@@ -70,6 +70,7 @@ def obtener_Detalle_por_Id(id):
             productos = cursor.fetchall()
 
             for producto in productos:
+                #Para ver qué precio se elige 
                 sql_precios = "SELECT price_regular, precio_online, precio_oferta FROM producto WHERE id = %s"
                 cursor.execute(sql_precios, (producto[3],))
                 precios = cursor.fetchone()

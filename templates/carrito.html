@@ -113,19 +113,14 @@
         </div>
 
         <div class="cart_total">
-          
           <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post" onsubmit="return validarCarro();">
             <div class="cart-summary">
               <div class="discount-code">
                 <label for="coupon">¿Tienes algún cupón de descuento?</label>
                 <div class="d-flex">
-                  <form action="{{ url_for('confirmar_carrito') }}" method="post" id="form_descuento" onsubmit="return validarCarro();">
-                    <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
+                  <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
 
-                    <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" />
-
-                    <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
-                  </form>
+                  <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
                 </div>
                 <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
               </div>
@@ -144,14 +139,11 @@
 
               <div>
                 <input type="hidden" id="total_form" name="total_form" value="" />
-                <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" />
-                <input type="hidden" id="estado_pedido" name="estado_pedido" value="2" />
-                <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal();">Continuar</button>
+                <input type="hidden" id="total_descuento" name="total_descuento" value="" />
+                <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal(); obtenerDescuento()">Continuar</button>
               </div>
-              
             </div>
           </form>
-
         </div>
       </div>
     </article>

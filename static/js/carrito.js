@@ -278,8 +278,6 @@ function aplicarDescuento() {
             totalElement.querySelector('span').innerText = `S/. ${total.toFixed(2)}`;
             document.getElementById('total_fijo').innerText = `S/. ${total.toFixed(2)}`;
 
-            // **Actualizar el valor del campo oculto de descuento**
-            document.getElementById('descuento_aplicado').value = "1";  // Se ha aplicado el descuento
             descuentoAplicado = true;
         } else {
             alert('Cupón no es válido o el carrito está vacío.');
@@ -301,11 +299,11 @@ function validarCarro() {
     }
 
     if (disponible) {
-        obtenerTotal();  
-        return true; 
+        obtenerTotal();
+        return true;
     } else {
         alert('Agregue productos a su carrito antes de continuar.');
-        return false;  
+        return false;
     }
 }
 
@@ -322,6 +320,25 @@ function obtenerTotal() {
     document.getElementById("total_form").value = totalNumero;
 
     return totalNumero;
+}
+
+
+function obtenerDescuento() {
+    if (typeof descuentoAplicado !== 'undefined' && descuentoAplicado) {  
+        var descuentoTexto = document.getElementById("descuentoValor").innerText;
+
+        var totalDescuento = descuentoTexto.replace('S/. ', '').replace(',', '');
+        var totalNumero = parseFloat(totalDescuento) || 0;  
+
+        console.log("Descuento aplicado: ", totalNumero);
+
+        document.getElementById("total_descuento").value = totalNumero;
+
+        return totalNumero;
+    } else {
+        console.log("Descuento no aplicado o descuentoAplicado indefinido.");
+        return 0;
+    }
 }
 
 

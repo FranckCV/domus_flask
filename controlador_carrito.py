@@ -130,7 +130,7 @@ def ultimoPedido(usuario_id):
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
-            sql = "SELECT MAX(id) FROM pedido WHERE USUARIOid = %s"
+            sql = "SELECT MAX(id) FROM pedido WHERE USUARIOid = %s and ESTADO_PEDIDOid=1"
             cursor.execute(sql, (usuario_id,))
             resultado = cursor.fetchone()
             return resultado[0] if resultado else None

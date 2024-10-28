@@ -164,20 +164,13 @@
                         </div>
                     </div>                   
 
-<<<<<<< HEAD
                     <form action="{{url_for('agregar_carrito')}}" class="product_cart_option product_cart_add">
-                        Agregar al carrito
-=======
-                    <!-- <div class="product_cart_option product_cart_add">
-                        Agregar al carrito
-                    </div> -->
 
                     <form id="compra_a_carrito" class="form_selected_producto" action="{{url_for('agregar_carrito')}}" method="post">
                         <input type="hidden" name="producto_id" value="{{producto[0]}}" data-product-id="{{ producto.0 }}" />
                         <button type="submit" class="product_option product_option_add" id="cant_aumentar">
                           <i class="fa-solid fa-plus"></i>
                         </button>
->>>>>>> 35a3ea93c12c8adb869093e57900c0a55670b1d5
                     </form>
 
                     <div class="product_cart_option product_cart_fav">
