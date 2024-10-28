@@ -1,7 +1,7 @@
 :root {
     --height-header: 100px;
     --height-nav: 10vh;
-    --width-menu: 250px;
+    --width-menu: 20vw;
 
     --size-bubble-cart: 5vw;
     --size-bubble-cart-tab: 3.5vw;
@@ -41,7 +41,7 @@
     background-color: var(--background);
     margin: 0px;
     font-family: 'Poppins', sans-serif;
-    font-size: 90%;
+    font-size: 0.9rem;
     min-height: 100vh;
     color: var(--font1);
     overflow-x: hidden;
@@ -81,12 +81,8 @@ header {
     display: flex;
     align-items: center;
     transition: color 0.1s ease;
-    font-size: 1rem; 
+    /* font-size: 90%;  */
     gap: 10px;
-}
-
-.header_option i {
-    font-size: 1.5rem;
 }
 
 .header_option:hover {
@@ -108,7 +104,7 @@ header {
 
 header p {
     margin: 0;
-    font-size: 1rem;
+    /* font-size: 1rem; */
 }
 
 #index_logo img {
@@ -154,7 +150,7 @@ aside img {
 }
 
 aside p {
-    font-size: 1rem;
+    /* font-size: 1rem; */
     margin-bottom: 20px;
 }
 

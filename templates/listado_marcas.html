@@ -11,28 +11,22 @@
 {% block contenido %}
   <section class="h_section" id="mainSection">
     <h2 class="fw-bolder">Listado de marcas</h2>
-    <div class="container-fluid" id="break_nav">
-
-      <!-- <div class="col">
-        <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
-        <select class="form-select choosie" aria-label="Default select example">
-          <option selected>Tecnología</option>
-          <option value="1">Ropa</option>
-          <option value="2">Accesorios</option>
-        </select>
-      </div> -->
+    <div class="row" id="break_nav">
       
       <div class="col">
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
           <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
-          <a href="{{ url_for('formulario_agregar_marca') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
+          <a href="{{ url_for('formulario_agregar_marca') }}" class="button is-success add-btn">
+            <button type="button" id="add_btn">Agregar</button>
+          </a>
         </div>
       </div>
+
     </div>
 
-    <div class="table-containersy">
-      <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
         <thead>
           <tr>
             <th>ID</th>
@@ -43,10 +37,10 @@
             <th>Disponiblidad</th>
             <th>Cant. Productos</th>
             <th>Cant. Novedades</th>
-            <th>Opciones</th>
+            <th class="opciones_column">Opciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="productTableBody">
           {% for marca in marcas %}
             <tr>
               <td>{{ marca.0 }}</td>
@@ -55,7 +49,7 @@
               <td>
                 <div class="celda_texto_bloque">
                   {% if marca.2 %}
-                    <img src="{{ marca.2 }}" alt="Logo de {{ marca.1 }}" class=""/> <!-- Logo de la marca -->
+                    <img src="{{ marca.2 }}" alt="Logo de {{ marca.1 }}" class="clickable-image"/> <!-- Logo de la marca -->
                   {% else %}
                     <span>Sin logo</span> <!-- Texto alternativo si no hay logo -->
                   {% endif %}
@@ -65,7 +59,7 @@
               <td>
                 <div class="celda_texto_bloque">
                   {% if marca.3 %}
-                    <img src="{{ marca.3 }}" alt="Banner de {{ marca.1 }}" class=""/> <!-- Logo de la marca -->
+                    <img src="{{ marca.3 }}" alt="Banner de {{ marca.1 }}" class="clickable-image"/> <!-- Logo de la marca -->
                   {% else %}
                     <span>Sin banner</span> <!-- Texto alternativo si no hay logo -->
                   {% endif %}
@@ -75,11 +69,13 @@
               <td>{{ marca.4 }}</td>
 
               <td>
-                {% if marca.5 == 1 %}
-                  <span>Disponible</span>
-                {% else %}
-                  <span>No Disponible</span>
-                {% endif %}
+                <div class="celda_estado">
+                  {% if marca.5 == 1 %}
+                    <p class="disponibilidad disp_si">Disponible</p>
+                  {% else %}
+                    <p class="disponibilidad disp_no">No Disponible</p>
+                  {% endif %}
+                </div>
               </td>
 
               <td>{{ marca.6 }}</td>
@@ -102,6 +98,11 @@
         </tbody>
       </table>
     </div>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+      <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
   </section>
 
   <style>
@@ -119,4 +120,5 @@
     }
   </script>
   <script src="/static/js/admin_productos.js"></script>
+  <script src="/static/js/imgsCRUDimagencompleta.js"></script>
 {% endblock %}

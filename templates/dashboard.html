@@ -47,10 +47,6 @@
                 <i class="fa-solid fa-caret-right"></i>
                 <p>Datos Principales</p>
             </a>
-            <a href="{{url_for('listado_tipo_contenido_info')}}">
-                <i class="fa-solid fa-caret-right"></i>
-                <p>Tipos de Contenido Informativo</p>
-            </a>
             <a href="{{url_for('listado_contenido_info')}}">
                 <i class="fa-solid fa-caret-right"></i>
                 <p>Contenido Informativo</p>
@@ -68,7 +64,11 @@
     
     <div class="dashboard_item">
         <p>Datos Adicionales</p>
-        <div class="dshbd_item_content"> 
+        <div class="dshbd_item_content">
+            <a href="{{url_for('listado_tipo_contenido_info')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Tipos de Contenido Informativo</p>
+            </a>
             <a href="{{url_for('categorias')}}">
                 <i class="fa-solid fa-caret-right"></i>
                 <p>Categorias y Subcategorias</p>

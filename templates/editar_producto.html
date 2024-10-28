@@ -34,33 +34,34 @@
                 </div>
                 
                 <div class="col">
-                    <label for="price_online">Precio Online:</label><br>
-                    <input required type="number" class="input" placeholder="Precio Online" name="price_online"
-                        id="price_online" value="{{ producto[3] }}" style="text-align: center;" step="0.01">
-                </div>
-            </div>
-
-            <div class="row">
-
-                <div class="col">
-                    <label for="precio_oferta">Precio Oferta:</label><br>
-                    <input type="number" class="input" placeholder="Precio Oferta (opcional)" name="precio_oferta"
-                        id="precio_oferta" value="{{ producto[4] }}" style="text-align: center;" step="0.01">
-                </div>
-
-                <div class="col">
-                    <label for="price_regular">Precio Regular:</label><br>
-                    <input required type="number" class="input" placeholder="Precio Regular" name="price_regular"
-                        id="price_regular" value="{{ producto[2] }}" style="text-align: center;" step="0.01">
-                </div>
-
-                <div class="col">
                     <label for="disponibilidad">Disponibilidad:</label><br>
                     <select required class="input" name="disponibilidad" id="disponibilidad">
                         <option value=1 {% if producto[11]==1 %} selected {% endif %}>Disponible</option>
                         <option value=0 {% if producto[11]==0 %} selected {% endif %}>No Disponible</option>
                     </select>
                 </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <label for="price_regular">Precio Regular:</label><br>
+                    <input type="number" class="input" placeholder="Precio Regular (Opcional)" name="price_regular"
+                        id="price_regular" value="{{ producto[2] }}" style="text-align: center;" step="0.01">
+                </div>
+
+                <div class="col">
+                    <label for="price_online">Precio Online:</label><br>
+                    <input required type="number" class="input" placeholder="Precio Online" name="price_online"
+                        id="price_online" value="{{ producto[3] }}" style="text-align: center;" step="0.01">
+                </div>
+
+                <div class="col">
+                    <label for="precio_oferta">Precio Oferta:</label><br>
+                    <input type="number" class="input" placeholder="Precio Oferta (opcional)" name="precio_oferta"
+                        id="precio_oferta" value="{{ producto[4] }}" style="text-align: center;" step="0.01">
+                </div>                
 
             </div>
             <div class="row">
@@ -80,7 +81,7 @@
 
                 <div class="col">
                     <label for="categorySelect">Categoría:</label><br>
-                    <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
+                    <select class="input" aria-label="Default select example" id="categorySelect">
                         <option value="0" selected>Todos</option>
                       {% for categoria in categorias %}
                         <option value="{{categoria[0]}}">{{categoria[1]}}</option>

@@ -3,6 +3,7 @@ import base64
 import controlador_productos
 tabla = 'marca'
 
+
 def obtener_marcas_menu(valor):
     conexion = obtener_conexion()
     marcas = []
@@ -357,3 +358,7 @@ def marcas_para_novedad():
         marcas = cursor.fetchall()  # Esto debe devolver una lista de tuplas o diccionarios
     conexion.close()
     return marcas
+
+
+
+

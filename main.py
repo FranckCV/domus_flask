@@ -815,6 +815,17 @@ def productos():
     categorias = controlador_categorias.obtener_categoriasXnombre()
     return render_template("listado_productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias , categorias = categorias)
 
+
+@app.route("/listado_productos_buscar")
+def productos_buscar():
+    nombreBusqueda = request.args.get("buscarProducto")
+    marcas = controlador_marcas.obtener_marcasXnombre()
+    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+    categorias = controlador_categorias.obtener_categoriasXnombre()
+    productos = controlador_productos.buscar_listado_productos_nombre(nombreBusqueda)
+    return render_template("listado_productos.html", productos=productos, marcas=marcas , subcategorias=subcategorias , categorias = categorias , nombreBusqueda = nombreBusqueda)
+
+
 # @app.route("/eliminar_producto", methods=["POST"])
 # def eliminar_producto():
 #     controlador_productos.eliminar_producto(request.form["id"])
@@ -848,6 +859,41 @@ def eliminar_producto():
         # Si no está asociado, procedemos a eliminar
         controlador_productos.eliminar_producto(id_producto)
         return redirect("/listado_productos")
+
+
+@app.route("/eliminar_producto2", methods=["POST"])
+def eliminar_producto2():
+    id_producto = request.form["id"]
+
+    # Verificamos si el producto está asociado a otras tablas
+    tiene_caracteristicas = controlador_productos.buscar_en_caracteristica_producto(id_producto)
+    # tiene_img = controlador_productos.buscar_en_img_producto(id_producto)
+    tiene_lista_deseo = controlador_productos.buscar_en_lista_deseos(id_producto)
+    tiene_detalle = controlador_productos.buscar_en_detalles_pedido(id_producto)
+    
+    tiene_img = controlador_imagenes_productos.validar_img_principal_por_producto(id_producto) != 1
+
+    error_message = None
+
+    if tiene_caracteristicas:
+        error_message = "El producto tiene características asociadas y no se puede eliminar."
+    elif tiene_img:
+        error_message = "El producto tiene imágenes asociadas y no se puede eliminar."
+    elif tiene_lista_deseo:
+        error_message = "El producto está en listas de deseos de clientes y no se puede eliminar."
+    elif tiene_detalle:
+        error_message = "El producto está en detalles de pedidos y no se puede eliminar."
+
+    if error_message:
+        # Si el producto está asociado a alguna de las condiciones, mostramos el error
+        return render_template("listado_productos.html", error=error_message + " Redirigiendo en 3 segundos...", show_modal=True)
+    else:
+        # Si no está asociado, procedemos a eliminar
+        controlador_imagenes_productos.eliminar_img_producto(id_producto)
+        controlador_productos.eliminar_producto(id_producto)
+        return redirect("/listado_productos")
+
+
 
 
 @app.route("/formulario_editar_producto=<int:id>")
