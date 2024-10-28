@@ -85,26 +85,38 @@
             <div class="card text-center shadow-sm">
               <div class="card-body">
                 <h5 class="card-title">Resumen</h5>
-
+          
                 {% if valor_descuento is not none and valor_descuento|float > 0 %}
                   <div class="card-text-total descuento">
                     <b>Descuento aplicado</b>
-                    <div class="card-text-total">
-                     <p>Cantidad de descuento:</p><span id="total_descuento_aplicado" class="total_descuento">S/{{ valor_descuento }}</span>
-                    </div>
                   </div>
                 {% else %}
                   <div class="card-text-total descuento">
                     <i>No se aplicó descuento</i>
                   </div>
                 {% endif %}
+          
+                <div class="card-text-total">
+                  <p>Subtotal</p>
+                  <span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
+                </div>
+                {% if valor_descuento is not none and valor_descuento|float > 0 %}
+                  <div class="card-text-total ">
+                    <p>Cantidad de descuento:</p>
+                    <span id="total_descuento_aplicado" class="total_descuento">S/{{ valor_descuento }}</span>
+                  </div>
+                  <div class="card-text-total">
+                    <p>Subtotal con descuento:</p>
+                    <span id="subtotal_con_descuento" class="total_descuento">S/{{ (total_pagar|float - valor_descuento|float) | round(2) }}</span>
+                  </div>
+                {% else %}
 
+                {% endif %}
                 <div class="card-text-total">
-                  <p>Subtotal</p><span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
+                  <p>Costo de envío</p>
+                  <span id="costo_envio">S/.10.00</span>
                 </div>
-                <div class="card-text-total">
-                  <p>Costo de envío</p><span id="costo_envio">s/.10.00</span>
-                </div>
+          
                 <div class="card-text-total">
                   <p>Total</p>
                   <span id="total_sumado">S/{{ (total_pagar|float - valor_descuento|float + 10) | round(2) }}</span>
@@ -112,6 +124,8 @@
               </div>
             </div>
           </div>
+          
+
         </div>
 
         <div class="d-flex justify-content-between">

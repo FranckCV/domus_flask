@@ -220,8 +220,11 @@ def registrate():
 @app.route("/carrito") 
 def carrito():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-    productos = controlador_detalle.obtener_Detalle()  # Obtener los productos en el carrito
-    return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos)
+    productos = controlador_detalle.obtener_Detalle()  
+    error_message = request.args.get("error_message")  
+    
+    return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
+
 
 from flask import request, redirect, url_for
 
@@ -236,16 +239,21 @@ def agregar_carrito():
     if pedido_id is None:
         pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
     
-    controlador_carrito.insertar_detalle(producto_id, pedido_id)
-
+    result=controlador_carrito.insertar_detalle(producto_id, pedido_id)
+    
     referrer = request.referrer
     
-    # Si el usuario estaba en la página del carrito, redirige al carrito
-    if "carrito" in referrer:
-        return redirect(url_for('carrito'))
+    if result is None:
+         # Si el usuario estaba en la página del carrito, redirige al carrito
+        if "carrito" in referrer:
+            return redirect(url_for('carrito'))
+        else:
+            # Mantener en la página actual devolviendo un código 204 (sin contenido)
+            return '', 204
     else:
-        # Mantener en la página actual devolviendo un código 204 (sin contenido)
-        return '', 204
+        return redirect(url_for('carrito', error_message=str(result)))
+
+    
 
 
 @app.route("/aumentar_carro", methods=["POST"])
@@ -259,12 +267,15 @@ def aumentar_carro():
     print(f"Pedido ID encontrado: {pedido_id}")  
 
     if pedido_id:
-        controlador_carrito.aumentar_producto(pedido_id,producto_id)
-        print("Producto aumentado correctamente.")
+        result=controlador_carrito.aumentar_producto(pedido_id,producto_id)
+        if result is None:
+            print("Producto aumentado correctamente.")
+            return redirect('/carrito')
+        else:
+           return redirect(url_for('carrito', error_message=str(result)))
     else:
         print("No se encontró un pedido activo.")
     
-    return redirect('/carrito')
 
 
 @app.route("/disminuir_carro", methods=["POST"])
@@ -286,7 +297,6 @@ def confirmar_carrito():
     estado = 1
     usuario_id = 1
     
-    # Obtener los valores del formulario
     valor_descuento=request.form.get('total_descuento')
     
     pedido_id=controlador_carrito.verificarIdPedido(usuario_id,estado)        
@@ -1567,9 +1577,7 @@ def confirmar_compra():
         total_producto = cantidad * precio_unitario
         subtotal += total_producto
 
-    controlador_pedido.actualizar_MetPago_Pedido(pedido_id, metodo_pago)
-    controlador_carrito.actualizar_estado_pedido(usuario_id, estado)
-    controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal)
+    controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuario_id)
 
     return redirect("/")
 

@@ -15,16 +15,16 @@ def actualizar_MetPago_Pedido(pedido_id, metodo):
     conexion.commit()
     conexion.close()
 
-def actualizarPedido(pedido_id, fecha_compra, subtotal):
+def actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuario_id):
     conexion = obtener_conexion()
     pedido = None
     with conexion.cursor() as cursor:
         query = """
             UPDATE pedido
-            SET fecha_compra = %s, subtotal = %s  
-            WHERE id = %s
+            SET fecha_compra = %s, subtotal = %s , METODO_PAGOid=%s, ESTADO_PEDIDOid=%s 
+            WHERE USUARIOid=%s and id = %s
         """
-        cursor.execute(query, (fecha_compra, subtotal, pedido_id))
+        cursor.execute(query, (fecha_compra, subtotal,metodo_pago,estado,usuario_id,pedido_id))
     conexion.commit()
     conexion.close()
 

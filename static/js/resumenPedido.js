@@ -67,7 +67,6 @@ function confirmarCompra() {
         shape.play();
         $modal.addClass('active');
 
-        // Asegurarse de que el formulario tiene el ID correcto
         let form = document.getElementById('formCompra');
         if (form) {
             setTimeout(function () {
@@ -85,7 +84,6 @@ function confirmarCompra() {
 /******************************************************************************************************************/
 
 function cancelarCompra(button) {
-    // Redirigir a la ruta para cancelar la compra en Flask
     window.location.href = '/cancelar_compra';
 }
 

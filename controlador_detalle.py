@@ -23,12 +23,13 @@ def obtener_Detalle():
             cursor.execute(sql_precios, (producto[3],))  # Se debe pasar como una tuplita
             precios = cursor.fetchone()
 
-            if precios[2] is not None:  # precio_oferta
+            if precios[2] is not None and precios[2] != 0:  # precio_oferta
                 precio_final = precios[2]
-            elif precios[1] is not None:  # precio_online
+            elif precios[1] is not None and precios[1] != 0:  # precio_online
                 precio_final = precios[1]
             else:  # precio_regular
                 precio_final = precios[0]
+
 
             # Codificar la imagen en base64 porque está en binarie
             img_binario = producto[0] 
@@ -43,6 +44,7 @@ def obtener_Detalle():
             producto_id = producto[3]  
 
             productos_lista.append((imagen, nombre, precio_final, cantidad, producto_id))
+            print(productos_lista)
     
     conexion.close()
     return productos_lista
@@ -75,10 +77,12 @@ def obtener_Detalle_por_Id_pedido(id):
                 cursor.execute(sql_precios, (producto[3],))
                 precios = cursor.fetchone()
 
-                if precios is not None:
-                    precio_final = precios[2] if precios[2] is not None else precios[1] if precios[1] is not None else precios[0]
-                else:
-                    precio_final = 0  
+                if precios[2] is not None and precios[2] != 0:  # precio_oferta
+                    precio_final = precios[2]
+                elif precios[1] is not None and precios[1] != 0:  # precio_online
+                    precio_final = precios[1]
+                else:  # precio_regular
+                    precio_final = precios[0]
 
                 img_binario = producto[0]
                 imagen = f"data:image/png;base64,{base64.b64encode(img_binario).decode('utf-8')}" if img_binario else ""
