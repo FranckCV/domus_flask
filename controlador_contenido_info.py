@@ -20,20 +20,25 @@ def obtener_datos_contenido_info():
     conexion.close()
     return datos
 
+
 def obtener_listado_tipos_contenido():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         cursor.execute('''
-                SELECT 
-                    tip.id,
-                    tip.nombre,
-                    tip.descripcion,
-                    tip.faicon_cont
-                FROM tipo_contenido_info tip
+                        SELECT 
+                            tip.id,
+                            tip.nombre,
+                            tip.descripcion,
+                            tip.faicon_cont,
+                            count(cont.id)
+                        FROM tipo_contenido_info tip
+                        left join contenido_info cont on cont.tipo_contenido_infoid = tip.id
+                        group by tip.id
                        ''')
         datos = cursor.fetchall()
     conexion.close()
     return datos
+
 
 def obtener_tipos_contenido():
     conexion = obtener_conexion()
@@ -65,6 +70,7 @@ def obtener_datos_contenido():
         datos = cursor.fetchall()
     conexion.close()
     return datos
+
 
 def obtener_datos_contenido_por_tipo(id):
     conexion = obtener_conexion()

@@ -312,6 +312,61 @@ def obtener_listado_marcas():
     return marcas_procesadas
 
 
+def buscar_listado_marcas_nombre(nombre):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                SELECT 
+                    m.id,
+                    m.marca, 
+                    m.img_logo, 
+                    m.img_banner,
+                    m.fecha_registro,
+                    m.disponibilidad,
+                    COUNT(DISTINCT p.id) AS cantidad_productos,
+                    COUNT(DISTINCT n.id) AS cantidad_novedades
+                FROM 
+                    marca m
+                LEFT JOIN 
+                    producto p ON m.id = p.MARCAid
+                LEFT JOIN 
+                    novedad n ON m.id = n.MARCAid
+                WHERE UPPER(m.marca) LIKE UPPER ('%'''+str(nombre)+'''%')
+                GROUP BY 
+                    m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad;
+                ''')
+        marcas = cursor.fetchall()
+        
+        # Convertir el logo binario a base64 para cada marca
+        marcas_procesadas = []
+        for marca in marcas:
+            id_marca = marca[0]
+            nombre_marca = marca[1]
+            logo_binario = marca[2]
+            banner_binario = marca[3]
+            fecha = marca[4]
+            disp = marca[5]
+            cantPro = marca[6]
+            cantNov = marca[7]
+            
+            if logo_binario:
+                logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
+                logo_formato = f"data:image/png;base64,{logo_base64}" 
+            else:
+                logo_formato = None
+
+            if banner_binario:
+                logo_base64 = base64.b64encode(banner_binario).decode('utf-8')
+                banner_formato = f"data:image/png;base64,{logo_base64}" 
+            else:
+                banner_formato = "" 
+            
+            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cantPro , cantNov))
+    
+    conexion.close()
+    return marcas_procesadas
+
+
 def eliminar_marca(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:

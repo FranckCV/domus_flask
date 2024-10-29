@@ -26,6 +26,34 @@ def obtener_metodo_pago():
     return datos
 
 
+def obtener_listado_metodo_pago():
+    conexion = obtener_conexion()
+    datos = []
+
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute('''
+                SELECT 
+                    met.id,
+                    met.metodo ,
+                    met.disponibilidad ,
+                    count(ped.id)               
+                    FROM metodo_pago met
+                    left join pedido ped on ped.metodo_pagoid = met.id
+                    group by met.id                          
+                ''')
+            datos = cursor.fetchall()  
+        
+    except Exception as e:
+        print(f"Error al obtener los métodos de pago: {e}")
+    
+    finally:
+        conexion.close()
+    
+    return datos
+
+
+
 def insertar_metodo_pago(nombre):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:

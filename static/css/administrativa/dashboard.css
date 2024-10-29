@@ -251,14 +251,13 @@ main {
 
 .dashboard_content {
     display: flex;
-    /* flex-direction: column; */
-    flex-wrap: wrap;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
     gap: 20px;
     justify-content: center;
 }
 
 .dashboard_item {
-    width: 35%;
     background-color: #032a66;
     color: white;
     border-radius: 20px;
@@ -267,14 +266,19 @@ main {
     justify-content: center;
     transition: 0.1s ease-in-out;
     gap: 2px;
-    /* grid-template-columns: 15% 85%;
-    grid-template-rows: 100%;
-    grid-template-areas: "db_nom db_link"; */
+    display: grid; 
 
-    /* display: grid;    
-    grid-template-columns: auto;
+    grid-template-columns: 15% 85%;
+    grid-template-rows: 100%;
+    grid-template-areas: "db_nom db_link";
+    width: 100%;
+
+    /* grid-template-columns: auto;
     grid-template-rows: 50px auto;
-    grid-template-areas: "db_nom" "db_link"; */
+    grid-template-areas: "db_nom" "db_link";
+    justify-items: center;
+    height: fit-content;
+        width: 35%; */
 }
 
 .dashboard_item p {
@@ -289,7 +293,7 @@ main {
 
 .dashboard_item_title {
     padding: 0;
-    margin: 0;
+    margin: 10px;
     grid-area: db_nom;
 }
 
@@ -302,6 +306,7 @@ main {
     flex-wrap: wrap;
     justify-items: center;
     gap: 10px;
+    justify-self: flex-start;
 }
 
 .dshbd_item_content a {
@@ -321,17 +326,6 @@ main {
     background-color: #ffffff;
     color: #000;
 }
-
-.dshbd_item_content .falta {
-    background-color: #7e0000;
-    color: #fff;
-}
-
-.dshbd_item_content .medio {
-    background-color: #be5c00;
-    color: #fff;
-}
-
 
 .form_info_domus .img_logo_domus {
     background-color: #b3b3b3;
@@ -367,3 +361,53 @@ main {
 .espacio_img img {
     height: 100px;
 }
+
+
+
+
+
+
+
+
+a[href="/dashboard"] ,
+a[href="/listado_clientes"]  ,
+a[href="/listado_pedidos"]  ,
+a[href="/empleados_listado"]  ,
+a[href="/listado_categorias"]  ,
+a[href="/listado_caracteristicas"]
+{
+    background-color: #7e0000;
+    color: #fff;
+}
+
+a[href="/motivos_comentario_listado"]  ,
+a[href="/listado_tipos_usuario"]   ,
+a[href="/listado_novedades"]  ,
+a[href="/listado_productos"]  
+{
+    background-color: #be5c00;
+    color: #fff;
+}
+
+
+a[href="/comentarios_listado"]  ,
+a[href="/listado_datos_principales"]  ,
+a[href="/listado_contenido_info"]  ,
+a[href="/listado_tipo_contenido_info"]
+{
+    background-color: #005f2b;
+    color: #fff;
+}
+
+
+
+/* a[href="/listado_tipos_novedad"] , */
+/* a[href="/listado_metodo_pago"] , */
+/* a[href="/listado_estado_pedido"] , */
+/* a[href="/listado_marcas"] , */
+/* a[href="/listado_redes_sociales"]  , */
+/* a[href="/tipos_img_novedad_listado"]  */
+
+
+
+

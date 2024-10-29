@@ -1,4 +1,5 @@
 from bd import obtener_conexion
+import base64
 
 def obtener_tipos_usuario():
     conexion = obtener_conexion()
@@ -17,6 +18,40 @@ def obtener_tipos_usuario():
 
     conexion.close()
     return tipos_usuario
+
+
+def obtener_listado_tipos_usuario():
+    conexion = obtener_conexion()
+    tipos_usuario = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                tip.id, 
+                tip.tipo, 
+                tip.descripcion,
+                tip.imagen,
+                count(usu.id)
+            FROM TIPO_USUARIO tip
+            left join usuario usu on tip.id = usu.tipo_usuarioid
+            group by tip.id
+            ORDER BY tip.id ASC
+        '''
+        cursor.execute(sql)
+        tipos_usuario = cursor.fetchall()
+
+    elementos_tipos = []
+    for tipo in tipos_usuario:
+        tip_id , tip_nom , tip_desc , tip_img , cant = tipo
+
+        if tip_img:
+            img_base64 = base64.b64encode(tip_img).decode('utf-8')
+            img_formato = f"data:image/png;base64,{img_base64}" 
+        else:
+            img_formato = ''
+        elementos_tipos.append((tip_id , tip_nom , tip_desc , img_formato , cant))
+
+    conexion.close()
+    return elementos_tipos
 
 
 def obtener_tipo_usuario_por_id(id):

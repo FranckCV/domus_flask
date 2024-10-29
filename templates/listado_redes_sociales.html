@@ -10,56 +10,62 @@
 
 {% block contenido %}
   <section class="h_section scrollable-section" id="mainSection">
-    <h2 class="fw-bolder">Listado de Redes Sociales</h2>
-    <div class="container-fluid" id="break_nav">
+
+    <div class="row">
       <div class="col">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar por motivo" aria-label="Recipient's username" aria-describedby="button-addon2">
-          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
-            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
-          </button>
+        <h2 class="fw-bolder">Listado de Redes Sociales</h2>
+      </div>
+    </div>
+
+    <div class="row" id="break_nav">
+      <div class="col">
+        <div class="input-group mb-3">          
           <a href="{{ url_for('formulario_agregar_redes_sociales') }}" class="button is-success add-btn">
-            <button type="button" id="add_btn">Agregar</button>
+            <button type="button" class="main_btn">Agregar</button>
           </a>
         </div>
       </div>
     </div>
 
-    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Icono</th>
-          <th>Enlace</th>
-          <th>Opciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for red in redes %}
-        <tr>
-          <td>{{ red[0] }}</td>
-          <td>{{ red[1] }}</td>
-          <td><i class="{{ red[2] }}"></i></td>
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Icono</th>
+            <th>Enlace</th>
+            <th class="opciones_column">Opciones</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          {% for red in redes %}
+          <tr>
+            <td>{{ red[0] }}</td>
+            <td>{{ red[1] }}</td>
+            <td><i class="{{ red[2] }}"></i></td>
+  
+            <td>{{ red[3] }}</td>
+            <td class="opciones_column">
+              <div class="acciones">
+                <a class="opciones_fila" href="{{ url_for('editar_redes_sociales', id=red[0]) }}">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </a>
+                <form class="opciones_fila" action="{{ url_for('eliminar_redes_sociales') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                  <input type="hidden" name="id" value="{{ red[0] }}">
+                  <button type="submit">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
 
-          <td>{{ red[3] }}</td>
-          <td>
-            <div class="acciones">
-              <a href="{{ url_for('editar_redes_sociales', id=red[0]) }}">
-                <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
-              </a>
-              <form action="{{ url_for('eliminar_redes_sociales') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                <input type="hidden" name="id" value="{{ red[0] }}">
-                <button type="submit">
-                  <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
-                </button>
-              </form>
-            </div>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    </div>
+
   </section>
 {% endblock %}
 

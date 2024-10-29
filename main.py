@@ -413,6 +413,14 @@ def marcas():
     return render_template("listado_marcas.html", marcas=marcas, active='marcas')
 
 
+@app.route("/listado_marcas_buscar")
+def marcas_buscar():
+    nombreBusqueda = request.args.get("buscarMarca")
+    marcas = controlador_marcas.buscar_listado_marcas_nombre(nombreBusqueda)
+
+    return render_template("listado_marcas.html", marcas=marcas, active='marcas' , nombreBusqueda = nombreBusqueda)
+
+
 @app.route("/eliminar_marca", methods=["POST"])
 def eliminar_marca():
     controlador_marcas.eliminar_marca(request.form["id"])
@@ -658,7 +666,7 @@ def estado_comentario():
 
 @app.route("/motivos_comentario_listado")
 def motivos_comentario_listado():
-    motivos = controlador_motivo_comentario.obtener_motivos()
+    motivos = controlador_motivo_comentario.obtener_listado_motivos()
     return render_template("listado_motivos_comentarios.html", motivos=motivos)
 
 @app.route("/agregar_motivo_comentario")
@@ -938,7 +946,7 @@ def actualizar_producto():
 
 @app.route("/listado_tipos_novedad")
 def listado_tipos_novedad():
-    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    tipos_novedad = controlador_tipos_novedad.obtener_listado_tipos_novedad()
     return render_template("listado_tipos_novedad.html", tipos_novedad=tipos_novedad)
 
 @app.route("/agregar_tipo_novedad")
@@ -1019,14 +1027,28 @@ def guardar_img_novedad():
     return render_template("agregar_img_novedad.html", novedad_id=novedad_id, tipos_img_novedad=controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles(), imagen_agregada=True)
 
 
-
 @app.route("/listado_novedades")
 def novedades_listado():
-    novedades = controlador_novedades.obtenerTodasLasNovedades()
+    novedades = controlador_novedades.obtener_listado_novedades()
+    imgs_nov = controlador_imagenes_novedades.obtener_todas_imagenes_novedad()
+    tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+    marcas = controlador_marcas.obtener_marcasXnombre()
+    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+    categorias = controlador_categorias.obtener_categoriasXnombre()
+    return render_template("listado_novedades.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias , categorias=categorias , imgs_nov = imgs_nov)
+
+
+@app.route("/listado_novedades_buscar")
+def novedades_listado_buscar():
+    nombreBusqueda = request.args.get("buscarElemento")
+    novedades = controlador_novedades.obtener_listado_novedades()
     tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
     marcas = controlador_marcas.obtener_listado_marcas()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
-    return render_template("listado_novedades.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias)
+    return render_template("listado_novedades.html", novedades=novedades, tipos_novedad=tipos_novedad, marcas=marcas, subcategorias=subcategorias , nombreBusqueda = nombreBusqueda)
+
+
+
 
 
 @app.route("/eliminar_novedad", methods=["POST"])
@@ -1109,8 +1131,8 @@ def actualizar_img_novedad():
 
 @app.route("/tipos_img_novedad_listado")
 def tipos_img_novedad_listado():
-    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad()
-    return render_template("tipos_img_novedad_listado.html", tipos_img_novedad=tipos_img_novedad)
+    tipos_img_novedad = controlador_tipos_img_novedad.obtener_listado_tipos_img_novedad()
+    return render_template("listado_tipos_img_novedad.html", tipos_img_novedad=tipos_img_novedad)
 
 @app.route("/agregar_tipo_img_novedad")
 def formulario_agregar_tipo_img_novedad():
@@ -1241,7 +1263,7 @@ def eliminar_contenido_info():
 
 @app.route("/listado_estado_pedido")
 def listado_estado_pedido():
-    estados = controlador_estado_pedido.obtener_estados_pedido()
+    estados = controlador_estado_pedido.obtener_listado_estados_pedido()
     return render_template("listado_estados_pedidos.html", estados = estados)
 
 
@@ -1283,7 +1305,7 @@ def eliminar_estado_pedido():
 
 @app.route("/listado_metodo_pago")
 def listado_metodo_pago():
-    metodos = controlador_metodo_pago.obtener_metodo_pago()
+    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
     return render_template("listado_metodo_pago.html", metodos = metodos)
 
 
@@ -1420,7 +1442,7 @@ def actualizar_datos_principales():
 ##########################PARA TIPOS USUARIO################
 @app.route("/listado_tipos_usuario")
 def listado_tipos_usuario():
-    tipos_usuario = controlador_tipos_usuario.obtener_tipos_usuario()
+    tipos_usuario = controlador_tipos_usuario.obtener_listado_tipos_usuario()
     # if tipos_usuario:
     #     print(f"id: {tipos_usuario[0][0]}")
     #     print(f"nombre: {tipos_usuario[0][1]}")

@@ -10,48 +10,72 @@
 
 {% block contenido %}
 
-<h2 class="fw-bolder">Listado de Tipos de Novedad</h2>
-
-<div class="container-fluid" id="break_nav">
-    <div class="col">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
-          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
-          <a href="{{ url_for('formulario_agregar_tipo_novedad') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
+<section class="h_section" id="mainSection">
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">Listado de Tipos de Novedad</h2>
         </div>
-      </div>
-</div>
+    </div>
 
-<table border="0" cellspacing="0" cellpadding="8" class="product_if">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Tipo de Novedad</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for tipo_novedad in tipos_novedad %}
-        <tr>
-            <td>{{ tipo_novedad[0] }}</td>
-            <td>{{ tipo_novedad[1] }}</td>
-            <td class="acciones">
-                <a href="{{ url_for('editar_tipo_novedad', id=tipo_novedad[0]) }}">
-                    <img src="/static/img/elementosCRUD/lapiz.png" alt="Editar">
+    <div class="row" id="break_nav">
+        <div class="col">
+            <div class="input-group">
+                <a href="{{ url_for('formulario_agregar_tipo_novedad') }}" class="button is-success add-btn">
+                    <button type="button" class="main_btn">Agregar</button>
                 </a>
-                <form action="{{ url_for('eliminar_tipo_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()" style="display:inline;">
-                    <input type="hidden" name="id" value="{{ tipo_novedad[0] }}">
-                    <button type="submit">
-                        <img src="/static/img/elementosCRUD/borrar.png" alt="Borrar">
-                    </button>
-                </form>
-            </td>
+            </div>
+        </div>
+    </div>
 
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="table-container">
+        <table cellspacing="0" class="table_listado product_if">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo de Novedad</th>
+                    <th>Cant. Novedades</th>
+                    <th class="opciones_column">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                {% for tipo_novedad in tipos_novedad %}
+                <tr>
+                    <td>{{ tipo_novedad[0] }}</td>
+                    <td>{{ tipo_novedad[1] }}</td>
+                    <td>
+                    <div class="celda_numero">
+                        <p class="
+                        {% if tipo_novedad[2] > 0 %}
+                        num_cant
+                        {% else %}
+                        num_cero
+                        {% endif %}
+                        ">
+                        {{ tipo_novedad[2] }}
+                        </p>
+                    </div>
+                    </td>
+                    <td class="opciones_column">
+                        <div class="acciones">
+                            <a class="opciones_fila" href="{{ url_for('editar_tipo_novedad', id=tipo_novedad[0]) }}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </a>
+                            <form class="opciones_fila" action="{{ url_for('eliminar_tipo_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()">
+                                <input type="hidden" name="id" value="{{ tipo_novedad[0] }}">
+                                <button type="submit">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
+</section>
 {% endblock %}
 
 {% block scripts %}

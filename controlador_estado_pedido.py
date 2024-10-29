@@ -16,6 +16,23 @@ def obtener_estados_pedido():
     return datos
 
 
+def obtener_listado_estados_pedido():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                SELECT 
+                    est.id,
+                    est.nomestado,
+                    count(ped.id)
+                FROM estado_pedido est
+                left join pedido ped on ped.estado_pedidoid = est.id
+                group by est.id
+                       ''')
+        datos = cursor.fetchall()
+    conexion.close()
+    return datos
+
+
 def insertar_estado_pedido(nombre):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:

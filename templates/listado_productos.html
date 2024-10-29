@@ -209,10 +209,7 @@
               <td>
                 {% for subcategoria in subcategorias %}
                   {% if subcategoria.0 == producto.11 %}
-                    <div class="celda_texto_bloque" data-category="{{ subcategoria.4 }}"
-                    
-
-                    >
+                    <div class="celda_texto_bloque" data-category="{{ subcategoria.4 }}">
                       <i class="{{ subcategoria.6 }}"></i>
                       <span>{{ subcategoria.5 }}</span>
 
@@ -227,10 +224,7 @@
               <td>
                 {% for subcategoria in subcategorias %}
                   {% if subcategoria.0 == producto.11 %}
-                    <div class="celda_texto_bloque" data-subcategory="{{ producto.11 }}"
-                    
-                    
-                    >
+                    <div class="celda_texto_bloque" data-subcategory="{{ producto.11 }}">
                       <i class="{{ subcategoria.2 }}"></i>
                       <span>{{ subcategoria.1 }}</span>
 
@@ -245,6 +239,9 @@
 
               <td class="opciones_column">
                 <div class="acciones">
+                  <a class="opciones_fila" href="{{url_for('producto', id=producto[0])}}">
+                    <i class="fa-solid fa-link"></i>
+                  </a>
                   <a class="opciones_fila" href="{{url_for('producto', id=producto[0])}}">
                     <i class="fa-solid fa-eye"></i>
                   </a>

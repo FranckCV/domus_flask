@@ -1,5 +1,4 @@
 {% extends 'maestra_administrador.html' %}
-
 {% block titulo %}
   Marcas
 {% endblock %}
@@ -9,18 +8,65 @@
 {% endblock %}
 
 {% block contenido %}
+
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder">Listado de marcas</h2>
-    <div class="row" id="break_nav">
+    <div class="row">
+      <div class="col">
+        <h2 class="fw-bolder">Listado de marcas</h2>
+      </div>
+
+      {% if nombreBusqueda %}
+        <div class="col-2" >
+          <div class="input-group">
+            <a class="button is-success add-btn" href="{{ url_for('marcas') }}">
+              <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+            </a>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+
+    <div class="row">
+
+      <div class="col-3">
+
+        <table id="grid_resultados" cellspacing="0">
+          <tbody>
+            <tr>
+              <th colspan="3">Resultados</th>
+            </tr>
+            <tr>
+              <th>Total</th>
+              <th>Disp</th>
+              <th>No Disp</th>
+            </tr>
+            <tr>
+              <td id="num_resultados"></td>
+              <td id="num_disp_si"></td>
+              <td id="num_disp_no"></td>
+            </tr>
+          </tbody>
+        </table>
+  
+      </div>
       
       <div class="col">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
-          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
-          <a href="{{ url_for('formulario_agregar_marca') }}" class="button is-success add-btn">
-            <button type="button" id="add_btn">Agregar</button>
-          </a>
-        </div>
+        <form enctype="multipart/form-data" method="GET" action="{{ url_for('marcas_buscar') }}">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarMarca" name="buscarMarca" maxlength="45"
+            {% if nombreBusqueda %}
+              value="{{nombreBusqueda}}"
+            {% endif %}
+            />
+            <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
+              <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+            </button>
+            <a href="{{ url_for('formulario_agregar_marca') }}" class="button is-success add-btn">
+              <button type="button" class="main_btn">Agregar</button>
+            </a>
+          </div>
+        </form>
       </div>
 
     </div>
@@ -42,7 +88,13 @@
         </thead>
         <tbody id="productTableBody">
           {% for marca in marcas %}
-            <tr>
+            <tr class="
+            {% if marca.5 == 1 %}
+              fila_disp_si
+            {% else %}
+              fila_disp_no
+            {% endif %}
+            ">
               <td>{{ marca.0 }}</td>
               <td>{{ marca.1 }}</td>
 
@@ -61,7 +113,11 @@
                   {% if marca.3 %}
                     <img src="{{ marca.3 }}" alt="Banner de {{ marca.1 }}" class="clickable-image"/> <!-- Logo de la marca -->
                   {% else %}
-                    <span>Sin banner</span> <!-- Texto alternativo si no hay logo -->
+                  <div class="espacio_vacio">
+                    <p>
+                      Sin banner
+                    </p>
+                  </div> 
                   {% endif %}
                 </div>
               </td>
@@ -78,17 +134,47 @@
                 </div>
               </td>
 
-              <td>{{ marca.6 }}</td>
+              <td>
+                <div class="celda_numero">
+                  <p class="
+                  {% if marca.6 > 0 %}
+                    num_cant
+                  {% else %}
+                    num_cero
+                  {% endif %}
+                  ">
+                    {{ marca.6 }}
+                  </p>
+                </div>
+              </td>
 
-              <td>{{ marca.7 }}</td>
+              <td>
+                <div class="celda_numero">
+                  <p class="
+                  {% if marca.7 > 0 %}
+                    num_cant
+                  {% else %}
+                    num_cero
+                  {% endif %}
+                  ">
+                    {{ marca.7 }}
+                  </p>
+                </div>
+              </td>
 
               <td class="opciones_column">
                 <div class="acciones">
-                  <a href="{{url_for('marca', id=marca[0])}}"><i class="fa-solid fa-eye"></i></a>
-                  <a href="{{ url_for('editar_marca', id=marca.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                  <form action="{{ url_for('eliminar_marca') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                  <a class="opciones_fila" href="{{url_for('marca', id=marca[0])}}">
+                    <i class="fa-solid fa-link"></i>
+                  </a>
+                  <a class="opciones_fila" href="{{ url_for('editar_marca', id=marca.0) }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </a>
+                  <form class="opciones_fila" action="{{ url_for('eliminar_marca') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
                     <input type="hidden" name="id" value="{{ marca.0 }}" />
-                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                    <button type="submit">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
                   </form>
                 </div>
               </td>
@@ -120,5 +206,6 @@
     }
   </script>
   <script src="/static/js/admin_productos.js"></script>
+  <script src="/static/js/filtroCRUDListado.js"></script>
   <script src="/static/js/imgsCRUDimagencompleta.js"></script>
 {% endblock %}

@@ -19,6 +19,28 @@ def obtener_tipos_img_novedad():
     return tipos_img
 
 
+def obtener_listado_tipos_img_novedad():
+    conexion = obtener_conexion()
+    tipos_img = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                tin.id, 
+                tin.tipo, 
+                tin.disponibilidad,
+                count(img.id)
+            FROM TIPO_IMG_NOVEDAD tin
+            left join img_novedad img on img.tipo_img_novedadid = tin.id
+            group by tin.id
+        '''
+        cursor.execute(sql)
+        tipos_img = cursor.fetchall()
+
+    conexion.close()
+    return tipos_img
+
+
+
 def obtener_tipo_img_novedad_por_id(id):
     conexion = obtener_conexion()
     tipo_img = None

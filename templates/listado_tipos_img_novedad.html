@@ -1,0 +1,103 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+  Listado de Tipos de Imágenes de Novedad
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <div class="row">
+      <div class="col">
+        <h2 class="fw-bolder">Tipos de Imágenes de Novedad</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="input-group">
+          <a href="{{ url_for('formulario_agregar_tipo_img_novedad') }}" class="button is-success add-btn">
+            <button type="button" class="main_btn">Agregar</button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Disponibilidad</th>
+            <th>Cant. Imagenes</th>
+            <th class="opciones_column">Opciones</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          {% for tipo_img in tipos_img_novedad %}
+          <tr class="          
+          {% if tipo_img.2 == 1 %}
+              fila_disp_si
+            {% else %}
+              fila_disp_no
+            {% endif %}          
+          ">
+            <td>{{ tipo_img[0] }}</td>
+            <td>{{ tipo_img[1] }}</td>
+            <td>
+              <div class="celda_estado">
+                {% if tipo_img.2 == 1 %}
+                    <p class="disponibilidad disp_si">Disponible</p>
+                {% else %}
+                    <p class="disponibilidad disp_no">No Disponible</p>
+                {% endif %}
+            </div>
+            </td>
+            <td>
+              <div class="celda_numero">
+                <p class="
+                  {% if tipo_img[3] > 0 %}
+                    num_cant
+                  {% else %}
+                    num_cero
+                  {% endif %}
+                  ">
+                    {{ tipo_img[3] }}
+                  </p>
+              </div>
+            </td>
+
+            <td class="opciones_column">
+              <div class="acciones">
+                <a class="opciones_fila" href="{{ url_for('editar_tipo_img_novedad', id=tipo_img[0]) }}">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </a>
+                <form class="opciones_fila" action="{{ url_for('eliminar_tipo_img_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()">
+                    <input type="hidden" name="id" value="{{ tipo_img[0] }}">
+                    <button type="submit">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </form>
+              </div>
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+    }
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
+{% endblock %}

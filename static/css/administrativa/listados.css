@@ -108,8 +108,8 @@ h2 {
 
     overflow-x: auto;
     overflow-y: auto; 
-    max-height: 400px; 
-    width: 75vw; 
+    max-height: 425px; 
+    width: 74.5vw; 
     position: relative;
 }
 
@@ -217,12 +217,12 @@ h2 {
 }
 
 .espacio_vacio p{
-    font-weight: bold;
+    /* font-weight: bold; */
     margin: 0;
     background-color: #8b8b8b;
     border-radius: 5px;
     color: white;
-    font-size: 80%;
+    font-size: 90%;
     padding-inline: 10px;
     padding-block: 5px;
 }
@@ -237,8 +237,9 @@ h2 {
 }
 
 .celda_texto_bloque img {
-    height: 4vw;
-    /* width: 4vw; */
+    /* height: 5vw; */
+    width: 7vw;
+    /* width: 100%; */
     border-radius: 5px;
     border: 1px solid #d3d3d3;
 }
@@ -247,6 +248,7 @@ h2 {
 
 .acciones {
     display: flex;
+    flex-wrap: wrap;
     gap: 5px;
     justify-content: space-between;
     align-items: center;
@@ -299,26 +301,26 @@ button:hover img {
 }
 
 .table_listado td.opciones_column {
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8ab; */
+    background: linear-gradient(90deg, #fff9f910 0%, #e9e9e9d0 51%);
     border-bottom: 1px solid #c2c2c2;
 }
 
-.table_listado td.opciones_column:hover {
+/* .table_listado td.opciones_column:hover {
     background-color: inherit;
-}
+} */
 
 .table_listado .opciones_column {
     position: sticky;
     right: 0;
     z-index: 1;
+
     /* min-width: 100px; */
 }
 
-.main_img_celda img{
-    height: 5vw;
-    width: 5vw;
+/* .main_img_celda img{
     background-color: white;
-}
+} */
 
 /* .main_img_celda img:hover {
     scale: 4;
@@ -327,13 +329,16 @@ button:hover img {
 
 .table_listado .opciones_fila {
     display: flex;
+    width: 100%;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
 .table_listado .opciones_fila i {
-    padding: 5px;
+    padding: 7px;
+    height: 30px;
+    /* width: 30px; */
     transition: 0.1s ease;
     font-size: 150%;
     border-radius: 100%;
@@ -342,6 +347,32 @@ button:hover img {
 .opciones_fila i:hover {
     background-color: #1e1c7a;
     color: white;
+}
+
+/* CELDAS NUMERO */
+
+.celda_numero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.celda_numero p {
+    font-size: 150%;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    color: white;
+    border-radius: 100%;
+    margin: 0;
+}
+
+.num_cant {
+    background-color: #111057;
+}
+
+.num_cero {
+    background-color: #8b8b8b;
 }
 
 /* CELDAS ESTADO */

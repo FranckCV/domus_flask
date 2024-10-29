@@ -50,3 +50,24 @@ def actualizar_motivo(motivo, disponibilidad, id):
         cursor.execute("UPDATE " + tabla + " SET motivo = %s, disponibilidad = %s WHERE id = %s", (motivo, disponibilidad, id))
     conexion.commit()
     conexion.close()
+
+
+def obtener_listado_motivos():
+    conexion = obtener_conexion()
+    motivos = []
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            mot.id, 
+                            mot.motivo, 
+                            disponibilidad,
+                            count(com.id)
+                       FROM motivo_comentario mot
+                       Left join comentario com on com.motivo_comentarioid = mot.id
+                       group by mot.id
+                       ''')
+        motivos = cursor.fetchall()
+    conexion.close()
+    return motivos
+
+

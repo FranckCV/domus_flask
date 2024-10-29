@@ -20,6 +20,28 @@ function cantResultadosFilas() {
 
 cantResultadosFilas();
 
+function filtroTableSelect(nombreSelect,atributo) {
+  document.getElementById(nombreSelect).addEventListener('change', function() {
+    const elementSelect = this.value;
+    const rows = document.querySelectorAll('#productTableBody tr');
+  
+    rows.forEach(row => {
+      const itemDiv = row.querySelector('[data-'+atributo+']');
+      const itemSelect = itemDiv ? itemDiv.getAttribute('data-'+atributo) : null;
+  
+      // Si el valor seleccionado es "0", mostrar todas las filas
+      if (elementSelect === "0" || itemSelect === elementSelect) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+    cantResultadosFilas();
+  
+  });
+}
+
+
 document.getElementById('categorySelect').addEventListener('change', function() {
   const selectedCategory = this.value;
   const rows = document.querySelectorAll('#productTableBody tr');
@@ -52,43 +74,85 @@ document.getElementById('categorySelect').addEventListener('change', function() 
 });
 
 
-document.getElementById('subcategorySelect').addEventListener('change', function() {
-    const selectedCategory = this.value;
-    const rows = document.querySelectorAll('#productTableBody tr');
-
-    rows.forEach(row => {
-      const categoryDiv = row.querySelector('[data-subcategory]');
-      const productCategory = categoryDiv ? categoryDiv.getAttribute('data-subcategory') : null;
-
-      // Si el valor seleccionado es "0", mostrar todas las filas
-      if (selectedCategory === "0" || productCategory === selectedCategory) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
-
-  cantResultadosFilas();
-
-});
-
-document.getElementById('brandSelect').addEventListener('change', function() {
-    const selectedBrand = this.value;
-    const rows = document.querySelectorAll('#productTableBody tr');
-
-    rows.forEach(row => {
-      const brandDiv = row.querySelector('[data-brand]');
-      const productBrand = brandDiv ? brandDiv.getAttribute('data-brand') : null;
-
-      // Si el valor seleccionado es "0", mostrar todas las filas
-      if (selectedBrand === "0" || productBrand === selectedBrand) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
-  cantResultadosFilas();
-
-});
+if (document.getElementById('subcategorySelect')) {
+  filtroTableSelect('subcategorySelect','subcategory');
+}
 
 
+if (document.getElementById('brandSelect')) {
+  filtroTableSelect('brandSelect','brand');
+}
+
+
+if (document.getElementById('tipoSelect')) {
+  filtroTableSelect('tipoSelect','tipo');
+}
+
+
+
+
+
+// document.getElementById('subcategorySelect').addEventListener('change', function() {
+//   const selectedCategory = this.value;
+//   const rows = document.querySelectorAll('#productTableBody tr');
+
+//   rows.forEach(row => {
+//     const categoryDiv = row.querySelector('[data-subcategory]');
+//     const productCategory = categoryDiv ? categoryDiv.getAttribute('data-subcategory') : null;
+
+//     // Si el valor seleccionado es "0", mostrar todas las filas
+//     if (selectedCategory === "0" || productCategory === selectedCategory) {
+//       row.style.display = '';
+//     } else {
+//       row.style.display = 'none';
+//     }
+//   });
+
+// cantResultadosFilas();
+
+// });
+
+
+
+
+// document.getElementById('brandSelect').addEventListener('change', function() {
+//     const selectedBrand = this.value;
+//     const rows = document.querySelectorAll('#productTableBody tr');
+
+//     rows.forEach(row => {
+//       const brandDiv = row.querySelector('[data-brand]');
+//       const productBrand = brandDiv ? brandDiv.getAttribute('data-brand') : null;
+
+//       // Si el valor seleccionado es "0", mostrar todas las filas
+//       if (selectedBrand === "0" || productBrand === selectedBrand) {
+//         row.style.display = '';
+//       } else {
+//         row.style.display = 'none';
+//       }
+//     });
+//   cantResultadosFilas();
+
+// });
+
+
+
+// if (document.getElementById('tipoSelect')) {
+//   document.getElementById('tipoSelect').addEventListener('change', function() {    
+//     const selectedType = this.value;
+//     const rows = document.querySelectorAll('#productTableBody tr');
+  
+//     rows.forEach(row => {
+//       const typeDiv = row.querySelector('[data-tipo]');
+//       const productType = typeDiv ? typeDiv.getAttribute('data-tipo') : null;
+  
+//       // Si el valor seleccionado es "0", mostrar todas las filas
+//       if (selectedType === "0" || productType === selectedType) {
+//         row.style.display = '';
+//       } else {
+//         row.style.display = 'none';
+//       }
+//     });
+//     cantResultadosFilas();
+  
+//   });
+// }

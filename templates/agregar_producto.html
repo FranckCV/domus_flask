@@ -9,7 +9,7 @@
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Producto</h2><br /><br /><br />
+    <h2 class="fw-bolder">Agregar Producto</h2>
     <form action="{{ url_for('guardar_producto') }}" method="post"  enctype="multipart/form-data">
       <div class="form-grid" id="col_add">
         <!-- Primera columna -->
@@ -18,13 +18,16 @@
             <label for="nombre">Nombre:</label><br />
             <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre" id="nombre" maxlength="150"/>
           </div>
+        </div>
+
+        <div class="row">
           <div class="col">
             <label for="stock">Stock:</label><br />
             <input required type="number" class="input" placeholder="Cantidad en Stock" name="stock" id="stock" />
           </div>
         </div>
-        <div class="row">
 
+        <div class="row">
           <div class="col">
             <label for="price_regular">Precio Regular:</label><br />
             <input type="number" class="input" placeholder="Precio Regular (Opcional)" name="price_regular" id="price_regular" step="0.01" />

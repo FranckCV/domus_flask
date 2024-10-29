@@ -137,6 +137,7 @@ def obtener_todas_imagenes_novedad():
     conexion.close()
     return imagenes_lista
 
+
 def obtener_imagenes_novedad_por_id(novedad_id):
     conexion = obtener_conexion()
     imagenes = []
@@ -168,6 +169,7 @@ def obtener_imagenes_novedad_por_id(novedad_id):
     
     conexion.close()
     return imagenes_lista
+
 
 def obtener_novedad_id_por_imagen_id(imagen_id):
     conexion = obtener_conexion()
