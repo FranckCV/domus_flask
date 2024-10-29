@@ -408,11 +408,15 @@ def obtener_listado_productos():
                     pr.disponibilidad,
                     pr.MARCAid, 
                     pr.SUBCATEGORIAid,
-                    ipr.imagen 
+                    ipr.imagen,
+                    sub.disponibilidad,
+                    cat.disponibilidad,
+                    mar.disponibilidad
                 FROM `producto` pr 
                 left join img_producto ipr on pr.id = ipr.PRODUCTOid
                 left join subcategoria sub on sub.id = pr.subcategoriaid
                 left join categoria cat on cat.id = sub.categoriaid
+                left join marca mar on mar.id = pr.marcaid
                 where ipr.imgPrincipal = 1
             '''
         cursor.execute(sql)
@@ -420,9 +424,9 @@ def obtener_listado_productos():
 
     productos_lista = []
     for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_id, pr_info, pr_stock, pr_fec, pr_disp,pr_mar, pr_sub, img_binario = producto
+        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_id, pr_info, pr_stock, pr_fec, pr_disp,pr_mar, pr_sub, img_binario , sub_disp , cat_disp , mar_disp = producto
         img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_id, pr_info, pr_stock, pr_fec, pr_disp,pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
+        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_id, pr_info, pr_stock, pr_fec, pr_disp,pr_mar, pr_sub, f"data:image/png;base64,{img_url}" , sub_disp , cat_disp , mar_disp))
     
     conexion.close()
     return productos_lista

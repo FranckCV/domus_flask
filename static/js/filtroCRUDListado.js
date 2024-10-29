@@ -1,11 +1,21 @@
 function cantResultadosFilas() {
   const numRows = document.querySelectorAll('#productTableBody tr');
-  const numResult = document.getElementById('num_resultados'); 
+  const numResult = document.getElementById('num_resultados');
+  const numDispResult = document.getElementById('num_disp_si');
+  const numNoDispResult = document.getElementById('num_disp_no');  
 
-  const visibleRows = Array.from(numRows).filter(row => {
-    return window.getComputedStyle(row).display !== 'none';
-  });
-  numResult.innerHTML = `${visibleRows.length}`;  
+  if (numRows && numResult) {
+    const visibleRows = Array.from(numRows).filter(row => {
+      return window.getComputedStyle(row).display !== 'none';
+    });
+    numResult.innerHTML = `${visibleRows.length}`; 
+
+    const dispRows = visibleRows.filter(row => row.classList.contains('fila_disp_si'));
+    numDispResult.innerHTML = `${dispRows.length}`;
+
+    const dispNoRows = visibleRows.filter(row => row.classList.contains('fila_disp_no'));
+    numNoDispResult.innerHTML = `${dispNoRows.length}`;
+  } 
 }
 
 cantResultadosFilas();

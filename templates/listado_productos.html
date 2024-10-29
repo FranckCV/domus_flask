@@ -32,27 +32,45 @@
   <div class="row">
     
     <div class="col-3">
-      <div id="grid_resultados">
-        <div class="head" >Resultados:</div>
-        <div class="body" id="num_resultados"></div>
-      </div>
+
+      <table id="grid_resultados" cellspacing="0">
+        <tbody>
+          <tr>
+            <th colspan="3">Resultados</th>
+          </tr>
+          <tr>
+            <th>Total</th>
+            <th>Disp</th>
+            <th>No Disp</th>
+          </tr>
+          <tr>
+            <td id="num_resultados"></td>
+            <td id="num_disp_si"></td>
+            <td id="num_disp_no"></td>
+          </tr>
+        </tbody>
+      </table>
+
     </div>
 
-    <form class="col" enctype="multipart/form-data" method="GET" action="{{ url_for('productos_buscar') }}">
-      <div class="input-group">
-        <input required type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarProducto" name="buscarProducto"
-          {% if nombreBusqueda %}
-            value="{{nombreBusqueda}}"
-          {% endif %}
-        />
-        <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2" >
-          <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
-        </button>
-        <a href="{{ url_for('formulario_agregar_producto') }}" class="button is-success add-btn">
-          <button type="button" class="main_btn">Agregar</button>
-        </a>
-      </div>
-    </form>
+    <div class="col">
+      <form enctype="multipart/form-data" method="GET" action="{{ url_for('productos_buscar') }}">
+        <div class="input-group">
+          <input required type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarProducto" name="buscarProducto" maxlength="150"
+            {% if nombreBusqueda %}
+              value="{{nombreBusqueda}}"
+            {% endif %}
+          />
+          <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2" >
+            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+          </button>
+          <a href="{{ url_for('formulario_agregar_producto') }}" class="button is-success add-btn">
+            <button type="button" class="main_btn">Agregar</button>
+          </a>
+        </div>
+      </form>
+    </div>
+
   </div>
 
   <div class="row" id="break_nav">
@@ -86,23 +104,6 @@
       </select>
     </div>
 
-    <!-- <div class="col">
-      <table id="grid_resultados">
-        <thead>
-          <tr>
-            <th>Resultados:</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td id="num_resultados">
-
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
-
   </div>
 
   <div class="table-container">
@@ -128,7 +129,7 @@
         <tbody id="productTableBody">
           {% for producto in productos %}
             <tr class="
-            {% if producto.9 == 1 %}
+            {% if producto.9 == 1 and producto.13 == 1 and producto.14 == 1 and producto.15 == 1 %}
               fila_disp_si
             {% else %}
               fila_disp_no
@@ -198,6 +199,9 @@
                     <div class="celda_texto_bloque" data-brand="{{ marca.0 }}">
                       <img src="{{ marca.2 }}" alt="{{ producto.1 }} logo" class="clickable-image"/>
                       <span>{{ marca.1 }}</span>
+                      {% if producto.15 == 0 %}
+                        <p class="disponibilidad disp_no">No Disponible</p>
+                      {% endif %}
                     </div>
                   {% endif %}
                 {% endfor %}
@@ -205,9 +209,17 @@
               <td>
                 {% for subcategoria in subcategorias %}
                   {% if subcategoria.0 == producto.11 %}
-                    <div class="celda_texto_bloque" data-category="{{ subcategoria.4 }}">
+                    <div class="celda_texto_bloque" data-category="{{ subcategoria.4 }}"
+                    
+
+                    >
                       <i class="{{ subcategoria.6 }}"></i>
                       <span>{{ subcategoria.5 }}</span>
+
+                      {% if producto.14 == 0 %}
+                        <p class="disponibilidad disp_no">No Disponible</p>
+                      {% endif %}
+
                     </div>
                   {% endif %}
                 {% endfor %}
@@ -215,9 +227,17 @@
               <td>
                 {% for subcategoria in subcategorias %}
                   {% if subcategoria.0 == producto.11 %}
-                    <div class="celda_texto_bloque" data-subcategory="{{ producto.11 }}">
+                    <div class="celda_texto_bloque" data-subcategory="{{ producto.11 }}"
+                    
+                    
+                    >
                       <i class="{{ subcategoria.2 }}"></i>
                       <span>{{ subcategoria.1 }}</span>
+
+                      {% if producto.13 == 0 or producto.14 == 0 %}
+                        <p class="disponibilidad disp_no">No Disponible</p>
+                      {% endif %}
+
                     </div>
                   {% endif %}
                 {% endfor %}
