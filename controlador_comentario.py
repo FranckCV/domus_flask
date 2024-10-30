@@ -11,6 +11,7 @@ def obtener_comentarios_disponibles():
     conexion.close()
     return comentarios
 
+
 def obtener_comentario_por_id(id):
     conexion = obtener_conexion()
     comentario = None
@@ -21,6 +22,7 @@ def obtener_comentario_por_id(id):
     conexion.close()
     return comentario
 
+
 def insertar_comentario(nombres, apellidos, email, celular, mensaje, estado, MOTIVO_COMENTARIOid, USUARIOid):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -29,6 +31,7 @@ def insertar_comentario(nombres, apellidos, email, celular, mensaje, estado, MOT
                        (nombres, apellidos, email, celular, mensaje, estado, MOTIVO_COMENTARIOid, USUARIOid))
     conexion.commit()
     conexion.close()
+
 
 def obtener_comentarios():
     conexion = obtener_conexion()
@@ -48,6 +51,119 @@ def obtener_comentarios():
     return comentarios
 
 
+def obtener_listado_comentarios():
+    conexion = obtener_conexion()
+    comentarios = []
+    with conexion.cursor() as cursor:
+        
+        sql = '''
+            SELECT 
+                c.id, 
+                c.nombres, 
+                c.apellidos, 
+                c.email, 
+                c.celular, 
+                c.mensaje, 
+                c.fecha_registro, 
+                c.estado, 
+                mc.motivo,
+                mc.id
+            FROM comentario c
+            left JOIN motivo_comentario mc ON c.MOTIVO_COMENTARIOid = mc.id
+            order by c.estado asc, c.fecha_registro desc
+        '''
+        cursor.execute(sql)
+        comentarios = cursor.fetchall()
+    conexion.close()
+    return comentarios
+
+
+def buscar_listado_comentarios_mensaje(mensaje):
+    conexion = obtener_conexion()
+    comentarios = []
+    with conexion.cursor() as cursor:
+        
+        sql = '''
+            SELECT 
+                c.id, 
+                c.nombres, 
+                c.apellidos, 
+                c.email, 
+                c.celular, 
+                c.mensaje, 
+                c.fecha_registro, 
+                c.estado, 
+                mc.motivo,
+                mc.id
+            FROM comentario c
+            left JOIN motivo_comentario mc ON c.MOTIVO_COMENTARIOid = mc.id
+            WHERE UPPER(c.mensaje) LIKE UPPER ('%'''+str(mensaje)+'''%')
+            order by c.estado asc, c.fecha_registro desc
+        '''
+        cursor.execute(sql)
+        comentarios = cursor.fetchall()
+    conexion.close()
+    return comentarios
+
+
+def buscar_listado_comentarios_nombre(nombre):
+    conexion = obtener_conexion()
+    comentarios = []
+    with conexion.cursor() as cursor:
+        
+        sql = '''
+            SELECT 
+                c.id, 
+                c.nombres, 
+                c.apellidos, 
+                c.email, 
+                c.celular, 
+                c.mensaje, 
+                c.fecha_registro, 
+                c.estado, 
+                mc.motivo,
+                mc.id
+            FROM comentario c
+            left JOIN motivo_comentario mc ON c.MOTIVO_COMENTARIOid = mc.id
+            WHERE UPPER(CONCAT(c.nombres, ' ' , c.apellidos)) LIKE UPPER ('%'''+nombre+'''%')
+            order by c.estado asc, c.fecha_registro desc;
+        '''
+        cursor.execute(sql)
+        comentarios = cursor.fetchall()
+    conexion.close()
+    return comentarios
+
+
+def buscar_listado_comentarios_palabra(palabra):
+    conexion = obtener_conexion()
+    comentarios = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                c.id, 
+                c.nombres, 
+                c.apellidos, 
+                c.email, 
+                c.celular, 
+                c.mensaje, 
+                c.fecha_registro, 
+                c.estado, 
+                mc.motivo,
+                mc.id
+            FROM comentario c
+            left JOIN motivo_comentario mc ON c.MOTIVO_COMENTARIOid = mc.id
+            WHERE 
+                (UPPER(CONCAT(c.nombres, ' ' , c.apellidos)) LIKE UPPER ('%'''+palabra+'''%'))
+                or (UPPER(c.mensaje) LIKE UPPER ('%'''+str(palabra)+'''%'))
+            order by c.estado asc, c.fecha_registro desc;
+        '''
+        cursor.execute(sql)
+        comentarios = cursor.fetchall()
+    conexion.close()
+    return comentarios
+
+
+
 def eliminar_comentario(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -55,12 +171,14 @@ def eliminar_comentario(id):
     conexion.commit()
     conexion.close()
 
+
 def estado_comentario(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("UPDATE " + tabla + " SET estado = 0 WHERE id = %s", (id,))
+        cursor.execute("UPDATE " + tabla + " SET estado = 1 WHERE id = %s", (id,))
     conexion.commit()
     conexion.close()
+
 
 def actualizar_comentario(nombres, apellidos, email, celular, mensaje, estado, MOTIVO_COMENTARIOid, USUARIOid, id):
     conexion = obtener_conexion()

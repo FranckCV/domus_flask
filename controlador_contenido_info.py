@@ -21,6 +21,29 @@ def obtener_datos_contenido_info():
     return datos
 
 
+def buscar_datos_contenido_info_titulo(titulo):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            tip.id,
+                            tip.nombre,
+                            tip.faicon_cont,
+                            tip.descripcion,
+                            cont.id,
+                            cont.titulo,
+                            cont.cuerpo
+                        FROM tipo_contenido_info tip
+                        LEFT JOIN contenido_info cont on cont.TIPO_CONTENIDO_INFOid = tip.id
+                        WHERE UPPER(cont.titulo) LIKE UPPER ('%'''+str(titulo)+'''%')
+                       ''')
+        datos = cursor.fetchall()
+    conexion.close()
+    return datos
+
+
+
+
 def obtener_listado_tipos_contenido():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -30,7 +53,8 @@ def obtener_listado_tipos_contenido():
                             tip.nombre,
                             tip.descripcion,
                             tip.faicon_cont,
-                            count(cont.id)
+                            count(cont.id),
+                            tip.disponibilidad
                         FROM tipo_contenido_info tip
                         left join contenido_info cont on cont.tipo_contenido_infoid = tip.id
                         group by tip.id

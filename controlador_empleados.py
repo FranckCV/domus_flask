@@ -14,6 +14,7 @@ def obtener_usuario_por_id(id):
     conexion.close()
     return usuario
 
+
 def insertar_usuario(nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -27,6 +28,7 @@ def insertar_usuario(nombres, apellidos, doc_identidad, img_usuario, genero, fec
     conexion.commit()
     conexion.close()
 
+
 def actualizar_usuario(nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -38,6 +40,7 @@ def actualizar_usuario(nombres, apellidos, doc_identidad, img_usuario, genero, f
                            (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, id))
     conexion.commit()
     conexion.close()
+
 
 def obtener_usuarios_emp():
     conexion = obtener_conexion()
@@ -53,12 +56,14 @@ def obtener_usuarios_emp():
     conexion.close()
     return usuarios
 
+
 def eliminar_usuario(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         cursor.execute("DELETE FROM " + tabla + " WHERE id = %s", (id,))
     conexion.commit()
     conexion.close()
+
 
 def verificar_correo_existente(correo):
     conexion = obtener_conexion()
@@ -67,3 +72,31 @@ def verificar_correo_existente(correo):
         resultado = cursor.fetchone()
     conexion.close()
     return resultado is not None  # Retorna True si el correo ya existe
+
+
+def obtener_listado_usuarios_empleados():
+    conexion = obtener_conexion()
+    usuarios = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    usu.id, 
+                    usu.nombres, 
+                    usu.apellidos, 
+                    usu.doc_identidad, 
+                    usu.img_usuario, 
+                    usu.genero, 
+                    usu.fecha_nacimiento, 
+                    usu.telefono, 
+                    usu.correo,
+                    usu.disponibilidad,
+                    usu.contraseña
+                FROM USUARIO usu
+                WHERE usu.TIPO_USUARIOid = 2
+        '''
+        cursor.execute(sql)
+        usuarios = cursor.fetchall()
+    conexion.close()
+    return usuarios
+
+

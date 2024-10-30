@@ -10,19 +10,32 @@
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder">Listado de Contenido Informativo</h2>
-    <div class="container-fluid" id="break_nav">
+
+    <div class="row">
       <div class="col">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
-          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
-          <a href="{{ url_for('formulario_agregar_contenido_info') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
-        </div>
+        <h2 class="fw-bolder">Listado de Contenido Informativo</h2>
       </div>
     </div>
 
-    <div class="table-containersy">
-      <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+    <!-- <div class="row" id="break_nav">
+        <div class="col">
+            <form enctype="multipart/form-data" id="buscarFormulario" method="GET" action="{{ url_for('listado_contenido_info_buscar') }}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar por titulo  " aria-label="Buscar"
+                    {% if nombreBusqueda %}
+                        value="{{nombreBusqueda}}"
+                    {% endif %}
+                        name="buscarElemento" id="buscarElemento" />
+                    <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
+                        <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div> -->
+
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
         <thead>
           <tr>
             <th>ID</th>
@@ -31,29 +44,37 @@
             <th>ID Cont</th>
             <th>Titulo</th>
             <th>Cuerpo</th>
-            <th>Opciones</th>
+            <th class="opciones_column">Opciones</th>
           </tr>
         </thead>
         <tbody>
           {% for seccion in secciones %}
           {% set datos_lista = datos | selectattr(3, 'equalto', seccion[0]) | list %}
           {% if datos_lista | length > 0 %}
-            <tr>
+            <tr class="
+            {% if seccion[5] == 1 %}
+              fila_disp_si
+            {% else %}
+              fila_disp_no
+            {% endif %}
+            ">
               <td rowspan="{{ datos_lista | length }}">{{ seccion[0] }}</td>
               <td rowspan="{{ datos_lista | length }}">
                 <div class="celda_texto_bloque">
                   <i class="{{ seccion[3] }}"></i>
                   <span>{{ seccion[1] }}</span>
+                  {% if seccion.5 == 1 %}
+                    <p class="disponibilidad disp_si">Disponible</p>
+                  {% else %}
+                    <p class="disponibilidad disp_no">No Disponible</p>
+                  {% endif %}
                 </div>
               </td>
               <td rowspan="{{ datos_lista | length }}" class="opciones_column">
                 <div class="acciones">
-                  <a href="{{url_for('selectedContenidoInformativo', id=seccion[0])}}"><i class="fa-solid fa-eye"></i></a>
-                  <a href="{{ url_for('editar_tipo_contenido_info', id=seccion[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                  <form action="{{ url_for('eliminar_tipo_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                    <input type="hidden" name="id" value="{{ seccion[0] }}" />
-                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
-                  </form>
+                  <a class="opciones_fila" href="{{url_for('selectedContenidoInformativo', id=seccion[0])}}">
+                    <i class="fa-solid fa-link"></i>
+                  </a>                  
                 </div>
               </td>
 
@@ -62,27 +83,41 @@
               <td>{{ datos_lista[0][2] }}</td>
               <td class="opciones_column">
                 <div class="acciones">
-                  <a href="{{ url_for('editar_contenido_info', id=datos_lista[0][0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                  <form action="{{ url_for('eliminar_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                  <a class="opciones_fila" href="{{ url_for('editar_contenido_info', id=datos_lista[0][0]) }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </a>
+                  <form class="opciones_fila" action="{{ url_for('eliminar_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
                     <input type="hidden" name="id" value="{{ datos_lista[0][0] }}" />
-                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                    <button type="submit">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
                   </form>
                 </div>
               </td>
             </tr>
 
             {% for dato in datos_lista[1:] %}
-              <tr>
+              <tr class="
+              {% if seccion[5] == 1 %}
+                fila_disp_si
+              {% else %}
+                fila_disp_no
+              {% endif %}
+              ">
                 <td>{{ dato[0] }}</td>
                 <td>{{ dato[1] }}</td>
                 <td>{{ dato[2] }}</td>
 
                 <td class="opciones_column">
                   <div class="acciones">
-                    <a href="{{ url_for('editar_contenido_info', id=dato.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                    <form action="{{ url_for('eliminar_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <a class="opciones_fila" href="{{ url_for('editar_contenido_info', id=dato.0) }}">
+                      <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+                    <form class="opciones_fila" action="{{ url_for('eliminar_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
                       <input type="hidden" name="id" value="{{ dato.0 }}" />
-                      <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                      <button type="submit">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
                     </form>
                   </div>
                 </td>

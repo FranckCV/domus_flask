@@ -144,12 +144,13 @@ def obtener_imagenes_novedad_por_id(novedad_id):
     with conexion.cursor() as cursor:
         sql = '''
             SELECT 
-                id, 
-                nomImagen, 
-                imagen, 
-                TIPO_IMG_NOVEDADid, 
-                NOVEDADid 
-            FROM IMG_NOVEDAD
+                img.id, 
+                img.nomImagen, 
+                img.imagen, 
+                tip.tipo, 
+                img.NOVEDADid 
+            FROM IMG_NOVEDAD img
+            LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
             WHERE NOVEDADid = %s
             ORDER BY nomImagen ASC
         '''
@@ -163,7 +164,7 @@ def obtener_imagenes_novedad_por_id(novedad_id):
             img_base64 = base64.b64encode(img_binario).decode('utf-8')
             img_url = f"data:image/png;base64,{img_base64}"
         else:
-            img_url = ""  # Placeholder si no hay imagen
+            img_url = "" 
 
         imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id, novedad_id))
     

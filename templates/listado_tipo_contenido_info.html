@@ -16,7 +16,32 @@
       </div>
     </div>
 
-    <div class="row" id="break_nav">
+    <div class="row">
+
+      <div class="col-3">
+
+        <table id="grid_resultados" cellspacing="0">
+          <tbody>
+            <tr>
+              <th colspan="3">Resultados</th>
+            </tr>
+            <tr>
+              <th>Total</th>
+              <th>Disp</th>
+              <th>No Disp</th>
+            </tr>
+            <tr>
+              <td id="num_resultados"></td>
+              <td id="num_disp_si"></td>
+              <td id="num_disp_no"></td>
+            </tr>
+          </tbody>
+        </table>
+  
+      </div>
+
+
+
       <div class="col">
         <div class="input-group">
           <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
@@ -37,26 +62,58 @@
             <th>Seccion</th>
             <th>Icono</th>
             <th>Descripcion</th>
-            <th># Elementos</th>
+            <th>Disponibilidad</th>
+            <th># Articulos</th>
             <th class="opciones_column">Opciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="productTableBody">
           
           {% for tipo in tipos %}
-            <tr>
+            <tr class="
+            {% if tipo.5 == 1 %}
+              fila_disp_si
+            {% else %}
+              fila_disp_no
+            {% endif %}
+            ">
               <td>{{ tipo.0 }}</td>
               <td>{{ tipo.1 }}</td>
               <td><i class="{{ tipo.3 }}"></i></td>
               <td>{{ tipo.2 }}</td>
-              <td>{{ tipo.4 }}</td>
+              <td>
+                <div class="celda_estado">
+                  {% if tipo.5 == 1 %}
+                    <p class="disponibilidad disp_si">Disponible</p>
+                  {% else %}
+                    <p class="disponibilidad disp_no">No Disponible</p>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                <div class="celda_numero">
+                  <p class="
+                    {% if tipo[4] > 0 %}
+                      num_cant
+                    {% else %}
+                      num_cero
+                    {% endif %}
+                    ">
+                      {{ tipo[4] }}
+                    </p>
+                </div>
+              </td>
 
               <td class="opciones_column">
                 <div class="acciones">
-                  <a href="{{ url_for('editar_tipo_contenido_info', id=tipo.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                  <form action="{{ url_for('eliminar_tipo_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                  <a class="opciones_fila" href="{{ url_for('editar_tipo_contenido_info', id=tipo.0) }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </a>
+                  <form class="opciones_fila" action="{{ url_for('eliminar_tipo_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
                     <input type="hidden" name="id" value="{{ tipo.0 }}" />
-                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                    <button type="submit">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
                   </form>
                 </div>
               </td>
@@ -84,4 +141,5 @@
     }
   </script>
   <script src="/static/js/admin_productos.js"></script>
+  <script src="/static/js/filtroCRUDListado.js"></script>
 {% endblock %}

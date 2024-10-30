@@ -1,6 +1,7 @@
 from bd import obtener_conexion
 tabla = 'motivo_comentario'
 
+
 def obtener_motivos_disponibles():
     conexion = obtener_conexion()
     motivos = []
@@ -10,6 +11,7 @@ def obtener_motivos_disponibles():
         motivos = cursor.fetchall()
     conexion.close()
     return motivos
+
 
 def obtener_motivo_por_id(id):
     conexion = obtener_conexion()
@@ -21,12 +23,14 @@ def obtener_motivo_por_id(id):
     conexion.close()
     return motivo
 
+
 def insertar_motivo(motivo, disponibilidad):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         cursor.execute("INSERT INTO " + tabla + "(motivo, disponibilidad) VALUES (%s, %s)", (motivo, disponibilidad))
     conexion.commit()
     conexion.close()
+
 
 def obtener_motivos():
     conexion = obtener_conexion()
@@ -37,12 +41,14 @@ def obtener_motivos():
     conexion.close()
     return motivos
 
+
 def eliminar_motivo(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         cursor.execute("DELETE FROM " + tabla + " WHERE id = %s", (id,))
     conexion.commit()
     conexion.close()
+
 
 def actualizar_motivo(motivo, disponibilidad, id):
     conexion = obtener_conexion()
@@ -69,5 +75,26 @@ def obtener_listado_motivos():
         motivos = cursor.fetchall()
     conexion.close()
     return motivos
+
+
+def buscar_listado_motivos_nombre(nombre):
+    conexion = obtener_conexion()
+    motivos = []
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            mot.id, 
+                            mot.motivo, 
+                            disponibilidad,
+                            count(com.id)
+                       FROM motivo_comentario mot
+                       Left join comentario com on com.motivo_comentarioid = mot.id
+                       WHERE UPPER(mot.motivo) LIKE UPPER ('%'''+str(nombre)+'''%')
+                       group by mot.id
+                       ''')
+        motivos = cursor.fetchall()
+    conexion.close()
+    return motivos
+
 
 

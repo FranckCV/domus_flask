@@ -10,7 +10,7 @@
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder">Detalles del Pedido</h2>
+    <h2 class="fw-bolder">Detalles del Pedido ID {{pedido_id}}</h2>
     <div class="container-fluid" id="break_nav">
       <div class="col">
         <div class="input-group mb-3">
@@ -20,8 +20,8 @@
       </div>
     </div>
 
-    <div class="table-containersy">
-      <table border="0" cellspacing="0" cellpadding="8" class="product_if">
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
         <thead>
           <tr>
             <th>Imagen</th>

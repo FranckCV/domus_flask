@@ -11,7 +11,30 @@ Empleados
 {% block contenido %}
 <section class="h_section scrollable-section" id="mainSection">
     <h2 class="fw-bolder">Listado de Empleados</h2>
-    <div class="container-fluid" id="break_nav">
+    <div class="row" id="break_nav">
+
+        <div class="col-3">
+
+            <table id="grid_resultados" cellspacing="0">
+              <tbody>
+                <tr>
+                  <th colspan="3">Resultados</th>
+                </tr>
+                <tr>
+                  <th>Total</th>
+                  <th>Disp</th>
+                  <th>No Disp</th>
+                </tr>
+                <tr>
+                  <td id="num_resultados"></td>
+                  <td id="num_disp_si"></td>
+                  <td id="num_disp_no"></td>
+                </tr>
+              </tbody>
+            </table>
+      
+        </div>
+
         <div class="col">
             <!-- Formulario de búsqueda y filtro por tipo de usuario -->
             <form id="buscarFormulario" method="GET">
@@ -31,67 +54,95 @@ Empleados
         </div>
     </div>
 
-    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
-        <thead>
-            <tr>
-                <th>ID Usuario</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Documento de Identidad</th>
-                <th>Género</th>
-                <th>Fecha de nacimiento</th>
-                <th>Celular</th>
-                <th>Correo</th>
-                <th>Contraseña</th>
-                <th>Disponibilidad</th>
-                <th>Opciones</th>
-            </tr>
-        </thead>
-        <tbody id="tablaUsuarios">
-            {% for usuario in usuarios %}
-            <tr>
-                <td>{{ usuario[0] }}</td>
-                <td>{{ usuario[1] }}</td>
-                <td>{{ usuario[2] }}</td>
-                <td>{{ usuario[3] }}</td>
-                <td>
-                    {% if usuario[5] == 1 %}
-                    <span>Masculino</span>
-                    {% else %}
-                    <span>Femenino</span>
-                    {% endif %}
-                </td>
-                <td>{{ usuario[6] }}</td>
-                <td>{{ usuario[7] }}</td>
-                <td>{{ usuario[8] }}</td>
-                <td>{{ usuario[9] }}</td>
-                <td>
-                    {% if usuario[10] == 1 %}
-                    <span>Disponible</span>
-                    {% else %}
-                    <span>No disponible</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <div class="acciones">
-                        <!-- Enviar el ID como parámetro en la URL -->
-                        <a href="{{ url_for('editar_empleado', id=usuario[0]) }}">
-                            <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
-                        </a>
-
-                        <form action="{{ url_for('eliminar_empleado') }}" method="POST"
-                            onsubmit="return confirmarEliminacion()" id="deleteF">
-                            <input type="hidden" name="id" value="{{ usuario[0] }}">
-                            <button type="submit">
-                                <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
-                            </button>
-                        </form>
+    <div class="table-container">
+        <table cellspacing="0" class="table_listado product_if">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Foto de Perfil</th>
+                    <th>Documento de Identidad</th>
+                    <th>Sexo</th>
+                    <th>Correo Electrónico</th>
+                    <th>Contraseña</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Teléfono</th>
+                    <th>Disponibilidad</th>
+                    <th class="opciones_column">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                {% for usuario in usuarios %}
+                <tr class="
+                {% if usuario.9 == 1 %}
+                  fila_disp_si
+                {% else %}
+                  fila_disp_no
+                {% endif %}
+                ">
+                    <td>{{ usuario[0] }}</td>
+                    <td>{{ usuario[1] }}</td>
+                    <td>{{ usuario[2] }}</td>
+                    <td>
+                        <div class="celda_texto_bloque">
+                        {% if usuario.4 %}
+                            <img src="{{ usuario.3 }}" alt="Foto de Usuario {{ usuario.0 }}" class="clickable-image"/> <!-- Logo de la marca -->
+                        {% else %}
+                        <div class="espacio_vacio">
+                            <p>
+                            Sin foto
+                            </p>
+                        </div> 
+                        {% endif %}
+                        </div>
+                    </td>
+                    <td>{{ usuario[3] }}</td>
+                    <td>
+                    <div class="celda_estado">
+                        {% if usuario.5 == 1 %}
+                        <p class="genero gen_mas">Masculino</p>
+                        {% else %}
+                        <p class="genero gen_fem">Femenino</p>
+                        {% endif %}
                     </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                    <td>{{ usuario[8] }}</td>
+                    <td>
+                        <strong>{{ usuario.10 }}</strong>
+                    </td>
+                    <td>{{ usuario[6] }}</td>
+                    <td>{{ usuario[7] }}</td>
+                    <td>
+                    <div class="celda_estado">
+                        {% if usuario.9 == 1 %}
+                        <p class="disponibilidad disp_si">Disponible</p>
+                        {% else %}
+                        <p class="disponibilidad disp_no">No Disponible</p>
+                        {% endif %}
+                    </div>
+                    </td>
+                    <td class="opciones_column">
+                        <div class="acciones">
+                            <a class="opciones_fila" href="{{ url_for('editar_empleado', id=usuario[0]) }}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </a>
+
+                            <form class="opciones_fila" action="{{ url_for('eliminar_empleado') }}" method="POST"
+                                onsubmit="return confirmarEliminacion()" id="deleteF">
+                                <input type="hidden" name="id" value="{{ usuario[0] }}">
+                                <button type="submit">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </section>
 {% endblock %}
 
@@ -109,7 +160,7 @@ Empleados
 
     function filtrarUsuarios() {
         const searchTerm = document.getElementById('buscarUsuario').value.toLowerCase();  // Obtenemos el valor de búsqueda en minúsculas
-        const rows = document.querySelectorAll('#tablaUsuarios tr');  // Seleccionamos todas las filas del tbody
+        const rows = document.querySelectorAll('#productTableBody tr');  // Seleccionamos todas las filas del tbody
 
         rows.forEach(row => {
             const nombres = row.querySelector('td:nth-child(2)').textContent.toLowerCase();  // Segunda columna: Nombres
@@ -126,4 +177,6 @@ Empleados
         });
     }
 </script>
+<script src="/static/js/filtroCRUDListado.js"></script>
+
 {% endblock %}

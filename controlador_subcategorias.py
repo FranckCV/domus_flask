@@ -104,9 +104,14 @@ def obtener_subcategorias():
                             sub.disponibilidad ,
                             sub.categoriaid , 
                             cat.categoria ,
-                            cat.faicon_cat 
+                            cat.faicon_cat,
+                            count(pr.id),
+                            count(nov.id)
                         FROM subcategoria sub 
-                        INNER JOIN categoria cat on cat.id = sub.categoriaid
+                        left JOIN categoria cat on cat.id = sub.categoriaid
+                        left join producto pr on pr.SUBCATEGORIAid = sub.id
+                        left join novedad nov on nov.SUBCATEGORIAid = sub.id
+                        group by sub.id;
                        ''')
         subcategorias = cursor.fetchall()
     conexion.close()

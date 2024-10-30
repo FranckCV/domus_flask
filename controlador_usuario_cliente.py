@@ -27,7 +27,8 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
         return -1  
     finally:
         conexion.close() 
-        
+
+
 def confirmarDatos(correo, contraseña):
     conexion= obtener_conexion()
     try:
@@ -42,6 +43,7 @@ def confirmarDatos(correo, contraseña):
     except Exception as e:
         print(f"Error al insertar el usuario: {e}")
         return -1    
+
 
 ########## aqui haré cositas jasdjajsdas ####
 
@@ -74,6 +76,75 @@ def obtener_usuarios_clientes():
     finally:
         conexion.close()
 
+
+def obtener_listado_usuarios_clientes():
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+                SELECT 
+                    usu.id, 
+                    usu.nombres, 
+                    usu.apellidos, 
+                    usu.doc_identidad, 
+                    usu.img_usuario, 
+                    usu.genero, 
+                    usu.fecha_nacimiento, 
+                    usu.telefono, 
+                    usu.correo, 
+                    usu.disponibilidad,
+                    count(ped.id)
+                FROM USUARIO usu
+                LEFT JOIN pedido ped on ped.usuarioid = usu.id
+                WHERE TIPO_USUARIOid = 3
+                GROUP by usu.id
+            '''
+            cursor.execute(sql)
+            usuarios = cursor.fetchall() 
+
+            return usuarios
+    except Exception as e:
+        print(f"Error al obtener usuarios: {e}")
+        return []
+    finally:
+        conexion.close()
+
+
+def buscar_listado_usuarios_clientes_nombre(nombre):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+                SELECT 
+                    usu.id, 
+                    usu.nombres, 
+                    usu.apellidos, 
+                    usu.doc_identidad, 
+                    usu.img_usuario, 
+                    usu.genero, 
+                    usu.fecha_nacimiento, 
+                    usu.telefono, 
+                    usu.correo, 
+                    usu.disponibilidad,
+                    count(ped.id)
+                FROM USUARIO usu
+                LEFT JOIN pedido ped on ped.usuarioid = usu.id
+                WHERE TIPO_USUARIOid = 3 and 
+                UPPER(CONCAT(usu.nombres, ' ' , usu.apellidos)) LIKE UPPER ('%'''+nombre+'''%')
+                GROUP by usu.id
+            '''
+            cursor.execute(sql)
+            usuarios = cursor.fetchall() 
+
+            return usuarios
+    except Exception as e:
+        print(f"Error al obtener usuarios: {e}")
+        return []
+    finally:
+        conexion.close()
+
+
+
 def obtener_usuario_cliente_por_id(id):
     conexion = obtener_conexion()
     try:
@@ -102,6 +173,7 @@ def obtener_usuario_cliente_por_id(id):
         return None
     finally:
         conexion.close()
+
 
 def actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad):
     conexion = obtener_conexion()

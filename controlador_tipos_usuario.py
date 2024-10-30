@@ -30,7 +30,8 @@ def obtener_listado_tipos_usuario():
                 tip.tipo, 
                 tip.descripcion,
                 tip.imagen,
-                count(usu.id)
+                count(usu.id),
+                tip.disponibilidad
             FROM TIPO_USUARIO tip
             left join usuario usu on tip.id = usu.tipo_usuarioid
             group by tip.id
@@ -41,14 +42,14 @@ def obtener_listado_tipos_usuario():
 
     elementos_tipos = []
     for tipo in tipos_usuario:
-        tip_id , tip_nom , tip_desc , tip_img , cant = tipo
+        tip_id , tip_nom , tip_desc , tip_img , cant , tip_disp = tipo
 
         if tip_img:
             img_base64 = base64.b64encode(tip_img).decode('utf-8')
             img_formato = f"data:image/png;base64,{img_base64}" 
         else:
             img_formato = ''
-        elementos_tipos.append((tip_id , tip_nom , tip_desc , img_formato , cant))
+        elementos_tipos.append((tip_id , tip_nom , tip_desc , img_formato , cant , tip_disp))
 
     conexion.close()
     return elementos_tipos

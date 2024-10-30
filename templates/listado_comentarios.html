@@ -10,24 +10,57 @@ Listado de Comentarios
 
 {% block contenido %}
 <section class="h_section scrollable-section" id="mainSection">
-    <h2 class="fw-bolder">Listado de Comentarios</h2>
-    <div class="container-fluid" id="break_nav">
-        <div class="col">
-            <!-- Formulario de búsqueda y filtro por motivo -->
-            <form id="buscarFormulario" method="GET">
-                <div class="input-group mb-3">
-                    <input style="height: 50px;" type="text" class="form-control" placeholder="Buscar por nombre o apellidos" aria-label="Buscar"
-                        name="buscar" id="buscarComentario" />
-                    
-                    <!-- ComboBox para filtrar por motivo -->
-                    <select id="motivoSelect" class="form-select" aria-label="Filtrar por motivo" style="height: 50px;">
-                        <option value="0" selected>Todos</option>
-                        {% for motivo in motivos %}
-                        <option value="{{ motivo[1] }}">{{ motivo[1] }}</option> <!-- motivo[1] es el nombre del motivo -->
-                        {% endfor %}
-                    </select>
 
-                    <button style="height: 50px;" class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">Listado de Comentarios</h2>
+        </div>
+
+        {% if nombreBusqueda %}
+        <div class="col-2" >
+          <div class="input-group">
+            <a class="button is-success add-btn" href="{{ url_for('comentarios_listado') }}">
+              <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+            </a>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+
+    <div class="row" id="break_nav">
+
+        <div class="col-3">
+
+            <table id="grid_resultados" cellspacing="0">
+              <tbody>
+                <tr>
+                  <th colspan="3">Resultados</th>
+                </tr>
+                <tr>
+                  <th>Total</th>
+                  <th>Leidos</th>
+                  <th>Pendientes</th>
+                </tr>
+                <tr>
+                  <td id="num_resultados"></td>
+                  <td id="num_disp_si"></td>
+                  <td id="num_disp_no"></td>
+                </tr>
+              </tbody>
+            </table>
+      
+        </div>
+
+        <div class="col">
+            <form enctype="multipart/form-data" id="buscarFormulario" method="GET" action="{{ url_for('comentarios_listado_buscar') }}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar por nombre y apellidos o mensaje" aria-label="Buscar"
+                    {% if nombreBusqueda %}
+                        value="{{nombreBusqueda}}"
+                    {% endif %}
+                        name="buscarElemento" id="buscarElemento" />
+                    <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
                         <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
                     </button>
                 </div>
@@ -35,62 +68,101 @@ Listado de Comentarios
         </div>
     </div>
 
-    <table border="0" cellspacing="0" cellpadding="8" class="product_if">
-        <thead>
-            <tr>
-                <th>ID Comentario</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Email</th>
-                <th>Celular</th>
-                <th>Mensaje</th>
-                <th>Motivo</th>
-                <th>Fecha Registro</th>
-                <th>Estado</th>
-                <th>Opciones</th>
-            </tr>
-        </thead>
-        <tbody id="tablaComentarios">
-            {% for comentario in comentarios %}
-            <tr>
-                <td>{{ comentario[0] }}</td>
-                <td>{{ comentario[1] }}</td>
-                <td>{{ comentario[2] }}</td>
-                <td>{{ comentario[3] }}</td>
-                <td>{{ comentario[4] }}</td>
-                <td>{{ comentario[5] }}</td>
-                <td>{{ comentario[8] }}</td> <!-- Motivo del comentario -->
-                <td>{{ comentario[6] }}</td>
-                <td>
-                    {% if comentario[7] == 1 %}
-                    <span>Pendiente</span>
-                    {% else %}
-                    <span>Leído</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <div class="acciones">
-                        <form action="{{ url_for('estado_comentario') }}" method="POST"
-                            onsubmit="return confirmarLectura()" id="deleteF">
-                            <input type="hidden" name="id" value="{{ comentario[0] }}">
-                            <button type="submit">
-                                <img src="/static/img/elementosCRUD/lapiz.png" alt="editar">
-                            </button>
-                        </form>
+    <div class="row">
+        <div class="col">
+            <p class="fw-bolder lblchoosie">Filtrar por Motivo:</p>
+            <select id="motivoSelect" class="form-select" aria-label="Filtrar por motivo">
+                <option value="0" selected>Todos</option>
+                {% for motivo in motivos %}
+                <option value="{{ motivo[0] }}">{{ motivo[1] }}</option> <!-- motivo[1] es el nombre del motivo -->
+                {% endfor %}
+            </select>
+        </div>
 
-                        <form action="{{ url_for('eliminar_comentario') }}" method="POST"
-                            onsubmit="return confirmarEliminacion()" id="deleteF">
-                            <input type="hidden" name="id" value="{{ comentario[0] }}">
-                            <button type="submit">
-                                <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <div class="col">
+            <p class="fw-bolder lblchoosie">Filtrar por Estado:</p>
+            <select id="estadoComSelect" class="form-select" aria-label="Filtrar por motivo">
+                <option value="-1" selected>Todos</option>
+                <option value="0">Pendiente</option>
+                <option value="1">Leido</option>
+                <option value="2">Respondido</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="table-container">
+        <table cellspacing="0" class="table_listado product_if">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Email</th>
+                    <th>Celular</th>
+                    <th>Mensaje</th>
+                    <th>Motivo de Comentario</th>
+                    <th>Fecha Registro</th>
+                    <th>Estado</th>
+                    <th class="opciones_column">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                {% for comentario in comentarios %}
+                <tr class="
+                {% if comentario.7 == 1 or comentario.7 == 2 %}
+                  fila_disp_si
+                {% else %}
+                  fila_disp_no
+                {% endif %}
+                ">
+                    <td>{{ comentario[0] }}</td>
+                    <td>{{ comentario[1] }}</td>
+                    <td>{{ comentario[2] }}</td>
+                    <td>{{ comentario[3] }}</td>
+                    <td>{{ comentario[4] }}</td>
+                    <td>{{ comentario[5] }}</td>
+                    <td>
+                        <div data-motivo="{{comentario.9}}">
+                            {{ comentario[8] }}
+                        </div>
+                    </td> 
+                    <td>{{ comentario[6] }}</td>
+                    <td>
+                        <div class="celda_estado" data-estado-comentario="{{comentario.7}}">
+                            {% if comentario.7 == 2 %}
+                                <p class="estado_comentario estcom_2">Respondido</p>
+                            {% elif comentario.7 == 1 %}
+                                <p class="estado_comentario estcom_1">Leido</p>
+                            {% elif comentario.7 == 0 %}
+                                <p class="estado_comentario estcom_0">Pendiente</p>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="opciones_column">
+                        <div class="acciones">
+                            <form class="opciones_fila" action="{{ url_for('estado_comentario') }}" method="POST"
+                                onsubmit="return confirmarLectura()" id="deleteF">
+                                <input type="hidden" name="id" value="{{ comentario[0] }}">
+                                <button type="submit">
+                                    <i class="fa-regular fa-square-check"></i>
+                                </button>
+                            </form>
+                            <!-- 
+                            <form class="opciones_fila" action="{{ url_for('eliminar_comentario') }}" method="POST"
+                                onsubmit="return confirmarEliminacion()" id="deleteF">
+                                <input type="hidden" name="id" value="{{ comentario[0] }}">
+                                <button type="submit">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form> -->
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -104,65 +176,37 @@ Listado de Comentarios
             </div>
           </div>
         </div>
-      </div>
+    </div>
 
 </section>
 {% endblock %}
 
 {% block scripts %}
 
-{% if show_modal %}
-<script>
-    var modal = new bootstrap.Modal(document.getElementById('errorModal'));
-    modal.show();
-    
-    // Redirigir automáticamente después de 3 segundos (3000 milisegundos)
-    setTimeout(function(){
-        window.location.href = "/listado_categorias";
-    }, 1500);
-</script>
-{% endif %}
+    {% if show_modal %}
+        <script>
+            var modal = new bootstrap.Modal(document.getElementById('errorModal'));
+            modal.show();
+            
+            // Redirigir automáticamente después de 3 segundos (3000 milisegundos)
+            setTimeout(function(){
+                window.location.href = "/listado_categorias";
+            }, 1500);
+        </script>
+    {% endif %}
 
-<script>
-    // Función para confirmar acciones
-    function confirmarLectura() {
-        return confirm('¿Estás seguro que deseas marcar como leído este registro? Esta acción no se puede deshacer.');
-    }
+    <script>
+        // Función para confirmar acciones
+        function confirmarLectura() {
+            return confirm('¿Estás seguro que deseas marcar como leído este registro? Esta acción no se puede deshacer.');
+        }
 
-    function confirmarEliminacion() {
-        return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
-    }
+        function confirmarEliminacion() {
+            return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+        }
 
-    // Búsqueda dinámica
-    document.getElementById('buscarComentario').addEventListener('keyup', function () {
-        filtrarComentarios();
-    });
+    </script>
 
-    // Filtrar por motivo
-    document.getElementById('motivoSelect').addEventListener('change', function () {
-        filtrarComentarios();
-    });
+    <script src="/static/js/filtroCRUDListado.js"></script>
 
-    function filtrarComentarios() {
-        const searchTerm = document.getElementById('buscarComentario').value.toLowerCase();  // Obtenemos el valor de búsqueda en minúsculas
-        const selectedMotivo = document.getElementById('motivoSelect').value.toLowerCase();  // Obtenemos el motivo seleccionado
-        const rows = document.querySelectorAll('#tablaComentarios tr');  // Seleccionamos todas las filas del tbody
-
-        rows.forEach(row => {
-            const nombres = row.querySelector('td:nth-child(2)').textContent.toLowerCase();  // Segunda columna: Nombres
-            const apellidos = row.querySelector('td:nth-child(3)').textContent.toLowerCase();  // Tercera columna: Apellidos
-            const motivo = row.querySelector('td:nth-child(7)').textContent.toLowerCase();  // Séptima columna: Motivo
-
-            // Verificamos si el término de búsqueda coincide con el nombre, apellido y si coincide el motivo seleccionado
-            if (
-                (nombres.includes(searchTerm) || apellidos.includes(searchTerm)) &&
-                (selectedMotivo === "0" || motivo.includes(selectedMotivo))
-            ) {
-                row.style.display = '';  // Mostrar la fila si coincide
-            } else {
-                row.style.display = 'none';  // Ocultar la fila si no coincide
-            }
-        });
-    }
-</script>
 {% endblock %}

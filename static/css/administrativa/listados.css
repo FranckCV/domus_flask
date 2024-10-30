@@ -358,13 +358,16 @@ button:hover img {
 }
 
 .celda_numero p {
-    font-size: 150%;
+    font-size: 140%;
     height: 30px;
     width: 30px;
     text-align: center;
     color: white;
-    border-radius: 100%;
+    border-radius: 10px;
     margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .num_cant {
@@ -409,6 +412,46 @@ button:hover img {
     padding-inline: 5px;
     padding-block: 3px;
     width: 100%;
+}
+
+.estado_comentario {
+    background: #333;
+    color: white;
+    border-radius: 5px;
+    font-size: 90%;
+    padding-inline: 10px;
+    padding-block: 5px;
+    margin: 0;
+}
+
+.estcom_2 {
+    background-color: #3432bd;
+}
+
+.estcom_1 {
+    background-color: #47b647;
+}
+
+.estcom_0 {
+    background-color: #e74e4e;
+}
+
+.genero {
+    background: #333;
+    color: white;
+    border-radius: 5px;
+    font-size: 90%;
+    padding-inline: 10px;
+    padding-block: 5px;
+    margin: 0;
+}
+
+.gen_mas {
+    background-color: #03a8d1;
+}
+
+.gen_fem {
+    background-color: #a061d3;
 }
 
 /* CUADRO RESULTADOS */
@@ -461,77 +504,6 @@ button:hover img {
     border-bottom-left-radius: 10px;
 }
 
-
-
-
-/* 
-#grid_resultados {
-    text-align: center;
-    justify-self: center;
-}
-
-#grid_resultados tr th,
-#grid_resultados tr td {
-    padding: 7px;
-}
-
-#grid_resultados tr th {
-    background-color: #111057;
-    color: white;
-    font-size: 90%;
-    font-weight: lighter;
-}
-
-#grid_resultados tr td {
-    font-size: 90%;
-    width: 40px;
-}
-
-#grid_resultados #num_disp_si {
-    background-color: #c6ffc6;
-}
-
-#grid_resultados #num_disp_no {
-    background-color: #ffefef;
-}
-
-#grid_resultados tbody tr:first-of-type td {
-    border-top-right-radius: 10px;
-    border: 2px solid black;
-}
-
-#grid_resultados tbody tr:last-of-type td {
-    border-bottom-right-radius: 10px;
-}
-
-#grid_resultados tbody tr:first-of-type th {
-    border-top-left-radius: 10px;
-}
-
-#grid_resultados tbody tr:last-of-type th {
-    border-bottom-left-radius: 10px;
-} */
-
-/* #grid_resultados {
-    display: grid;
-    grid-template-columns: 60% 40%;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0px 0px 3px black;
-    font-size: 90%;
-}
-
-#grid_resultados div {
-    justify-items: center;
-    padding: 5px;
-}
-
-#grid_resultados .head {
-    background-color: #162dad;
-    color: white;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-} */
 
 /* AGRANDAR IMAGEN */
 

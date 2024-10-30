@@ -470,7 +470,7 @@ def actualizar_marca():
 def caracteristicas():
     subcategoriasFiltro = controlador_subcategorias.obtener_subcategoriasXnombre()
     categoriasFiltro = controlador_categorias.obtener_categoriasXnombre()
-    caracteristicas = controlador_caracteristicas_subcategorias.obtenerCaracteristicas_Subcategorias()    
+    caracteristicas = controlador_caracteristicas.obtener_listado_Caracteristicas()    
     categorias = controlador_categorias.obtener_categorias()
     subcategorias =controlador_subcategorias.obtener_subcategorias()
     return render_template("listado_caracteristicas.html", caracteristicas = caracteristicas, categoriasFiltro=categoriasFiltro, subcategoriasFiltro=subcategoriasFiltro , subcategorias=subcategorias , categorias = categorias)
@@ -632,10 +632,20 @@ def actualizar_subcategoria():
 
 @app.route("/comentarios_listado")
 def comentarios_listado():
-    comentarios = controlador_comentario.obtener_comentarios()
+    comentarios = controlador_comentario.obtener_listado_comentarios()
     motivos = controlador_motivo_comentario.obtener_motivos_disponibles()
 
     return render_template("listado_comentarios.html", comentarios=comentarios, motivos=motivos)
+
+
+@app.route("/comentarios_listado_buscar")
+def comentarios_listado_buscar():
+    nombreBusqueda = request.args.get("buscarElemento")
+    comentarios = controlador_comentario.buscar_listado_comentarios_palabra(nombreBusqueda)
+    motivos = controlador_motivo_comentario.obtener_motivos_disponibles()
+    
+    return render_template("listado_comentarios.html", comentarios=comentarios, motivos=motivos , nombreBusqueda = nombreBusqueda)
+
 
 
 @app.route("/guardar_comentario", methods=["POST"])
@@ -648,14 +658,14 @@ def guardar_comentario():
     mensaje = request.form["mensaje"]
     
     # Estado por defecto: pendiente (1)
-    estado = 1
+    estado = 0
 
     # Usuario id como null (si no está disponible)
     usuario_id = None
 
     controlador_comentario.insertar_comentario(nombres, apellidos, email, telefono, mensaje, estado, motivo_comentario_id, usuario_id)
     
-    return redirect("/contactanos")
+    return redirect("/")
 
 @app.route("/eliminar_comentario", methods=["POST"])
 def eliminar_comentario():
@@ -674,9 +684,19 @@ def motivos_comentario_listado():
     motivos = controlador_motivo_comentario.obtener_listado_motivos()
     return render_template("listado_motivos_comentarios.html", motivos=motivos)
 
+
+@app.route("/motivos_comentario_buscar")
+def motivos_comentario_buscar():
+    nombreBusqueda = request.args.get("buscarElemento")
+    motivos = controlador_motivo_comentario.buscar_listado_motivos_nombre(nombreBusqueda)
+    return render_template("listado_motivos_comentarios.html", motivos=motivos , nombreBusqueda = nombreBusqueda)
+
+
+
 @app.route("/agregar_motivo_comentario")
 def formulario_agregar_motivo_comentario():
     return render_template("agregar_motivo_comentario.html")
+
 
 @app.route("/guardar_motivo_comentario", methods=["POST"])
 def guardar_motivo_comentario():
@@ -713,7 +733,7 @@ import controlador_empleados
 
 @app.route("/empleados_listado")
 def empleados_listado():
-    usuarios = controlador_empleados.obtener_usuarios_emp()
+    usuarios = controlador_empleados.obtener_listado_usuarios_empleados()
     tipos_usuarios = controlador_tipos_usuario.obtener_tipos_usuario()
 
     # Renderizar la plantilla con los usuarios y tipos de usuarios
@@ -1098,7 +1118,7 @@ def formulario_agregar_img_novedad(novedad_id):
 def img_novedades_listado(novedad_id):
     novedad_info = novedad_id
     img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)
-    return render_template("img_novedades_listado.html", img_novedades=img_novedades, novedad_id=novedad_id)
+    return render_template("listado_img_novedades.html", img_novedades=img_novedades, novedad_id=novedad_id)
 
 
 @app.route("/eliminar_img_novedad", methods=["POST"])
@@ -1221,8 +1241,15 @@ def eliminar_tipo_contenido_info():
 @app.route("/listado_contenido_info")
 def listado_contenido_info():
     datos = controlador_contenido_info.obtener_datos_contenido()
-    secciones = controlador_contenido_info.obtener_tipos_contenido()
+    secciones = controlador_contenido_info.obtener_listado_tipos_contenido()
     return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
+
+@app.route("/listado_contenido_info_buscar")
+def listado_contenido_info_buscar():
+    nombreBusqueda = request.args.get("buscarElemento")
+    datos = controlador_contenido_info.buscar_datos_contenido_info_titulo(nombreBusqueda)
+    secciones = controlador_contenido_info.obtener_listado_tipos_contenido()
+    return render_template("listado_contenido_info.html", datos = datos , secciones = secciones , nombreBusqueda = nombreBusqueda)
 
 
 @app.route("/agregar_contenido_info")
@@ -1400,7 +1427,7 @@ def eliminar_redes_sociales():
 @app.route("/listado_datos_principales")
 def listado_datos_principales():
     info = controlador_informacion_domus.obtener_informacion_domus()
-    return render_template("listado_datos_principales.html", info = info)
+    return render_template("ver_datos_principales.html", info = info)
 
 
 @app.route("/formulario_editar_datos_principales=<int:id>")
@@ -1492,8 +1519,17 @@ def eliminar_tipo_usuario():
 
 @app.route("/listado_clientes")
 def listado_clientes():
-    usuarios_clientes = controlador_usuario_cliente.obtener_usuarios_clientes()
+    usuarios_clientes = controlador_usuario_cliente.obtener_listado_usuarios_clientes()
     return render_template("listado_clientes.html", usuarios_clientes=usuarios_clientes)
+
+
+@app.route("/listado_clientes_buscar")
+def listado_clientes_buscar():
+    nombreBusqueda = request.args.get("buscarElemento")
+    usuarios_clientes = controlador_usuario_cliente.buscar_listado_usuarios_clientes_nombre(nombreBusqueda)
+    return render_template("listado_clientes.html", usuarios_clientes=usuarios_clientes , nombreBusqueda = nombreBusqueda)
+
+
 
 
 @app.route("/agregar_usuario_cliente")

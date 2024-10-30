@@ -11,43 +11,68 @@
 {% block contenido %}
   <section class="h_section" id="mainSection">
     <h2 class="fw-bolder">Listado de Caracteristicas</h2>
-    <div class="container-fluid" id="break_nav">
+    
+    <div class="row">  
+
+      <div class="col-3">
+
+        <table id="grid_resultados" cellspacing="0">
+          <tbody>
+            <tr>
+              <th colspan="3">Resultados</th>
+            </tr>
+            <tr>
+              <th>Total</th>
+              <th>Disp</th>
+              <th>No Disp</th>
+            </tr>
+            <tr>
+              <td id="num_resultados"></td>
+              <td id="num_disp_si"></td>
+              <td id="num_disp_no"></td>
+            </tr>
+          </tbody>
+        </table>
+  
+      </div>
+
+      <div class="col">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
+          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
+          <a href="{{ url_for('formulario_agregar_caracteristica') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
+        </div>
+      </div>
+
+    </div>
+
       
-      <div class="container-fluid" id="break_nav">
+    <div class="row">
+      <div class="col">
+        <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
+        <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
+          <option value="0" selected>Todos</option>
+          <option value="-1">Sin categoria</option>
+          {% for categoria in categorias %}
+            <option value="{{ categoria.0 }}">{{ categoria.1 }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-        <div class="col">
-          <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
-          <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
-            <option value="0" selected>Todos</option>
-            {% for categoria in categorias %}
-              <option value="{{ categoria.0 }}">{{ categoria.1 }}</option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <div class="col">
-          <p class="fw-bolder lblchoosie">Filtrar por subcategoría</p>
-          <select class="form-select choosie" aria-label="Default select example" id="subcategorySelect">
-              <option value="0" data-category="0" selected>Todos</option>
-            {% for subcategoria in subcategorias %}
-              <option value="{{ subcategoria.0 }}" data-category="{{ subcategoria.4 }}">{{ subcategoria.1 }}</option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <div class="col">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
-            <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
-            <a href="{{ url_for('formulario_agregar_caracteristica') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
-          </div>
-        </div>
-
+      <div class="col">
+        <p class="fw-bolder lblchoosie">Filtrar por subcategoría</p>
+        <select class="form-select choosie" aria-label="Default select example" id="subcategorySelect">
+            <option value="0" data-category="0" selected>Todos</option>
+            <option value="-1" data-category="-1">Sin subcategoria</option>
+          {% for subcategoria in subcategorias %}
+            <option value="{{ subcategoria.0 }}" data-category="{{ subcategoria.4 }}">{{ subcategoria.1 }}</option>
+          {% endfor %}
+        </select>
       </div>
     </div>
 
     <div class="table-container">
-      <table cellspacing="0" class="product_if">
+      <table cellspacing="0" class="table_listado product_if">
         <thead>
           <tr>
             <th>ID Car</th>
@@ -55,23 +80,32 @@
             <th>Disponibilidad</th>            
             <th>Categoria</th>
             <th>SubCategoria</th>
-            <th>Opciones</th>
+            <th>Cant. en Productos</th>
+            <th class="opciones_column">Opciones</th>
           </tr>
         </thead>
         <tbody id="productTableBody">
           {% for caracteristica in caracteristicas %}
-            <tr>
+            <tr class="
+            {% if caracteristica.2 == 1 %}
+              fila_disp_si
+            {% else %}
+              fila_disp_no
+            {% endif %}
+            ">
               <td>{{ caracteristica.0 }}</td>
               <td>
                 {{ caracteristica.1 }}
               </td>
              
               <td>
-                {% if caracteristica.2 == 1 %}
-                  <span>Disponible</span>
-                {% else %}
-                  <span>No Disponible</span>
-                {% endif %}
+                <div class="celda_estado">
+                  {% if caracteristica.2 == 1 %}
+                    <p class="disponibilidad disp_si">Disponible</p>
+                  {% else %}
+                    <p class="disponibilidad disp_no">No Disponible</p>
+                  {% endif %}
+                </div>
               </td>
 
               <td>
@@ -81,12 +115,13 @@
                     <span>{{ caracteristica.7 }}</span>
                   </div>
                 {% else %}
-                <div class="celda_texto_bloque" data-category="0">
-                  <span>Sin categoria</span>
+                <div class="espacio_vacio" data-category="-1">
+                  <p>
+                    Sin categoria
+                  </p>
                 </div>
                 {% endif %}
               </td>
-
               <td>
                 {% if caracteristica.3 %}
                   <div class="celda_texto_bloque" data-subcategory="{{caracteristica.3}}">
@@ -94,19 +129,38 @@
                     <span>{{ caracteristica.4 }}</span>
                   </div>
                 {% else %}
-                <div class="celda_texto_bloque" data-subcategory="0">
-                  <span>Sin subcategoria</span>
-                </div>
+                  <div class="espacio_vacio" data-subcategory="-1">
+                    <p>
+                      Sin subcategoria
+                    </p>
+                  </div>
                 {% endif %}
               </td>
-              
 
+              <td>
+                <div class="celda_numero">
+                  <p class="
+                  {% if caracteristica.9 > 0 %}
+                    num_cant
+                  {% else %}
+                    num_cero
+                  {% endif %}
+                  ">
+                    {{ caracteristica.9 }}
+                  </p>
+                </div>
+              </td>
+              
               <td class="opciones_column">
                 <div class="acciones">
-                  <a href="{{ url_for('editar_caracteristica', id=caracteristica.0) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar" /></a>
-                  <form action="{{ url_for('eliminar_caracteristica') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                  <a class="opciones_fila" href="{{ url_for('editar_caracteristica', id=caracteristica.0) }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </a>
+                  <form class="opciones_fila" action="{{ url_for('eliminar_caracteristica') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
                     <input type="hidden" name="id" value="{{ caracteristica.0 }}" />
-                    <button type="submit"><img src="/static/img/elementosCRUD/borrar.png" alt="borrar" /></button>
+                    <button type="submit">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
                   </form>
                 </div>
               </td>

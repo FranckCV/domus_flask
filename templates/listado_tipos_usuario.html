@@ -34,19 +34,35 @@ Listado de Tipos de Usuario
           <th>Tipo</th>
           <th>Descripción</th>
           <th>Foto de Perfil</th>
+          <th>Disponibilidad</th>
           <th>Cant. Usuarios</th>
           <th class="opciones_column">Opciones</th>
         </tr>
       </thead>
       <tbody id="productTableBody">
         {% for tipo_usuario in tipos_usuario %}
-        <tr>
+        <tr class="
+        {% if tipo_usuario.5 == 1 %}
+          fila_disp_si
+        {% else %}
+          fila_disp_no
+        {% endif %}
+        ">
           <td>{{ tipo_usuario[0] }}</td>
           <td>{{ tipo_usuario[1] }}</td>
           <td>{{ tipo_usuario[2] }}</td>        
           <td>
             <div class="celda_texto_bloque">
               <img src="{{ tipo_usuario[3] }}" alt="{{ tipo_usuario[1] }} foto" class="clickable-image">
+            </div>
+          </td>
+          <td>
+            <div class="celda_estado">
+              {% if tipo_usuario.5 == 1 %}
+                <p class="disponibilidad disp_si">Disponible</p>
+              {% else %}
+                <p class="disponibilidad disp_no">No Disponible</p>
+              {% endif %}
             </div>
           </td>
           <td>
@@ -61,9 +77,7 @@ Listado de Tipos de Usuario
                   {{ tipo_usuario[4] }}
                 </p>
             </div>
-          </td> 
-  
-          <!-- Acciones: Editar y Eliminar -->
+          </td>
           <td class="opciones_column">
             <div class="acciones">
               <a class="opciones_fila" href="{{ url_for('editar_tipo_usuario', id=tipo_usuario[0]) }}">
@@ -81,17 +95,22 @@ Listado de Tipos de Usuario
         {% endfor %}
       </tbody>
     </table>
+  </div>
 
+  <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+    <img id="enlargedImage" class="enlarged-image" />
   </div>
 
 </section>
 {% endblock %}
 
 {% block scripts %}
-<script>
-  function confirmarEliminacion() {
-    return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
-  }
-</script>
-<script src="/static/js/admin_productos.js"></script>
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+    }
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
+  <script src="/static/js/imgsCRUDimagencompleta.js"></script>
+
 {% endblock %}

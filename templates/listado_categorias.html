@@ -24,7 +24,7 @@
       </div>
 
       <div class="table-container">
-        <table cellspacing="0" class="product_if">
+        <table cellspacing="0" class="table_listado product_if">
             <thead>
                 <tr>
                     <th>ID Cat</th>
@@ -36,29 +36,42 @@
                     <th>Subcategoria</th>
                     <th>Icono Sub</th>
                     <th>Disponibilidad Sub</th>
+                    <th>Cant. Productos</th>
+                    <th>Cant. Novedades</th>
                     <th class="opciones_column">Opciones Sub</th>
                 </tr>
             </thead>
-            <tbody>
-                
+            <tbody>                
                 {% for categoria in categorias %}
                 {% set subcategorias_filtradas = subcategorias | selectattr(4, 'equalto', categoria[0]) | list %}
-                <tr>
-                  <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">{{ categoria[0] }}</td>
-                  <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">{{ categoria[1] }}</td>
+                <tr class="
+                {% if categoria.3 == 1 %}
+                  fila_disp_si
+                {% else %}
+                  fila_disp_no
+                {% endif %}
+                ">
+                  <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">
+                    {{ categoria[0] }}
+                  </td>
+                  <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">
+                    {{ categoria[1] }}
+                  </td>
                   <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">
                     <i class="{{ categoria[2] }}"></i>
                   </td>
                   <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">
-                    {% if categoria[3] == 1 %}
-                      <span>Disponible</span>
-                    {% else %}
-                      <span>No Disponible</span>
-                    {% endif %}
+                    <div class="celda_estado">
+                      {% if categoria[3] == 1 %}
+                          <p class="disponibilidad disp_si">Disponible</p>
+                      {% else %}
+                          <p class="disponibilidad disp_no">No Disponible</p>
+                      {% endif %}
+                  </div>
                   </td>
-                  <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">
+                  <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}" class="opciones_column">
                     <div class="acciones">
-                      <a href="{{url_for('categoria', id=categoria[0])}}"><i class="fa-solid fa-eye"></i></a>
+                      <a href="{{url_for('categoria', id=categoria[0])}}"><i class="fa-solid fa-link"></i></a>
                       <a href="{{ url_for('editar_categoria', id=categoria[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
                       <form action="{{ url_for('eliminar_categoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
                         <input type="hidden" name="id" value="{{ categoria[0] }}">
@@ -70,17 +83,75 @@
                   </td>
               
                   {% if subcategorias_filtradas | length > 0 %}
-                    <td>{{ subcategorias_filtradas[0][0] }}</td>
-                    <td>{{ subcategorias_filtradas[0][1] }}</td>
-                    <td><i class="{{ subcategorias_filtradas[0][2] }}"></i></td>
-                    <td>
-                      {% if subcategorias_filtradas[0][3] == 1 %}
-                        <span>Disponible</span>
-                      {% else %}
-                        <span>No Disponible</span>
-                      {% endif %}
+                    <td class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    ">{{ subcategorias_filtradas[0][0] }}</td>
+                    <td class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    ">{{ subcategorias_filtradas[0][1] }}</td>
+                    <td class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    "><i class="{{ subcategorias_filtradas[0][2] }}"></i></td>
+                    <td class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    ">
+                      <div class="celda_estado">
+                          {% if subcategorias_filtradas[0][3] == 1 %}
+                              <p class="disponibilidad disp_si">Disponible</p>
+                          {% else %}
+                              <p class="disponibilidad disp_no">No Disponible</p>
+                          {% endif %}
+                      </div>
                     </td>
-                    <td class="opciones_column">
+                    <td>
+                      <div class="celda_numero">
+                        <p class="
+                          {% if subcategorias_filtradas[0][7] > 0 %}
+                            num_cant
+                          {% else %}
+                            num_cero
+                          {% endif %}
+                          ">
+                            {{subcategorias_filtradas[0][7] }}
+                          </p>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="celda_numero">
+                        <p class="
+                          {% if subcategorias_filtradas[0][8] > 0 %}
+                            num_cant
+                          {% else %}
+                            num_cero
+                          {% endif %}
+                          ">
+                            {{subcategorias_filtradas[0][8] }}
+                          </p>
+                      </div>
+                    </td>
+                    <td  class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    opciones_column">
                       <div class="acciones">                            
                         <a href="{{ url_for('editar_subcategoria', id=subcategorias_filtradas[0][0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
                         <form action="{{ url_for('eliminar_subcategoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
@@ -94,16 +165,50 @@
                   </tr>
               
                   {% for subcategoria in subcategorias_filtradas[1:] %}
-                  <tr>
+                  <tr class="
+                  {% if categoria.3 == 1 and subcategoria[3] == 1 %}
+                    fila_disp_si
+                  {% else %}
+                    fila_disp_no
+                  {% endif %}
+                  ">
                     <td>{{ subcategoria[0] }}</td>
                     <td>{{ subcategoria[1] }}</td>
                     <td><i class="{{ subcategoria[2] }}"></i></td>
                     <td>
-                      {% if subcategoria[3] == 1 %}
-                        <span>Disponible</span>
-                      {% else %}
-                        <span>No Disponible</span>
-                      {% endif %}
+                      <div class="celda_estado">
+                        {% if subcategoria[3] == 1 %}
+                            <p class="disponibilidad disp_si">Disponible</p>
+                        {% else %}
+                            <p class="disponibilidad disp_no">No Disponible</p>
+                        {% endif %}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="celda_numero">
+                        <p class="
+                          {% if subcategoria[7] > 0 %}
+                            num_cant
+                          {% else %}
+                            num_cero
+                          {% endif %}
+                          ">
+                            {{subcategoria[7] }}
+                          </p>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="celda_numero">
+                        <p class="
+                          {% if subcategoria[8] > 0 %}
+                            num_cant
+                          {% else %}
+                            num_cero
+                          {% endif %}
+                          ">
+                            {{subcategoria[8] }}
+                          </p>
+                      </div>
                     </td>
                     <td class="opciones_column">
                       <div class="acciones">                            

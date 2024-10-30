@@ -365,49 +365,36 @@ main {
 
 
 
-
-
-
-
-a[href="/dashboard"] ,
-a[href="/listado_clientes"]  ,
-a[href="/listado_pedidos"]  ,
-a[href="/empleados_listado"]  ,
-a[href="/listado_categorias"]  ,
-a[href="/listado_caracteristicas"]
+a[href="/motivos_comentario_listado"]  ,
+a[href="/listado_pedidos"] , 
+a[href="/listado_datos_principales"]  ,
+a[href="/listado_tipos_usuario"]   ,
+a[href="/listado_tipos_novedad"] ,
+a[href="/listado_metodo_pago"] ,
+a[href="/listado_estado_pedido"] ,
+a[href="/listado_marcas"] ,
+a[href="/listado_redes_sociales"]  ,
+a[href="/tipos_img_novedad_listado"] 
 {
-    background-color: #7e0000;
-    color: #fff;
+    display: none;
 }
 
-a[href="/motivos_comentario_listado"]  ,
-a[href="/listado_tipos_usuario"]   ,
+
+
+a[href="/listado_tipo_contenido_info"] ,
+a[href="/listado_contenido_info"] ,
+a[href="/listado_clientes"]  ,
+a[href="/listado_caracteristicas"],
+a[href="/listado_categorias"]  ,
+a[href="/dashboard"] ,
+a[href="/comentarios_listado"]  ,
 a[href="/listado_novedades"]  ,
-a[href="/listado_productos"]  
+a[href="/listado_productos"]  ,
+a[href="/empleados_listado"] 
 {
     background-color: #be5c00;
     color: #fff;
 }
-
-
-a[href="/comentarios_listado"]  ,
-a[href="/listado_datos_principales"]  ,
-a[href="/listado_contenido_info"]  ,
-a[href="/listado_tipo_contenido_info"]
-{
-    background-color: #005f2b;
-    color: #fff;
-}
-
-
-
-/* a[href="/listado_tipos_novedad"] , */
-/* a[href="/listado_metodo_pago"] , */
-/* a[href="/listado_estado_pedido"] , */
-/* a[href="/listado_marcas"] , */
-/* a[href="/listado_redes_sociales"]  , */
-/* a[href="/tipos_img_novedad_listado"]  */
-
 
 
 

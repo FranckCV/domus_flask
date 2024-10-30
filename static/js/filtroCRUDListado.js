@@ -20,7 +20,7 @@ function cantResultadosFilas() {
 
 cantResultadosFilas();
 
-function filtroTableSelect(nombreSelect,atributo) {
+function filtroTableSelect(nombreSelect , atributo , valor) {
   document.getElementById(nombreSelect).addEventListener('change', function() {
     const elementSelect = this.value;
     const rows = document.querySelectorAll('#productTableBody tr');
@@ -30,7 +30,7 @@ function filtroTableSelect(nombreSelect,atributo) {
       const itemSelect = itemDiv ? itemDiv.getAttribute('data-'+atributo) : null;
   
       // Si el valor seleccionado es "0", mostrar todas las filas
-      if (elementSelect === "0" || itemSelect === elementSelect) {
+      if (elementSelect === valor || itemSelect === elementSelect) {
         row.style.display = '';
       } else {
         row.style.display = 'none';
@@ -42,51 +42,72 @@ function filtroTableSelect(nombreSelect,atributo) {
 }
 
 
-document.getElementById('categorySelect').addEventListener('change', function() {
-  const selectedCategory = this.value;
-  const rows = document.querySelectorAll('#productTableBody tr');
-
-  const options = document.querySelectorAll('#subcategorySelect option');
-
-  options.forEach(option => {
-    const optionCategory = option ? option.getAttribute('data-category') : null;
-
-    if (selectedCategory === "0" || optionCategory === selectedCategory) {
-      option.style.display = '';
-    } else {
-      option.style.display = 'none';
-    }
+if (document.getElementById('categorySelect')) {
+  document.getElementById('categorySelect').addEventListener('change', function() {
+    const selectedCategory = this.value;
+    const rows = document.querySelectorAll('#productTableBody tr');
+  
+    const options = document.querySelectorAll('#subcategorySelect option');
+  
+    options.forEach(option => {
+      const optionCategory = option ? option.getAttribute('data-category') : null;
+  
+      if (selectedCategory === "0" || optionCategory === selectedCategory) {
+        option.style.display = '';
+      } else {
+        option.style.display = 'none';
+      }
+    });
+  
+    rows.forEach(row => {
+      const categoryDiv = row.querySelector('[data-category]');
+      const productCategory = categoryDiv ? categoryDiv.getAttribute('data-category') : null;
+  
+      if (selectedCategory === "0" || productCategory === selectedCategory) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  
+    cantResultadosFilas();
+  
   });
-
-  rows.forEach(row => {
-    const categoryDiv = row.querySelector('[data-category]');
-    const productCategory = categoryDiv ? categoryDiv.getAttribute('data-category') : null;
-
-    if (selectedCategory === "0" || productCategory === selectedCategory) {
-      row.style.display = '';
-    } else {
-      row.style.display = 'none';
-    }
-  });
-
-  cantResultadosFilas();
-
-});
+  
+}
 
 
 if (document.getElementById('subcategorySelect')) {
-  filtroTableSelect('subcategorySelect','subcategory');
+  filtroTableSelect('subcategorySelect','subcategory','0');
 }
 
 
 if (document.getElementById('brandSelect')) {
-  filtroTableSelect('brandSelect','brand');
+  filtroTableSelect('brandSelect','brand','0');
 }
 
 
 if (document.getElementById('tipoSelect')) {
-  filtroTableSelect('tipoSelect','tipo');
+  filtroTableSelect('tipoSelect','tipo','0');
 }
+
+if (document.getElementById('motivoSelect')) {
+  filtroTableSelect('motivoSelect','motivo','0');
+}
+
+if (document.getElementById('estadoComSelect')) {
+  filtroTableSelect('estadoComSelect','estado-comentario','-1');
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
