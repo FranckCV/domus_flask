@@ -113,19 +113,14 @@
         </div>
 
         <div class="cart_total">
-          
           <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post" onsubmit="return validarCarro();">
             <div class="cart-summary">
               <div class="discount-code">
                 <label for="coupon">¿Tienes algún cupón de descuento?</label>
                 <div class="d-flex">
-                  <form action="{{ url_for('confirmar_carrito') }}" method="post" id="form_descuento" onsubmit="return validarCarro();">
-                    <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
+                  <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
 
-                    <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" />
-
-                    <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
-                  </form>
+                  <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
                 </div>
                 <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
               </div>
@@ -144,14 +139,11 @@
 
               <div>
                 <input type="hidden" id="total_form" name="total_form" value="" />
-                <input type="hidden" id="descuento_aplicado" name="descuento_aplicado" value="0" />
-                <input type="hidden" id="estado_pedido" name="estado_pedido" value="2" />
-                <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal();">Continuar</button>
+                <input type="hidden" id="total_descuento" name="total_descuento" value="" />
+                <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal(); obtenerDescuento()">Continuar</button>
               </div>
-              
             </div>
           </form>
-
         </div>
       </div>
     </article>
@@ -213,9 +205,65 @@
       </div>
     </article>
   </main>
+
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalConfirmarCompraLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalConfirmarCompraLabel">Mensaje de error</h5>
+        </div>
+        <div class="modal-body">
+          <p>{{error_message}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}
 
 {% block scripts %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var errorModal = document.getElementById("errorModal");
+    var errorMessage = "{{ error_message }}";
+    if (errorMessage && errorMessage !== "None") {  
+        var bootstrapModal = new bootstrap.Modal(errorModal);
+        bootstrapModal.show();
+    }
+  });
+</script>
+
+<script>
+  //Para que lo qu está en la bd se guarde en el json
+  document.addEventListener("DOMContentLoaded", () => {
+    // Inicializamos el carrito en `localStorage` con los datos del servidor
+    const productosServidor = {{ productos | tojson }};
+    let carrito = {};
+
+    // Iteramos sobre los productos del servidor y los añadimos al carrito
+    productosServidor.forEach(producto => {
+      const [img, nombre, precio, cantidad, id] = producto;
+      carrito[nombre] = {
+        img: img,
+        precio: precio,
+        cantidad: cantidad,
+        id: id
+      };
+    });
+
+    // Guardamos el carrito inicializado en `localStorage`
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    actualizarCarrito(); // Actualizamos la vista del carrito con estos datos
+    actualizarCantidadCarrito(); // Actualizamos el contador en el header
+  });
+</script>
+
   <script src="static/js/carrito.js"></script>
   <script src="static/js/scriptListProduct.js"></script>
 {% endblock %}

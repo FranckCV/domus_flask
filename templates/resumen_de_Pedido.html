@@ -51,7 +51,7 @@
         </table>
       </div>
       <!-- cards -->
-      <form action="{{ url_for('confirmar_compra') }}" method="post">
+      <form action="{{ url_for('confirmar_compra') }}" method="post" id="formCompra">
         <div class="row justify-content-center my-4">
           <div class="col-md-4">
             <div class="card text-center shadow-sm">
@@ -85,8 +85,8 @@
             <div class="card text-center shadow-sm">
               <div class="card-body">
                 <h5 class="card-title">Resumen</h5>
-
-                {% if descuento_aplicado %}
+          
+                {% if valor_descuento is not none and valor_descuento|float > 0 %}
                   <div class="card-text-total descuento">
                     <b>Descuento aplicado</b>
                   </div>
@@ -95,25 +95,42 @@
                     <i>No se aplicó descuento</i>
                   </div>
                 {% endif %}
+          
+                <div class="card-text-total">
+                  <p>Subtotal</p>
+                  <span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
+                </div>
+                {% if valor_descuento is not none and valor_descuento|float > 0 %}
+                  <div class="card-text-total ">
+                    <p>Cantidad de descuento:</p>
+                    <span id="total_descuento_aplicado" class="total_descuento">S/{{ valor_descuento }}</span>
+                  </div>
+                  <div class="card-text-total">
+                    <p>Subtotal con descuento:</p>
+                    <span id="subtotal_con_descuento" class="total_descuento">S/{{ (total_pagar|float - valor_descuento|float) | round(2) }}</span>
+                  </div>
+                {% else %}
 
+                {% endif %}
                 <div class="card-text-total">
-                  <p>Subtotal</p><span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
+                  <p>Costo de envío</p>
+                  <span id="costo_envio">S/.10.00</span>
                 </div>
+          
                 <div class="card-text-total">
-                  <p>Costo de envío</p><span id="costo_envio">s/.10.00</span>
+                  <p>Total</p>
+                  <span id="total_sumado">S/{{ (total_pagar|float - valor_descuento|float + 10) | round(2) }}</span>
                 </div>
-                <div class="card-text-total">
-                  <p>Total</p><span id="total_sumado">S/{{ total_pagar|int + 10 }}</span>
-                </div>
-                
               </div>
             </div>
           </div>
+          
+
         </div>
 
         <div class="d-flex justify-content-between">
           <button class="btn btn-primary me-2 cancelar" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Cancelar compra</button>
-          <button class="btn btn-primary confirmar square" type="button" onclick="confirmarCompra(this)">Confirmar compra</button>
+          <button class="btn btn-primary confirmar square" type="button" onclick="confirmarCompra(this)"  >Confirmar compra</button>
           <span class="circle-expand"></span>
           <div class="modal-thank">
             <div class="text hvr-wobble-horizontal">¡Gracias por su compra!</div>
@@ -143,7 +160,7 @@
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="modalConfirmarCompraLabel">Confirmar compra</h5>
+              <h5 class="modal-title" id="modalConfirmarCompraLabel">Confirmación de compra</h5>
             </div>
             <div class="modal-body">
               <p>¿Estás seguro de que deseas confirmar la compra?</p>

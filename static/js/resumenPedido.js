@@ -33,21 +33,19 @@ function cancelarCompra(button) {
     window.location.href = 'carrito.html';
 }
 
-
-function confirmarCompra(button) {
-    // Obtener el método de pago seleccionado
+/******************************************************************************************************************/
+function confirmarCompra() {
     var metodoPago = document.getElementById('metodo_pago').value;
-    
+
     if (!metodoPago) {
         alert('Por favor, selecciona un método de pago antes de confirmar la compra.');
-        return;  
+        return;
     }
 
     var modalConfirmar = new bootstrap.Modal(document.getElementById('modalConfirmarCompra'));
     modalConfirmar.show();
 
     document.getElementById('btnConfirmarCompra').addEventListener('click', function() {
-        bloquearNavegacion = false;
         let $square = $('.square'),
             $modal = $('.modal-thank');
 
@@ -69,19 +67,23 @@ function confirmarCompra(button) {
         shape.play();
         $modal.addClass('active');
 
-        setTimeout(function () {
-            eliminarTodos(); 
-            window.location.href = '/'; 
-        }, 2500);
+        let form = document.getElementById('formCompra');
+        if (form) {
+            setTimeout(function () {
+                eliminarTodos(); 
+                form.submit();
+            }, 2500);
+        } else {
+            console.error('No se encontró el formulario con ID "formCompra".');
+        }
 
-        // Cerrar el modal
         modalConfirmar.hide();
     });
 }
 
+/******************************************************************************************************************/
 
 function cancelarCompra(button) {
-    // Redirigir a la ruta para cancelar la compra en Flask
     window.location.href = '/cancelar_compra';
 }
 

@@ -192,8 +192,14 @@ th,td {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
+.descuento_valor{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
 /* .card-text-total {
   text-align: center;
   width: 100%;
