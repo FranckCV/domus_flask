@@ -1,10 +1,20 @@
 {% extends "maestra_administrador.html" %}
 {% block titulo %}
-Agregar Categoria
+Editar Subcategoria
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/css/fontawesome-iconpicker.min.css" integrity="sha512-BfgviGirSi7OFeVB2z9bxp856rzU1Tyy9Dtq2124oRUZSKXIQqpy+2LPuafc2zMd8dNUa+F7cpxbvUsZZXFltQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="/static/css/administrativa/dashboard.css">
+<style>
+  .body_section {
+    font-size: 14.5px;
+  }
+</style>
+<link rel="stylesheet" href="/static/css/administrativa/formulario.css" />
+
 {% endblock %}
 
 
@@ -12,36 +22,38 @@ Agregar Categoria
 
 
 <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar SubCategoria</h2><br><br><br>
+    <h2 class="fw-bolder">Editar Subcategoria</h2>
     <form action="{{ url_for('actualizar_subcategoria') }}" method="post">
         <input type="hidden" name="id" value="{{subcategoria[0]}}">
+
         <div class="form-grid" id="col_add">
-            <!-- Primera columna -->
             <div class="row">
                 <div class="col">
-                    <label for="categoria">Nombre:</label><br>
-                    <input required type="text" class="input" placeholder="Nombre de la Subcategoria" name="nombre" id="nombre" value="{{subcategoria[1]}}" style="height: 60%;">
+                    <label for="categoria">Nombre:</label>
+                    <input required type="text" class="input" placeholder="Nombre de la Subcategoria" name="nombre" id="nombre" value="{{subcategoria[1]}}">
                 </div>
 
                 <div class="col">
-                    <label for="disponibilidad">Disponibilidad </label><br>
-                <label class="" style="color: #000; font-weight: lighter;">
-                    <input type="radio" name="disponibilidad" value=1 id="disponibilidad" {%if subcategoria[3] == 1 %} checked {% endif %} > Disponible
-                </label>
-                <label class="" style="color: #000; font-weight: lighter;">
-                    <input type="radio" name="disponibilidad" value=0 id="disponibilidad"{%if subcategoria[3] == 0 %} checked {% endif %}> No Disponible
-                </label>
-                </div>  
-            </div>
-            <div class="row">
-                <div class="col">
-                    <label for="nombre">Clase del Icono:</label><br> <!--boostrap -->
-                    <input required type="text" class="input" placeholder="Clase del icono" name="faicon_subcat"
+                    <label for="nombre">Icono:</label>
+                    <input required type="text" class="input icp icp-auto" name="faicon_subcat" data-input-search="true" 
                         id="faicon_subcat" value="{{subcategoria[2]}}">
                 </div>
+            </div>
+
+            <div class="row">
+                
+
                 <div class="col">
-                    <label class="fw-bolder lblchoosie">Categoría</label><br>
-                    <select class="form-select" aria-label="Default select example" name="categoria_id">
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <select required class="input" name="disponibilidad" id="disponibilidad">
+                      <option value=1 {% if subcategoria[3]==1 %} selected {% endif %}>Disponible</option>
+                      <option value=0 {% if subcategoria[3]==0 %} selected {% endif %}>No Disponible</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <label class="">Categoría</label>
+                    <select class="input" aria-label="Default select example" name="categoria_id">
                         {% for categoria in categorias %}
                         <option value={{categoria[0]}} {% if categoria[0] == subcategoria[4] %} selected {% endif %}>{{ categoria[1]}}</option>  
                         {% endfor %}     
@@ -50,7 +62,7 @@ Agregar Categoria
             </div>
             <div class="col" id="sbmt">
                 <div class="form-buttons">
-                    <a href="{{ url_for('categorias') }}" id="backbtn">Volver</a>
+                    <a href="{{ url_for('subcategorias') }}" id="backbtn">Volver</a>
                     <button type="submit" class="button is-primary">Guardar</button>
                 </div>
             </div>
@@ -61,11 +73,77 @@ Agregar Categoria
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/admin_productos.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/js/fontawesome-iconpicker.min.js" integrity="sha512-7dlzSK4Ulfm85ypS8/ya0xLf3NpXiML3s6HTLu4qDq7WiJWtLLyrXb9putdP3/1umwTmzIvhuu9EW7gHYSVtCQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/static/js/icon-picker/fontawesome-iconpicker.js"></script>
 
+<script>
+
+  $(function () {   
+    $('.icp-auto').iconpicker();
+
+    $('.icp-dd').iconpicker({
+    });
+
+    $('.icp-opts').iconpicker({
+        title: 'With custom options',
+        icons: [
+          {
+            title: "fab fa-github",
+            searchTerms: ['repository', 'code']
+          },
+          {
+            title: "fas fa-heart",
+            searchTerms: ['love']
+          },
+          {
+            title: "fab fa-html5",
+            searchTerms: ['web']
+          },
+          {
+            title: "fab fa-css3",
+            searchTerms: ['style']
+          }
+        ],
+        selectedCustomClass: 'label label-success',
+        mustAccept: true,
+        placement: 'bottomRight',
+        showFooter: true,
+        // note that this is ignored cause we have an accept button:
+        hideOnSelect: true,
+        // fontAwesome5: true,
+        templates: {
+          footer: '<div class="popover-footer">' +
+            '<div style="text-align:left; font-size:12px;">Placements: \n\
+            <a href="#" class=" action-placement">inline</a>\n\
+            <a href="#" class=" action-placement">topLeftCorner</a>\n\
+            <a href="#" class=" action-placement">topLeft</a>\n\
+            <a href="#" class=" action-placement">top</a>\n\
+            <a href="#" class=" action-placement">topRight</a>\n\
+            <a href="#" class=" action-placement">topRightCorner</a>\n\
+            <a href="#" class=" action-placement">rightTop</a>\n\
+            <a href="#" class=" action-placement">right</a>\n\
+            <a href="#" class=" action-placement">rightBottom</a>\n\
+            <a href="#" class=" action-placement">bottomRightCorner</a>\n\
+            <a href="#" class=" active action-placement">bottomRight</a>\n\
+            <a href="#" class=" action-placement">bottom</a>\n\
+            <a href="#" class=" action-placement">bottomLeft</a>\n\
+            <a href="#" class=" action-placement">bottomLeftCorner</a>\n\
+            <a href="#" class=" action-placement">leftBottom</a>\n\
+            <a href="#" class=" action-placement">left</a>\n\
+            <a href="#" class=" action-placement">leftTop</a>\n\
+            </div><hr></div>'
+        }
+    }).data('iconpicker').show();
+
+    $('.icp').on('iconpickerSelected', function (e) {
+      $('.lead .picker-target').get(0).className = 'picker-target fa-3x ' +
+        e.iconpickerInstance.options.iconBaseClass + ' ' +
+        e.iconpickerInstance.options.fullClassFormatter(e.iconpickerValue);
+    });
+  });
+
+</script>
 
 {% endblock %}

@@ -1,0 +1,232 @@
+
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+    Ver Comentario ID {{id}}
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+
+<section class="h_section" id="mainSection">
+    
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">
+                Ver Información de Comentario
+            </h2>
+        </div>
+    </div>
+
+    <div enctype="multipart/form-data">
+        <input disabled type="hidden" name="id" value="{{ comentario[0] }}">
+        <div class="form-grid" id="col_add">
+
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">ID:</label>
+                    <input disabled required type="text" disabled class="input"
+                        id="nombre" value="{{ comentario[0] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="nombre">Fecha de Registro:</label>
+                    <input disabled disabled required type="text" class="input" name="nombre"
+                        id="nombre" value="{{ comentario[6] }}" style="text-align: center;">
+                </div>
+            </div>
+            
+            <div class="row">
+
+                <div class="col">
+                    <label for="">Motivo:</label>
+                    {% for motivo in motivos %}
+                        {% if motivo[0] == comentario[8] %}
+                        <div class="celda_dato_externo color_texto" data-colorid="{{motivo.0}}">
+                            <p>{{ motivo[1] }}</p>
+                            {% if motivo[2] == 0 %}
+                                <p class="disponibilidad disp_no">No Disponible</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="col">
+                    <label for="">Disponibilidad:</label>                    
+                    <div class="celda_estado" data-estado-comentario="{{comentario.7}}">
+                        <p class="estado_comentario texto_estado_{{comentario.7}}">
+                            {% if comentario.7 == 2 %}
+                                Respondido
+                            {% elif comentario.7 == 1 %}
+                                Leido
+                            {% elif comentario.7 == 0 %}
+                                Pendiente
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- <div class="row">
+                <div class="col">
+                    <label for="nombre">Nombres:</label>
+                    <input disabled required type="text" class="input"
+                        id="nombre" value="{{ comentario[1] }}" style="text-align: center;">
+                </div>
+                <div class="col">
+                    <label for="nombre">Apellidos:</label>
+                    <input disabled required type="text" class="input"
+                        id="nombre" value="{{ comentario[2] }}" style="text-align: center;">
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <label for="stock">Email:</label>
+                    <input disabled required type="text" class="input" name="stock" id="stock"
+                        value="{{ comentario[3] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="stock">Num Telefono:</label>
+                    <input disabled required type="text" class="input" name="stock" id="stock"
+                        value="{{ comentario[4] }}" style="text-align: center;">
+                </div>
+                
+            </div>
+
+            <div class="row">
+                <div class="col" id="space_info">
+                    <label for="infoAdicional">Mensaje Completo:</label>
+                    <textarea disabled name="infoAdicional" id="infoAdicional"
+                        >{{ comentario[5] | safe }}</textarea>
+                </div>
+            </div> -->
+
+            <div class="row">
+
+                <div class="col column_text">
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="nombre">ID USUARIO:</label>
+                            {% if comentario.9 %}
+                            <input disabled required type="text" class="input"
+                                id="nombre" value="{{ comentario[9] }}" style="text-align: center;">
+                            {% else %}
+                            <div class="espacio_vacio">
+                                <p>
+                                    Usuario no Registrado
+                                </p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="nombre">Nombres:</label>
+                            <input disabled required type="text" class="input"
+                                id="nombre" value="{{ comentario[1] }}" style="text-align: center;">
+                        </div>
+                    </div>
+        
+                    <div class="row">
+                        <div class="col">
+                            <label for="nombre">Apellidos:</label>
+                            <input disabled required type="text" class="input"
+                                id="nombre" value="{{ comentario[2] }}" style="text-align: center;">
+                        </div>
+                    </div>
+        
+                    <div class="row">
+                        <div class="col">
+                            <label for="stock">Email:</label>
+                            <input disabled required type="text" class="input" name="stock" id="stock"
+                                value="{{ comentario[3] }}" style="text-align: center;">
+                        </div>
+                    </div>
+        
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Num Telefono:</label>
+                            <input disabled required type="text" class="input" name="stock" id="stock"
+                                value="{{ comentario[4] }}" style="text-align: center;">
+                        </div>
+                    </div>
+        
+                </div>
+
+                <div class="col" id="space_info">
+                    <label for="infoAdicional">Mensaje Completo:</label>
+                    <textarea disabled name="infoAdicional" id="infoAdicional"
+                        >{{ comentario[5] | safe }}</textarea>
+                </div>
+
+            </div>
+
+
+
+            <div class="row">
+                <div class="col" id="">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('comentarios_listado') }}" id="backbtn">Volver</a>
+                        
+                        <form action="{{ url_for('estado_comentario') }}" method="POST"
+                            onsubmit="return confirmarLectura()" id="deleteF">
+                            <input type="hidden" name="id" value="{{ comentario[0] }}">
+                            <button class="button is-secondary" type="submit">
+                                Marcar como Leido
+                            </button>
+                        </form>
+
+                        <form action="{{ url_for('estado_comentario_respondido') }}" method="POST"
+                            onsubmit="return confirmarRespuesta()" id="deleteF">
+                            <input type="hidden" name="id" value="{{ comentario[0] }}">
+                            <button class="button is-primary" type="submit">
+                                Marcar como Respondido
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
+</section>
+
+<style>
+    .PrActive {
+        background-color: rgb(255, 255, 255);
+        color: #00095c;
+    }
+
+    /* Asegurar que el body permita scroll si el contenido excede el tamaño de la ventana */
+    
+</style>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/admin_comentarios.js"></script>
+    <script>
+        function confirmarLectura() {
+            return confirm('¿Estás seguro que deseas marcar como leído este registro? Esta acción no se puede deshacer.');
+        }
+
+        function confirmarRespuesta() {
+            return confirm('¿Estás seguro que deseas marcar como Respondido este registro? Esta acción no se puede deshacer.');
+        }
+    </script>
+    <script src="/static/js/textoCRUDcolor.js"></script>
+{% endblock %}

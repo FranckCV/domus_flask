@@ -5,7 +5,8 @@ Listado de Comentarios
 {% endblock %}
 
 {% block estilos %}
-<link rel="stylesheet" href="static/css/administrativa/listados.css">
+    <link rel="stylesheet" href="static/css/administrativa/listados.css">
+    <!-- <link rel="stylesheet" href="/static/css/administrativa/colores.css"> -->
 {% endblock %}
 
 {% block contenido %}
@@ -17,14 +18,14 @@ Listado de Comentarios
         </div>
 
         {% if nombreBusqueda %}
-        <div class="col-2" >
-          <div class="input-group">
-            <a class="button is-success add-btn" href="{{ url_for('comentarios_listado') }}">
-              <button type="button" class="main_btn btn_return">Volver al Listado General</button>
-            </a>
-          </div>
-        </div>
-      {% endif %}
+            <div class="col-2" >
+            <div class="input-group">
+                <a class="button is-success add-btn" href="{{ url_for('comentarios_listado') }}">
+                <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+                </a>
+            </div>
+            </div>
+        {% endif %}
 
     </div>
 
@@ -39,7 +40,7 @@ Listado de Comentarios
                 </tr>
                 <tr>
                   <th>Total</th>
-                  <th>Leidos</th>
+                  <th>Atendidos</th>
                   <th>Pendientes</th>
                 </tr>
                 <tr>
@@ -71,7 +72,7 @@ Listado de Comentarios
     <div class="row">
         <div class="col">
             <p class="fw-bolder lblchoosie">Filtrar por Motivo:</p>
-            <select id="motivoSelect" class="form-select" aria-label="Filtrar por motivo">
+            <select id="motivoSelect" class="form-select choosie" aria-label="Filtrar por motivo">
                 <option value="0" selected>Todos</option>
                 {% for motivo in motivos %}
                 <option value="{{ motivo[0] }}">{{ motivo[1] }}</option> <!-- motivo[1] es el nombre del motivo -->
@@ -81,7 +82,7 @@ Listado de Comentarios
 
         <div class="col">
             <p class="fw-bolder lblchoosie">Filtrar por Estado:</p>
-            <select id="estadoComSelect" class="form-select" aria-label="Filtrar por motivo">
+            <select id="estadoComSelect" class="form-select choosie" aria-label="Filtrar por motivo">
                 <option value="-1" selected>Todos</option>
                 <option value="0">Pendiente</option>
                 <option value="1">Leido</option>
@@ -96,6 +97,7 @@ Listado de Comentarios
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>ID Usuario</th>
                     <th>Nombres</th>
                     <th>Apellidos</th>
                     <th>Email</th>
@@ -116,31 +118,59 @@ Listado de Comentarios
                   fila_disp_no
                 {% endif %}
                 ">
-                    <td>{{ comentario[0] }}</td>
+                    <td class="celda_id">{{ comentario[0] }}</td>
+                    <td>
+                        <div class="celda_texto_bloque">
+                        {% if comentario.11 %}
+                            <div class="celda_id">
+                                {{ comentario[11] }}
+                            </div>
+                        {% else %}
+                          <div class="espacio_vacio">
+                            <p>
+                              Usuario no registrado
+                            </p>
+                          </div> 
+                        {% endif %}
+                        </div>
+                    </td>
                     <td>{{ comentario[1] }}</td>
                     <td>{{ comentario[2] }}</td>
                     <td>{{ comentario[3] }}</td>
                     <td>{{ comentario[4] }}</td>
-                    <td>{{ comentario[5] }}</td>
                     <td>
-                        <div data-motivo="{{comentario.9}}">
-                            {{ comentario[8] }}
+                        <div class="celda_texto_amplio">
+                            {{ comentario[5] }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="celda_texto_bloque color_texto" data-colorid="{{comentario.9}}" data-motivo="{{comentario.9}}">
+                            <p>{{ comentario[8] }}</p>
+                            {% if comentario[10] == 0 %}
+                                <p class="disponibilidad disp_no">No Disponible</p>
+                            {% endif %}
                         </div>
                     </td> 
                     <td>{{ comentario[6] }}</td>
                     <td>
                         <div class="celda_estado" data-estado-comentario="{{comentario.7}}">
-                            {% if comentario.7 == 2 %}
-                                <p class="estado_comentario estcom_2">Respondido</p>
-                            {% elif comentario.7 == 1 %}
-                                <p class="estado_comentario estcom_1">Leido</p>
-                            {% elif comentario.7 == 0 %}
-                                <p class="estado_comentario estcom_0">Pendiente</p>
-                            {% endif %}
+                            <p class="estado_comentario texto_estado_{{comentario.7}}">
+                                {% if comentario.7 == 2 %}
+                                    Respondido
+                                {% elif comentario.7 == 1 %}
+                                    Leido
+                                {% elif comentario.7 == 0 %}
+                                    Pendiente
+                                {% endif %}
+                            </p>
                         </div>
                     </td>
                     <td class="opciones_column">
                         <div class="acciones">
+                            
+                            <a class="opciones_fila" href="{{url_for('ver_comentario', id=comentario[0])}}">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
                             <form class="opciones_fila" action="{{ url_for('estado_comentario') }}" method="POST"
                                 onsubmit="return confirmarLectura()" id="deleteF">
                                 <input type="hidden" name="id" value="{{ comentario[0] }}">
@@ -148,14 +178,14 @@ Listado de Comentarios
                                     <i class="fa-regular fa-square-check"></i>
                                 </button>
                             </form>
-                            <!-- 
-                            <form class="opciones_fila" action="{{ url_for('eliminar_comentario') }}" method="POST"
-                                onsubmit="return confirmarEliminacion()" id="deleteF">
+
+                            <form class="opciones_fila" action="{{ url_for('estado_comentario_respondido') }}" method="POST"
+                                onsubmit="return confirmarRespuesta()" id="deleteF">
                                 <input type="hidden" name="id" value="{{ comentario[0] }}">
                                 <button type="submit">
-                                    <i class="fa-solid fa-trash-can"></i>
+                                    <i class="fa-solid fa-reply"></i>
                                 </button>
-                            </form> -->
+                            </form>                            
                         </div>
                     </td>
                 </tr>
@@ -201,6 +231,10 @@ Listado de Comentarios
             return confirm('¿Estás seguro que deseas marcar como leído este registro? Esta acción no se puede deshacer.');
         }
 
+        function confirmarRespuesta() {
+            return confirm('¿Estás seguro que deseas marcar como Respondido este registro? Esta acción no se puede deshacer.');
+        }
+
         function confirmarEliminacion() {
             return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
         }
@@ -208,5 +242,6 @@ Listado de Comentarios
     </script>
 
     <script src="/static/js/filtroCRUDListado.js"></script>
+    <script src="/static/js/textoCRUDcolor.js"></script>
 
 {% endblock %}

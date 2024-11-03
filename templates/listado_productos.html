@@ -56,7 +56,7 @@
     <div class="col">
       <form enctype="multipart/form-data" method="GET" action="{{ url_for('productos_buscar') }}">
         <div class="input-group">
-          <input required type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarProducto" name="buscarProducto" maxlength="150"
+          <input required type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="150"
             {% if nombreBusqueda %}
               value="{{nombreBusqueda}}"
             {% endif %}
@@ -116,13 +116,15 @@
             <th>Precio Regular</th>
             <th>Precio Online</th>
             <th>Precio Oferta</th>
-            <th>Información Adicional</th>
             <th>Stock</th>
+            <th>Información Adicional</th>
+            <th>Cant. Imagenes</th>
             <th>Fecha Registro</th>
             <th>Disponibilidad</th>
             <th>Marca</th>
             <th>Categoría</th>
             <th>Subcategoría</th>
+            <th>Cant. Caracteristicas</th>
             <th class="opciones_column">Opciones</th>
           </tr>
         </thead>
@@ -135,7 +137,7 @@
               fila_disp_no
             {% endif %}
             ">
-              <td>{{ producto.0 }}</td>
+              <td class="celda_id">{{ producto.0 }}</td>
               <td>
                 <div class="celda_texto_amplio">
                   {{ producto.1 }}
@@ -154,10 +156,16 @@
                   </p>
                 </div> 
                 {% else %}
-                  {{ producto.2 }}
+                  <div class="celda_precio">
+                    S/. {{ producto.2 }}
+                  </div>
                 {% endif %}
               </td>
-              <td>{{ producto.3 }}</td>
+              <td>
+                <div class="celda_precio">
+                  S/. {{ producto.3 }}
+                </div>
+              </td>
               <td>
                 {% if producto[4] == 0 or producto[4] is none %}
                 <div class="espacio_vacio">
@@ -166,8 +174,23 @@
                   </p>
                 </div> 
                 {% else %}
-                  {{ producto.4 }}
+                <div class="celda_precio">
+                  S/. {{ producto.4 }}
+                </div>
                 {% endif %}
+              </td>
+              <td>
+                <div class="celda_numero">
+                  <p class="
+                    {% if producto.7 > 0 %}
+                      num_cant
+                    {% else %}
+                      num_cero
+                    {% endif %}
+                    ">
+                      {{ producto.7 }}
+                    </p>
+                </div>
               </td>
               <td>
                 <div class="celda_texto_amplio">
@@ -182,7 +205,19 @@
                   {% endif %}
                 </div>
               </td>
-              <td>{{ producto.7 }}</td>
+              <td>
+                <div class="celda_numero">
+                  <p class="
+                    {% if producto.17 > 0 %}
+                      num_cant
+                    {% else %}
+                      num_cero
+                    {% endif %}
+                    ">
+                      {{ producto.17 }}
+                    </p>
+                </div>
+              </td>
               <td>{{ producto.8 }}</td>
               <td>
                 <div class="celda_estado">
@@ -197,7 +232,7 @@
                 {% for marca in marcas %}
                   {% if marca.0 == producto.10 %}
                     <div class="celda_texto_bloque" data-brand="{{ marca.0 }}">
-                      <img src="{{ marca.2 }}" alt="{{ producto.1 }} logo" class="clickable-image"/>
+                      <img src="{{ marca.2 }}" alt="{{ producto.1 }} logo" class="clickable-image" style="width: 75px;"/>
                       <span>{{ marca.1 }}</span>
                       {% if producto.15 == 0 %}
                         <p class="disponibilidad disp_no">No Disponible</p>
@@ -212,11 +247,9 @@
                     <div class="celda_texto_bloque" data-category="{{ subcategoria.4 }}">
                       <i class="{{ subcategoria.6 }}"></i>
                       <span>{{ subcategoria.5 }}</span>
-
                       {% if producto.14 == 0 %}
                         <p class="disponibilidad disp_no">No Disponible</p>
                       {% endif %}
-
                     </div>
                   {% endif %}
                 {% endfor %}
@@ -227,22 +260,32 @@
                     <div class="celda_texto_bloque" data-subcategory="{{ producto.11 }}">
                       <i class="{{ subcategoria.2 }}"></i>
                       <span>{{ subcategoria.1 }}</span>
-
                       {% if producto.13 == 0 or producto.14 == 0 %}
                         <p class="disponibilidad disp_no">No Disponible</p>
                       {% endif %}
-
                     </div>
                   {% endif %}
                 {% endfor %}
               </td>
-
+              <td>
+                <div class="celda_numero">
+                  <p class="
+                    {% if producto.16 > 0 %}
+                      num_cant
+                    {% else %}
+                      num_cero
+                    {% endif %}
+                    ">
+                      {{ producto.16 }}
+                    </p>
+                </div>
+              </td>
               <td class="opciones_column">
                 <div class="acciones">
                   <a class="opciones_fila" href="{{url_for('producto', id=producto[0])}}">
                     <i class="fa-solid fa-link"></i>
                   </a>
-                  <a class="opciones_fila" href="{{url_for('producto', id=producto[0])}}">
+                  <a class="opciones_fila" href="{{url_for('ver_producto', id=producto[0])}}">
                     <i class="fa-solid fa-eye"></i>
                   </a>
                   <a class="opciones_fila" href="{{ url_for('editar_producto', id=producto.0) }}">

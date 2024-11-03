@@ -48,6 +48,38 @@ def obtener_listado_Caracteristicas():
         caracteristicas = cursor.fetchall()
     conexion.close()
     return caracteristicas
+
+
+def buscar_listado_Caracteristicas_nombre(nombre):
+    conexion = obtener_conexion()
+    caracteristicas = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                car.id,
+                car.campo,
+                car.disponibilidad,
+                sub.id,
+                sub.subcategoria,
+                sub.faicon_subcat,
+                sub.CATEGORIAid,
+                cat.categoria,
+                cat.faicon_cat,
+                count(pr.id)
+            FROM caracteristica car
+            LEFT JOIN caracteristica_subcategoria csc on csc.CARACTERISTICAid = car.id
+            LEFT JOIN subcategoria sub on sub.id = csc.SUBCATEGORIAid
+            LEFT JOIN categoria cat on cat.id = sub.CATEGORIAid
+            LEFT JOIN caracteristica_producto cpr on cpr.CARACTERISTICAid = car.id
+            LEFT JOIN producto pr on pr.id = cpr.PRODUCTOid
+            WHERE UPPER(car.campo) LIKE UPPER ('%'''+str(nombre)+'''%')
+            group by car.id
+            order by car.id asc , sub.subcategoria;
+            '''
+        cursor.execute(sql)
+        caracteristicas = cursor.fetchall()
+    conexion.close()
+    return caracteristicas
     
 
 def insertar_caracteristica(campo):

@@ -63,38 +63,57 @@ def obtener_tipo_usuario_por_id(id):
             SELECT 
                 id, 
                 tipo, 
-                descripcion 
+                descripcion,
+                imagen,
+                disponibilidad
             FROM TIPO_USUARIO
             WHERE id = %s
         '''
         cursor.execute(sql, (id,))
         tipo_usuario = cursor.fetchone()
 
+    elemento = None
+
+    if tipo_usuario:
+        usu_id, usu_tipo, usu_desc, usu_img, disp = tipo_usuario
+
+        if usu_img:
+            img_base64 = base64.b64encode(usu_img).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
+            img_url = ""  # Placeholder en caso de que no haya logo
+
+        elemento = (usu_id, usu_tipo, usu_desc, img_url , disp)
+
+
     conexion.close()
-    return tipo_usuario
+    return elemento
 
 
-def insertar_tipo_usuario(tipo, descripcion):
+def insertar_tipo_usuario(tipo, descripcion,img_user):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            INSERT INTO TIPO_USUARIO (tipo, descripcion)
-            VALUES (%s, %s)
+            INSERT INTO TIPO_USUARIO (tipo, descripcion, imagen,disponibilidad)
+            VALUES (%s, %s, %s,1)
         '''
-        cursor.execute(sql, (tipo, descripcion))
+        cursor.execute(sql, (tipo, descripcion,img_user))
     conexion.commit()
     conexion.close()
 
 
-def actualizar_tipo_usuario(id, tipo, descripcion):
+def actualizar_tipo_usuario(id, tipo, descripcion , imagen , disponibilidad):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            UPDATE TIPO_USUARIO
-            SET tipo = %s, descripcion = %s
+            UPDATE TIPO_USUARIO SET 
+            tipo = %s, 
+            descripcion = %s,
+            imagen = %s ,
+            disponibilidad = %s
             WHERE id = %s
         '''
-        cursor.execute(sql, (tipo, descripcion, id))
+        cursor.execute(sql, (tipo, descripcion, imagen, disponibilidad ,id))
     conexion.commit()
     conexion.close()
 
@@ -109,3 +128,22 @@ def eliminar_tipo_usuario(id):
         cursor.execute(sql, (id,))
     conexion.commit()
     conexion.close()
+
+
+def obtener_img_tipo_usuario_por_id(id):
+    conexion = obtener_conexion()
+    tipo_usuario = None
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                imagen
+            FROM TIPO_USUARIO
+            WHERE id = %s
+        '''
+        cursor.execute(sql, (id,))
+        tipo_usuario = cursor.fetchone()
+
+    conexion.close()
+    return tipo_usuario
+
+

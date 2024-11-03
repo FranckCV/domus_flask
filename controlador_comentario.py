@@ -16,7 +16,46 @@ def obtener_comentario_por_id(id):
     conexion = obtener_conexion()
     comentario = None
     with conexion.cursor() as cursor:
-        sql = 'SELECT id, nombres, apellidos, email, celular, mensaje, fecha_registro, estado, MOTIVO_COMENTARIOid, USUARIOid FROM ' + tabla + ' WHERE id = %s'
+        sql = '''
+                SELECT 
+                    id, 
+                    nombres, 
+                    apellidos, 
+                    email, 
+                    celular, 
+                    mensaje, 
+                    fecha_registro, 
+                    estado, 
+                    MOTIVO_COMENTARIOid, 
+                    USUARIOid 
+                FROM comentario 
+                WHERE id = %s
+            '''
+        cursor.execute(sql, (id,))
+        comentario = cursor.fetchone()
+    conexion.close()
+    return comentario
+
+
+def ver_comentario_por_id(id):
+    conexion = obtener_conexion()
+    comentario = None
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    com.id, 
+                    com.nombres, 
+                    com.apellidos, 
+                    com.email, 
+                    com.celular, 
+                    com.mensaje, 
+                    com.fecha_registro, 
+                    com.estado, 
+                    com.MOTIVO_COMENTARIOid, 
+                    com.USUARIOid 
+                FROM comentario com
+                WHERE id = %s
+            '''
         cursor.execute(sql, (id,))
         comentario = cursor.fetchone()
     conexion.close()
@@ -65,12 +104,14 @@ def obtener_listado_comentarios():
                 c.celular, 
                 c.mensaje, 
                 c.fecha_registro, 
-                c.estado, 
+                c.estado,
                 mc.motivo,
-                mc.id
+                mc.id,
+                mc.disponibilidad,
+                c.usuarioid
             FROM comentario c
             left JOIN motivo_comentario mc ON c.MOTIVO_COMENTARIOid = mc.id
-            order by c.estado asc, c.fecha_registro desc
+            order by c.estado asc, c.fecha_registro desc , c.id asc
         '''
         cursor.execute(sql)
         comentarios = cursor.fetchall()
@@ -163,7 +204,6 @@ def buscar_listado_comentarios_palabra(palabra):
     return comentarios
 
 
-
 def eliminar_comentario(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -180,6 +220,14 @@ def estado_comentario(id):
     conexion.close()
 
 
+def estado_comentario_respondido(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("UPDATE " + tabla + " SET estado = 2 WHERE id = %s", (id,))
+    conexion.commit()
+    conexion.close()
+
+
 def actualizar_comentario(nombres, apellidos, email, celular, mensaje, estado, MOTIVO_COMENTARIOid, USUARIOid, id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -187,3 +235,8 @@ def actualizar_comentario(nombres, apellidos, email, celular, mensaje, estado, M
                        (nombres, apellidos, email, celular, mensaje, estado, MOTIVO_COMENTARIOid, USUARIOid, id))
     conexion.commit()
     conexion.close()
+
+
+
+
+

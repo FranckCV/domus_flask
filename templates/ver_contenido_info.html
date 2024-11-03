@@ -1,0 +1,168 @@
+
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+    Ver Contenido Infroamtivo : {{ contenido[1] }}
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="/static/css/administrativa/listados.css">
+    <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+
+<section class="h_section" id="mainSection">
+    
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">
+                Ver Información de Seccion de Contenido Informativo
+            </h2>
+        </div>
+    </div>
+
+    <div enctype="multipart/form-data">
+        <input disabled type="hidden" name="id" value="{{ contenido[0] }}">
+        <div class="form-grid" id="col_add">
+
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">ID:</label>
+                    <input disabled required type="text" disabled class="input"
+                        id="nombre" value="{{ contenido[0] }}" style="text-align: center;">
+                </div>
+            
+                <div class="col">
+                    <label for="nombre">Nombre:</label>
+                    <input disabled required type="text" class="input"
+                        id="nombre" value="{{ contenido[1] }}" style="text-align: center;">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="">Icono:</label>
+                    <div class="celda_dato_externo">
+                        <i class="{{ contenido[2] }}"></i>
+                    </div>
+                    <input disabled required type="text" class="input" 
+                        value="{{ contenido[2] }}" style="text-align: center;">
+                </div>
+            
+                <div class="col">
+                    <label for="">Disponibilidad:</label>                    
+                    <div class="celda_estado">
+                        {% if contenido.4 == 1 %}
+                          <p class="disponibilidad disp_si">Disponible</p>
+                        {% else %}
+                          <p class="disponibilidad disp_no">No Disponible</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col" id="space_info">
+                    <label for="infoAdicional">Descripción:</label>
+                    <textarea disabled name="infoAdicional" id="infoAdicional"
+                        >{{ contenido[3] }}</textarea>
+                </div>
+            </div>
+
+            
+
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <h3>Articulos de esta sección:</h3>
+                        </div>
+
+                        <div class="col">
+                            <a href="{{ url_for('formulario_agregar_contenido_info') }}" class="button is-success add-btn">
+                                <button type="button" class="main_btn">Agregar</button>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table cellspacing="0" class="table_listado">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titulo</th>
+                                    <th>Cuerpo</th>
+                                    <th class="opciones_column">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dato in articulos %} 
+                                    <tr>
+                                        <td class="celda_id">
+                                            {{dato[0]}}
+                                        </td>
+                                        <td>
+                                            {{dato[1]}}
+                                        </td>
+                                        <td>
+                                            <div class="celda_texto_amplio">
+                                                {{dato[2]}}
+                                            </div>
+                                        </td>
+                                        <td class="opciones_column">
+                                            <div class="acciones">
+                                              <a class="opciones_fila" href="{{ url_for('editar_contenido_info', id=dato.0) }}">
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                              </a>
+                                              <form class="opciones_fila" action="{{ url_for('eliminar_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                                                <input type="hidden" name="id" value="{{ dato.0 }}" />
+                                                <button type="submit">
+                                                  <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                              </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" id="">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('listado_tipo_contenido_info') }}" id="backbtn">Volver</a>
+                        <a href="{{ url_for('editar_tipo_contenido_info',id = contenido[0]) }}"><button class="button is-primary" >Editar</button></a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
+</section>
+
+<style>
+    .PrActive {
+        background-color: rgb(255, 255, 255);
+        color: #00095c;
+    }
+
+    /* Asegurar que el body permita scroll si el contenido excede el tamaño de la ventana */
+    
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin_productos.js"></script>
+<script src="/static/js/filtroCRUDListado.js"></script>
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
+{% endblock %}

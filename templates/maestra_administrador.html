@@ -52,13 +52,13 @@
         <i class="fa-solid fa-caret-right"></i>
         <p>Productos</p>
       </a>
-      <a href="{{url_for('marcas')}}">
-        <i class="fa-solid fa-caret-right"></i>
-        <p>Marcas</p>
-      </a>
       <a class="medio" href="{{url_for('novedades_listado')}}">
         <i class="fa-solid fa-caret-right"></i>
         <p>Novedades</p>
+      </a>
+      <a href="{{url_for('marcas')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Marcas</p>
       </a>
       <a class="falta" href="{{url_for('listado_clientes')}}">
         <i class="fa-solid fa-caret-right"></i>
@@ -76,10 +76,6 @@
         <i class="fa-solid fa-caret-right"></i>
         <p>Datos Principales</p>
       </a>
-      <a class="falta" href="{{url_for('listado_contenido_info')}}">
-        <i class="fa-solid fa-caret-right"></i>
-        <p>Contenido Informativo</p>
-      </a>
       <a class="falta" href="{{url_for('empleados_listado')}}">
         <i class="fa-solid fa-caret-right"></i>
         <p>Empleados</p>
@@ -90,11 +86,15 @@
       </a>
       <a class="falta" href="{{url_for('listado_tipo_contenido_info')}}">
         <i class="fa-solid fa-caret-right"></i>
-        <p>Tipos de Contenido Informativo</p>
+        <p>Contenido Informativo</p>
       </a>
       <a class="falta" href="{{url_for('categorias')}}">
         <i class="fa-solid fa-caret-right"></i>
-        <p>Categorias y Subcategorias</p>
+        <p>Categorias</p>
+      </a>  
+      <a class="falta" href="{{url_for('subcategorias')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Subcategorias</p>
       </a>          
       <a class="falta" href="{{url_for('caracteristicas')}}">
         <i class="fa-solid fa-caret-right"></i>
@@ -133,8 +133,10 @@
       <!-- Aquí va el contenido principal -->
     {% endblock %}
   </main>
-  <script src="static/js/common_script/bootstrap.bundle.min.js"></script>
-  <script src="static/js/maestra_administradora.js"></script>
+
+  <script src="/static/js/common_script/jquery-3.7.1.min.js"></script>
+  <script src="/static/js/common_script/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/maestra_administradora.js"></script>
   {% block scripts %}        
   {% endblock %}
 

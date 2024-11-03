@@ -1,60 +1,65 @@
 {% extends "maestra_administrador.html" %}
 
 {% block titulo %}
-Editar Empleado
+    Editar Empleado
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
 <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Usuario</h2><br><br><br>
+    <h2 class="fw-bolder">Editar Empleado</h2>
     <form action="{{ url_for('actualizar_empleado') }}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="{{ usuario[0] }}"> <!-- Campo oculto para el ID del usuario -->
         
         <div class="form-grid" id="col_add">
             <div class="row">
                 <div class="col">
-                    <label for="nombres">Nombres:</label><br>
+                    <label for="nombres">Nombres:</label>
                     <input required type="text" class="input" placeholder="Nombres del usuario" name="nombres" id="nombres" value="{{ usuario[1] }}">
                 </div>
                 <div class="col">
-                    <label for="apellidos">Apellidos:</label><br>
+                    <label for="apellidos">Apellidos:</label>
                     <input required type="text" class="input" placeholder="Apellidos del usuario" name="apellidos" id="apellidos" value="{{ usuario[2] }}">
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-                    <label for="doc_identidad">Documento de Identidad:</label><br>
+                    <label for="doc_identidad">Documento de Identidad:</label>
                     <input required type="text" class="input" placeholder="Documento de identidad" name="doc_identidad" id="doc_identidad" value="{{ usuario[3] }}">
                 </div>
                 <div class="col">
-                    <label for="telefono">Teléfono:</label><br>
+                    <label for="telefono">Teléfono:</label>
                     <input required type="text" class="input" placeholder="Teléfono" name="telefono" id="telefono" value="{{ usuario[7] }}">
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-                    <label for="correo">Correo Electrónico:</label><br>
+                    <label for="correo">Correo Electrónico:</label>
                     <input required type="email" class="input" placeholder="Correo" name="correo" id="correo" value="{{ usuario[8] }}">
                 </div>
                 <div class="col">
-                    <label for="fecha_nacimiento">Fecha de Nacimiento:</label><br>
+                    <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
                     <input required type="date" class="input" placeholder="Fecha de nacimiento" name="fecha_nacimiento" id="fecha_nacimiento" value="{{ usuario[6] }}">
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-                    <label for="contraseña">Contraseña:</label><br>
-                    <input required type="password" class="input" placeholder="Contraseña" name="contraseña" id="contraseña" value="{{ usuario[9] }}">
+                    <label for="contraseña">Contraseña:</label>
+                    <div class="input-group">
+                        <input type="password" class="input form-control" placeholder="Contraseña" value="{{ usuario[9] }}"  name="contraseña" id="contraseña">
+                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                          <i id="toggleIcon" class="fas fa-eye"></i>
+                        </button>
+                      </div>
                 </div>
                 <div class="col">
-                    <label for="genero">Género:</label><br>
+                    <label for="genero">Género:</label>
                     <select name="genero" id="genero" class="input" required>
                         <option value="1" {% if usuario[5] == 1 %}selected{% endif %}>Masculino</option>
                         <option value="0" {% if usuario[5] == 0 %}selected{% endif %}>Femenino</option>
@@ -64,17 +69,19 @@ Editar Empleado
 
             <div class="row">
                 <div class="col">
-                    <label for="disponibilidad">Disponibilidad:</label><br>
+                    <label for="disponibilidad">Disponibilidad:</label>
                     <select name="disponibilidad" id="disponibilidad" class="input" required>
                         <option value="1" {% if usuario[10] == 1 %}selected{% endif %}>Disponible</option>
                         <option value="0" {% if usuario[10] == 0 %}selected{% endif %}>No Disponible</option>
                     </select>
                 </div>
-                <div class="col">
-                    <label for="img_usuario">Imagen de Usuario (opcional):</label><br>
-                    <!-- Input para subir nueva imagen -->
-                    <input type="file" class="input" name="img_usuario" id="img_usuario" />
-                </div>                
+                <div class="col seccionImg">
+                    <label for="img_usuario">Imagen de Usuario (opcional):</label>
+                    <input type="file" class="campoImg" name="img_usuario" id="img_usuario"/>
+                    <div class="espacio_img">
+                      <img id="previewImg" src="{{imagen.1}}" alt="">
+                    </div>
+                </div>            
             </div>
 
             <div class="row">
@@ -91,6 +98,21 @@ Editar Empleado
 {% endblock %}
 
 {% block scripts %} 
-<script src="/static/js/admin_usuarios.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script>
+  function togglePassword() {
+    const passwordField = document.getElementById("contraseña");
+    const toggleIcon = document.getElementById("toggleIcon");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+    }
+  }
+</script>
 {% endblock %}

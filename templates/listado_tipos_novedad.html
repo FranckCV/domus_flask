@@ -33,27 +33,43 @@
                 <tr>
                     <th>ID</th>
                     <th>Tipo de Novedad</th>
+                    <th>Disponibilidad</th>
                     <th>Cant. Novedades</th>
                     <th class="opciones_column">Acciones</th>
                 </tr>
             </thead>
             <tbody id="productTableBody">
                 {% for tipo_novedad in tipos_novedad %}
-                <tr>
-                    <td>{{ tipo_novedad[0] }}</td>
+                <tr class="
+                    {% if tipo_novedad.3 == 1 %}
+                    fila_disp_si
+                    {% else %}
+                    fila_disp_no
+                    {% endif %}
+                ">
+                    <td class="celda_id">{{ tipo_novedad[0] }}</td>
                     <td>{{ tipo_novedad[1] }}</td>
                     <td>
-                    <div class="celda_numero">
-                        <p class="
-                        {% if tipo_novedad[2] > 0 %}
-                        num_cant
-                        {% else %}
-                        num_cero
-                        {% endif %}
-                        ">
-                        {{ tipo_novedad[2] }}
-                        </p>
-                    </div>
+                        <div class="celda_estado">
+                            {% if tipo_novedad.3 == 1 %}
+                                <p class="disponibilidad disp_si">Disponible</p>
+                            {% else %}
+                                <p class="disponibilidad disp_no">No Disponible</p>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="celda_numero">
+                            <p class="
+                            {% if tipo_novedad[2] > 0 %}
+                            num_cant
+                            {% else %}
+                            num_cero
+                            {% endif %}
+                            ">
+                            {{ tipo_novedad[2] }}
+                            </p>
+                        </div>
                     </td>
                     <td class="opciones_column">
                         <div class="acciones">

@@ -4,10 +4,10 @@ def insertar_tipo_novedad(nombre_tipo):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            INSERT INTO tipo_novedad (nomTipo) 
-            VALUES (%s)
+            INSERT INTO tipo_novedad (nomTipo , disponibilidad) 
+            VALUES (%s,1)
         '''
-        cursor.execute(sql, (nombre_tipo,))
+        cursor.execute(sql, (nombre_tipo))
     conexion.commit()
     conexion.close()
 
@@ -19,7 +19,8 @@ def obtener_tipos_novedad():
         sql = '''
             SELECT 
                 id, 
-                nomTipo 
+                nomTipo,
+                disponibilidad
             FROM tipo_novedad
             ORDER BY id
         '''
@@ -34,25 +35,29 @@ def obtener_tipo_novedad_por_id(id):
     tipo_novedad = None
     with conexion.cursor() as cursor:
         sql = '''
-            SELECT id, nomTipo 
+            SELECT 
+                id, 
+                nomTipo,
+                disponibilidad
             FROM tipo_novedad
             WHERE id = %s
         '''
-        cursor.execute(sql, (id,))
+        cursor.execute(sql, (id))
         tipo_novedad = cursor.fetchone()
     conexion.close()
     return tipo_novedad
 
 
-def actualizar_tipo_novedad(nombre_tipo, id):
+def actualizar_tipo_novedad(nombre_tipo, disp, id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
             UPDATE tipo_novedad
-            SET nomTipo = %s
+            SET nomTipo = %s ,
+            disponibilidad = %s
             WHERE id = %s
         '''
-        cursor.execute(sql, (nombre_tipo, id))
+        cursor.execute(sql, (nombre_tipo, disp , id))
     conexion.commit()
     conexion.close()
 
@@ -89,7 +94,8 @@ def obtener_listado_tipos_novedad():
             SELECT 
                 tip.id, 
                 tip.nomTipo,
-                count(nov.id)
+                count(nov.id),
+                tip.disponibilidad
             FROM tipo_novedad tip
             left join novedad nov on nov.tipo_novedadid = tip.id
             group by tip.id

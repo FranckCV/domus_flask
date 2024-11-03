@@ -2,6 +2,39 @@ from bd import obtener_conexion
 import base64
 tabla = 'producto'
 
+def obtener_imagenes_disponibles_por_novedad(id):
+    conexion = obtener_conexion()
+    imagenes = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                img.id, 
+                img.nomImagen, 
+                img.imagen, 
+                img.tipo_img_novedadid, 
+                img.NOVEDADid 
+            FROM IMG_NOVEDAD img
+            LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
+            WHERE NOVEDADid = %s and tip.disponibilidad = 1
+            ORDER BY OCTET_LENGTH(img.imagen) DESC 
+        '''
+        cursor.execute(sql, (id))
+        imagenes = cursor.fetchall()
+
+    imagenes_lista = []
+    for imagen in imagenes:
+        img_id, img_nombre, img_binario, tipo_img_id, novedad_id = imagen
+        if img_binario:
+            img_base64 = base64.b64encode(img_binario).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
+            img_url = "" 
+
+        imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id, novedad_id))
+    
+    conexion.close()
+    return imagenes_lista
+
 
 def obtener_imagenes_novedades_por_marca(marca):
     conexion = obtener_conexion()
@@ -193,47 +226,38 @@ def obtener_novedad_id_por_imagen_id(imagen_id):
 
 
 
-
-# def obtener_imagenes_novedad_por_id(novedad_id):
-#     conexion = obtener_conexion()
-#     imagenes = []
-#     with conexion.cursor() as cursor:
-#         sql = '''
-#             SELECT 
-#                 id, 
-#                 nomImagen, 
-#                 imagen, 
-#                 TIPO_IMG_NOVEDADid 
-#             FROM IMG_NOVEDAD 
-#             WHERE NOVEDADid = %s
-#         '''
-#         cursor.execute(sql, (novedad_id,))
-#         imagenes = cursor.fetchall()
-
-#     imagenes_lista = []
-#     for imagen in imagenes:
-#         img_id, img_nombre, img_binario, tipo_img_id = imagen
-#         if img_binario:
-#             img_base64 = base64.b64encode(img_binario).decode('utf-8')
-#             img_url = f"data:image/png;base64,{img_base64}"
-#         else:
-#             img_url = ""  # Placeholder si no hay imagen
-
-#         imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id))
-    
-#     conexion.close()
-#     return imagenes_lista
-
-
-
-def eliminarImagenNovedad(id):
+def obtener_imagenes_novedad_id(id):
     conexion = obtener_conexion()
+    imagenes = []
     with conexion.cursor() as cursor:
         sql = '''
-            DELETE FROM IMG_NOVEDAD
-            WHERE id = %s
+            SELECT 
+                img.id, 
+                img.nomImagen, 
+                img.imagen, 
+                img.tipo_img_novedadid, 
+                img.NOVEDADid,
+                tip.tipo,
+                tip.disponibilidad
+            FROM IMG_NOVEDAD img
+            LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
+            WHERE NOVEDADid = %s
+            ORDER BY OCTET_LENGTH(img.imagen) DESC 
         '''
-        cursor.execute(sql, (id,))
-    conexion.commit()
+        cursor.execute(sql, (id))
+        imagenes = cursor.fetchall()
+
+    imagenes_lista = []
+    for imagen in imagenes:
+        img_id, img_nombre, img_binario, tipo_img_id, novedad_id , tipo , tip_dip = imagen
+        if img_binario:
+            img_base64 = base64.b64encode(img_binario).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
+            img_url = "" 
+
+        imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id, novedad_id, tipo , tip_dip))
+    
     conexion.close()
+    return imagenes_lista
 

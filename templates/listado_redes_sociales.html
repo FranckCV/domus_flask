@@ -41,11 +41,14 @@
         <tbody id="productTableBody">
           {% for red in redes %}
           <tr>
-            <td>{{ red[0] }}</td>
+            <td class="celda_id">{{ red[0] }}</td>
             <td>{{ red[1] }}</td>
-            <td><i class="{{ red[2] }}"></i></td>
-  
-            <td>{{ red[3] }}</td>
+            <td>
+              <i class="{{ red[2] }}"></i>
+            </td>  
+            <td>
+              <a href="{{ red[3] }}">{{ red[3] }}</a>
+            </td>
             <td class="opciones_column">
               <div class="acciones">
                 <a class="opciones_fila" href="{{ url_for('editar_redes_sociales', id=red[0]) }}">

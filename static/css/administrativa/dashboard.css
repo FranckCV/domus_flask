@@ -81,7 +81,6 @@ header {
     display: flex;
     align-items: center;
     transition: color 0.1s ease;
-    /* font-size: 90%;  */
     gap: 10px;
 }
 
@@ -104,7 +103,6 @@ header {
 
 header p {
     margin: 0;
-    /* font-size: 1rem; */
 }
 
 #index_logo img {
@@ -150,7 +148,6 @@ aside img {
 }
 
 aside p {
-    /* font-size: 1rem; */
     margin-bottom: 20px;
 }
 
@@ -359,38 +356,81 @@ main {
 }
 
 .espacio_img img {
-    height: 100px;
+    height: 150px;
+}
+
+
+.color_texto p {
+    border-radius: 5px;
+    color: white;
+    padding-inline: 10px;
+    padding-block: 5px;
+    margin: 0;
 }
 
 
 
 
-a[href="/motivos_comentario_listado"]  ,
-a[href="/listado_pedidos"] , 
-a[href="/listado_datos_principales"]  ,
-a[href="/listado_tipos_usuario"]   ,
-a[href="/listado_tipos_novedad"] ,
-a[href="/listado_metodo_pago"] ,
-a[href="/listado_estado_pedido"] ,
-a[href="/listado_marcas"] ,
-a[href="/listado_redes_sociales"]  ,
-a[href="/tipos_img_novedad_listado"] 
+
+.clickable-image {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.clickable-image:hover {
+    transform: scale(1.05);
+}
+
+.overlayImage {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 9900;
+}
+
+.enlarged-image {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+}
+
+
+
+
+aside a[href="/listado_categorias"]  ,
+aside a[href="/listado_datos_principales"]  ,
+aside a[href="/listado_redes_sociales"]  ,
+aside a[href="/listado_tipos_novedad"] ,
+aside a[href="/listado_subcategorias"]  ,
+aside a[href="/tipos_img_novedad_listado"] ,
+aside a[href="/motivos_comentario_listado"]  ,
+aside a[href="/listado_tipos_usuario"]   ,
+aside a[href="/listado_estado_pedido"] ,
+aside a[href="/listado_metodo_pago"]
 {
     display: none;
 }
 
 
 
-a[href="/listado_tipo_contenido_info"] ,
-a[href="/listado_contenido_info"] ,
-a[href="/listado_clientes"]  ,
-a[href="/listado_caracteristicas"],
-a[href="/listado_categorias"]  ,
-a[href="/dashboard"] ,
-a[href="/comentarios_listado"]  ,
-a[href="/listado_novedades"]  ,
-a[href="/listado_productos"]  ,
-a[href="/empleados_listado"] 
+
+aside a[href="/listado_tipo_contenido_info"] ,
+aside a[href="/listado_contenido_info"] ,
+aside a[href="/empleados_listado"] ,
+aside a[href="/listado_clientes"]  ,
+aside a[href="/listado_pedidos"] , 
+aside a[href="/listado_novedades"]  ,
+aside a[href="/listado_caracteristicas"],
+aside a[href="/listado_marcas"] ,
+aside a[href="/comentarios_listado"]  ,
+aside a[href="/dashboard"]  ,
+aside a[href="/listado_productos"] 
 {
     background-color: #be5c00;
     color: #fff;

@@ -1,0 +1,291 @@
+
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+    Ver Producto : {{ producto[1] }}
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+
+<section class="h_section" id="mainSection">
+    
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">
+                Ver Información de Producto
+            </h2>
+        </div>
+    </div>
+
+    <div enctype="multipart/form-data">
+        <input disabled type="hidden" name="id" value="{{ producto[0] }}">
+        <div class="form-grid" id="col_add">
+
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">ID:</label>
+                    <input disabled required type="text" disabled class="input"
+                        id="nombre" value="{{ producto[0] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="nombre">Fecha de Registro:</label>
+                    <input disabled disabled required type="text" class="input" name="nombre"
+                        id="nombre" value="{{ producto[8] }}" style="text-align: center;">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">Nombre:</label>
+                    <input disabled required type="text" class="input"
+                        id="nombre" value="{{ producto[1] }}" style="text-align: center;">
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <label for="stock">Stock:</label>
+                    <input disabled required type="number" class="input" name="stock" id="stock"
+                        value="{{ producto[7] }}" style="text-align: center;">
+                </div>
+                
+                <div class="col">
+                    <label for="">Disponibilidad:</label>                    
+                    <div class="celda_estado">
+                        {% if producto.11 == 1 %}
+                          <p class="disponibilidad disp_si">Disponible</p>
+                        {% else %}
+                          <p class="disponibilidad disp_no">No Disponible</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <label for="price_regular">Precio Regular:</label>
+                    <input disabled type="number" class="input" name="price_regular"
+                        id="price_regular" value="{{ producto[2] }}" style="text-align: center;" step="0.01">
+                </div>
+
+                <div class="col">
+                    <label for="price_online">Precio Online:</label>
+                    <input disabled required type="number" class="input" name="price_online"
+                        id="price_online" value="{{ producto[3] }}" style="text-align: center;" step="0.01">
+                </div>
+
+                <div class="col">
+                    <label for="precio_oferta">Precio Oferta:</label>
+                    <input disabled type="number" class="input" name="precio_oferta"
+                        id="precio_oferta" value="{{ producto[4] }}" style="text-align: center;" step="0.01">
+                </div>                
+
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <label for="">Marca:</label>
+                    {% for marca in marcas %}
+                        {% if marca[0] == producto[9] %}
+                        <div class="celda_dato_externo">
+                            <img src="{{marca[2]}}" alt="" class="clickable-image">
+                            <p>{{ marca[1] }}</p>
+                            {% if marca[5] == 0 %}
+                                <p class="disponibilidad disp_no">No Disponible</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="col">
+                    <label for="">Categoria:</label>
+                    {% for categoria in categorias %}
+                        {% if categoria[0] == producto[13] %}
+                        <div class="celda_dato_externo">
+                            <i class="{{ categoria[2] }}"></i>
+                            <p>{{ categoria[1] }}</p>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="col">
+                    <label for="">Subcategoria:</label>
+                    {% for subcategoria in subcategorias %}
+                        {% if subcategoria[0] == producto[10] %}
+                        <div class="celda_dato_externo">
+                            <i class="{{ subcategoria[2] }}"></i>
+                            <p>{{ subcategoria[1] }}</p>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col column_text">                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="infoAdicional">Caracteristicas Principales:</label>
+                            <table cellspacing="0" class="table_sublistado">
+                                <thead>
+                                    <tr>
+                                        <th>Campo</th>
+                                        <th>Valor</th>
+                                        <th>Disp. Campo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for carac in caracteristicasPrincipales %} 
+                                        <tr class="
+                                        {% if carac.2 == 1 %}
+                                          fila_disp_si
+                                        {% else %}
+                                          fila_disp_no
+                                        {% endif %}
+                                        ">
+                                            <td>
+                                                {{carac[0]}}
+                                            </td>
+                                            <td>
+                                                {{carac[1]}}
+                                            </td>
+                                            <td>
+                                                <div class="celda_estado">
+                                                    {% if carac.2 == 1 %}
+                                                      <p class="disponibilidad disp_si">Disponible</p>
+                                                    {% else %}
+                                                      <p class="disponibilidad disp_no">No Disponible</p>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="infoAdicional">Caracteristicas Secundarias:</label>
+                            <table cellspacing="0" class="table_sublistado">
+                                <thead>
+                                    <tr>
+                                        <th>Campo</th>
+                                        <th>Valor</th>
+                                        <th>Disp. Campo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for carac in caracteristicasSecundarias %} 
+                                        <tr class="
+                                        {% if carac.2 == 1 %}
+                                          fila_disp_si
+                                        {% else %}
+                                          fila_disp_no
+                                        {% endif %}
+                                        ">
+                                            <td>
+                                                {{carac[0]}}
+                                            </td>
+                                            <td>
+                                                {{carac[1]}}
+                                            </td>
+                                            <td>
+                                                <div class="celda_estado">
+                                                    {% if carac.2 == 1 %}
+                                                      <p class="disponibilidad disp_si">Disponible</p>
+                                                    {% else %}
+                                                      <p class="disponibilidad disp_no">No Disponible</p>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col" id="space_info">
+                    <label for="infoAdicional">Información Adicional:</label>
+                    <textarea disabled name="infoAdicional" id="infoAdicional"
+                        >{{ producto[6] }}</textarea>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col col-3">
+                    <label for="">Imagen principal:</label>
+                    <div class="espacio_img espacio_img_principal">
+                        {% for imagen in imagenes %}
+                            {% if imagen[2] == 1 %}
+                                <img id="previewImg" src="{{imagen[1]}}" alt="" class="clickable-image">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="col">
+                    <label for="">Imágenes secundarias:</label>
+                    <div class="espacio_img espacio_img_multi">
+                        {% for imagen in imagenes %}
+                            {% if imagen[2] == 0 %}
+                                <img id="previewImg" src="{{imagen[1]}}" alt="" class="clickable-image">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" id="">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('productos') }}" id="backbtn">Volver</a>
+                        <a href="{{ url_for('editar_producto',id = producto[0]) }}"><button class="button is-primary" >Editar</button></a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
+</section>
+
+<style>
+    .PrActive {
+        background-color: rgb(255, 255, 255);
+        color: #00095c;
+    }
+
+    /* Asegurar que el body permita scroll si el contenido excede el tamaño de la ventana */
+    
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin_productos.js"></script>
+<script src="/static/js/filtroCRUDListado.js"></script>
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
+{% endblock %}

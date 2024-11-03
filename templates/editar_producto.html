@@ -15,14 +15,13 @@
     <form action="{{ url_for('actualizar_producto') }}" method="post"  enctype="multipart/form-data">
         <input type="hidden" name="id" value="{{ producto[0] }}">
         <div class="form-grid" id="col_add">
-            <!-- Primera columna -->
+
             <div class="row">
                 <div class="col">
                     <label for="nombre">Nombre:</label><br>
                     <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre"
                         id="nombre" value="{{ producto[1] }}" style="text-align: center;">
                 </div>
-
             </div>
 
             <div class="row">
@@ -35,7 +34,7 @@
                 
                 <div class="col">
                     <label for="disponibilidad">Disponibilidad:</label><br>
-                    <select required class="input" name="disponibilidad" id="disponibilidad">
+                    <select required class="form-select choosie" name="disponibilidad" id="disponibilidad">
                         <option value=1 {% if producto[11]==1 %} selected {% endif %}>Disponible</option>
                         <option value=0 {% if producto[11]==0 %} selected {% endif %}>No Disponible</option>
                     </select>
@@ -64,11 +63,12 @@
                 </div>                
 
             </div>
+
             <div class="row">
 
                 <div class="col">
                     <label for="marca_id">Marca:</label><br>
-                    <select required class="input" name="marca_id" id="marca_id" style="width: 67%;">
+                    <select required class="form-select choosie" name="marca_id" id="marca_id">
                         {% for marca in marcas %}
                         <option value="{{marca[0]}}" {% if marca[0] == producto[9] %} selected {% endif %}>{{marca[1]}}
                         </option>
@@ -81,7 +81,7 @@
 
                 <div class="col">
                     <label for="categorySelect">Categoría:</label><br>
-                    <select class="input" aria-label="Default select example" id="categorySelect">
+                    <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
                         <option value="0" selected>Todos</option>
                       {% for categoria in categorias %}
                         <option value="{{categoria[0]}}">{{categoria[1]}}</option>
@@ -91,7 +91,7 @@
 
                 <div class="col">
                     <label for="subcategoria_id">Subcategoría:</label><br>
-                    <select required class="input" name="subcategorySelect" id="subcategorySelect" style="width: 67%;">
+                    <select required class="form-select choosie" name="subcategorySelect" id="subcategorySelect">
                         {% for subcategoria in subcategorias %}
                         <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}" {% if subcategoria[0]==producto[10] %} selected {% endif %}>
                             {{subcategoria[1]}}</option>
@@ -101,9 +101,6 @@
                             href="{{url_for ('formulario_agregar_subcategoria')}}"
                             style=" color: #ffffff;">Agregar</a></button> -->
                 </div>
-
-               
-
             </div>
 
             <div class="row">
@@ -121,9 +118,9 @@
                     <div class="espacio_img">
                       <img id="previewImg" src="{{producto[12]}}" alt="">
                     </div>
-                  </div>
-
+                </div>
             </div>
+
             <div class="row">
                 <div class="col" id="sbmt">
                     <div class="form-buttons">

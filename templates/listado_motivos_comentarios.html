@@ -17,14 +17,14 @@
       </div>
 
       {% if nombreBusqueda %}
-      <div class="col-2" >
-        <div class="input-group">
-          <a class="button is-success add-btn" href="{{ url_for('motivos_comentario_listado') }}">
-            <button type="button" class="main_btn btn_return">Volver al Listado General</button>
-          </a>
+        <div class="col-2" >
+          <div class="input-group">
+            <a class="button is-success add-btn" href="{{ url_for('motivos_comentario_listado') }}">
+              <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+            </a>
+          </div>
         </div>
-      </div>
-    {% endif %}
+      {% endif %}
 
     </div>
 
@@ -92,7 +92,7 @@
               fila_disp_no
             {% endif %}          
           ">
-            <td>{{ motivo[0] }}</td>
+            <td class="celda_id">{{ motivo[0] }}</td>
             <td>{{ motivo[1] }}</td>
             <td>
               <div class="celda_estado">

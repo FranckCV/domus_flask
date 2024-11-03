@@ -15,6 +15,7 @@ def actualizar_MetPago_Pedido(pedido_id, metodo):
     conexion.commit()
     conexion.close()
 
+
 def actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuario_id):
     conexion = obtener_conexion()
     pedido = None
@@ -28,20 +29,88 @@ def actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuari
     conexion.commit()
     conexion.close()
 
+
 def obtener_listado_pedidos():
     conexion = obtener_conexion()
     pedido=[]
     with conexion.cursor() as cursor:
         cursor.execute('''
-            SELECT 
-                P.id,
-                P.fecha_compra,
-                P.subtotal,
-                P.METODO_PAGOid,
-                U.nombres,
-                P.ESTADO_PEDIDOid
-            FROM pedido P
-            inner join usuario U on U.id=P.USUARIOid
+                        SELECT 
+                            P.id,
+                            P.fecha_compra,
+                            P.subtotal,
+                            P.METODO_PAGOid,
+                            CONCAT(u.nombres, ' ' , u.apellidos) as nombre,
+                            P.ESTADO_PEDIDOid,
+                            sum(dpe.cantidad),
+                            met.disponibilidad,
+                            P.usuarioid
+                        FROM pedido P
+                        left join usuario U on U.id = P.USUARIOid
+                        left join detalles_pedido dpe on dpe.pedidoid = P.id
+                        left join producto pr on pr.id = dpe.productoid
+                        left join metodo_pago met on p.METODO_PAGOid = met.id
+                        group by p.id , dpe.pedidoid
+                        order by P.ESTADO_PEDIDOid , P.fecha_compra desc
+        ''')
+        pedido = cursor.fetchall()
+    
+    conexion.close()
+    return pedido
+
+
+def obtener_pedido_id(id):
+    conexion = obtener_conexion()
+    pedido=[]
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                            SELECT 
+                                P.id,
+                                P.fecha_compra,
+                                P.subtotal,
+                                P.METODO_PAGOid,
+                                CONCAT(u.nombres, ' ' , u.apellidos) as nombre,
+                                P.ESTADO_PEDIDOid,
+                                sum(dpe.cantidad),
+                                met.disponibilidad,
+                                P.usuarioid
+                            FROM pedido P
+                            left join usuario U on U.id = P.USUARIOid
+                            left join detalles_pedido dpe on dpe.pedidoid = P.id
+                            left join producto pr on pr.id = dpe.productoid
+                            left join metodo_pago met on p.METODO_PAGOid = met.id
+                            where  P.id = '''+str(id)+'''
+                            group by p.id , dpe.pedidoid
+                            order by P.ESTADO_PEDIDOid , P.fecha_compra desc
+        ''')
+        pedido = cursor.fetchone()
+    
+    conexion.close()
+    return pedido
+
+
+def buscar_listado_pedidos_usuario(nombre):
+    conexion = obtener_conexion()
+    pedido=[]
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            P.id,
+                            P.fecha_compra,
+                            P.subtotal,
+                            P.METODO_PAGOid,
+                            CONCAT(u.nombres, ' ' , u.apellidos) as nombre_completo,
+                            P.ESTADO_PEDIDOid,
+                            sum(dpe.cantidad),
+                            met.disponibilidad
+                        FROM pedido P
+                        left join usuario U on U.id = P.USUARIOid
+                        left join detalles_pedido dpe on dpe.pedidoid = P.id
+                        left join producto pr on pr.id = dpe.productoid
+                        left join metodo_pago met on p.METODO_PAGOid = met.id
+                        where UPPER(CONCAT(u.nombres, ' ' , u.apellidos)) LIKE UPPER ('%'''+nombre+'''%')
+                        group by p.id , dpe.pedidoid
+                        order by P.ESTADO_PEDIDOid , nombre_completo
         ''')
         pedido = cursor.fetchall()
     
@@ -57,7 +126,6 @@ def eliminar_pedido(id):
     conexion.close()
 
 
-
 def obtener_id_pedido(pedido):
     conexion = obtener_conexion()
     pedido_id = None
@@ -68,6 +136,7 @@ def obtener_id_pedido(pedido):
             pedido_id = resultado[0]
     conexion.close()
     return pedido_id
+
 
 def obtenerUsuarioPedido(id):
     conexion = obtener_conexion()
@@ -90,6 +159,7 @@ def obtenerUsuarioPedido(id):
         conexion.close()
     
     return pedido_id
+
 
 def buscar_pedido_por_id(id_pedido):
     conexion = obtener_conexion()
@@ -117,4 +187,33 @@ def buscar_pedido_por_id(id_pedido):
     else:
         return False 
 
+
+def obtener_listado_pedidos_usuario_id(id):
+    conexion = obtener_conexion()
+    pedido=[]
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            P.id,
+                            P.fecha_compra,
+                            P.subtotal,
+                            P.METODO_PAGOid,
+                            CONCAT(u.nombres, ' ' , u.apellidos) as nombre_completo,
+                            P.ESTADO_PEDIDOid,
+                            sum(dpe.cantidad),
+                            met.disponibilidad,
+                            P.usuarioid
+                        FROM pedido P
+                        left join usuario U on U.id = P.USUARIOid
+                        left join detalles_pedido dpe on dpe.pedidoid = P.id
+                        left join producto pr on pr.id = dpe.productoid
+                        left join metodo_pago met on p.METODO_PAGOid = met.id
+                        where P.USUARIOid = '''+str(id)+'''
+                        group by p.id , dpe.pedidoid
+                        order by P.ESTADO_PEDIDOid , nombre_completo
+        ''')
+        pedido = cursor.fetchall()
+    
+    conexion.close()
+    return pedido
 

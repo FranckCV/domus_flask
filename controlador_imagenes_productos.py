@@ -10,7 +10,8 @@ def obtener_imagenes_por_producto(id):
             SELECT 
                 ipr.id ,
                 ipr.imagen,
-                ipr.imgPrincipal
+                ipr.imgPrincipal,
+                ipr.productoid
             FROM img_producto ipr
             where ipr.productoid = '''+str(id)+'''
             order by ipr.imgPrincipal desc
@@ -20,13 +21,13 @@ def obtener_imagenes_por_producto(id):
 
     imagenes_lista = []
     for imagen in imagenes:
-        id, img , prin= imagen
+        id, img , prin , pro = imagen
         if imagen:
             img_base64 = base64.b64encode(img).decode('utf-8')
             img_url = f"data:image/png;base64,{img_base64}"
         else:
             img_url = ""  # Placeholder en caso de que no haya logo
-        imagenes_lista.append((id, img_url , prin))
+        imagenes_lista.append((id, img_url , prin , pro))
 
     conexion.close()
     return imagenes_lista

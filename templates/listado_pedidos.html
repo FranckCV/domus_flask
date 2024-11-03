@@ -10,7 +10,24 @@
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder">Listado de pedidos</h2>
+
+    <div class="row">
+      <div class="col">
+        <h2 class="fw-bolder">Listado de pedidos</h2>
+      </div>
+
+      {% if nombreBusqueda %}
+        <div class="col-2" >
+          <div class="input-group">
+            <a class="button is-success add-btn" href="{{ url_for('pedido') }}">
+              <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+            </a>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+
     <div class="row" id="break_nav">
 
       <div class="col-3">
@@ -23,7 +40,7 @@
             <tr>
               <th>Total</th>
               <th>Completados</th>
-              <th>En proceso</th>
+              <th>No Completados</th>
             </tr>
             <tr>
               <td id="num_resultados"></td>
@@ -36,60 +53,165 @@
       </div>
 
       <div class="col">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar por usuario" aria-label="Recipient's username" aria-describedby="button-addon2" />
-          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
-        </div>
+        <form enctype="multipart/form-data" id="buscarFormulario" method="GET" action="{{ url_for('pedido_buscar') }}">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Buscar por nombres y apellidos de los usuarios" aria-label="Buscar"
+              {% if nombreBusqueda %}
+                value="{{nombreBusqueda}}"
+              {% endif %}
+                name="buscarElemento" id="buscarElemento" />
+            <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
+              <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+            </button>
+          </div>
+        </form>
       </div>
+      
+    </div>
+
+    <div class="row">     
+
+      <div class="col">
+        <p class="fw-bolder lblchoosie">Filtrar por Estado de Pedido:</p>
+        <select id="estadoPedidoSelect" class="form-select choosie" aria-label="">
+            <option value="0" selected>Todos</option>
+            {% for estado in estados %}
+            <option value="{{ estado[0] }}">{{ estado[1] }}</option>
+            {% endfor %}
+        </select>
+      </div>
+
+      <div class="col">
+        <p class="fw-bolder lblchoosie">Filtrar por Metodo de Pago:</p>
+        <select id="metodoPagoSelect" class="form-select choosie">
+            <option value="0" selected>Todos</option>
+            {% for metodo in metodos %}
+            <option value="{{ metodo[0] }}">{{ metodo[1] }}</option>
+            {% endfor %}
+        </select>
+      </div>
+
     </div>
 
     <div class="table-container">
       <table cellspacing="0" class="table_listado product_if">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Fecha de compra</th>
-            <th>Subtotal</th>
-            <th>Método de pago</th>
-            <th>Usuario</th>
+            <th>ID Pedido</th>
+            <th>ID Usuario</th>
+            <th>Nombre de Usuario</th>
             <th>Estado de pedido</th>
+            <th>Fecha de compra</th>
+            <th>Método de pago</th>
+            <th>Cant Total de Productos</th>
+            <th>Precio Total</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody id="productTableBody">
           {% for pedido in pedidos %}
             <tr class="
-            {% if pedido.5 == 2 %}
+            {% if pedido.5 == 2 and pedido.7 == 1 %}
               fila_disp_si
             {% else %}
               fila_disp_no
             {% endif %}
             ">
-              <td>{{ pedido.0 if pedido.0 is not none else 'No registrado' }}</td> 
-              <td>{{ pedido.1 if pedido.1 is not none else 'No registrado' }}</td> 
+              <td class="celda_id">{{ pedido.0  }}</td>
+              <td class="celda_id">{{ pedido.8 }}</td>
+              <td>{{ pedido.4 }}</td>
+              <td>
+                <div class="celda_estado" data-estado-pedido="{{pedido.5}}">
+                  {% for estado in estados %}
+                    {% if estado.0 == pedido.5 %}
+                      <p class="disponibilidad
 
-              <td>S/. {{ pedido.2 if pedido.2 is not none else 'No registrado' }}</td> 
+                      {% if estado.0 == 2 %}
+                        disp_si
+                      {% else %}
+                        disp_no
+                      {% endif %}
 
-              <td>{{ pedido.3 if pedido.3 is not none else 'No registrado' }}</td> 
-              <td>{{ pedido.4 if pedido.4 is not none else 'No registrado' }}</td>
+                      ">{{estado.1}}</p>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </td>
 
               <td>
-                {% if pedido.5 == 1 %}
-                  <span>En Proceso</span>
-                {% elif pedido.5 == 2 %}
-                  <span>Completado</span>
+                {% if pedido[1] == 0 or pedido[1] is none %}
+                <div class="espacio_vacio">
+                  <p>
+                    No registrado
+                  </p>
+                </div> 
                 {% else %}
-                  <span>Cancelado</span>
+                  {{ pedido.1 }}
+                {% endif %}
+              </td> 
+
+              <td>
+                {% if pedido.3 %}
+                  {% for metodo in metodos %}
+                    {% if metodo.0 == pedido.3 %}
+                      <div class="celda_texto_bloque" data-metodo-pago="{{ metodo.0 }}">
+                        <span>{{ metodo.1 }}</span>
+                        {% if metodo.2 == 0 %}
+                          <p class="disponibilidad disp_no">No Disponible</p>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  <div class="espacio_vacio">
+                    <p>
+                      No registrado
+                    </p>
+                  </div>
+                {% endif %}
+              </td> 
+
+              <td>
+                <div class="celda_numero">
+                  <p class="
+                    {% if pedido[6] > 0 %}
+                      num_cant
+                    {% else %}
+                      num_cero
+                    {% endif %}
+                    ">
+                      {{ pedido[6] }}
+                    </p>
+                </div>
+              </td>
+
+              <td>
+                {% if pedido[2] == 0 or pedido[2] is none %}
+                <div class="espacio_vacio">
+                  <p>
+                    No registrado
+                  </p>
+                </div> 
+                {% else %}
+                  <div class="celda_precio">
+                    S/. {{ pedido.2}}
+                  </div>
                 {% endif %}
               </td>
 
               <td class="opciones_column">
                 <div class="acciones">
-                  <form class="deleteForm" action="{{ url_for('detalle_pedido', id=pedido.0) }}" method="GET">
-                    <button type="submit"><i class="fa-solid fa-eye"></i></button>
-                  </form>
+                  <!-- <form class="opciones_fila" action="{{ url_for('detalle_pedido', id=pedido.0) }}" method="GET">
+                    <button type="submit">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                  </form> -->
+                  <a class="opciones_fila" href="{{ url_for('detalle_pedido', id=pedido.0) }}">
+                    <i class="fa-solid fa-eye"></i>
+                  </a>
                 </div>
               </td>
+
             </tr>
           {% endfor %}
         </tbody>

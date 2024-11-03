@@ -1,6 +1,7 @@
 #anunciosM {
     padding: 20px;
 }
+
 #delivery {
     text-align: center;
     background-color: #002984;
@@ -8,6 +9,7 @@
     color: white;
     padding: 20px 20px  ;
 }
+
 .delivery{
     background-color: skyblue; 
     border-radius: 10px;
@@ -19,7 +21,6 @@
 
 #anuncios {
     text-align: center;
-
 }
 
 #anuncios h2 {
@@ -122,7 +123,6 @@
 }
 
 
-
 /* Promociones estilo */
 #promociones {
     text-align: center;
@@ -204,9 +204,11 @@
 main {
     padding: 20px;
 }
+
 #promo{
-height: 1px; 
+    height: 1px; 
 }
+
 .promo-link {
     color: #fff;
     text-decoration: none;

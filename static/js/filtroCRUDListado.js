@@ -1,11 +1,11 @@
 function cantResultadosFilas() {
-  const numRows = document.querySelectorAll('#productTableBody tr');
+  const tableRows = document.querySelectorAll('#productTableBody tr');
   const numResult = document.getElementById('num_resultados');
   const numDispResult = document.getElementById('num_disp_si');
   const numNoDispResult = document.getElementById('num_disp_no');  
 
-  if (numRows && numResult) {
-    const visibleRows = Array.from(numRows).filter(row => {
+  if (tableRows && numResult) {
+    const visibleRows = Array.from(tableRows).filter(row => {
       return window.getComputedStyle(row).display !== 'none';
     });
     numResult.innerHTML = `${visibleRows.length}`; 
@@ -97,6 +97,14 @@ if (document.getElementById('motivoSelect')) {
 
 if (document.getElementById('estadoComSelect')) {
   filtroTableSelect('estadoComSelect','estado-comentario','-1');
+}
+
+if (document.getElementById('estadoPedidoSelect')) {
+  filtroTableSelect('estadoPedidoSelect','estado-pedido','0');
+}
+
+if (document.getElementById('metodoPagoSelect')) {
+  filtroTableSelect('metodoPagoSelect','metodo-pago','0');
 }
 
 

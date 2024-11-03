@@ -4,7 +4,7 @@ Agregar Tipo de Imagen de Novedad
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
@@ -15,20 +15,8 @@ Agregar Tipo de Imagen de Novedad
         
         <div class="row">
           <div class="col">
-            <label for="tipo">Tipo de Imagen:</label><br>
+            <label for="tipo">Tipo de Imagen:</label>
             <input required type="text" class="input" placeholder="Tipo de imagen" name="tipo" id="tipo">
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <label for="disponibilidad">Disponibilidad:</label><br>
-            <label>
-              <input type="radio" name="disponibilidad" value="1" checked> Disponible
-            </label>
-            <label>
-              <input type="radio" name="disponibilidad" value="0"> No Disponible
-            </label>
           </div>
         </div>
 

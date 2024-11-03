@@ -11,13 +11,13 @@
                 <i class="fa-solid fa-caret-right"></i>
                 <p>Productos</p>
             </a>
-            <a href="{{url_for('marcas')}}">
-                <i class="fa-solid fa-caret-right"></i>
-                <p>Marcas</p>
-            </a>
             <a class="medio" href="{{url_for('novedades_listado')}}">
                 <i class="fa-solid fa-caret-right"></i>
                 <p>Novedades</p>
+            </a>
+            <a href="{{url_for('marcas')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Marcas</p>
             </a>
         </div>
     </div>
@@ -47,7 +47,7 @@
                 <i class="fa-solid fa-caret-right"></i>
                 <p>Datos Principales</p>
             </a>
-            <a class="falta" href="{{url_for('listado_contenido_info')}}">
+            <a class="falta" href="{{url_for('listado_tipo_contenido_info')}}">
                 <i class="fa-solid fa-caret-right"></i>
                 <p>Contenido Informativo</p>
             </a>
@@ -65,13 +65,13 @@
     <div class="dashboard_item">
         <p class="dashboard_item_title">Datos Adicionales</p>
         <div class="dshbd_item_content">
-            <a class="falta" href="{{url_for('listado_tipo_contenido_info')}}">
-                <i class="fa-solid fa-caret-right"></i>
-                <p>Tipos de Contenido Informativo</p>
-            </a>
             <a class="falta" href="{{url_for('categorias')}}">
                 <i class="fa-solid fa-caret-right"></i>
-                <p>Categorias y Subcategorias</p>
+                <p>Categorias</p>
+            </a> 
+            <a class="falta" href="{{url_for('subcategorias')}}">
+                <i class="fa-solid fa-caret-right"></i>
+                <p>Subcategorias</p>
             </a>          
             <a class="falta" href="{{url_for('caracteristicas')}}">
                 <i class="fa-solid fa-caret-right"></i>

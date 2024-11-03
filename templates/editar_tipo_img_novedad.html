@@ -4,7 +4,7 @@ Editar Tipo de Imagen de Novedad
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
@@ -14,24 +14,18 @@ Editar Tipo de Imagen de Novedad
       <input type="hidden" name="id" value="{{ tipo_img_novedad[0] }}">
       <div class="form-grid" id="col_add">
         
-        <!-- Nombre del Tipo de Imagen -->
         <div class="row">
           <div class="col">
-            <label for="tipo">Tipo de Imagen:</label><br>
+            <label for="tipo">Tipo de Imagen:</label>
             <input value="{{ tipo_img_novedad[1] }}" required type="text" class="input" placeholder="Tipo de imagen" name="tipo" id="tipo">
           </div>
-        </div>
-
-        <!-- Disponibilidad -->
-        <div class="row">
+                  
           <div class="col">
-            <label for="disponibilidad">Disponibilidad:</label><br>
-            <label>
-              <input type="radio" name="disponibilidad" value="1" {% if tipo_img_novedad[2] == 1 %}checked{% endif %}> Disponible
-            </label>
-            <label>
-              <input type="radio" name="disponibilidad" value="0" {% if tipo_img_novedad[2] == 0 %}checked{% endif %}> No Disponible
-            </label>
+            <label for="disponibilidad">Disponibilidad:</label>
+            <select required class="input" name="disponibilidad" id="disponibilidad">
+                <option value=1 {% if tipo_img_novedad[2]==1 %} selected {% endif %}>Disponible</option>
+                <option value=0 {% if tipo_img_novedad[2]==0 %} selected {% endif %}>No Disponible</option>
+            </select>
           </div>
         </div>
 

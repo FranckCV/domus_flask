@@ -1,7 +1,6 @@
 from bd import obtener_conexion
 import base64
 
-
 def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario):
     conexion = obtener_conexion() 
     try:
@@ -44,8 +43,6 @@ def confirmarDatos(correo, contraseña):
         print(f"Error al insertar el usuario: {e}")
         return -1    
 
-
-########## aqui haré cositas jasdjajsdas ####
 
 def obtener_usuarios_clientes():
     conexion = obtener_conexion()
@@ -93,9 +90,12 @@ def obtener_listado_usuarios_clientes():
                     usu.telefono, 
                     usu.correo, 
                     usu.disponibilidad,
-                    count(ped.id)
+                    count(ped.id),
+                    usu.fecha_registro,
+                    count(com.id)
                 FROM USUARIO usu
                 LEFT JOIN pedido ped on ped.usuarioid = usu.id
+                LEFT JOIN comentario com on com.usuarioid = usu.id
                 WHERE TIPO_USUARIOid = 3
                 GROUP by usu.id
             '''
@@ -142,7 +142,6 @@ def buscar_listado_usuarios_clientes_nombre(nombre):
         return []
     finally:
         conexion.close()
-
 
 
 def obtener_usuario_cliente_por_id(id):
@@ -218,3 +217,99 @@ def eliminar_usuario_cliente(id):
         return False
     finally:
         conexion.close()
+
+
+def obtener_listado_imagenes_usuario_cliente():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT
+                usu.id,
+                usu.img_usuario
+            FROM USUARIO usu
+            WHERE usu.TIPO_USUARIOid = 3
+        '''
+        cursor.execute(sql)
+        usuarios = cursor.fetchall()
+
+    elemento = []
+
+    for user in usuarios:
+        usu_id , img_usu = user
+        if img_usu:
+            img_base64 = base64.b64encode(img_usu).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
+            img_url = ""
+        elemento.append((usu_id , img_url))
+
+    conexion.close()
+    return elemento
+
+
+def ver_info_usuario_cliente(id):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+                SELECT 
+                    usu.id, 
+                    usu.nombres, 
+                    usu.apellidos, 
+                    usu.doc_identidad, 
+                    usu.img_usuario, 
+                    usu.genero, 
+                    usu.fecha_nacimiento, 
+                    usu.telefono, 
+                    usu.correo, 
+                    usu.disponibilidad,
+                    count(ped.id),
+                    usu.fecha_registro,
+                    count(com.id)
+                FROM USUARIO usu
+                LEFT JOIN pedido ped on ped.usuarioid = usu.id
+                LEFT JOIN comentario com on com.usuarioid = usu.id
+                WHERE TIPO_USUARIOid = 3 and usu.id = '''+str(id)+'''
+                GROUP by usu.id
+            '''
+            cursor.execute(sql)
+            usuarios = cursor.fetchone() 
+
+            return usuarios
+    except Exception as e:
+        print(f"Error al obtener usuarios: {e}")
+        return []
+    finally:
+        conexion.close()
+
+
+def obtener_imagen_usuario_cliente_id(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT
+                usu.id,
+                usu.img_usuario
+            FROM USUARIO usu
+            WHERE TIPO_USUARIOid = 3 and usu.id = '''+str(id)+'''
+        '''
+        cursor.execute(sql)
+        usuario = cursor.fetchone()
+
+    elemento = None
+
+    if usuario:
+        usu_id , img_usu = usuario
+        if img_usu:
+            img_base64 = base64.b64encode(img_usu).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
+            img_url = None
+    
+        elemento = (usu_id , img_url)
+        
+    conexion.close()
+    return elemento
+
+
+

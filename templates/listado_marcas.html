@@ -54,7 +54,7 @@
       <div class="col">
         <form enctype="multipart/form-data" method="GET" action="{{ url_for('marcas_buscar') }}">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarMarca" name="buscarMarca" maxlength="45"
+            <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="45"
             {% if nombreBusqueda %}
               value="{{nombreBusqueda}}"
             {% endif %}
@@ -95,7 +95,7 @@
               fila_disp_no
             {% endif %}
             ">
-              <td>{{ marca.0 }}</td>
+              <td class="celda_id">{{ marca.0 }}</td>
               <td>{{ marca.1 }}</td>
 
               <td>

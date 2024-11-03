@@ -37,19 +37,21 @@
             </h1>
             <div class="for_sale_gallery">
                 {% for imagen in novedadesMarca %}
-                <img class="img-fluid 
+                <a href="{{url_for('selectedNovedad', id=imagen[0])}}">
+                    <img class="img-fluid 
 
-                {% if imagen[3] == 1 %}
-                    img_for_sale_full
-                {% elif imagen[3] == 3 %}
-                    img_for_sale_vertical
-                {% elif imagen[3] == 2 %}
-                    img_for_sale_vertical
-                {% elif imagen[3] == 4 %}
-                    img_for_sale_horizontal 
-                {% endif %}
+                    {% if imagen[3] == 1 %}
+                        img_for_sale_full
+                    {% elif imagen[3] == 3 %}
+                        img_for_sale_vertical
+                    {% elif imagen[3] == 2 %}
+                        img_for_sale_vertical
+                    {% elif imagen[3] == 4 %}
+                        img_for_sale_horizontal 
+                    {% endif %}
 
-                " src="{{imagen[1]}}" alt="{{imagen[2]}}">
+                    " src="{{imagen[1]}}" alt="{{imagen[2]}}">
+                </a>
                 {% endfor %}
 
                 <!-- <img class="img-fluid img_for_sale_full" src="img/promociones/samsungProm1.png" alt="o1">

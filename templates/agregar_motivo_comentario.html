@@ -4,29 +4,18 @@
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Motivo de Comentario</h2><br /><br /><br />
+    <h2 class="fw-bolder">Agregar Motivo de Comentario</h2>
     <form action="{{ url_for('guardar_motivo_comentario') }}" method="post">
       <div class="form-grid" id="col_add">
-        <!-- Primera columna -->
         <div class="row">
           <div class="col">
-            <label for="motivo">Motivo del Comentario:</label><br />
+            <label for="motivo">Motivo del Comentario:</label>
             <input required type="text" class="input" placeholder="Motivo del comentario" name="motivo" id="motivo" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <label for="disponibilidad">Disponibilidad:</label><br />
-            <select name="disponibilidad" id="disponibilidad" class="input" required>
-              <option value="1">Disponible</option>
-              <option value="0">No Disponible</option>
-            </select>
           </div>
         </div>
 

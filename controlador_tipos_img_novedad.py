@@ -40,7 +40,6 @@ def obtener_listado_tipos_img_novedad():
     return tipos_img
 
 
-
 def obtener_tipo_img_novedad_por_id(id):
     conexion = obtener_conexion()
     tipo_img = None
@@ -114,3 +113,9 @@ def obtener_tipos_img_novedad_disponibles():
 
     conexion.close()
     return tipos_img
+
+
+
+
+
+

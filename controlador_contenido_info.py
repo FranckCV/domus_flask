@@ -42,8 +42,6 @@ def buscar_datos_contenido_info_titulo(titulo):
     return datos
 
 
-
-
 def obtener_listado_tipos_contenido():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -58,6 +56,27 @@ def obtener_listado_tipos_contenido():
                         FROM tipo_contenido_info tip
                         left join contenido_info cont on cont.tipo_contenido_infoid = tip.id
                         group by tip.id
+                       ''')
+        datos = cursor.fetchall()
+    conexion.close()
+    return datos
+
+
+def buscar_listado_tipos_contenido_nombre(nombre):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                            SELECT 
+                                tip.id,
+                                tip.nombre,
+                                tip.descripcion,
+                                tip.faicon_cont,
+                                count(cont.id),
+                                tip.disponibilidad
+                            FROM tipo_contenido_info tip
+                            left join contenido_info cont on cont.tipo_contenido_infoid = tip.id
+                            WHERE UPPER(tip.nombre) LIKE UPPER ('%'''+str(nombre)+'''%')
+                            group by tip.id
                        ''')
         datos = cursor.fetchall()
     conexion.close()
@@ -133,7 +152,7 @@ def obtener_tipo_contenido_info_por_id(id):
     conexion = obtener_conexion()
     tipo = None
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id, nombre,  faicon_cont ,descripcion FROM tipo_contenido_info WHERE id = %s", (id))
+        cursor.execute("SELECT id, nombre, faicon_cont ,descripcion,disponibilidad FROM tipo_contenido_info WHERE id = %s", (id))
         tipo = cursor.fetchone()
     conexion.close()
     return tipo

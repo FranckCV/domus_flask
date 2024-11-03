@@ -4,29 +4,61 @@
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
-  <section class="h_section" id="mainSection">
+  <section class="h_section" id="mainSection" >
     <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Tipo de Usuario</h2>
-    <form action="{{ url_for('actualizar_tipo_usuario') }}" method="post">
+
+    <form action="{{ url_for('actualizar_tipo_usuario') }}" method="post"   enctype="multipart/form-data">
       <input type="hidden" name="id" value="{{ tipo_usuario[0] }}">
       <div class="form-grid" id="col_add">
 
         <div class="row">
-          <div class="col">
-            <label for="tipo">Tipo de Usuario:</label><br>
-            <input value="{{ tipo_usuario[1] }}" required type="text" class="input" placeholder="Tipo de usuario" name="tipo" id="tipo">
-          </div>
-        </div>
+          <div class="col column_text">
+            <div class="row">
+              <div class="col">
+                <label for="tipo">Tipo de Usuario:</label>
+                <input value="{{ tipo_usuario[1] }}" required type="text" class="input" placeholder="Tipo de usuario" name="tipo" id="tipo">
+              </div>
+            </div>
+    
+            <div class="row">
+              <div class="col">
+                <label for="descripcion">Descripción:</label>
+                <textarea required class="input" placeholder="Descripción del tipo de usuario" name="descripcion" id="descripcion">{{ tipo_usuario[2] }}</textarea>
+              </div>
+            </div>
 
-        <div class="row">
+            <div class="row">
+              <div class="col">
+                <label for="disponibilidad">Disponibilidad:</label>
+                <select required class="input" name="disponibilidad" id="disponibilidad">
+                  <option value="1" {% if tipo_usuario[4]==1 %} selected {% endif %}>Disponible</option>
+                  <option value="0" {% if tipo_usuario[4]==0 %} selected {% endif %}>No Disponible</option>
+                </select>
+                <!-- <input type="checkbox" name="disponibilidad" id="disponibilidad" 
+                {% if tipo_usuario[4]==1 %} checked {% endif %}
+                > -->
+              </div>
+            </div>
+
+          </div>
+        
           <div class="col">
-            <label for="descripcion">Descripción:</label><br>
-            <textarea required class="input" placeholder="Descripción del tipo de usuario" name="descripcion" id="descripcion">{{ tipo_usuario[2] }}</textarea>
+            <div class="row">
+              <div class="col seccionImg">
+                <label for="img_user">Subir imagen para usuario:</label>
+                <input type="file" class="campoImg" name="img_user" id="img_user"/>
+                <div class="espacio_img">
+                  <img id="previewImg" src="{{ tipo_usuario[3] }}" alt="">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+       
 
         <div class="row">
           <div class="col" id="sbmt">
@@ -40,4 +72,7 @@
       </div>
     </form>
   </section>
+{% endblock %}
+{% block scripts %}
+  <script src="/static/js/imgsCRUDvistaprevia.js"></script>
 {% endblock %}

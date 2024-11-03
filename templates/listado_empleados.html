@@ -10,11 +10,27 @@ Empleados
 
 {% block contenido %}
 <section class="h_section scrollable-section" id="mainSection">
-    <h2 class="fw-bolder">Listado de Empleados</h2>
+    
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">Listado de Empleados</h2>
+        </div>
+
+        {% if nombreBusqueda %}
+        <div class="col-2" >
+            <div class="input-group">
+            <a class="button is-success add-btn" href="{{ url_for('empleados_listado') }}">
+                <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+            </a>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
     <div class="row" id="break_nav">
 
         <div class="col-3">
-
             <table id="grid_resultados" cellspacing="0">
               <tbody>
                 <tr>
@@ -31,27 +47,27 @@ Empleados
                   <td id="num_disp_no"></td>
                 </tr>
               </tbody>
-            </table>
-      
+            </table>      
         </div>
 
         <div class="col">
-            <!-- Formulario de búsqueda y filtro por tipo de usuario -->
-            <form id="buscarFormulario" method="GET">
-                <div class="input-group mb-3">
-                    <input style="height: 50px;" type="text" class="form-control"
-                        placeholder="Buscar por nombre o apellidos" aria-label="Buscar" name="buscar"
-                        id="buscarUsuario" />
-                    <button style="height: 50px;" class="btn btn-outline-secondary searchi" type="button"
-                        id="button-addon2">
-                        <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
-                    </button>
-                    <a href="{{ url_for('formulario_agregar_empleado') }}" class="button is-success add-btn">
-                        <button style="height: 50px;" type="button" id="add_btn">Agregar</button>
-                    </a>
-                </div>
+            <form enctype="multipart/form-data" method="GET" action="{{ url_for('empleados_listado_buscar') }}">
+              <div class="input-group">
+                <input required type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="150"
+                  {% if nombreBusqueda %}
+                    value="{{nombreBusqueda}}"
+                  {% endif %}
+                />
+                <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2" >
+                  <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+                </button>
+                <a href="{{ url_for('formulario_agregar_empleado') }}" class="button is-success add-btn">
+                  <button type="button" class="main_btn">Agregar</button>
+                </a>
+              </div>
             </form>
         </div>
+        
     </div>
 
     <div class="table-container">
@@ -64,10 +80,11 @@ Empleados
                     <th>Foto de Perfil</th>
                     <th>Documento de Identidad</th>
                     <th>Sexo</th>
+                    <th>Teléfono</th>
                     <th>Correo Electrónico</th>
                     <th>Contraseña</th>
                     <th>Fecha Nacimiento</th>
-                    <th>Teléfono</th>
+                    <th>Fecha de Registro</th>
                     <th>Disponibilidad</th>
                     <th class="opciones_column">Opciones</th>
                 </tr>
@@ -81,38 +98,43 @@ Empleados
                   fila_disp_no
                 {% endif %}
                 ">
-                    <td>{{ usuario[0] }}</td>
+                    <td class="celda_id">{{ usuario[0] }}</td>
                     <td>{{ usuario[1] }}</td>
                     <td>{{ usuario[2] }}</td>
                     <td>
                         <div class="celda_texto_bloque">
-                        {% if usuario.4 %}
-                            <img src="{{ usuario.3 }}" alt="Foto de Usuario {{ usuario.0 }}" class="clickable-image"/> <!-- Logo de la marca -->
-                        {% else %}
-                        <div class="espacio_vacio">
-                            <p>
-                            Sin foto
-                            </p>
-                        </div> 
-                        {% endif %}
+                          {% if usuario.4 %}
+                            {% for foto in imagenes %}
+                              {% if foto.0 == usuario[0] %}
+                                <img src="{{foto.1}}" alt="Foto de Usuario {{ usuario.0 }}" class="clickable-image" style="width: 70px"/> 
+                              {% endif %}
+                            {% endfor %}
+                          {% else %}
+                            <div class="espacio_vacio">
+                              <p>
+                                Sin foto
+                              </p>
+                            </div> 
+                          {% endif %}
                         </div>
                     </td>
                     <td>{{ usuario[3] }}</td>
                     <td>
-                    <div class="celda_estado">
-                        {% if usuario.5 == 1 %}
-                        <p class="genero gen_mas">Masculino</p>
-                        {% else %}
-                        <p class="genero gen_fem">Femenino</p>
-                        {% endif %}
-                    </div>
+                        <div class="celda_estado">
+                            {% if usuario.5 == 1 %}
+                            <p class="genero gen_mas">Masculino</p>
+                            {% else %}
+                            <p class="genero gen_fem">Femenino</p>
+                            {% endif %}
+                        </div>
                     </td>
+                    <td>{{ usuario[7] }}</td>
                     <td>{{ usuario[8] }}</td>
                     <td>
                         <strong>{{ usuario.10 }}</strong>
                     </td>
                     <td>{{ usuario[6] }}</td>
-                    <td>{{ usuario[7] }}</td>
+                    <td>{{ usuario[11] }}</td>
                     <td>
                     <div class="celda_estado">
                         {% if usuario.9 == 1 %}
@@ -124,6 +146,10 @@ Empleados
                     </td>
                     <td class="opciones_column">
                         <div class="acciones">
+                            <a class="opciones_fila" href="{{ url_for('ver_empleado', id=usuario[0]) }}">
+                              <i class="fa-solid fa-eye"></i>
+                            </a>
+
                             <a class="opciones_fila" href="{{ url_for('editar_empleado', id=usuario[0]) }}">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </a>
@@ -141,6 +167,10 @@ Empleados
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
     </div>
 
 </section>
@@ -178,5 +208,6 @@ Empleados
     }
 </script>
 <script src="/static/js/filtroCRUDListado.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
 
 {% endblock %}

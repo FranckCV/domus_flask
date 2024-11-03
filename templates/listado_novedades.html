@@ -10,73 +10,75 @@
 {% block contenido %}
 
 <section class="h_section" id="mainSection">
-    <div class="row">
-        <div class="col">
-            <h2 class="fw-bolder">Listado de Novedades</h2>
-        </div>
-
-        {% if nombreBusqueda %}
-            <div class="col-2" >
-                <div class="input-group">
-                    <a class="button is-success add-btn" href="{{ url_for('novedades_listado') }}">
-                    <button type="button" class="main_btn btn_return">Volver al Listado General</button>
-                    </a>
-                </div>
-            </div>
-        {% endif %}
-
+  <div class="row">
+    <div class="col">
+      <h2 class="fw-bolder">Listado de Novedades</h2>
     </div>
 
-    <div class="row">
-        <div class="col-3">
-
-            <table id="grid_resultados" cellspacing="0">
-              <tbody>
-                <tr>
-                  <th colspan="3">Resultados</th>
-                </tr>
-                <tr>
-                  <th>Total</th>
-                  <th>Disp</th>
-                  <th>No Disp</th>
-                </tr>
-                <tr>
-                  <td id="num_resultados"></td>
-                  <td id="num_disp_si"></td>
-                  <td id="num_disp_no"></td>
-                </tr>
-              </tbody>
-            </table>
-      
+    {% if nombreBusqueda %}
+      <div class="col-2" >
+        <div class="input-group">
+          <a class="button is-success add-btn" href="{{ url_for('novedades_listado') }}">
+            <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+          </a>
         </div>
+      </div>
+    {% endif %}
 
-        <div class="col">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Buscar por nombre o titulo" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="55"
-                {% if nombreBusqueda %}
-                    value="{{nombreBusqueda}}"
-                {% endif %}
-                >
-                <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
-                    <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
-                </button>
-                <a href="{{ url_for('formulario_agregar_novedad') }}" class="button is-success add-btn">
-                    <button type="button" class="main_btn">Agregar</button>
-                </a>
-            </div>
-        </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-3">
+      <table id="grid_resultados" cellspacing="0">
+        <tbody>
+          <tr>
+            <th colspan="3">Resultados</th>
+          </tr>
+          <tr>
+            <th>Total</th>
+            <th>Disp</th>
+            <th>No Disp</th>
+          </tr>
+          <tr>
+            <td id="num_resultados"></td>
+            <td id="num_disp_si"></td>
+            <td id="num_disp_no"></td>
+          </tr>
+        </tbody>
+      </table>  
     </div>
+
+    <div class="col">
+      <form enctype="multipart/form-data" method="GET" action="{{ url_for('novedades_listado_buscar') }}">
+        <div class="input-group">
+          <input required type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="150"
+            {% if nombreBusqueda %}
+              value="{{nombreBusqueda}}"
+            {% endif %}
+          />
+          <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2" >
+            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+          </button>
+          <a href="{{ url_for('formulario_agregar_novedad') }}" class="button is-success add-btn">
+            <button type="button" class="main_btn">Agregar</button>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+    
     
     <div class="row" id="break_nav">
-          <div class="col">
-          <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
-              <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
-                  <option value="0" selected>Todos</option>
-                    {% for categoria in categorias %}
-                        <option value="{{ categoria.0 }}">{{ categoria.1 }}</option>
-                    {% endfor %}
-              </select>
-      </div>
+      <div class="col">
+      <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
+        <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
+            <option value="0" selected>Todos</option>
+          {% for categoria in categorias %}
+            <option value="{{ categoria.0 }}">{{ categoria.1 }}</option>
+          {% endfor %}
+        </select>
+    </div>
 
       <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por subcategoría</p>
@@ -117,14 +119,14 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Título</th>
-                    <th>Imagen Principal</th>
+                    <th>Imagen más destacada</th>
+                    <th>Cant. Imagenes relacionadas</th>
+                    <th>Tipo Novedad</th>
                     <th>Fecha Inicio</th>
                     <th>Fecha Vencimiento</th>
-                    <th>Cant. Imagenes</th>
                     <th>Terminos y Condiciones</th>
                     <th>Fecha Registro</th>
                     <th>Disponibilidad</th>
-                    <th>Tipo Novedad</th>
                     <th>Marca</th>
                     <th>Categoria</th>
                     <th>Subcategoria</th>
@@ -137,93 +139,129 @@
                     {% if novedad.7 == 1 and 
                       ( (novedad.8 is not none and novedad.13 == 1) or novedad.8 is none ) and
                       ( (novedad.9 is not none and novedad.11 == 1) or novedad.9 is none ) and
-                      ( (novedad.9 is not none and novedad.12 == 1) or novedad.9 is none ) %}
+                      ( (novedad.9 is not none and novedad.12 == 1) or novedad.9 is none ) and
+                        novedad.16 == 1 and novedad.15
+                      %}
                       fila_disp_si
                     {% else %}
                       fila_disp_no
                     {% endif %}
-                ">
-                    <td>{{ novedad[0] }}</td>
-                    <td>{{ novedad[1] }}</td>
-                    <td>{{ novedad[2] }}</td>
-                    <td>
-                        {% for img_nov in imgs_nov %}
-                            {% if img_nov.0 == novedad.15 %}
-                                <div class="celda_texto_bloque">
-                                    <img src="{{ img_nov.2 }}" alt="{{ novedad.15 }} img" class="clickable-image"/>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </td>
-                    <td>{{ novedad[3] }}</td>
-                    <td>{{ novedad[4] }}</td>
-                    <td>
-                      <div class="celda_numero">
-                        <p class="
-                        {% if novedad.14 > 0 %}
-                          num_cant
-                        {% else %}
-                          num_cero
-                        {% endif %}
-                        ">
-                          {{ novedad.14 }}
-                        </p>
+                  ">
+                  <td class="celda_id">{{ novedad[0] }}</td>
+                  <td>{{ novedad[1] }}</td>
+                  <td>{{ novedad[2] }}</td>
+                  <td>
+                    {% if novedad.15 %}
+                      {% for img_nov in imgs_nov %}
+                          {% if img_nov.0 == novedad.15 %}
+                              <div class="celda_texto_bloque">
+                                  <img src="{{ img_nov.2 }}" alt="{{ novedad.15 }} img" class="clickable-image"/>
+                              </div>
+                          {% endif %}
+                      {% endfor %}
+                    {% else %}
+                    <div class="celda_estado">
+                      <p class="disponibilidad disp_no">
+                        Sin imagenes destacables
+                      </p>
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="celda_numero">
+                      <p class="
+                      {% if novedad.14 > 0 %}
+                        num_cant
+                      {% else %}
+                        num_cero
+                      {% endif %}
+                      ">
+                        {{ novedad.14 }}
+                      </p>
+                    </div>
+                  </td>
+                  <td>
+                    {% for tipo in tipos_novedad %}
+                      {% if tipo.0 == novedad.10 %}
+                        <div class="celda_texto_bloque color_texto" data-tipo="{{ tipo.0 }}" data-colorid="{{tipo.0}}">
+                          <p>{{ tipo.1 }}</p>
+                          {% if novedad.16 == 0 %}
+                            <p class="disponibilidad disp_no">No Disponible</p>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </td>
+                  <td>{{ novedad[3] }}</td>
+                  <td>{{ novedad[4] }}</td>
+                  <td>
+                      <div class="celda_texto_amplio">
+                          {{ novedad.5 }}
                       </div>
-                    </td>
-                    <td>
-                        <div class="celda_texto_amplio">
-                            {{ novedad.5 }}
-                        </div>
-                    </td>
-                    <td>{{ novedad[6] }}</td>
-                    <td>
-                        <div class="celda_estado">
-                            {% if novedad.7 == 1 %}
-                                <p class="disponibilidad disp_si">Disponible</p>
-                            {% else %}
+                  </td>
+                  <td>{{ novedad[6] }}</td>
+                  <td>
+                    <div class="celda_estado">
+                      {% if novedad.7 == 1 %}
+                          <p class="disponibilidad disp_si">Disponible</p>
+                      {% else %}
+                          <p class="disponibilidad disp_no">No Disponible</p>
+                      {% endif %}
+                    </div>
+                  </td>
+                  <td>
+                    {% if novedad.8 %}
+                        {% for marca in marcas %}
+                          {% if marca.0 == novedad.8 %}
+                            <div class="celda_texto_bloque" data-brand="{{ marca.0 }}">
+                              <img src="{{ marca.2 }}" alt="{{ novedad.1 }} logo" class="clickable-image" style="width: 75px;"/>
+                              <span>{{ marca.1 }}</span>
+                              {% if novedad.13 == 0 %}
                                 <p class="disponibilidad disp_no">No Disponible</p>
+                              {% endif %}
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                    {% else %}
+                      <div class="espacio_vacio">
+                          <p>
+                            Sin Categoria
+                          </p>
+                      </div>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if novedad.9 %}
+                      {% for subcategoria in subcategorias %}
+                        {% if subcategoria.0 == novedad.9 %}
+                          <div class="celda_texto_bloque" data-category="{{ subcategoria.4 }}">
+                            <i class="{{ subcategoria.6 }}"></i>
+                            <span>{{ subcategoria.5 }}</span>
+      
+                            {% if novedad.12 == 0 %}
+                              <p class="disponibilidad disp_no">No Disponible</p>
                             {% endif %}
-                        </div>
-                    </td>
-                    <td>
-                      {% for tipo in tipos_novedad %}
-                        {% if tipo.0 == novedad.10 %}
-                          <div class="celda_texto_bloque" data-tipo="{{ tipo.0 }}">
-                            <p>{{ tipo.1 }}</p>
+      
                           </div>
                         {% endif %}
                       {% endfor %}
-                    </td>
-                    <td>
-                      {% if novedad.8 %}
-                          {% for marca in marcas %}
-                            {% if marca.0 == novedad.8 %}
-                              <div class="celda_texto_bloque" data-brand="{{ marca.0 }}">
-                                <img src="{{ marca.2 }}" alt="{{ novedad.1 }} logo" class="clickable-image"/>
-                                <span>{{ marca.1 }}</span>
-                                {% if novedad.13 == 0 %}
-                                  <p class="disponibilidad disp_no">No Disponible</p>
-                                {% endif %}
-                              </div>
-                            {% endif %}
-                          {% endfor %}
-                      {% else %}
-                        <div class="espacio_vacio">
-                            <p>
-                              Sin Categoria
-                            </p>
-                        </div>
-                      {% endif %}
-                    </td>
-                    <td>
+                    {% else %}
+                      <div class="espacio_vacio">
+                          <p>
+                            Sin Categoria
+                          </p>
+                      </div>
+                    {% endif %}
+                  </td>
+                  <td>
                       {% if novedad.9 %}
                         {% for subcategoria in subcategorias %}
                           {% if subcategoria.0 == novedad.9 %}
-                            <div class="celda_texto_bloque" data-category="{{ subcategoria.4 }}">
-                              <i class="{{ subcategoria.6 }}"></i>
-                              <span>{{ subcategoria.5 }}</span>
+                            <div class="celda_texto_bloque" data-subcategory="{{ novedad.9 }}">
+                              <i class="{{ subcategoria.2 }}"></i>
+                              <span>{{ subcategoria.1 }}</span>
         
-                              {% if novedad.12 == 0 %}
+                              {% if novedad.11 == 0 or novedad.12 == 0 %}
                                 <p class="disponibilidad disp_no">No Disponible</p>
                               {% endif %}
         
@@ -233,54 +271,31 @@
                       {% else %}
                         <div class="espacio_vacio">
                             <p>
-                              Sin Categoria
+                              Sin Subcategoria
                             </p>
                         </div>
                       {% endif %}
-                    </td>
-                    <td>
-                        {% if novedad.9 %}
-                          {% for subcategoria in subcategorias %}
-                            {% if subcategoria.0 == novedad.9 %}
-                              <div class="celda_texto_bloque" data-subcategory="{{ novedad.9 }}">
-                                <i class="{{ subcategoria.2 }}"></i>
-                                <span>{{ subcategoria.1 }}</span>
-          
-                                {% if novedad.11 == 0 or novedad.12 == 0 %}
-                                  <p class="disponibilidad disp_no">No Disponible</p>
-                                {% endif %}
-          
-                              </div>
-                            {% endif %}
-                          {% endfor %}
-                        {% else %}
-                          <div class="espacio_vacio">
-                              <p>
-                                Sin Subcategoria
-                              </p>
-                          </div>
-                        {% endif %}
-                    </td>
+                  </td>
 
-                    <td class="opciones_column">
-                        <div class="acciones">
-                            <a class="opciones_fila" href="{{url_for('promocion', id=novedad[0])}}">
-                                <i class="fa-solid fa-link"></i>
-                            </a>
-                            <a class="opciones_fila" href="{{url_for('promocion', id=novedad[0])}}">
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
-                            <a class="opciones_fila" href="{{ url_for('editar_novedad', id=novedad[0]) }}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                            </a>
-                            <form class="opciones_fila" action="{{ url_for('eliminar_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                                <input type="hidden" name="id" value="{{ novedad[0] }}">
-                                <button type="submit">
-                                  <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </form>
-                        </div>                        
-                    </td>
+                  <td class="opciones_column">
+                      <div class="acciones">
+                          <a class="opciones_fila" href="{{url_for('selectedNovedad', id=novedad[0])}}">
+                              <i class="fa-solid fa-link"></i>
+                          </a>
+                          <a class="opciones_fila" href="{{url_for('ver_novedad', id=novedad[0])}}">
+                              <i class="fa-solid fa-eye"></i>
+                          </a>
+                          <a class="opciones_fila" href="{{ url_for('editar_novedad', id=novedad[0]) }}">
+                              <i class="fa-regular fa-pen-to-square"></i>
+                          </a>
+                          <form class="opciones_fila" action="{{ url_for('eliminar_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                              <input type="hidden" name="id" value="{{ novedad[0] }}">
+                              <button type="submit">
+                                <i class="fa-solid fa-trash-can"></i>
+                              </button>
+                          </form>
+                      </div>                        
+                  </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -314,5 +329,5 @@
   <script src="/static/js/admin_productos.js"></script>
   <script src="static/js/filtroCRUDListado.js"></script>
   <script src="/static/js/imgsCRUDimagencompleta.js"></script>
-
+  <script src="/static/js/textoCRUDcolor.js"></script>
 {% endblock %}

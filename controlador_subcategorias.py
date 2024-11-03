@@ -118,6 +118,59 @@ def obtener_subcategorias():
     return subcategorias
 
 
+def obtener_listado_subcategorias():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            sub.id , 
+                            sub.subcategoria , 
+                            sub.faicon_subcat ,
+                            sub.disponibilidad ,
+                            sub.categoriaid , 
+                            cat.categoria ,
+                            cat.faicon_cat,
+                            count(pr.id),
+                            count(nov.id),
+                            cat.disponibilidad
+                        FROM subcategoria sub 
+                        left JOIN categoria cat on cat.id = sub.categoriaid
+                        left join producto pr on pr.SUBCATEGORIAid = sub.id
+                        left join novedad nov on nov.SUBCATEGORIAid = sub.id
+                        group by sub.id;
+                       ''')
+        subcategorias = cursor.fetchall()
+    conexion.close()
+    return subcategorias
+
+
+def buscar_listado_subcategorias_nombre(nombre):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            sub.id , 
+                            sub.subcategoria , 
+                            sub.faicon_subcat ,
+                            sub.disponibilidad ,
+                            sub.categoriaid , 
+                            cat.categoria ,
+                            cat.faicon_cat,
+                            count(pr.id),
+                            count(nov.id),
+                            cat.disponibilidad
+                        FROM subcategoria sub 
+                        left JOIN categoria cat on cat.id = sub.categoriaid
+                        left join producto pr on pr.SUBCATEGORIAid = sub.id
+                        left join novedad nov on nov.SUBCATEGORIAid = sub.id
+                        WHERE UPPER(sub.subcategoria) LIKE UPPER ('%'''+str(nombre)+'''%')
+                        group by sub.id;
+                       ''')
+        subcategorias = cursor.fetchall()
+    conexion.close()
+    return subcategorias
+
+
 def eliminar_subcategoria(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:

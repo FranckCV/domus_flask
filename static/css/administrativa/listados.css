@@ -4,6 +4,11 @@ h2 {
     margin: 0;
 }
 
+p {
+    margin: 0;
+    padding: 0;
+}
+
 #mainSection {
     row-gap: 20px;
     display: flex;
@@ -150,7 +155,7 @@ h2 {
 
 .table_listado th, .table_listado td {
     padding: 10px;
-    text-align: left;
+    text-align: center;
 }
 
 .table_listado th {
@@ -194,19 +199,35 @@ h2 {
 
 /* CELDAS CON MUCHO TEXTO */
 
-.table_listado td:not(.celda_texto_amplio) {
-    text-align: center;
-}
+/* .table_listado td div.celda_texto_amplio {
+    display: block;
+} */
 
 .table_listado .celda_texto_amplio {    
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     white-space: wrap;
-    vertical-align: text-bottom;
+    vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 250px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+/* CELDA ID */
+
+.celda_id {
+    font-weight: bold;
+    font-size: 125%;
+}
+
+/* CELDAS PRECIO */
+
+.celda_precio {
+    font-weight: bold;
+    font-size: 110%;
 }
 
 /* CELDAS VACIO */
@@ -360,7 +381,8 @@ button:hover img {
 .celda_numero p {
     font-size: 140%;
     height: 30px;
-    width: 30px;
+    min-width: 30px;
+    padding-inline: 5px;
     text-align: center;
     color: white;
     border-radius: 10px;
@@ -388,15 +410,14 @@ button:hover img {
     padding-inline: 10px;
     padding-block: 5px;
     margin: 0;
-    /* width: auto; */
 }
 
 .disp_si {
-    background-color: green;
+    background-color: #008000;
 }
 
 .disp_no {
-    background-color: red;
+    background-color: #ff0000;
 }
 
 .celda_estado {
@@ -424,16 +445,16 @@ button:hover img {
     margin: 0;
 }
 
-.estcom_2 {
+.texto_estado_2 {
     background-color: #3432bd;
 }
 
-.estcom_1 {
-    background-color: #47b647;
+.texto_estado_1 {
+    background-color: #008000;
 }
 
-.estcom_0 {
-    background-color: #e74e4e;
+.texto_estado_0 {
+    background-color: #ff0000;
 }
 
 .genero {
@@ -453,6 +474,8 @@ button:hover img {
 .gen_fem {
     background-color: #a061d3;
 }
+
+
 
 /* CUADRO RESULTADOS */
 
@@ -505,32 +528,31 @@ button:hover img {
 }
 
 
-/* AGRANDAR IMAGEN */
 
-.clickable-image {
-    cursor: pointer;
-    transition: transform 0.3s ease;
+
+/* COLORES */
+
+
+.bloque_color_1 {
+    background-color: #ff0000;
 }
 
-.clickable-image:hover {
-    transform: scale(1.05);
+.bloque_color_2 {
+    background-color: #ff7300;
 }
 
-.overlayImage {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
-    z-index: 9900;
+.bloque_color_3 {
+    background-color: #fffb00;
 }
 
-.enlarged-image {
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 8px;
+.bloque_color_4 {
+    background-color: #7bff00;
 }
+
+.bloque_color_5 {
+    background-color: #00ffc8;
+}
+
+
+
+

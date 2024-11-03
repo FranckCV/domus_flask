@@ -1,0 +1,265 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Productos
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="static/css/administrativa/listados.css">
+{% endblock %}
+
+{% block contenido %}
+      
+  <section class="h_section scrollable-section" id="mainSection">
+    <h2 class="fw-bolder">Listado de categorias</h2>
+      <div class="row" id="break_nav">
+          <div class="col">
+            <div class="input-group ">
+              <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
+              <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+                <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
+              </button>
+              <a href="/agregar_categoria" class="button is-success add-btn"><button type="button" class="main_btn">Agregar</button></a>
+            </div>
+          </div>
+      </div>
+
+      <div class="table-container">
+        <table cellspacing="0" class="table_listado product_if">
+            <thead>
+                <tr>
+                    <th>ID Cat</th>
+                    <th>Categoria</th>
+                    <th>Opciones Cat</th>
+                    <th>ID Sub</th>
+                    <th>Subcategoria</th>
+                    <th>Icono Sub</th>
+                    <th>Disponibilidad Sub</th>
+                    <th>Cant. Productos</th>
+                    <th>Cant. Novedades</th>
+                    <th class="opciones_column">Opciones Sub</th>
+                </tr>
+            </thead>
+            <tbody>                
+                {% for categoria in categorias %}
+                {% set subcategorias_filtradas = subcategorias | selectattr(4, 'equalto', categoria[0]) | list %}
+                <tr class="
+                {% if categoria.3 == 1 %}
+                  fila_disp_si
+                {% else %}
+                  fila_disp_no
+                {% endif %}
+                ">
+                  <td class="celda_id" rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">
+                    {{ categoria[0] }}
+                  </td>
+                  <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}">
+                    <div class="celda_texto_bloque">
+                      <i class="{{ categoria[2] }}"></i>
+                      {{ categoria[1] }}
+                      <div class="celda_estado">
+                        {% if categoria[3] == 1 %}
+                            <p class="disponibilidad disp_si">Disponible</p>
+                        {% else %}
+                            <p class="disponibilidad disp_no">No Disponible</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </td>
+                  <td rowspan="{{ subcategorias_filtradas | length if subcategorias_filtradas | length > 0 else 1 }}" class="opciones_column">
+                    <div class="acciones">
+                      <a href="{{url_for('categoria', id=categoria[0])}}"><i class="fa-solid fa-link"></i></a>
+                    </div>                        
+                  </td>
+              
+                  {% if subcategorias_filtradas | length > 0 %}
+                    <td class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    ">{{ subcategorias_filtradas[0][0] }}</td>
+                    <td class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    ">{{ subcategorias_filtradas[0][1] }}</td>
+                    <td class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    "><i class="{{ subcategorias_filtradas[0][2] }}"></i></td>
+                    <td class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    ">
+                      <div class="celda_estado">
+                          {% if subcategorias_filtradas[0][3] == 1 %}
+                              <p class="disponibilidad disp_si">Disponible</p>
+                          {% else %}
+                              <p class="disponibilidad disp_no">No Disponible</p>
+                          {% endif %}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="celda_numero">
+                        <p class="
+                          {% if subcategorias_filtradas[0][7] > 0 %}
+                            num_cant
+                          {% else %}
+                            num_cero
+                          {% endif %}
+                          ">
+                            {{subcategorias_filtradas[0][7] }}
+                          </p>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="celda_numero">
+                        <p class="
+                          {% if subcategorias_filtradas[0][8] > 0 %}
+                            num_cant
+                          {% else %}
+                            num_cero
+                          {% endif %}
+                          ">
+                            {{subcategorias_filtradas[0][8] }}
+                          </p>
+                      </div>
+                    </td>
+                    <td  class="
+                    {% if subcategorias_filtradas[0][3] == 1 %}
+                      fila_disp_si
+                    {% else %}
+                      fila_disp_no
+                    {% endif %}
+                    opciones_column">
+                      <div class="acciones">                            
+                        <a href="{{ url_for('editar_subcategoria', id=subcategorias_filtradas[0][0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
+                        <form action="{{ url_for('eliminar_subcategoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                          <input type="hidden" name="id" value="{{ subcategorias_filtradas[0][0] }}">
+                          <button type="submit">
+                            <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+              
+                  {% for subcategoria in subcategorias_filtradas[1:] %}
+                  <tr class="
+                  {% if categoria.3 == 1 and subcategoria[3] == 1 %}
+                    fila_disp_si
+                  {% else %}
+                    fila_disp_no
+                  {% endif %}
+                  ">
+                    <td>{{ subcategoria[0] }}</td>
+                    <td>{{ subcategoria[1] }}</td>
+                    <td><i class="{{ subcategoria[2] }}"></i></td>
+                    <td>
+                      <div class="celda_estado">
+                        {% if subcategoria[3] == 1 %}
+                            <p class="disponibilidad disp_si">Disponible</p>
+                        {% else %}
+                            <p class="disponibilidad disp_no">No Disponible</p>
+                        {% endif %}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="celda_numero">
+                        <p class="
+                          {% if subcategoria[7] > 0 %}
+                            num_cant
+                          {% else %}
+                            num_cero
+                          {% endif %}
+                          ">
+                            {{subcategoria[7] }}
+                          </p>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="celda_numero">
+                        <p class="
+                          {% if subcategoria[8] > 0 %}
+                            num_cant
+                          {% else %}
+                            num_cero
+                          {% endif %}
+                          ">
+                            {{subcategoria[8] }}
+                          </p>
+                      </div>
+                    </td>
+                    <td class="opciones_column">
+                      <div class="acciones">                            
+                        <a href="{{ url_for('editar_subcategoria', id=subcategoria[0]) }}"><img src="/static/img/elementosCRUD/lapiz.png" alt="editar"></a>
+                        <form action="{{ url_for('eliminar_subcategoria') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                          <input type="hidden" name="id" value="{{ subcategoria[0] }}">
+                          <button type="submit">
+                            <img src="/static/img/elementosCRUD/borrar.png" alt="borrar">
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                {% else %}
+                  <td colspan="5">No hay subcategorías añadidas</td>
+                </tr>
+                {% endif %}
+              {% endfor %}
+              
+                
+            </tbody>
+        </table>
+      </div>
+
+      <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="errorModalLabel">Error al eliminar pedido</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {{ error }} <!-- Aquí se muestra el error que pasaste desde el backend -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+{% if show_modal %}
+<script>
+    var modal = new bootstrap.Modal(document.getElementById('errorModal'));
+    modal.show();
+    
+    // Redirigir automáticamente después de 3 segundos (3000 milisegundos)
+    setTimeout(function(){
+        window.location.href = "/listado_categorias";
+    }, 1500);
+</script>
+{% endif %}
+<script>
+    function confirmarEliminacion() {
+        return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+    }
+</script>
+<script src="/static/js/admin_productos.js"></script>
+
+{% endblock %}

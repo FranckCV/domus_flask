@@ -1,0 +1,50 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Agregar Red Social
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Agregar Red Social</h2>
+    <form action="{{ url_for('guardar_redes_sociales') }}" method="post">
+      <div class="form-grid" id="col_add">
+
+        <div class="row">
+          <div class="col">
+            <label for="motivo">Nombre:</label>
+            <input required type="text" class="input" placeholder="Nombre" name="nombre" id="nombre" />
+          </div>
+          
+          <div class="col">
+            <label for="Icono">Icono:</label>
+            <input required type="text" class="input" placeholder="Icono" name="icono" id="icono" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="motivo">Enlace:</label>
+            <input required type="text" class="input" placeholder="Enlace" name="enlace" id="enlace" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('listado_redes_sociales') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}

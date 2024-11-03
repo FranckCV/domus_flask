@@ -398,7 +398,7 @@
     border: 0.2vw solid #ffffffc2;
     border-radius: 20px;
     padding: 3vw;
-    white-space: pre-wrap;
+    /* white-space: pre-wrap; */
 }
 
 .product_details_more {

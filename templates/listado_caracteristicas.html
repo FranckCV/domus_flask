@@ -10,8 +10,24 @@
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder">Listado de Caracteristicas</h2>
-    
+
+    <div class="row">
+      <div class="col">
+        <h2 class="fw-bolder">Listado de Caracteristicas</h2>
+      </div>
+
+      {% if nombreBusqueda %}
+        <div class="col-2" >
+          <div class="input-group">
+            <a class="button is-success add-btn" href="{{ url_for('caracteristicas') }}">
+              <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+            </a>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+
     <div class="row">  
 
       <div class="col-3">
@@ -37,16 +53,25 @@
       </div>
 
       <div class="col">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" />
-          <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2"><img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" /></button>
-          <a href="{{ url_for('formulario_agregar_caracteristica') }}" class="button is-success add-btn"><button type="button" id="add_btn">Agregar</button></a>
-        </div>
+        <form enctype="multipart/form-data" method="GET" action="{{ url_for('caracteristicas_buscar') }}">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="45"
+            {% if nombreBusqueda %}
+              value="{{nombreBusqueda}}"
+            {% endif %}
+            />
+            <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
+              <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+            </button>
+            <a href="{{ url_for('formulario_agregar_caracteristica') }}" class="button is-success add-btn">
+              <button type="button" class="main_btn">Agregar</button>
+            </a>
+          </div>
+        </form>
       </div>
 
     </div>
-
-      
+    
     <div class="row">
       <div class="col">
         <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
@@ -93,7 +118,7 @@
               fila_disp_no
             {% endif %}
             ">
-              <td>{{ caracteristica.0 }}</td>
+              <td class="celda_id">{{ caracteristica.0 }}</td>
               <td>
                 {{ caracteristica.1 }}
               </td>

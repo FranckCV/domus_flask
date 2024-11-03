@@ -4,26 +4,38 @@
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
     <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Tipo de Usuario</h2>
-    <form action="{{ url_for('guardar_tipo_usuario') }}" method="post">
+    <form action="{{ url_for('guardar_tipo_usuario') }}" method="post"  enctype="multipart/form-data">
       <div class="form-grid" id="col_add">
         
         <div class="row">
-          <div class="col">
-            <label for="tipo">Tipo de Usuario:</label><br>
-            <input required type="text" class="input" placeholder="Tipo de usuario" name="tipo" id="tipo">
+          <div class="col column_text">
+            <div class="row">
+              <div class="col">
+                <label for="tipo">Tipo de Usuario:</label>
+                <input required type="text" class="input" placeholder="Tipo de usuario" name="tipo" id="tipo">
+              </div>
+            </div>
+    
+            <div class="row">
+              <div class="col">
+                <label for="descripcion">Descripción:</label>
+                <textarea required placeholder="Descripción del tipo de usuario" name="descripcion" id="descripcion"></textarea>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="col">
-            <label for="descripcion">Descripción:</label><br>
-            <textarea required class="input" placeholder="Descripción del tipo de usuario" name="descripcion" id="descripcion"></textarea>
+          <div class="col seccionImg">
+            <label for="img_user">Subir imagen para usuario:</label>
+            <input type="file" class="campoImg" name="img_user" id="img_user" required/>
+            <div class="espacio_img">
+              <img id="previewImg" src="" alt="">
+            </div>
           </div>
         </div>
 
@@ -38,4 +50,8 @@
       </div>
     </form>
   </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/imgsCRUDvistaprevia.js"></script>
 {% endblock %}

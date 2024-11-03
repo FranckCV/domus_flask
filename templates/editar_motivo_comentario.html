@@ -5,26 +5,24 @@ Editar Motivo de Comentario
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
 <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Motivo de Comentario</h2><br><br><br>
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Motivo de Comentario</h2>
     <form action="{{ url_for('actualizar_motivo_comentario') }}" method="post">
         <input type="hidden" name="id" value="{{ motivo_comentario[0] }}"> <!-- Campo oculto para el ID del motivo de comentario -->
         
         <div class="form-grid" id="col_add">
             <div class="row">
                 <div class="col">
-                    <label for="motivo">Motivo del Comentario:</label><br>
+                    <label for="motivo">Motivo del Comentario:</label>
                     <input required type="text" class="input" placeholder="Motivo del comentario" name="motivo" id="motivo" value="{{ motivo_comentario[1] }}">
                 </div>
-            </div>
-
-            <div class="row">
+            
                 <div class="col">
-                    <label for="disponibilidad">Disponibilidad:</label><br>
+                    <label for="disponibilidad">Disponibilidad:</label>
                     <select name="disponibilidad" id="disponibilidad" class="input" required>
                         <option value="1" {% if motivo_comentario[2] == 1 %}selected{% endif %}>Disponible</option>
                         <option value="0" {% if motivo_comentario[2] == 0 %}selected{% endif %}>No Disponible</option>

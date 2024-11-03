@@ -1,15 +1,15 @@
 {% extends 'maestra_administrador.html' %}
 {% block titulo %}
-Agregar Empleado
+  Agregar Empleado
 {% endblock %}
 
 {% block estilos %}
-<link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+<link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
 <section class="h_section" id="mainSection">
-  <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Empleado</h2><br /><br /><br />
+  <h2 class="fw-bolder">Agregar Empleado</h2>
 
   <!-- Mostrar mensaje de error si existe -->
   {% if error %}
@@ -18,28 +18,28 @@ Agregar Empleado
 
   <form action="{{ url_for('guardar_empleado') }}" method="post" enctype="multipart/form-data">
     <div class="form-grid" id="col_add">
-      <!-- Primera columna -->
+
       <div class="row">
         <div class="col">
-          <label for="nombres">Nombres:</label><br />
-          <input required type="text" class="input" placeholder="Nombres del empleado" name="nombres" id="nombres"
+          <label for="nombres">Nombres:</label>
+          <input required type="text" class="input" placeholder="Nombres" name="nombres" id="nombres"
             value="{{ nombres }}">
         </div>
         <div class="col">
-          <label for="apellidos">Apellidos:</label><br />
-          <input required type="text" class="input" placeholder="Apellidos del empleado" name="apellidos" id="apellidos"
+          <label for="apellidos">Apellidos:</label>
+          <input required type="text" class="input" placeholder="Apellidos" name="apellidos" id="apellidos"
             value="{{ apellidos }}">
         </div>
       </div>
 
       <div class="row">
         <div class="col">
-          <label for="doc_identidad">Documento de Identidad:</label><br />
+          <label for="doc_identidad">Documento de Identidad:</label>
           <input required type="text" class="input" placeholder="Documento de identidad" name="doc_identidad"
             id="doc_identidad" value="{{ doc_identidad }}">
         </div>
         <div class="col">
-          <label for="telefono">Teléfono:</label><br />
+          <label for="telefono">Teléfono:</label>
           <input required type="text" class="input" placeholder="Teléfono" name="telefono" id="telefono"
             value="{{ telefono }}">
         </div>
@@ -47,12 +47,12 @@ Agregar Empleado
 
       <div class="row">
         <div class="col">
-          <label for="correo">Correo Electrónico:</label><br />
+          <label for="correo">Correo Electrónico:</label>
           <input required type="email" class="input" placeholder="Correo" name="correo" id="correo"
             value="{{ correo }}">
         </div>
         <div class="col">
-          <label for="fecha_nacimiento">Fecha de Nacimiento:</label><br />
+          <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
           <input required type="date" class="input" placeholder="Fecha de nacimiento" name="fecha_nacimiento"
             id="fecha_nacimiento" value="{{ fecha_nacimiento }}">
         </div>
@@ -60,12 +60,17 @@ Agregar Empleado
 
       <div class="row">
         <div class="col">
-          <label for="contraseña">Contraseña:</label><br />
-          <input required type="password" class="input" placeholder="Contraseña" name="contraseña" id="contraseña"
-            value="{{ contraseña }}">
+          <label for="contraseña">Contraseña:</label>          
+          <div class="input-group">
+            <input type="password" class="input form-control" placeholder="Contraseña" value="{{ contraseña }}"  name="contraseña" id="contraseña">
+            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+              <i id="toggleIcon" class="fas fa-eye"></i>
+            </button>
+          </div>
         </div>
+
         <div class="col">
-          <label for="genero">Género:</label><br />
+          <label for="genero">Género:</label>
           <select name="genero" id="genero" class="input" required>
             <option value="1" {% if genero=='1' %}selected{% endif %}>Masculino</option>
             <option value="0" {% if genero=='0' %}selected{% endif %}>Femenino</option>
@@ -74,16 +79,12 @@ Agregar Empleado
       </div>
 
       <div class="row">
-        <div class="col">
-          <label for="disponibilidad">Disponibilidad:</label><br>
-          <select name="disponibilidad" id="disponibilidad" class="input" required>
-            <option value="1" {% if disponibilidad==1 %}selected{% endif %}>Disponible</option>
-            <option value="0" {% if disponibilidad==0 %}selected{% endif %}>No Disponible</option>
-          </select>
-        </div>
-        <div class="col">
-          <label for="img_usuario">Imagen de Usuario (opcional):</label><br>
-          <input type="file" class="input" name="img_usuario" id="img_usuario">
+        <div class="col seccionImg">
+          <label for="img_usuario">Imagen de Usuario (opcional):</label>
+          <input type="file" class="campoImg" name="img_usuario" id="img_usuario"/>
+          <div class="espacio_img">
+            <img id="previewImg" src="" alt="">
+          </div>
         </div>
       </div>
 
@@ -101,6 +102,24 @@ Agregar Empleado
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/admin_usuarios.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script>
+  function togglePassword() {
+    const passwordField = document.getElementById("contraseña");
+    const toggleIcon = document.getElementById("toggleIcon");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+    }
+  }
+</script>
+
+
 {% endblock %}
