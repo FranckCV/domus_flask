@@ -420,6 +420,9 @@ def dashboard():
     return render_template("dashboard.html")
 
 
+
+
+
 @app.route("/agregar_marca")
 def formulario_agregar_marca():
     return render_template("agregar_marca.html")
