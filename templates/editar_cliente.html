@@ -5,97 +5,121 @@ Editar Usuario Cliente
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+<link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
 <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Usuario Cliente</h2><br><br><br>
+    <h2 class="fw-bolder">Editar Usuario Cliente</h2>
     <form action="{{ url_for('actualizar_cliente') }}" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="{{ usuario_cliente[0] }}"> <!-- Campo oculto para el ID del usuario -->
+        <input type="hidden" name="id" value="{{ usuario[0] }}"> <!-- Campo oculto para el ID del usuario -->
         
         <div class="form-grid" id="col_add">
+
             <div class="row">
-                <div class="col">
-                    <label for="nombres">Nombres:</label><br>
-                    <input required type="text" class="input" placeholder="Nombres del usuario" name="nombres" id="nombres" value="{{ usuario_cliente[1] }}">
+                <div class="col-6 column_text">
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="nombres">Nombres:</label>
+                            <input required type="text" class="input" name="nombres"
+                                id="nombres" value="{{ usuario[1] }}" style="text-align: center;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="apellidos">Apellidos:</label>
+                            <input   required type="text" class="input" name="apellidos"
+                                id="apellidos" value="{{ usuario[2] }}" style="text-align: center;">
+                        </div>        
+                    </div>
+
                 </div>
 
-                <div class="col">
-                    <label for="apellidos">Apellidos:</label><br>
-                    <input required type="text" class="input" placeholder="Apellidos del usuario" name="apellidos" id="apellidos" value="{{ usuario_cliente[2] }}">
+                <div class="col seccionImg">
+                    <label for="img_usuario">Foto de Perfil:</label>
+                    <input type="file" class="campoImg" name="img_usuario" id="img_usuario" />
+                    <div class="espacio_img espacio_img_principal">
+                        {% if imagen.1 %}
+                            <img id="previewImg" src="{{imagen.1}}" alt="Foto de Usuario {{ usuario.0 }}" class="clickable-image" style="width: 200px; height: auto;"/> 
+                        {% else %}
+                        <div class="espacio_vacio">
+                            <p>
+                                Sin foto de Perfil
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-
+            
             <div class="row">
+                        
                 <div class="col">
-                    <label for="doc_identidad">Documento de Identidad:</label><br>
-                    <input required type="text" class="input" placeholder="Documento de Identidad" name="doc_identidad" id="doc_identidad" value="{{ usuario_cliente[3] }}">
-                </div>
-                <div class="col">
-                    <label for="telefono">Teléfono:</label><br>
-                    <input required type="text" class="input" placeholder="Teléfono" name="telefono" id="telefono" value="{{ usuario_cliente[7] }}">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="correo">Correo Electrónico:</label><br>
-                    <input required type="email" class="input" placeholder="Correo Electrónico" name="correo" id="correo" value="{{ usuario_cliente[8] }}">
+                    <label for="doc_identidad">Documento de Identidad:</label>
+                    <input required type="text" class="input" name="doc_identidad" id="doc_identidad"
+                        value="{{ usuario[3] }}" style="text-align: center;">
                 </div>
 
                 <div class="col">
-                    <label for="fecha_nacimiento">Fecha de Nacimiento:</label><br>
-                    <input required type="date" class="input" name="fecha_nacimiento" id="fecha_nacimiento" value="{{ usuario_cliente[6] }}">
-                </div>
-            </div>
-
-            <div class="row">
+                    <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+                    <input  required type="text" class="input" name="fecha_nacimiento" 
+                        id="fecha_nacimiento" value="{{ usuario[6] }}" style="text-align: center;">
+                </div>          
+                 
                 <div class="col">
-                    <label for="genero">Género:</label><br>
-                    <select class="input" name="genero" id="genero">
-                        <option value="1" {% if usuario_cliente[5] == 1 %}selected{% endif %}>Masculino</option>
-                        <option value="0" {% if usuario_cliente[5] == 0 %}selected{% endif %}>Femenino</option>
+                    <label for="genero">Sexo:</label>
+                    <select required class="input" name="genero" id="genero">
+                        <option value="1" {% if usuario[5]==1 %} selected {% endif %}>Masculino</option>
+                        <option value="0" {% if usuario[5]==0 %} selected {% endif %}>Femenino</option>
                     </select>
                 </div>
-
-                <div class="col">
-                    <label for="disponibilidad">Disponibilidad:</label><br>
-                    <label style="color: #000; font-weight: lighter;">
-                        <input type="radio" name="disponibilidad" value=1 id="disponibilidad" {% if usuario_cliente[10] == 1 %}checked{% endif %}> Disponible
-                    </label>
-                    <label style="color: #000; font-weight: lighter;">
-                        <input type="radio" name="disponibilidad" value=0 id="disponibilidad" {% if usuario_cliente[10] == 0 %}checked{% endif %}> No Disponible
-                    </label>
-                </div>
             </div>
 
             <div class="row">
+
                 <div class="col">
-                    <label for="img_usuario">Foto de Perfil:</label><br>
-                    <input type="file" name="img_usuario" id="img_usuario">
-                    {% if usuario_cliente[4] %}
-                    <img src="data:image/png;base64,{{ usuario_cliente[4] }}" alt="Imagen de usuario" width="100" height="100">
-                    {% else %}
-                    <span>No se ha cargado una imagen</span>
-                    {% endif %}
+                    <label for="correo">Correo Electrónico:</label>
+                    <input  required type="text" class="input" name="correo" id="correo"
+                        value="{{ usuario[8] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="telefono">Némero de Telefono:</label>
+                    <input  required type="text" class="input"  name="telefono" id="telefono"
+                        value="{{ usuario[7] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <select required class="input" name="disponibilidad" id="disponibilidad">
+                        <option value="1" {% if usuario[9]==1 %} selected {% endif %}>Disponible</option>
+                        <option value="0" {% if usuario[9]==0 %} selected {% endif %}>No Disponible</option>
+                    </select>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col" id="sbmt">
-                    <div class="form-buttons">
-                        <a href="{{ url_for('listado_clientes') }}" id="backbtn">Volver</a>
-                        <button type="submit" class="button is-primary">Actualizar</button>
-                    </div>
+                  <div class="form-buttons">
+                    <a href="{{ url_for('listado_clientes') }}" id="backbtn">Volver</a>
+                    <button type="submit" class="button is-primary">Editar</button>
+                  </div>
                 </div>
             </div>
+            
         </div>
     </form>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
 </section>
 {% endblock %}
 
 {% block scripts %} 
-<script src="/static/js/admin_usuarios.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
 {% endblock %}

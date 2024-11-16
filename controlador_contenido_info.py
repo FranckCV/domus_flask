@@ -135,7 +135,7 @@ def obtener_datos_contenido_por_tipo(id):
 def insertar_tipo_contenido_info(nombre , descripcion , faicon_cont):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO tipo_contenido_info (nombre, descripcion , faicon_cont) VALUES (%s, %s,%s)", (nombre, descripcion , faicon_cont))
+        cursor.execute("INSERT INTO tipo_contenido_info (nombre, descripcion , faicon_cont, disponibilidad) VALUES (%s, %s,%s,1)", (nombre, descripcion , faicon_cont))
     conexion.commit()
     conexion.close()
 
@@ -158,11 +158,11 @@ def obtener_tipo_contenido_info_por_id(id):
     return tipo
 
 
-def actualizar_tipo_contenido_info_por_id(nombre , descripcion , faicon_cont , id):
+def actualizar_tipo_contenido_info_por_id(nombre , descripcion , faicon_cont , disponibilidad , id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("UPDATE tipo_contenido_info SET nombre = %s , descripcion = %s , faicon_cont = %s WHERE id = %s",
-                       (nombre , descripcion , faicon_cont , id))
+        cursor.execute("UPDATE tipo_contenido_info SET nombre = %s , descripcion = %s , faicon_cont = %s , disponibilidad = %s WHERE id = %s",
+                       (nombre , descripcion , faicon_cont , disponibilidad,id))
     conexion.commit()
     conexion.close()
 

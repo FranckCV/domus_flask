@@ -9,7 +9,7 @@
 
 {% block contenido %}
   <section class="h_section" id="mainSection" >
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Tipo de Usuario</h2>
+    <h2 class="fw-bolder">Editar Tipo de Usuario</h2>
 
     <form action="{{ url_for('actualizar_tipo_usuario') }}" method="post"   enctype="multipart/form-data">
       <input type="hidden" name="id" value="{{ tipo_usuario[0] }}">

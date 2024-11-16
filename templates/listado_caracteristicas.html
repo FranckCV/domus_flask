@@ -77,7 +77,7 @@
         <p class="fw-bolder lblchoosie">Filtrar por categoría</p>
         <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
           <option value="0" selected>Todos</option>
-          <option value="-1">Sin categoria</option>
+          <!-- <option value="-1">Sin categoria</option> -->
           {% for categoria in categorias %}
             <option value="{{ categoria.0 }}">{{ categoria.1 }}</option>
           {% endfor %}
@@ -88,7 +88,7 @@
         <p class="fw-bolder lblchoosie">Filtrar por subcategoría</p>
         <select class="form-select choosie" aria-label="Default select example" id="subcategorySelect">
             <option value="0" data-category="0" selected>Todos</option>
-            <option value="-1" data-category="-1">Sin subcategoria</option>
+            <!-- <option value="-1" data-category="-1">Sin subcategoria</option> -->
           {% for subcategoria in subcategorias %}
             <option value="{{ subcategoria.0 }}" data-category="{{ subcategoria.4 }}">{{ subcategoria.1 }}</option>
           {% endfor %}

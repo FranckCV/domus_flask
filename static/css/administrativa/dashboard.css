@@ -402,7 +402,11 @@ main {
 
 
 
-/* 
+aside a[href="/listado_caracteristicas"],
+aside a[href="/listado_marcas"] ,
+aside a[href="/listado_tipo_contenido_info"] ,
+aside a[href="/listado_contenido_info"] ,
+aside a[href="/listado_clientes"]  ,
 aside a[href="/listado_categorias"]  ,
 aside a[href="/listado_datos_principales"]  ,
 aside a[href="/listado_redes_sociales"]  ,
@@ -423,18 +427,13 @@ aside a[href="/listado_metodo_pago"]
 
 
 
-aside a[href="/listado_tipo_contenido_info"] ,
-aside a[href="/listado_contenido_info"] ,
-aside a[href="/listado_clientes"]  ,
 aside a[href="/listado_novedades"]  ,
-aside a[href="/listado_caracteristicas"],
-aside a[href="/listado_marcas"] ,
 aside a[href="/dashboard"]  ,
 aside a[href="/listado_productos"] 
 {
     background-color: #be5c00;
     color: #fff;
-} */
+}
 
 
 

@@ -4,22 +4,42 @@
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar marca</h2><br /><br /><br />
+    <h2 class="fw-bolder">Agregar caracteristica:</h2>
     <form action="{{ url_for('guardar_caracteristica') }}" method="post" enctype="multipart/form-data">
       <div class="form-grid" id="col_add">
         <!-- Primera columna -->
         <div class="row">
           <div class="col">
-            <label for="nombre">Campo:</label><br />
-            <input required type="text" class="input" placeholder="Nombre de caracteristicas de producto" name="marca" id="marca" />
+            <label for="nombre">Campo:</label>
+            <input required type="text" class="input" placeholder="Nombre de caracteristica" name="campo" id="campo" />
           </div>
         </div>
-       
+        <div class="row">
+          <div class="col">
+            <label class="fw-bolder lblchoosie">Categoría</label>
+            <select class="input" aria-label="Default select example" id="categorySelect">
+                <option value="0" selected>Todos</option>
+              {% for categoria in categorias %}
+                <option value="{{categoria[0]}}">{{categoria[1]}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col">
+            <label for="subcategorySelect">Subcategoría:</label>
+            <select required class="input" aria-label="Default select example" name="subcategorySelect" id="subcategorySelect">
+              <option value="" data-category="0" disabled selected>Seleccione una subcategoria</option>
+              {% for subcategoria in subcategorias %}
+                <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}">{{subcategoria[1]}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
         <div class="row">
           <div class="col" id="sbmt">
             <div class="form-buttons">
@@ -34,5 +54,5 @@
 {% endblock %}
 
 {% block scripts %}
-  <script src="/static/js/admin_productos.js"></script>
+<script src="/static/js/filtroCRUDListado.js"></script>
 {% endblock %}

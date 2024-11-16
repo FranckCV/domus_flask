@@ -213,14 +213,15 @@ select:focus {
 
 .espacio_img_multi {
     /* width: 100px; */
-    gap: 10px;
+    gap: 30px;
     display: flex;
     flex-wrap: wrap;
+    /* padding: 15px; */
 }
 
 .espacio_img_multi img {
-    height: auto;
-    width: 90px;
+    height: 100px;
+    width: auto;
 }
 
 
@@ -394,6 +395,8 @@ option[value="0"]{
     color: black;
     background-color: black;
 } */
+
+
 
 @media (max-width: 768px) {
     .row {

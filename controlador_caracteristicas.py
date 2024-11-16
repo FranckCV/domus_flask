@@ -85,7 +85,21 @@ def buscar_listado_Caracteristicas_nombre(nombre):
 def insertar_caracteristica(campo):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO caracteristica (campo, disponibilidad) VALUES (%s, 1)", (campo))
+        cursor.execute("INSERT INTO caracteristica (campo, disponibilidad) VALUES (%s, 1);", (campo))
+    
+        cursor.execute('SELECT LAST_INSERT_ID();')
+        id_carac = cursor.fetchone()[0]
+
+    conexion.commit()
+    conexion.close()
+    return id_carac
+
+
+def insertar_caracteristica_subcategoria(id_car , id_sub):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("INSERT INTO caracteristica_subcategoria (caracteristicaid, subcategoriaid) VALUES (%s, %s);", (id_car,id_sub))
+
     conexion.commit()
     conexion.close()
 
@@ -93,7 +107,12 @@ def insertar_caracteristica(campo):
 def eliminar_caracteristica(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("DELETE FROM caracteristica WHERE id = %s", (id))
+        sql1 = ''' DELETE FROM caracteristica_subcategoria WHERE caracteristicaid = '''+str(id)
+        cursor.execute(sql1)
+
+        sql2 = ''' DELETE FROM caracteristica WHERE id = '''+str(id)
+        cursor.execute(sql2)
+
     conexion.commit()
     conexion.close()
 
@@ -108,11 +127,22 @@ def obtener_caracteristica_por_id(id):
     return marca
 
 
-def actualizar_caracteristica(campo, disp, id):
+def obtener_carac_subcat_por_carac_id(id):
+    conexion = obtener_conexion()
+    carac = None
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT caracteristicaid, subcategoriaid FROM caracteristica_subcategoria WHERE caracteristicaid = %s", (id))
+        carac = cursor.fetchone()
+    conexion.close()
+    return carac
+
+
+def actualizar_caracteristica(campo, disp, n_sub_id, sub_id, id ):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("UPDATE caracteristica SET campo = %s , disponibilidad = %s WHERE id =%s",
-                       (campo, disp, id))
+        cursor.execute("UPDATE caracteristica SET campo = %s , disponibilidad = %s WHERE id = %s ",(campo, disp, id))
+        cursor.execute("UPDATE caracteristica_subcategoria SET subcategoriaid = %s WHERE caracteristicaid = %s and subcategoriaid = %s ",(n_sub_id, id,sub_id))
+        
     conexion.commit()
     conexion.close()
 

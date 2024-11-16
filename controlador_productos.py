@@ -47,7 +47,8 @@ def obtener_info_por_id(id):
                 pr.MARCAid, 
                 pr.SUBCATEGORIAid,
                 pr.disponibilidad,
-                img.imagen
+                img.imagen,
+                sub.categoriaid
             FROM producto pr
             LEFT JOIN img_producto img on img.PRODUCTOid = pr.id
             LEFT JOIN subcategoria sub on sub.id = pr.SUBCATEGORIAid
@@ -59,7 +60,7 @@ def obtener_info_por_id(id):
     producto_elemento = None
 
     if producto:
-        pro_id, nom, reg, onl , ofe , prod_id , pro_info , pro_st , pro_fec , pro_ma , pro_sub , pro_disp ,pro_img = producto
+        pro_id, nom, reg, onl , ofe , prod_id , pro_info , pro_st , pro_fec , pro_ma , pro_sub , pro_disp ,pro_img, cat_id = producto
 
         if pro_img:
             img_base64 = base64.b64encode(pro_img).decode('utf-8')
@@ -68,8 +69,7 @@ def obtener_info_por_id(id):
             img_url = ""  # Placeholder en caso de que no haya logo
 
         
-    producto_elemento = (pro_id, nom, reg, onl , ofe , prod_id , pro_info , pro_st , pro_fec , pro_ma , pro_sub , pro_disp, img_url)
-        
+    producto_elemento = (pro_id, nom, reg, onl , ofe , prod_id , pro_info , pro_st , pro_fec , pro_ma , pro_sub , pro_disp, img_url,cat_id)
 
     conexion.close()
     return producto_elemento
@@ -592,7 +592,7 @@ def buscar_en_caracteristica_producto(id):
 def buscar_en_img_producto(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT * FROM img_producto WHERE PRODUCTOid = %s", (id,))
+        cursor.execute("SELECT * FROM img_producto WHERE PRODUCTOid = %s and imgPrincipal = 0", (id,))
         result = cursor.fetchone()
     conexion.close()
     return result
