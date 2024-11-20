@@ -513,6 +513,23 @@ def anuncioSelect(id):
         cursor.execute(sql)
         promo = cursor.fetchone()
 
+<<<<<<< HEAD
+    # Agrega un print para verificar que estás recibiendo la data correcta
+    if anuncio:
+        print(f"Datos del anuncio recibido: {anuncio}")  # Imprime los datos que llegan
+
+        # Devuelve los datos en la forma que Jinja2 espera
+        return (anuncio[0], anuncio[1], anuncio[2], anuncio[3], anuncio[4], anuncio[5], anuncio[6], anuncio[7], anuncio[8])
+    
+    return None
+
+
+
+
+
+# Insertar una novedad
+def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId):
+=======
         elemento_promo = None
 
         if promo:
@@ -531,6 +548,7 @@ def anuncioSelect(id):
 
 
 def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, marcaId, subcategoriaId, tipoNovedadId):
+>>>>>>> 54634a59ab32d95c9425e9a5220121ce2313e60d
     novedadId = None
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -633,3 +651,51 @@ def obtener_novedad_id(id):
     conexion.close()
     return novedad
 
+<<<<<<< HEAD
+# def actualizarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, id):
+#     conexion = obtener_conexion()
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#             UPDATE IMG_NOVEDAD
+#             SET nomImagen = %s, imagen = %s, TIPO_IMG_NOVEDADid = %s
+#             WHERE id = %s
+#         '''
+#         cursor.execute(sql, (nomImagen, imagen, tipo_img_novedad_id, id))
+#     conexion.commit()
+#     conexion.close()
+
+
+# def eliminarImagenNovedad(id):
+#     conexion = obtener_conexion()
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#             DELETE FROM IMG_NOVEDAD
+#             WHERE id = %s
+#         '''
+#         cursor.execute(sql, (id,))
+#     conexion.commit()
+#     conexion.close()
+
+# def eliminarImagenNovedad(id):
+#     conexion = obtener_conexion()
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#             DELETE FROM IMG_NOVEDAD
+#             WHERE id = %s
+#         '''
+#         cursor.execute(sql, (id,))
+#     conexion.commit()
+#     conexion.close()
+
+# def eliminarImagenNovedad(id):
+#     conexion = obtener_conexion()
+#     with conexion.cursor() as cursor:
+#         sql = '''
+#             DELETE FROM IMG_NOVEDAD
+#             WHERE id = %s
+#         '''
+#         cursor.execute(sql, (id,))
+#     conexion.commit()
+#     conexion.close()
+=======
+>>>>>>> 54634a59ab32d95c9425e9a5220121ce2313e60d
