@@ -1,0 +1,49 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+Editar Método de Pago
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Editar Método de Pago</h2>
+    <form action="{{ url_for('actualizar_metodo_pago') }}" method="post">
+        <input type="hidden" name="id" value="{{ metodo[0] }}"> 
+        
+        <div class="form-grid" id="col_add">
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">Nombre:</label>
+                    <input required type="text" class="input" placeholder="Nombre" name="nombre" id="nombre" value="{{ metodo[1] }}">
+                </div>
+            
+                <div class="col">
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <select required class="input" name="disponibilidad" id="disponibilidad">
+                        <option value=1 {% if metodo[2]==1 %} selected {% endif %}>Disponible</option>
+                        <option value=0 {% if metodo[2]==0 %} selected {% endif %}>No Disponible</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" id="sbmt">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('listado_metodo_pago') }}" id="backbtn">Volver</a>
+                        <button type="submit" class="button is-primary">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %} 
+<script src="/static/js/admin_motivos_comentario.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}

@@ -3,6 +3,7 @@ import base64
 import controlador_productos
 tabla = 'marca'
 
+
 def obtener_marcas_menu(valor):
     conexion = obtener_conexion()
     marcas = []
@@ -131,12 +132,71 @@ def obtener_marca_disponible_por_id(id):
     return marca_elemento
 
 
+def obtener_listado_marca_por_id(id):
+    conexion = obtener_conexion()
+    marca = None
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                ma.id, 
+                ma.marca, 
+                ma.img_logo,
+                ma.img_banner,
+                ma.disponibilidad
+            FROM marca ma
+            where ma.id = '''+ str(id) +'''
+            '''
+        cursor.execute(sql)
+        marca = cursor.fetchone()
+
+    marca_elemento = None
+
+    if marca:
+        marca_id, marca_nombre, logo_binario, banner_binario , marca_disp = marca
+
+        if logo_binario:
+            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
+            logo_url = f"data:image/png;base64,{logo_base64}"
+        else:
+            logo_url = ""  # Placeholder en caso de que no haya logo
+
+        if banner_binario:
+            banner_base64 = base64.b64encode(banner_binario).decode('utf-8')
+            banner_url = f"data:image/png;base64,{banner_base64}"
+        else:
+            banner_url = ""  # Placeholder en caso de que no haya banner
+
+        marca_elemento = (marca_id, marca_nombre, logo_url, banner_url , marca_disp)
+
+    conexion.close()
+    return marca_elemento
+
+
+def obtener_imgs_marca_disponible_por_id(id):
+    conexion = obtener_conexion()
+    marca = None
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                ma.id, 
+                ma.img_logo,
+                ma.img_banner
+            FROM marca ma
+            where ma.id = '''+ str(id) +'''
+            '''
+        cursor.execute(sql)
+        marca = cursor.fetchone()
+
+    conexion.close()
+    return marca
+
+
 def obtener_todas_marcas_recientes():
     conexion = obtener_conexion()
     marcas = []
     with conexion.cursor() as cursor:
         sql = '''
-                SELECT 
+                SELECT
                     id,
                     marca, 
                     img_logo, 
@@ -190,14 +250,10 @@ def obtener_marcasXnombre():
     return marcas_procesadas
 
 
-
-
-
-
-def insertar_marca(marca, logo):
+def insertar_marca(marca, logo, banner):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO marca(marca, img_logo) VALUES (%s, %s)", (marca, logo))
+        cursor.execute("INSERT INTO marca(marca, img_logo,img_banner,disponibilidad) VALUES (%s, %s, %s,1)", (marca, logo,banner))
     conexion.commit()
     conexion.close()
 
@@ -206,17 +262,24 @@ def obtener_listado_marcas():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         cursor.execute('''
-               SELECT 
+                SELECT 
                     m.id,
                     m.marca, 
                     m.img_logo, 
                     m.img_banner,
                     m.fecha_registro,
                     m.disponibilidad,
-                    COUNT(p.id) AS cantidad_productos
-                FROM marca m
-                LEFT JOIN producto p ON m.id = p.MARCAid
-                GROUP BY m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad
+                    COUNT(DISTINCT p.id) AS cantidad_productos,
+                    COUNT(DISTINCT n.id) AS cantidad_novedades
+                FROM 
+                    marca m
+                LEFT JOIN 
+                    producto p ON m.id = p.MARCAid
+                LEFT JOIN 
+                    novedad n ON m.id = n.MARCAid
+                GROUP BY 
+                    m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad
+                order by m.id
                 ''')
         marcas = cursor.fetchall()
         
@@ -229,7 +292,8 @@ def obtener_listado_marcas():
             banner_binario = marca[3]
             fecha = marca[4]
             disp = marca[5]
-            cant = marca[6]
+            cantPro = marca[6]
+            cantNov = marca[7]
             
             if logo_binario:
                 logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
@@ -243,7 +307,117 @@ def obtener_listado_marcas():
             else:
                 banner_formato = "" 
             
-            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cant))
+            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cantPro , cantNov))
+    
+    conexion.close()
+    return marcas_procesadas
+
+
+def obtener_listado_marcas_nombre():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                SELECT 
+                    m.id,
+                    m.marca, 
+                    m.img_logo, 
+                    m.img_banner,
+                    m.fecha_registro,
+                    m.disponibilidad,
+                    COUNT(DISTINCT p.id) AS cantidad_productos,
+                    COUNT(DISTINCT n.id) AS cantidad_novedades
+                FROM 
+                    marca m
+                LEFT JOIN 
+                    producto p ON m.id = p.MARCAid
+                LEFT JOIN 
+                    novedad n ON m.id = n.MARCAid
+                GROUP BY 
+                    m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad
+                order by m.marca
+                ''')
+        marcas = cursor.fetchall()
+        
+        # Convertir el logo binario a base64 para cada marca
+        marcas_procesadas = []
+        for marca in marcas:
+            id_marca = marca[0]
+            nombre_marca = marca[1]
+            logo_binario = marca[2]
+            banner_binario = marca[3]
+            fecha = marca[4]
+            disp = marca[5]
+            cantPro = marca[6]
+            cantNov = marca[7]
+            
+            if logo_binario:
+                logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
+                logo_formato = f"data:image/png;base64,{logo_base64}" 
+            else:
+                logo_formato = None
+
+            if banner_binario:
+                logo_base64 = base64.b64encode(banner_binario).decode('utf-8')
+                banner_formato = f"data:image/png;base64,{logo_base64}" 
+            else:
+                banner_formato = "" 
+            
+            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cantPro , cantNov))
+    
+    conexion.close()
+    return marcas_procesadas
+
+
+def buscar_listado_marcas_nombre(nombre):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                SELECT 
+                    m.id,
+                    m.marca, 
+                    m.img_logo, 
+                    m.img_banner,
+                    m.fecha_registro,
+                    m.disponibilidad,
+                    COUNT(DISTINCT p.id) AS cantidad_productos,
+                    COUNT(DISTINCT n.id) AS cantidad_novedades
+                FROM 
+                    marca m
+                LEFT JOIN 
+                    producto p ON m.id = p.MARCAid
+                LEFT JOIN 
+                    novedad n ON m.id = n.MARCAid
+                WHERE UPPER(m.marca) LIKE UPPER ('%'''+str(nombre)+'''%')
+                GROUP BY 
+                    m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad;
+                ''')
+        marcas = cursor.fetchall()
+        
+        # Convertir el logo binario a base64 para cada marca
+        marcas_procesadas = []
+        for marca in marcas:
+            id_marca = marca[0]
+            nombre_marca = marca[1]
+            logo_binario = marca[2]
+            banner_binario = marca[3]
+            fecha = marca[4]
+            disp = marca[5]
+            cantPro = marca[6]
+            cantNov = marca[7]
+            
+            if logo_binario:
+                logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
+                logo_formato = f"data:image/png;base64,{logo_base64}" 
+            else:
+                logo_formato = None
+
+            if banner_binario:
+                logo_base64 = base64.b64encode(banner_binario).decode('utf-8')
+                banner_formato = f"data:image/png;base64,{logo_base64}" 
+            else:
+                banner_formato = "" 
+            
+            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cantPro , cantNov))
     
     conexion.close()
     return marcas_procesadas
@@ -261,19 +435,20 @@ def obtener_marca_por_id(id):
     conexion = obtener_conexion()
     marca = None
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id, marca,img_logo FROM marca WHERE id = %s", (id,))
+        cursor.execute("SELECT id, marca,img_logo,img_banner,disponibilidad FROM marca WHERE id = %s", (id,))
         marca = cursor.fetchone()
     conexion.close()
     return marca
 
 
-def actualizar_marca(marca,logo, id):
+def actualizar_marca(marca,logo,banner, disponibilidad,id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("UPDATE marca SET marca = %s ,img_logo = %s WHERE id =%s",
-                       (marca,logo, id))
+        cursor.execute("UPDATE marca SET marca = %s ,img_logo = %s,img_banner = %s,disponibilidad = %s WHERE id =%s",
+                       (marca,logo,banner,disponibilidad,id))
     conexion.commit()
     conexion.close()
+
 
 def obtener_id_marca(marca):
     conexion = obtener_conexion()
@@ -286,6 +461,7 @@ def obtener_id_marca(marca):
     conexion.close()
     return marca_id
 
+
 def marcas_para_novedad():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -293,3 +469,7 @@ def marcas_para_novedad():
         marcas = cursor.fetchall()  # Esto debe devolver una lista de tuplas o diccionarios
     conexion.close()
     return marcas
+
+
+
+

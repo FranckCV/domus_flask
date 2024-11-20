@@ -13,3 +13,12 @@ btnSignUp.addEventListener("click",()=>{
 function forgotPassword(){
     window.alert("Correo enviado para recuperación de contraseña");
 }
+
+function cambiarColor(element) {
+    if (element.value) {
+      element.classList.add('has-value'); // Añadir clase si hay un valor seleccionado
+    } else {
+      element.classList.remove('has-value'); // Quitar clase si no hay valor seleccionado
+    }
+  }
+  

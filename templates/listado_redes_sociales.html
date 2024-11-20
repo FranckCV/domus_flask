@@ -1,0 +1,82 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+  Listado de Redes Sociales
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css">
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section scrollable-section" id="mainSection">
+
+    <div class="row">
+      <div class="col">
+        <h2 class="fw-bolder">Listado de Redes Sociales</h2>
+      </div>
+    </div>
+
+    <div class="row" id="break_nav">
+      <div class="col">
+        <div class="input-group mb-3">          
+          <a href="{{ url_for('formulario_agregar_redes_sociales') }}" class="button is-success add-btn">
+            <button type="button" class="main_btn">Agregar</button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Icono</th>
+            <th>Enlace</th>
+            <th class="opciones_column">Opciones</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          {% for red in redes %}
+          <tr>
+            <td class="celda_id">{{ red[0] }}</td>
+            <td>{{ red[1] }}</td>
+            <td>
+              <i class="{{ red[2] }}"></i>
+            </td>  
+            <td>
+              <a href="{{ red[3] }}">{{ red[3] }}</a>
+            </td>
+            <td class="opciones_column">
+              <div class="acciones">
+                <a class="opciones_fila" href="{{ url_for('editar_redes_sociales', id=red[0]) }}">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </a>
+                <form class="opciones_fila" action="{{ url_for('eliminar_redes_sociales') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                  <input type="hidden" name="id" value="{{ red[0] }}">
+                  <button type="submit">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function confirmarEliminacion() {
+    return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+  }
+</script>
+<script src="/static/js/admin_motivos_comentario.js"></script>
+{% endblock %}

@@ -1,0 +1,350 @@
+
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+    Ver Cliente : {{ usuario[1] }} {{ usuario[2] }} 
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+    <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+
+<section class="h_section" id="mainSection">
+    
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">
+                Ver Información de Cliente
+            </h2>
+        </div>
+    </div>
+
+    <div enctype="multipart/form-data">
+        <div class="form-grid" id="col_add">
+
+            <div class="row">
+                <div class="col-8 column_text">
+                    <div class="row">
+                        <div class="col">
+                            <label for="nombre">ID:</label>
+                            <input disabled required type="text" disabled class="input"
+                                id="nombre" value="{{ usuario[0] }}" style="text-align: center;">
+                        </div>
+
+                        <div class="col">
+                            <label for="nombre">Fecha Registro:</label>
+                            <input disabled required type="text" disabled class="input"
+                                id="nombre" value="{{ usuario[11] }}" style="text-align: center;">
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="nombre">Nombres:</label>
+                            <input disabled disabled required type="text" class="input" name="nombre"
+                                id="nombre" value="{{ usuario[1] }}" style="text-align: center;">
+                        </div>
+                    
+                        <div class="col">
+                            <label for="nombre">Apellidos:</label>
+                            <input disabled disabled required type="text" class="input" name="nombre"
+                                id="nombre" value="{{ usuario[2] }}" style="text-align: center;">
+                        </div>        
+                    </div>
+
+                </div>
+
+                <div class="col">
+                    <label for="stock">Foto de Perfil:</label>
+                    <div class="espacio_img espacio_img_principal">
+                        {% if imagen.1 %}
+                            <img src="{{imagen.1}}" alt="Foto de Usuario {{ usuario.0 }}" class="clickable-image"/> 
+                        {% else %}
+                        <div class="espacio_vacio">
+                            <p>
+                                Sin foto de Perfil
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                        
+                <div class="col">
+                    <label for="stock">Documento de Identidad:</label>
+                    <input disabled required type="text" class="input" 
+                        value="{{ usuario[3] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="">Fecha de Nacimiento:</label>
+                    <input disabled required type="text" class="input" name="price_online"
+                        id="" value="{{ usuario[6] }}" style="text-align: center;" step="0.01">
+                </div>          
+                        
+                <div class="col">
+                    <label for="">Sexo:</label>
+                    <div class="celda_estado">
+                        {% if usuario.5 == 1 %}
+                          <p class="genero gen_mas">Masculino</p>
+                        {% else %}
+                          <p class="genero gen_fem">Femenino</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <label for="stock">Correo Electrónico:</label>
+                    <input disabled required type="text" class="input" 
+                        value="{{ usuario[8] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="stock">Némero de Telefono:</label>
+                    <input disabled required type="text" class="input" 
+                        value="{{ usuario[7] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="">Disponibilidad:</label>                    
+                    <div class="celda_estado">
+                        {% if usuario[9] == 1 %}
+                          <p class="disponibilidad disp_si">Disponible</p>
+                        {% else %}
+                          <p class="disponibilidad disp_no">No Disponible</p>
+                        {% endif %}
+                    </div>
+                </div>     
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h3>Lista de Pedidos:</h3>
+                </div>
+            </div>
+
+            <div class="row">     
+
+                <div class="col-3">
+
+                    <table id="grid_resultados" cellspacing="0">
+                      <tbody>
+                        <tr>
+                          <th colspan="3">Resultados</th>
+                        </tr>
+                        <tr>
+                          <th>Total</th>
+                          <th>Completados</th>
+                          <th>No Completados</th>
+                        </tr>
+                        <tr>
+                          <td id="num_resultados"></td>
+                          <td id="num_disp_si"></td>
+                          <td id="num_disp_no"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+              
+                </div>
+
+                <div class="col">
+                  <p class="fw-bolder lblchoosie">Filtrar por Estado de Pedido:</p>
+                  <select id="estadoPedidoSelect" class="form-select choosie" aria-label="">
+                      <option value="0" selected>Todos</option>
+                      {% for estado in estados %}
+                      <option value="{{ estado[0] }}">{{ estado[1] }}</option>
+                      {% endfor %}
+                  </select>
+                </div>
+          
+                <div class="col">
+                  <p class="fw-bolder lblchoosie">Filtrar por Metodo de Pago:</p>
+                  <select id="metodoPagoSelect" class="form-select choosie">
+                      <option value="0" selected>Todos</option>
+                      {% for metodo in metodos %}
+                      <option value="{{ metodo[0] }}">{{ metodo[1] }}</option>
+                      {% endfor %}
+                  </select>
+                </div>
+          
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="table-container">
+                        <table cellspacing="0" class="table_listado product_if">
+                            <thead>
+                                <tr>
+                                <th>ID Pedido</th>
+                                <!-- <th>ID Usuario</th> -->
+                                <!-- <th>Nombre de Usuario</th> -->
+                                <th>Estado de pedido</th>
+                                <th>Fecha de compra</th>
+                                <th>Método de pago</th>
+                                <th>Cant Total de Productos</th>
+                                <th>Precio Total</th>
+                                <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody">
+                                {% if pedidos %}
+                                    {% for pedido in pedidos %}
+                                    <tr class="
+                                    {% if pedido.5 == 2 and pedido.7 == 1 %}
+                                        fila_disp_si
+                                    {% else %}
+                                        fila_disp_no
+                                    {% endif %}
+                                    ">
+                                        <td class="celda_id">{{ pedido.0  }}</td>
+                                        <!-- <td class="celda_id">{{ pedido.8 }}</td> -->
+                                        <!-- <td>{{ pedido.4 }}</td> -->
+                                        <td>
+                                        <div class="celda_estado" data-estado-pedido="{{pedido.5}}">
+                                            {% for estado in estados %}
+                                            {% if estado.0 == pedido.5 %}
+                                                <p class="disponibilidad
+                        
+                                                {% if estado.0 == 2 %}
+                                                disp_si
+                                                {% else %}
+                                                disp_no
+                                                {% endif %}
+                        
+                                                ">{{estado.1}}</p>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        </td>
+                        
+                                        <td>
+                                        {% if pedido[1] == 0 or pedido[1] is none %}
+                                        <div class="espacio_vacio">
+                                            <p>
+                                            No registrado
+                                            </p>
+                                        </div> 
+                                        {% else %}
+                                            {{ pedido.1 }}
+                                        {% endif %}
+                                        </td> 
+                        
+                                        <td>
+                                        {% if pedido.3 %}
+                                            {% for metodo in metodos %}
+                                            {% if metodo.0 == pedido.3 %}
+                                                <div class="celda_texto_bloque" data-metodo-pago="{{ metodo.0 }}">
+                                                <span>{{ metodo.1 }}</span>
+                                                {% if metodo.2 == 0 %}
+                                                    <p class="disponibilidad disp_no">No Disponible</p>
+                                                {% endif %}
+                                                </div>
+                                            {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="espacio_vacio">
+                                            <p>
+                                                No registrado
+                                            </p>
+                                            </div>
+                                        {% endif %}
+                                        </td> 
+                        
+                                        <td>
+                                        <div class="celda_numero">
+                                            <p class="
+                                            {% if pedido[6] > 0 %}
+                                                num_cant
+                                            {% else %}
+                                                num_cero
+                                            {% endif %}
+                                            ">
+                                                {{ pedido[6] }}
+                                            </p>
+                                        </div>
+                                        </td>
+                        
+                                        <td>
+                                        {% if pedido[2] == 0 or pedido[2] is none %}
+                                        <div class="espacio_vacio">
+                                            <p>
+                                            No registrado
+                                            </p>
+                                        </div> 
+                                        {% else %}
+                                            <div class="celda_precio">
+                                            S/. {{ pedido.2}}
+                                            </div>
+                                        {% endif %}
+                                        </td>
+                        
+                                        <td class="opciones_column">
+                                            <div class="acciones">
+                                                <a class="opciones_fila" href="{{ url_for('detalle_pedido', id=pedido.0) }}">
+                                                <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                        
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- <tr> -->
+                                        <td colspan="7">
+                                            <div class="espacio_vacio">
+                                                <p>
+                                                    Sin pedidos realizados
+                                                </p>
+                                            </div> 
+                                        </td>
+                                    <!-- </tr> -->
+                                {% endif %}
+    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" id="">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('listado_clientes') }}" id="backbtn">Volver</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
+</section>
+
+<style>
+    .PrActive {
+        background-color: rgb(255, 255, 255);
+        color: #00095c;
+    }
+
+    /* Asegurar que el body permita scroll si el contenido excede el tamaño de la ventana */
+    
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin_productos.js"></script>
+<script src="/static/js/filtroCRUDListado.js"></script>
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
+{% endblock %}

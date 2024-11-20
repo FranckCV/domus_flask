@@ -1,0 +1,71 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Editar Marca
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Editar Caracteristica</h2>
+    <form action="{{ url_for('actualizar_caracteristica') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="id" id="id" value="{{ caracteristica.0 }}" />
+      <input type="hidden" name="sub_id" id="sub_id" value="{{ sub_id.1 }}" />
+      <div class="form-grid" id="col_add">
+        <!-- Primera columna -->
+        <div class="row">
+          <div class="col">
+            <label for="nombre">Campo:</label>
+            <input value="{{ caracteristica.1 }}" required type="text" class="input" placeholder="Nombre de la marca" name="campo" id="campo" />
+          </div>
+
+          <div class="col">
+            <label for="disponibilidad">Disponibilidad:</label>
+            <select required class="input" name="disponibilidad" id="disponibilidad">
+                <option value=1 {% if caracteristica[2]==1 %} selected {% endif %}>Disponible</option>
+                <option value=0 {% if caracteristica[2]==0 %} selected {% endif %}>No Disponible</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label class="fw-bolder lblchoosie">Categoría</label>
+            <select class="input" aria-label="Default select example" id="categorySelect">
+                <option value="0" selected>Todos</option>
+              {% for categoria in categorias %}
+                <option value="{{categoria[0]}}">{{categoria[1]}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col">
+            <label for="subcategorySelect">Subcategoría:</label>
+            <select required class="input" aria-label="Default select example" name="subcategorySelect" id="subcategorySelect">
+              <option value="" data-category="0" disabled selected>Seleccione una subcategoria</option>
+              {% for subcategoria in subcategorias %}
+                <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}" {% if sub_id.1 ==  subcategoria[0] %} selected {% endif %}>{{subcategoria[1]}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('caracteristicas') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/filtroCRUDListado.js"></script>
+{% endblock %}

@@ -1,7 +1,7 @@
 :root {
     --height-header: 100px;
     --height-nav: 10vh;
-    --width-menu: 250px;
+    --width-menu: 20vw;
 
     --size-bubble-cart: 5vw;
     --size-bubble-cart-tab: 3.5vw;
@@ -41,7 +41,7 @@
     background-color: var(--background);
     margin: 0px;
     font-family: 'Poppins', sans-serif;
-    font-size: 90%;
+    font-size: 0.9rem;
     min-height: 100vh;
     color: var(--font1);
     overflow-x: hidden;
@@ -81,12 +81,7 @@ header {
     display: flex;
     align-items: center;
     transition: color 0.1s ease;
-    font-size: 1rem; 
     gap: 10px;
-}
-
-.header_option i {
-    font-size: 1.5rem;
 }
 
 .header_option:hover {
@@ -108,7 +103,6 @@ header {
 
 header p {
     margin: 0;
-    font-size: 1rem;
 }
 
 #index_logo img {
@@ -154,7 +148,6 @@ aside img {
 }
 
 aside p {
-    font-size: 1rem;
     margin-bottom: 20px;
 }
 
@@ -256,13 +249,12 @@ main {
 .dashboard_content {
     display: flex;
     flex-direction: column;
+    /* flex-wrap: wrap; */
     gap: 20px;
     justify-content: center;
 }
 
 .dashboard_item {
-    width: 100%;
-    border: 1px solid #2c4677;
     background-color: #032a66;
     color: white;
     border-radius: 20px;
@@ -270,11 +262,24 @@ main {
     text-align: center;
     justify-content: center;
     transition: 0.1s ease-in-out;
-    display: grid;
     gap: 2px;
+    display: grid; 
+
     grid-template-columns: 15% 85%;
     grid-template-rows: 100%;
     grid-template-areas: "db_nom db_link";
+    width: 100%;
+
+    /* grid-template-columns: auto;
+    grid-template-rows: 50px auto;
+    grid-template-areas: "db_nom" "db_link";
+    justify-items: center;
+    height: fit-content;
+        width: 35%; */
+}
+
+.dashboard_item p {
+    margin: 0;
 }
 
 .dashboard_item:hover {
@@ -283,21 +288,22 @@ main {
     color: white;
 }
 
-.dashboard_item p {
+.dashboard_item_title {
     padding: 0;
-    margin: 0;
+    margin: 10px;
     grid-area: db_nom;
 }
 
 .dshbd_item_content {
     background-color: #2b72db;
-    height: 100%;
+    /* height: 100%; */
     padding: 20px;
     border-radius: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-items: center;
     gap: 10px;
+    justify-self: flex-start;
 }
 
 .dshbd_item_content a {
@@ -310,6 +316,7 @@ main {
     padding-inline: 10px;
     padding-block: 5px;
     border-radius: 10px;
+    height: fit-content;
 }
 
 .dshbd_item_content a:hover {
@@ -317,8 +324,116 @@ main {
     color: #000;
 }
 
+.form_info_domus .img_logo_domus {
+    background-color: #b3b3b3;
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    border: 2px dashed #d8d8d8;
+}
+
+.form_info_domus img {
+    height: 100px;
+    /* border: 1px solid white; */
+}
+
+.form_info_domus .titulo_form {
+    text-align: center;
+    color: darkblue;
+}
+
+.form_info_domus textarea {
+    height: 200px;
+}
+
+.espacio_img {
+    background-color: #dadada;
+    border: 1px dashed #505050;
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+}
+
+.espacio_img img {
+    height: 150px;
+}
 
 
+.color_texto p {
+    border-radius: 5px;
+    color: white;
+    padding-inline: 10px;
+    padding-block: 5px;
+    margin: 0;
+}
+
+
+
+
+
+.clickable-image {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.clickable-image:hover {
+    transform: scale(1.05);
+}
+
+.overlayImage {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 9900;
+}
+
+.enlarged-image {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+}
+
+
+
+aside a[href="/listado_caracteristicas"],
+aside a[href="/listado_marcas"] ,
+aside a[href="/listado_tipo_contenido_info"] ,
+aside a[href="/listado_contenido_info"] ,
+aside a[href="/listado_clientes"]  ,
+aside a[href="/listado_categorias"]  ,
+aside a[href="/listado_datos_principales"]  ,
+aside a[href="/listado_redes_sociales"]  ,
+aside a[href="/listado_tipos_novedad"] ,
+aside a[href="/listado_subcategorias"]  ,
+aside a[href="/listado_pedidos"] , 
+aside a[href="/comentarios_listado"]  ,
+aside a[href="/empleados_listado"] ,
+aside a[href="/tipos_img_novedad_listado"] ,
+aside a[href="/motivos_comentario_listado"]  ,
+aside a[href="/listado_tipos_usuario"]   ,
+aside a[href="/listado_estado_pedido"] ,
+aside a[href="/listado_metodo_pago"]
+{
+    display: none;
+}
+
+
+
+
+aside a[href="/listado_novedades"]  ,
+aside a[href="/dashboard"]  ,
+aside a[href="/listado_productos"] 
+{
+    background-color: #be5c00;
+    color: #fff;
+}
 
 
 

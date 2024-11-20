@@ -12,11 +12,12 @@ def obtenerBannersNovedadesRecientes():
                     nov.nombre
                 FROM 
                     novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
+                INNER JOIN img_novedad imnov ON nov.id = imnov.NOVEDADid
+                Left join tipo_img_novedad tip on tip.id = imnov.tipo_img_novedadid
                 WHERE 
                     imnov.TIPO_IMG_NOVEDADid = 1 
                     AND nov.disponibilidad = 1
+                    and tip.disponibilidad = 1
                 GROUP BY 
                     nov.id, nov.nombre
                 ORDER BY 
@@ -58,7 +59,7 @@ def obtenerTiposNovedades():
     return productos
 
 
-def obtenerTodasLasNovedades():
+def obtener_listado_novedades():
     conexion = obtener_conexion()
     novedades = []
     with conexion.cursor() as cursor:
@@ -74,11 +75,131 @@ def obtenerTodasLasNovedades():
                 nov.disponibilidad,
                 nov.MARCAid, 
                 nov.SUBCATEGORIAid, 
-                nov.TIPO_NOVEDADid
-            FROM 
-                novedad nov
-            ORDER BY 
-                nov.fecha_registro DESC;
+                tip.id,
+                sub.disponibilidad,
+                cat.disponibilidad,
+                mar.disponibilidad,
+                count(img.id),
+                (
+                    SELECT 
+                        img_n.id
+                    FROM 
+                        img_novedad img_n
+                    left join tipo_img_novedad tip on tip.id = img_n.tipo_img_novedadid
+                    WHERE 
+                        img_n.NOVEDADid = nov.id
+                        and tip.disponibilidad = 1
+                    ORDER BY 
+                        OCTET_LENGTH(img_n.imagen) DESC 
+                    LIMIT 1
+                ),
+                tip.disponibilidad
+            FROM novedad nov
+            left join img_novedad img on img.NOVEDADid = nov.id
+            left join tipo_novedad tip on tip.id = nov.TIPO_NOVEDADid
+            left join subcategoria sub on sub.id = nov.subcategoriaid
+            left join categoria cat on cat.id = sub.categoriaid
+            left join marca mar on mar.id = nov.marcaid
+            GROUP by nov.id;
+        '''
+        cursor.execute(sql)
+        novedades = cursor.fetchall()
+    conexion.close()
+    return novedades
+
+
+def obtener_info_novedad_id(id):
+    conexion = obtener_conexion()
+    novedades = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                nov.id, 
+                nov.nombre, 
+                nov.titulo, 
+                nov.fecha_inicio, 
+                nov.fecha_vencimiento, 
+                nov.terminos, 
+                nov.fecha_registro, 
+                nov.disponibilidad,
+                nov.MARCAid, 
+                nov.SUBCATEGORIAid, 
+                tip.id,
+                sub.disponibilidad,
+                cat.disponibilidad,
+                mar.disponibilidad,
+                count(img.id) as cant_imgs,
+                (
+                    SELECT 
+                        img_n.id
+                    FROM 
+                        img_novedad img_n
+                    WHERE 
+                        img_n.NOVEDADid = nov.id 
+                    ORDER BY 
+                        OCTET_LENGTH(img_n.imagen) DESC 
+                    LIMIT 1
+                )
+            FROM novedad nov
+            left join img_novedad img on img.NOVEDADid = nov.id
+            left join tipo_novedad tip on tip.id = nov.TIPO_NOVEDADid
+            left join subcategoria sub on sub.id = nov.subcategoriaid
+            left join categoria cat on cat.id = sub.categoriaid
+            left join marca mar on mar.id = nov.marcaid
+            where nov.id = '''+str(id)+''' and nov.disponibilidad = 1 and
+            	((nov.MARCAid is not null and mar.disponibilidad = 1) or nov.MARCAid is null) and
+                ((nov.SUBCATEGORIAid is not null and sub.disponibilidad = 1) or nov.SUBCATEGORIAid is null) AND
+                ((nov.SUBCATEGORIAid is not null and cat.disponibilidad = 1) or nov.SUBCATEGORIAid is null)
+            GROUP by nov.id
+            HAVING cant_imgs > 0;
+        '''
+        cursor.execute(sql)
+        novedades = cursor.fetchone()
+    conexion.close()
+    return novedades
+
+
+def buscar_listado_novedades_nombre_titulo(texto):
+    conexion = obtener_conexion()
+    novedades = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                nov.id, 
+                nov.nombre, 
+                nov.titulo, 
+                nov.fecha_inicio, 
+                nov.fecha_vencimiento, 
+                nov.terminos, 
+                nov.fecha_registro, 
+                nov.disponibilidad,
+                nov.MARCAid, 
+                nov.SUBCATEGORIAid, 
+                tip.id,
+                sub.disponibilidad,
+                cat.disponibilidad,
+                mar.disponibilidad,
+                count(img.id),
+                (
+                    SELECT 
+                        img_n.id
+                    FROM 
+                        img_novedad img_n
+                    WHERE 
+                        img_n.NOVEDADid = nov.id 
+                    ORDER BY 
+                        OCTET_LENGTH(img_n.imagen) DESC 
+                    LIMIT 1
+                )
+            FROM novedad nov
+            left join img_novedad img on img.NOVEDADid = nov.id
+            left join tipo_novedad tip on tip.id = nov.TIPO_NOVEDADid
+            left join subcategoria sub on sub.id = nov.subcategoriaid
+            left join categoria cat on cat.id = sub.categoriaid
+            left join marca mar on mar.id = nov.marcaid
+            WHERE UPPER(nov.nombre) LIKE UPPER ('%'''+str(texto)+'''%') OR UPPER(nov.titulo) LIKE UPPER ('%'''+str(texto)+'''%')
+            GROUP by nov.id
+            ORDER BY nov.nombre , nov.titulo;
         '''
         cursor.execute(sql)
         novedades = cursor.fetchall()
@@ -234,10 +355,11 @@ def obtenerNovedadesRecientes():
                     imnov.tipo_img_novedadid
                 FROM 
                     novedad nov
-                INNER JOIN 
-                    img_novedad imnov ON nov.id = imnov.NOVEDADid 
+                INNER JOIN img_novedad imnov ON nov.id = imnov.NOVEDADid
+                Left join tipo_img_novedad tip on tip.id = imnov.tipo_img_novedadid
                 WHERE 
-                    nov.disponibilidad = 1 and imnov.tipo_img_novedadid != 1
+                    nov.disponibilidad = 1 and imnov.tipo_img_novedadid != 1 
+                    and tip.disponibilidad = 1
                 GROUP BY 
                     nov.id
                 ORDER BY 
@@ -335,6 +457,7 @@ def promoselect(id):
     conexion.close()
     return elemento_promo
 
+
 def mostrarNovedadesAnuncios():
     conexion = obtener_conexion()
     elementos = []
@@ -367,21 +490,30 @@ def mostrarNovedadesAnuncios():
     return img_lista
 
 
-def anuncioselect(id):
+def anuncioSelect(id):
     conexion = obtener_conexion()
-    anuncio = None
     with conexion.cursor() as cursor:
         sql = '''
-            SELECT nov.id, nov.titulo, nov.fecha_inicio, nov.fecha_vencimiento, nov.terminos, nov.MARCAid, nov.SUBCATEGORIAid, MIN(imgnov.imagen), mar.marca
-            FROM novedad nov
-            INNER JOIN img_novedad imgnov ON nov.id = imgnov.NOVEDADid
-            INNER JOIN marca mar ON mar.id = nov.MARCAid
-            WHERE nov.id = %s
-            GROUP BY nov.id
+            SELECT 
+                nov.`id`, 
+                nov.titulo,
+                nov.`fecha_inicio`, 
+                nov.`fecha_vencimiento`, 
+                nov.`terminos`, 
+                nov.`MARCAid`, 
+                nov.`SUBCATEGORIAid`,
+                MIN(imgnov.imagen),
+                mar.marca
+            FROM `novedad` nov
+            LEFT JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
+            LEFT JOIN marca mar on mar.id = nov.MARCAid
+            WHERE nov.disponibilidad = 1 AND nov.TIPO_NOVEDADid = 1 and nov.id = '''+str(id)+'''
+            Group by nov.id
         '''
-        cursor.execute(sql, (id,))
-        anuncio = cursor.fetchone()
+        cursor.execute(sql)
+        promo = cursor.fetchone()
 
+<<<<<<< HEAD
     # Agrega un print para verificar que estás recibiendo la data correcta
     if anuncio:
         print(f"Datos del anuncio recibido: {anuncio}")  # Imprime los datos que llegan
@@ -397,21 +529,41 @@ def anuncioselect(id):
 
 # Insertar una novedad
 def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId):
+=======
+        elemento_promo = None
+
+        if promo:
+            pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , pro_img , mar_nom = promo
+
+            if pro_img:
+                logo_base64 = base64.b64encode(pro_img).decode('utf-8')
+                logo_url = f"data:image/png;base64,{logo_base64}"
+            else:
+                logo_url = "" 
+
+        elemento_promo = (pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , logo_url , mar_nom)
+
+    conexion.close()
+    return elemento_promo
+
+
+def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, marcaId, subcategoriaId, tipoNovedadId):
+>>>>>>> 54634a59ab32d95c9425e9a5220121ce2313e60d
     novedadId = None
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
             INSERT INTO novedad (nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, MARCAid, SUBCATEGORIAid, TIPO_NOVEDADid, fecha_registro)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_DATE)
+            VALUES (%s, %s, %s, %s, %s, 1, %s, %s, %s, CURRENT_DATE)
         '''
-        cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId))
+        cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, marcaId, subcategoriaId, tipoNovedadId))
         novedadId = cursor.lastrowid
     
     conexion.commit()
     conexion.close()
     return novedadId
 
-# Actualizar una novedad
+
 def actualizarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, imagen, novedadId):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -428,7 +580,7 @@ def actualizarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, d
     conexion.commit()
     conexion.close()
 
-# Eliminar una novedad
+
 def eliminarNovedad(novedadId):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -436,7 +588,7 @@ def eliminarNovedad(novedadId):
     conexion.commit()
     conexion.close()
 
-# Obtener una novedad por ID
+
 def obtenerNovedadPorId(novedadId):
     conexion = obtener_conexion()
     novedad = None
@@ -446,67 +598,60 @@ def obtenerNovedadPorId(novedadId):
     conexion.close()
     return novedad
 
-# Insertar una imagen para la novedad
-# def insertarImagenNovedad(novedadId, imagen):
-#     conexion = obtener_conexion()
-#     with conexion.cursor() as cursor:
-#         sql = '''
-#             INSERT INTO img_novedad (imagen, NOVEDADid, TIPO_IMG_NOVEDADid)
-#             VALUES (%s, %s, %s)
-#         '''
-#         cursor.execute(sql, (imagen, novedadId, 2))  # 2 asumiendo que 2 es el tipo de imagen para novedades
-#     conexion.commit()
-#     conexion.close()
 
-# def insertarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, novedad_id):
-#     conexion = obtener_conexion()
-#     with conexion.cursor() as cursor:
-#         sql = '''
-#             INSERT INTO IMG_NOVEDAD (nomImagen, imagen, TIPO_IMG_NOVEDADid, NOVEDADid)
-#             VALUES (%s, %s, %s, %s)
-#         '''
-#         cursor.execute(sql, (nomImagen, imagen, tipo_img_novedad_id, novedad_id))
-#     conexion.commit()
-#     conexion.close()
+def actualizarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            UPDATE IMG_NOVEDAD
+            SET nomImagen = %s, imagen = %s, TIPO_IMG_NOVEDADid = %s
+            WHERE id = %s
+        '''
+        cursor.execute(sql, (nomImagen, imagen, tipo_img_novedad_id, id))
+    conexion.commit()
+    conexion.close()
 
-# def obtenerImagenesNovedad(novedad_id):
-#     conexion = obtener_conexion()
-#     imagenes = []
-#     with conexion.cursor() as cursor:
-#         sql = '''
-#             SELECT 
-#                 id, 
-#                 nomImagen, 
-#                 imagen, 
-#                 TIPO_IMG_NOVEDADid 
-#             FROM IMG_NOVEDAD 
-#             WHERE NOVEDADid = %s
-#         '''
-#         cursor.execute(sql, (novedad_id,))
-#         imagenes = cursor.fetchall()
+
+def eliminarImagenNovedad(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            DELETE FROM IMG_NOVEDAD
+            WHERE id = %s
+        '''
+        cursor.execute(sql, (id,))
+    conexion.commit()
+    conexion.close()
     
-#     conexion.close()
-#     return imagenes
 
-# def obtenerImagenNovedadPorId(id):
-#     conexion = obtener_conexion()
-#     imagen_novedad = None
-#     with conexion.cursor() as cursor:
-#         sql = '''
-#             SELECT 
-#                 id, 
-#                 nomImagen, 
-#                 imagen, 
-#                 TIPO_IMG_NOVEDADid 
-#             FROM IMG_NOVEDAD
-#             WHERE id = %s
-#         '''
-#         cursor.execute(sql, (id,))
-#         imagen_novedad = cursor.fetchone()
-    
-#     conexion.close()
-#     return imagen_novedad
+def obtener_novedad_id(id):
+    conexion = obtener_conexion()
+    novedad = None
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    nov.id, 
+                    nov.nombre, 
+                    nov.titulo, 
+                    nov.fecha_inicio, 
+                    nov.fecha_vencimiento, 
+                    nov.terminos, 
+                    nov.fecha_registro,
+                    nov.disponibilidad, 
+                    nov.MARCAid, 
+                    nov.SUBCATEGORIAid, 
+                    nov.TIPO_NOVEDADid,
+                    sub.categoriaid
+                FROM novedad nov
+                left join subcategoria sub on sub.id = nov.SUBCATEGORIAid 
+                WHERE nov.id = '''+str(id)+'''
+            '''
+        cursor.execute(sql)
+        novedad = cursor.fetchone()
+    conexion.close()
+    return novedad
 
+<<<<<<< HEAD
 # def actualizarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, id):
 #     conexion = obtener_conexion()
 #     with conexion.cursor() as cursor:
@@ -552,3 +697,5 @@ def obtenerNovedadPorId(novedadId):
 #         cursor.execute(sql, (id,))
 #     conexion.commit()
 #     conexion.close()
+=======
+>>>>>>> 54634a59ab32d95c9425e9a5220121ce2313e60d

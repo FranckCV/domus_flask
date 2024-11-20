@@ -1,0 +1,98 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+  Listado de Metodos de Pago
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css">
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section scrollable-section" id="mainSection">
+    <h2 class="fw-bolder">Listado de Metodos de Pago</h2>
+    <div class="row" id="break_nav">
+      <div class="col">
+        <div class="input-group">
+          <a href="{{ url_for('formulario_agregar_metodo_pago') }}" class="button is-success add-btn">
+            <button type="button" class="main_btn">Agregar</button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table cellspacing="0" class=" table_listado product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Metodo</th>
+            <th>Disponibilidad</th>
+            <th>Cant. Pedidos</th>
+            <th class="opciones_column">Opciones</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          {% for metodo in metodos %}
+          <tr class="          
+          {% if metodo.2 == 1 %}
+              fila_disp_si
+            {% else %}
+              fila_disp_no
+            {% endif %}          
+          ">
+            <td class="celda_id">{{ metodo[0] }}</td>
+            <td>{{ metodo[1] }}</td>
+            <td>
+              <div class="celda_estado">
+                  {% if metodo.2 == 1 %}
+                      <p class="disponibilidad disp_si">Disponible</p>
+                  {% else %}
+                      <p class="disponibilidad disp_no">No Disponible</p>
+                  {% endif %}
+              </div>
+            </td>
+            <td>
+              <div class="celda_numero">
+                <p class="
+                {% if metodo[3] > 0 %}
+                  num_cant
+                {% else %}
+                  num_cero
+                {% endif %}
+                ">
+                {{ metodo[3] }}
+                </p>
+              </div>
+            </td>
+            <td class="opciones_column">
+              <div class="acciones">
+                <a class="opciones_fila" href="{{ url_for('editar_metodo_pago', id=metodo[0]) }}">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </a>
+                <form class="opciones_fila" action="{{ url_for('eliminar_metodo_pago') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                  <input type="hidden" name="id" value="{{ metodo[0] }}">
+                  <button type="submit">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function confirmarEliminacion() {
+    return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+  }
+</script>
+<script src="/static/js/admin_motivos_comentario.js"></script>
+{% endblock %}

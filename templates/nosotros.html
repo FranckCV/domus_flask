@@ -11,41 +11,47 @@
 {% block contenido %}
     <section class="body_page">
         <h1>Nuestra historia</h1>
-        <p>Con un enfoque meticuloso en la satisfacción del cliente y la excelencia en la oferta de productos, el Supermercado Domus sentó las bases de lo que se convertiría en una empresa líder en la industria de supermercados en el país.</p>
+
+        <p>
+            {{info_domus.5}}
+        </p>
+        
         <div class="imagen_Historia">   
             <img src="static/img/nosotros/nosotros_2.jpeg" alt="chico" class="historia">
-            <img src="static/img/nosotros/nosotros_1.jpeg" alt="programar" class="historia"> 
+            <img src="static/img/nosotros/nosotros_1.jpeg" alt="leo" class="historia"> 
             <img src="static/img/nosotros/nosotros_3.jpeg" alt="chica" class="historia">
         </div>
-        <p>Desde sus inicios, el Supermercado Domus se destacó por su compromiso con la calidad y la atención al cliente. Cultivó relaciones sólidas con proveedores locales y nacionales para garantizar la frescura y variedad de sus productos. Este enfoque se convirtió en el sello distintivo de Domus, estableciendo una base de confianza y lealtad entre la clientela.
-            Con el tiempo, el Supermercado Domus identificó oportunidades de expansión y diversificación, ampliando tanto la variedad de productos como la infraestructura física de sus establecimientos. Esta expansión estratégica permitió a Domus atender a una base de clientes cada vez más amplia, consolidando su posición como referente en la industria.</p>
+        
+        <p>
+            {{info_domus.6}}
+        </p>
+        
         <div class="cajas">
             <div class="caja-pergamino">
                 <h3>Visión</h3>
                 <div class="contenido-pergamino">
                    <img src="static/img/iconos/pergamino.png" alt="pergamino" class="pergamino">
-                   <p>Al año 2026 convertirnos en el supermercado preferido por las familias en la región Lambayeque, reconocido no solo por la calidad superior de nuestros productos y servicios, sino también por nuestra innovación constante, nuestro compromiso con la sostenibilidad y nuestro impacto positivo en las comunidades locales. Aspiramos a ser un ejemplo de excelencia en el comercio minorista, ofreciendo una experiencia de compra que no solo satisfaga, sino que deleite y fidelice a nuestros clientes.</p>
+                   <p>
+                        {{info_domus.7 | safe}}
+                   </p>
                 </div>
             </div>
             <div class="caja-pergamino">
                 <h3>Valores</h3>
                 <div class="contenido-pergamino">
                     <img src="static/img/iconos/pergamino.png" alt="pergamino" class="pergamino">
-                    <ul>
-                        <li>Responsabilidad</li>
-                        <li>Colaboración</li>
-                        <li>Integridad</li>
-                        <li>Empatía</li>
-                        <li>Prudencia</li>
-                        <li>Fortaleza</li>
-                    </ul>
+                    <p>
+                        {{info_domus.8 | safe}}
+                   </p>
                 </div>
             </div>
             <div class="caja-pergamino">
                 <h3>Misión</h3>
                 <div class="contenido-pergamino">
                     <img src="static/img/iconos/pergamino.png" alt="pergamino" class="pergamino">
-                    <p>Ofrecer a nuestros clientes una experiencia de compra única y agradable, caracterizada por una amplia variedad de productos frescos y de alta calidad, un servicio al cliente excepcional y un compromiso con la sostenibilidad y el apoyo a proveedores locales. Nos esforzamos por ser el supermercado preferido de las familias, ofreciendo precios competitivos y fomentando un entorno de trabajo inclusivo y respetuoso para nuestros empleados.</p>
+                    <p>
+                        {{info_domus.9 | safe}}
+                   </p>
                 </div>
             </div>
         </div>

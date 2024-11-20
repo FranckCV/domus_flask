@@ -33,9 +33,10 @@
     transition: 0.1s;
 }
 
-/* .brand_logo {
-    height: 100%;
-} */
+.brand_logo {
+    /* height: 100%; */
+    background-color: #fff;
+}
 
 .brand_picture img {
     width: 10vw;

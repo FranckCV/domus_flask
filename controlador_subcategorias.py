@@ -40,7 +40,7 @@ def obtenerCategoriasXSubcategoria(subcategoria):
             order by su.subcategoria;
         '''
         cursor.execute(sql)
-        categorias = cursor.fetchone()    
+        categorias = cursor.fetchone()
     return categorias
 
 
@@ -84,6 +84,7 @@ def obtener_subcategoriasXnombre():
     conexion.close()
     return subcategorias
 
+
 def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -91,13 +92,84 @@ def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
     conexion.commit()
     conexion.close()
 
+
 def obtener_subcategorias():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT sub.id , sub.subcategoria ,sub.faicon_subcat,sub.disponibilidad,sub.categoriaid , cat.categoria ,cat.faicon_cat FROM subcategoria sub INNER JOIN categoria cat on cat.id = sub.categoriaid")
+        cursor.execute('''
+                        SELECT 
+                            sub.id , 
+                            sub.subcategoria , 
+                            sub.faicon_subcat ,
+                            sub.disponibilidad ,
+                            sub.categoriaid , 
+                            cat.categoria ,
+                            cat.faicon_cat,
+                            count(pr.id),
+                            count(nov.id)
+                        FROM subcategoria sub 
+                        left JOIN categoria cat on cat.id = sub.categoriaid
+                        left join producto pr on pr.SUBCATEGORIAid = sub.id
+                        left join novedad nov on nov.SUBCATEGORIAid = sub.id
+                        group by sub.id;
+                       ''')
         subcategorias = cursor.fetchall()
     conexion.close()
     return subcategorias
+
+
+def obtener_listado_subcategorias():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            sub.id , 
+                            sub.subcategoria , 
+                            sub.faicon_subcat ,
+                            sub.disponibilidad ,
+                            sub.categoriaid , 
+                            cat.categoria ,
+                            cat.faicon_cat,
+                            count(pr.id),
+                            count(nov.id),
+                            cat.disponibilidad
+                        FROM subcategoria sub 
+                        left JOIN categoria cat on cat.id = sub.categoriaid
+                        left join producto pr on pr.SUBCATEGORIAid = sub.id
+                        left join novedad nov on nov.SUBCATEGORIAid = sub.id
+                        group by sub.id;
+                       ''')
+        subcategorias = cursor.fetchall()
+    conexion.close()
+    return subcategorias
+
+
+def buscar_listado_subcategorias_nombre(nombre):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            sub.id , 
+                            sub.subcategoria , 
+                            sub.faicon_subcat ,
+                            sub.disponibilidad ,
+                            sub.categoriaid , 
+                            cat.categoria ,
+                            cat.faicon_cat,
+                            count(pr.id),
+                            count(nov.id),
+                            cat.disponibilidad
+                        FROM subcategoria sub 
+                        left JOIN categoria cat on cat.id = sub.categoriaid
+                        left join producto pr on pr.SUBCATEGORIAid = sub.id
+                        left join novedad nov on nov.SUBCATEGORIAid = sub.id
+                        WHERE UPPER(sub.subcategoria) LIKE UPPER ('%'''+str(nombre)+'''%')
+                        group by sub.id;
+                       ''')
+        subcategorias = cursor.fetchall()
+    conexion.close()
+    return subcategorias
+
 
 def eliminar_subcategoria(id):
     conexion = obtener_conexion()
@@ -105,6 +177,7 @@ def eliminar_subcategoria(id):
         cursor.execute("DELETE FROM subcategoria WHERE id = %s", (id,))
     conexion.commit()
     conexion.close()
+
 
 def obtener_subcategoria_por_id(id):
     conexion = obtener_conexion()
@@ -114,6 +187,7 @@ def obtener_subcategoria_por_id(id):
         subcategoria = cursor.fetchone()
     conexion.close()
     return subcategoria
+
 
 def actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid, id):
     conexion = obtener_conexion()
@@ -134,3 +208,7 @@ def obtener_id_subcategoria(subcategoria):
             subcategoria_id = resultado[0]
     conexion.close()
     return subcategoria_id
+
+
+
+

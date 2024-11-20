@@ -4,68 +4,59 @@
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Producto</h2><br /><br /><br />
-    <form action="{{ url_for('guardar_producto') }}" method="post">
+    <h2 class="fw-bolder">Agregar Producto</h2>
+    <form action="{{ url_for('guardar_producto') }}" method="post"  enctype="multipart/form-data">
       <div class="form-grid" id="col_add">
         <!-- Primera columna -->
         <div class="row">
-          <div class="col">
-            <label for="nombre">Nombre:</label><br />
-            <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre" id="nombre" />
+          <div class="col col-8">
+            <label for="nombre">Nombre:</label>
+            <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre" id="nombre" maxlength="150"/>
           </div>
+        
           <div class="col">
-            <label for="stock">Stock:</label><br />
+            <label for="stock">Stock:</label>
             <input required type="number" class="input" placeholder="Cantidad en Stock" name="stock" id="stock" />
           </div>
-
-          <div class="col">
-            <label for="fecha_registro">Fecha de Registro:</label><br />
-            <input required type="date" class="input" placeholder="Fecha de Registro" name="fecha_registro" id="fecha_registro" />
-          </div>
         </div>
+
         <div class="row">
           <div class="col">
-            <label for="price_online">Precio Online:</label><br />
+            <label for="price_regular">Precio Regular:</label>
+            <input type="number" class="input" placeholder="Precio Regular (Opcional)" name="price_regular" id="price_regular" step="0.01" />
+          </div>
+          <div class="col">
+            <label for="price_online">Precio Online:</label>
             <input required type="number" class="input" placeholder="Precio Online" name="price_online" id="price_online" step="0.01" />
           </div>
 
           <div class="col">
-            <label for="precio_oferta">Precio Oferta:</label><br />
+            <label for="precio_oferta">Precio Oferta:</label>
             <input type="number" class="input" placeholder="Precio Oferta (opcional)" name="precio_oferta" id="precio_oferta" step="0.01" />
           </div>
 
-          <div class="col">
-            <label for="price_regular">Precio Regular:</label><br />
-            <input required type="number" class="input" placeholder="Precio Regular" name="price_regular" id="price_regular" step="0.01" />
-          </div>
+          
         </div>
         <div class="row">
+          
           <div class="col">
-            <label for="disponibilidad">Disponibilidad:</label><br />
-            <select required class="input" name="disponibilidad" id="disponibilidad">
-              <option value="1">Disponible</option>
-              <option value="0">No Disponible</option>
-            </select>
-          </div>
-
-          <div class="col">
-            <label for="marca_id">Marca:</label><br />
-            <select required class="input" name="marca_id" id="marca_id" style="width: 67%;">
+            <label for="marca_id">Marca:</label>
+            <select required class="input" name="marca_id" id="marca_id">
+              <option value="" disabled selected>Seleccione una Marca</option>
               {% for marca in marcas %}
                 <option value="{{ marca.0 }}">{{ marca.1 }}</option>
               {% endfor %}
             </select>
-            <!-- <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a href="{{ url_for('formulario_agregar_marca') }}" style=" color: #ffffff;">Agregar</a></button> -->
           </div>
 
           <div class="col">
-            <p class="fw-bolder lblchoosie">Categoría</p>
-            <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
+            <label class="fw-bolder lblchoosie">Categoría</label>
+            <select class="input" aria-label="Default select example" id="categorySelect">
                 <option value="0" selected>Todos</option>
               {% for categoria in categorias %}
                 <option value="{{categoria[0]}}">{{categoria[1]}}</option>
@@ -74,23 +65,38 @@
           </div>
 
           <div class="col">
-            <label for="subcategorySelect">Subcategoría:</label><br />
-            <select required class="form-select choosie" aria-label="Default select example" name="subcategorySelect" id="subcategorySelect">
-              <option value="0" data-category="0" selected>Todos</option>
+            <label for="subcategorySelect">Subcategoría:</label>
+            <select required class="input" aria-label="Default select example" name="subcategorySelect" id="subcategorySelect">
+              <option value="" data-category="0" disabled selected>Seleccione una subcategoria</option>
               {% for subcategoria in subcategorias %}
                 <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}">{{subcategoria[1]}}</option>
               {% endfor %}
             </select>
-            <!-- <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a href="{{ url_for('guardar_subcategoria') }}" style=" color: #ffffff;">Agregar</a></button> -->
           </div>
         </div>
-        <div class="row">
-          
+        <div class="row">          
           <div class="col" id="space_info">
-            <label for="infoAdicional">Información Adicional:</label><br />
-            <textarea name="infoAdicional" id="infoAdicional" placeholder="Información Adicional (opcional)"></textarea>
+            <label for="infoAdicional">Información Adicional:</label>
+            <textarea name="infoAdicional" id="infoAdicional" placeholder="Información Adicional (opcional)" style="height: 80%;"></textarea>
           </div>
         </div>
+        
+        <div class="row"> 
+          <div class="col col-3 seccionImg">
+            <label for="banner">Subir imagen principal:</label>
+            <input type="file" required class="campoImg" name="imagenProduct" id="imagenProduct" accept="image/*" />
+            <div class="espacio_img espacio_img_uni">
+            </div>
+          </div>
+        
+          <div class="col seccionImg">
+            <label for="">Subir imagenes secundarias (Al menos 1):</label>
+            <input required type="file" class="campoImg" name="imgsProd" id="imgsProd" multiple accept="image/*" />
+            <div class="espacio_img espacio_img_multi">
+            </div>
+          </div>
+        </div>
+
         <div class="row">
           <div class="col" id="sbmt">
             <div class="form-buttons">
@@ -101,17 +107,18 @@
         </div>
       </div>
     </form>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+      <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
   </section>
 
-  <style>
-    .PrActive {
-      background-color: rgb(255, 255, 255);
-      color: #00095c;
-    }
-  </style>
 {% endblock %}
 
 {% block scripts %}
-  <script src="/static/js/admin_productos.js"></script>
   <script src="/static/js/filtroCRUDListado.js"></script>
+  <script src="/static/js/imgsCRUDimagencompleta.js"></script>
+  <!-- <script src="/static/js/multiimgsCRUDvistaprevia.js"></script> -->
+  <script src="/static/js/imgsCRUDvistaprevia.js"></script>
 {% endblock %}

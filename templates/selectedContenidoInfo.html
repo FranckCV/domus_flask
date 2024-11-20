@@ -1,0 +1,39 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+  {{tipo.1}} 
+{% endblock %}
+
+{% block estilos %} 
+  <link rel="stylesheet" href="css/servicioCliente.css">
+{% endblock %}
+
+{% block contenido %}
+    <section class="body_page">
+      <div class="container mt-5">
+        <h2 class="mb-4 text-center"> <i class="{{tipo.2}}"></i> {{tipo[1]}}</h2>
+        <div class="content">
+          <p>
+            {{tipo.3}}
+          </p>
+
+          <ol>
+            {% for dato in datos %}
+            <li>
+              <h4>{{dato.1}}</h4>
+              <p>
+                {{ dato[2] | safe }} 
+              </p>
+            </li>              
+            {% endfor %}
+          </ol>
+          
+
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block scripts %} 
+{% endblock %}
+        

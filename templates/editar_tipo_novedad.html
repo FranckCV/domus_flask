@@ -5,27 +5,34 @@ Editar Tipo de Novedad
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
 <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Tipo de Novedad</h2><br><br><br>
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Tipo de Novedad</h2>
     <form action="{{ url_for('actualizar_tipo_novedad') }}" method="post">
-        <input type="hidden" name="id" value="{{ tipos_novedad[0] }}"> <!-- Campo oculto para el ID del tipo de novedad -->
+        <input type="hidden" name="id" value="{{ id_tipo }}">
         
         <div class="form-grid" id="col_add">
             <div class="row">
                 <div class="col">
-                    <label for="nombre_tipo">Nombre del Tipo de Novedad:</label><br>
-                    <input required type="text" class="input" placeholder="Nombre del tipo de novedad" name="nombre_tipo" id="nombre_tipo" value="{{ tipos_novedad[1] }}">
+                    <label for="nombre_tipo">Nombre del Tipo de Novedad:</label>
+                    <input required type="text" class="input" placeholder="Nombre del tipo de novedad" name="nombre_tipo" id="nombre_tipo" value="{{ tipo_novedad[1] }}">
+                </div>
+                <div class="col">
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <select required class="input" name="disponibilidad" id="disponibilidad">
+                        <option value=1 {% if tipo_novedad[2]==1 %} selected {% endif %}>Disponible</option>
+                        <option value=0 {% if tipo_novedad[2]==0 %} selected {% endif %}>No Disponible</option>
+                    </select>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col" id="sbmt">
                     <div class="form-buttons">
-                        <a href="{{ url_for('novedades_listado') }}" id="backbtn">Volver</a>
+                        <a href="{{ url_for('listado_tipos_novedad') }}" id="backbtn">Volver</a>
                         <button type="submit" class="button is-primary">Actualizar</button>
                     </div>
                 </div>

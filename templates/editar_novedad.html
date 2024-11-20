@@ -5,83 +5,24 @@ Editar Novedad
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
 <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Novedad</h2><br><br><br>
+    <h2 class="fw-bolder">Editar Novedad</h2>
     <form action="{{ url_for('actualizar_novedad') }}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="{{ novedad[0] }}"> <!-- Campo oculto para el ID de la novedad -->
         
         <div class="form-grid" id="col_add">
             <div class="row">
                 <div class="col">
-                    <label for="nombre">Nombre de la novedad:</label><br>
+                    <label for="nombre">Nombre de la novedad:</label>
                     <input required type="text" class="input" placeholder="Nombre de la novedad" name="nombre" id="nombre" value="{{ novedad[1] }}">
                 </div>
 
                 <div class="col">
-                    <label for="titulo">Título:</label><br>
-                    <input required type="text" class="input" placeholder="Título" name="titulo" id="titulo" value="{{ novedad[2] }}">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="fecha_inicio">Fecha de Inicio:</label><br>
-                    <input required type="date" class="input" name="fecha_inicio" id="fecha_inicio" value="{{ novedad[3] }}">
-                </div>
-                <div class="col">
-                    <label for="fecha_vencimiento">Fecha de Vencimiento:</label><br>
-                    <input required type="date" class="input" name="fecha_vencimiento" id="fecha_vencimiento" value="{{ novedad[4] }}">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="terminos">Términos y Condiciones:</label><br>
-                    <textarea required class="input" placeholder="Términos y condiciones" name="terminos" id="terminos">{{ novedad[5] }}</textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="disponibilidad">Disponibilidad:</label><br>
-                    <label style="color: #000; font-weight: lighter;">
-                        <input type="radio" name="disponibilidad" value=1 id="disponibilidad" {% if novedad[6] == 1 %}checked{% endif %}> Disponible
-                    </label>
-                    <label style="color: #000; font-weight: lighter;">
-                        <input type="radio" name="disponibilidad" value=0 id="disponibilidad" {% if novedad[6] == 0 %}checked{% endif %}> No Disponible
-                    </label>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="marca">Marca:</label><br>
-                    <select class="input" name="marca_id" id="marca">
-                        <option value="" disabled>Selecciona una marca</option>
-                        {% for marca in marcas %}
-                            <option value="{{ marca[0] }}" {% if marca[0] == novedad[7] %}selected{% endif %}>{{ marca[1] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col">
-                    <label for="subcategoria">Subcategoría:</label><br>
-                    <select class="input" name="subcategoria_id" id="subcategoria">
-                        <option value="" disabled>Selecciona una subcategoría</option>
-                        {% for subcategoria in subcategorias %}
-                            <option value="{{ subcategoria[0] }}" {% if subcategoria[0] == novedad[8] %}selected{% endif %}>{{ subcategoria[1] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="tipo_novedad">Tipo de Novedad:</label><br>
+                    <label for="tipo_novedad">Tipo de Novedad:</label>
                     <select class="input" name="tipo_novedad_id" id="tipo_novedad">
                         <option value="" disabled>Selecciona un tipo de novedad</option>
                         {% for tipo in tipos_novedad %}
@@ -91,32 +32,103 @@ Editar Novedad
                     </select>
                 </div>
             </div>
+            <div class="row">
+                <div class="col column_text">                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="titulo">Título:</label>
+                            <input required type="text" class="input" placeholder="Título" name="titulo" id="titulo" value="{{ novedad[2] }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="fecha_inicio">Fecha de Inicio:</label>
+                            <input required type="date" class="input" name="fecha_inicio" id="fecha_inicio" value="{{ novedad[3] }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="fecha_vencimiento">Fecha de Vencimiento:</label>
+                            <input required type="date" class="input" name="fecha_vencimiento" id="fecha_vencimiento" value="{{ novedad[4] }}">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="disponibilidad">Disponibilidad:</label>
+                            <select required class="input" name="disponibilidad" id="disponibilidad">
+                                <option value=1 {% if novedad[6]==1 %} selected {% endif %}>Disponible</option>
+                                <option value=0 {% if novedad[6]==0 %} selected {% endif %}>No Disponible</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col">
+                    <label for="terminos">Términos y Condiciones:</label>
+                    <textarea required class="input" placeholder="Términos y condiciones" name="terminos" id="terminos">{{ novedad[5] }}</textarea>
+                </div>
+            </div>
+            
+
+
 
             <div class="row">
                 <div class="col">
-                  <label for="imagen">Imágenes:</label><br>
-                  <!-- Botón que redirige a la lista de imágenes de la novedad -->
-                  <a href="{{ url_for('img_novedades_listado', novedad_id = novedad[0]) }}" class="button is-primary">
-                    Gestionar Imágenes
-                  </a>
+                  <label for="marca">Marca:</label>
+                  <select class="input" name="marca_id" id="marca_id">
+                    <option value="0" disabled selected>Selecciona una marca</option>
+                    {% for marca in marcas %}
+                        <option value="{{ marca[0] }}" {% if marca[0] == novedad[7] %}selected{% endif %}>{{ marca[1] }}</option>
+                    {% endfor %}
+                  </select>
                 </div>
-              </div>
+      
+                <div class="col">
+                  <label class="fw-bolder lblchoosie">Categoría</label>
+                  <select class="input" aria-label="Default select example" id="categorySelect">
+                    <option value="0" selected>Todos</option>
+                    {% for categoria in categorias %}
+                    <option value="{{categoria[0]}}">{{categoria[1]}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+      
+                <div class="col">
+                  <label for="subcategoria">Subcategoría:</label>
+                  <select required class="input" name="subcategorySelect" id="subcategorySelect">
+                    <option value="0" disabled selected>Selecciona una subcategoría</option>
+                    <option value="null" {% if novedad[8] == None %}selected{% endif %}>Sin subcategoría</option>
+                    {% for subcategoria in subcategorias %}
+                        <option  data-category="{{subcategoria[4]}}" value="{{ subcategoria[0] }}" {% if subcategoria[0] == novedad[8] %}selected{% endif %}>{{ subcategoria[1] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+            </div>
+            
               
 
             <div class="row">
                 <div class="col" id="sbmt">
                     <div class="form-buttons">
-                        <a href="{{ url_for('novedades') }}" id="backbtn">Volver</a>
+                        <a href="{{ url_for('novedades_listado') }}" id="backbtn">Volver</a>
                         <button type="submit" class="button is-primary">Actualizar</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+      </div>
+
 </section>
 {% endblock %}
 
 {% block scripts %} 
-<script src="/static/js/admin_novedades.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/static/js/filtroCRUDListado.js"></script>
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script src="/static/js/fechaCRUDnovedades.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
 {% endblock %}

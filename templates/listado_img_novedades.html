@@ -1,0 +1,108 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %} Imágenes de Novedad {% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Listado de Imágenes para Novedad</h2>
+    <div class="row" id="break_nav">        
+        <div class="col">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar por nombre de imagen" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary searchi" type="button" id="button-addon2">
+                    <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe">
+                </button>
+                <a href="{{ url_for('formulario_agregar_img_novedad', novedad_id=novedad_id) }}" class="button is-success add-btn">
+                    <button type="button" class="main_btn">Agregar Imagen</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="col">
+                <p class="fw-bolder lblchoosie">Filtrar por tipo de imagen</p>
+                <select class="form-select choosie" aria-label="Default select example">
+                    <option value="0" selected>Todos</option>
+                    <!-- <option value="1">Secundaria</option> -->
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table cellspacing="0" class="table_listado product_if">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Imagen</th>
+                    <th>Tipo</th>
+                    <th class="opciones_column">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                {% for img_novedad in img_novedades %}
+                <tr>
+                    <td class="celda_id">
+                        {{ img_novedad[0] }}
+                    </td>
+                    <td>
+                        {{ img_novedad[1] }}
+                    </td>
+                    <td>
+                        <div class="celda_texto_bloque">
+                            <img src="{{ img_novedad[2] }}" alt="Imagen de novedad" class="clickable-image">
+                        </div>
+                    </td>
+                    <td>
+                        {{ img_novedad[3] }}
+                    </td>
+                    <td class="opciones_column">
+                        <div class="acciones">
+                            <a class="opciones_fila" href="{{ url_for('editar_img_novedad', id=img_novedad[0]) }}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </a>
+                            <form class="opciones_fila" action="{{ url_for('eliminar_img_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                                <input type="hidden" name="id" id="id" value="{{ img_novedad[0] }}">
+                                <input type="hidden" name="novedad_id" id="novedad_id" value="{{ novedad_id }}">
+                                <button type="submit">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
+</section>
+
+<style>
+    .MarcActive{
+        background-color: rgb(255, 255, 255);
+        color:#00095c;
+    }
+</style>
+
+<!-- JavaScript para la confirmación de eliminación -->
+<script>
+    function confirmarEliminacion() {
+        return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+    }
+</script>
+<script src="/static/js/admin_novedades.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
+
+{% endblock %}

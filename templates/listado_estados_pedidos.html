@@ -1,0 +1,87 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+  Listado de Estados de Pedido
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css">
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section scrollable-section" id="mainSection">
+
+    <div class="row">
+      <div class="col">
+        <h2 class="fw-bolder">Listado de Estados de Pedido</h2>
+      </div>
+    </div>
+
+    <div class="row" id="break_nav">
+      <div class="col">
+        <div class="input-group">          
+          <a href="{{ url_for('formulario_agregar_estado_pedido') }}" class="button is-success add-btn">
+            <button type="button" class="main_btn">Agregar</button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
+        <thead>
+          <tr>
+            <th>ID Estado</th>
+            <th>Estado de Pedido</th>
+            <th>Cant. Pedidos</th>
+            <th class="opciones_column">Opciones</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          {% for estado in estados %}
+          <tr>
+            <td class="celda_id">{{ estado[0] }}</td>
+            <td>{{ estado[1] }}</td>          
+            <td>
+              <div class="celda_numero">
+                <p class="
+                {% if estado[2] > 0 %}
+                  num_cant
+                {% else %}
+                  num_cero
+                {% endif %}
+                ">
+                {{ estado[2] }}
+                </p>
+              </div>
+            </td>
+            <td class="opciones_column">
+                <div class="acciones">
+                  <a class="opciones_fila" href="{{ url_for('editar_estado_pedido', id=estado[0]) }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </a>
+                  <form class="opciones_fila" action="{{ url_for('eliminar_estado_pedido') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <input type="hidden" name="id" value="{{ estado[0] }}">
+                    <button type="submit">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </form>
+                </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function confirmarEliminacion() {
+    return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+  }
+</script>
+<script src="/static/js/admin_motivos_comentario.js"></script>
+{% endblock %}

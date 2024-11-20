@@ -19,12 +19,12 @@
                 <input type="text" placeholder="Nombres" required>
                 <input type="text" placeholder="Apellidos" required>
                 <input type="number" placeholder="Documento de identidad" id="dni" name="dni" pattern="^\d{8}$" required>
-                <select>
+                <select  onchange="cambiarColor(this)">
                     <option value="" disabled selected>Género</option>
                     <option value="Masculino">Masculino</option>
                     <option value="Femenino">Femenino</option>
                 </select>
-                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fecha de nacimiento">
+                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" onchange="cambiarColor(this)" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fecha de nacimiento">
                 <input type="tel" id="telefono" name="telefono" placeholder="Número de celular" pattern="9[0-9]{8}" required>
                 <input type="email" placeholder="Correo electrónico" required>
                 <input type="password" placeholder="Contraseña">

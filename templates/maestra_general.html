@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block titulo %}{% endblock %} | Domus Market</title>
-    <link rel="shortcut icon" href="static/img/elementos/iconDomus.png">
+    <link rel="shortcut icon" href="{{datos_domus_main.4}}">
     <link rel="stylesheet" href="static/css/common_styles/bootstrap.min.css">
     <link rel="stylesheet" href="static/css/common_styles/all.min.css">
     <link rel="stylesheet" href="static/css/common_styles/fontawesome.min.css">
@@ -20,7 +20,7 @@
 <body class="body_section">
     <header>
         <a class="header_item" id="index_logo" href="{{url_for('index')}}">            
-            <img class="img-fluid" id="logo_header" src="{{url_for('static', filename = logo_foto)}}" alt="Logo">            
+            <img class="img-fluid" id="logo_header" src="{{datos_domus_main.3}}" alt="Logo Domus">            
         </a>        
         <div class="header_item" id="search">
             <input type="text">
@@ -135,27 +135,24 @@
     <footer>
         <div id="footer_pictures">
             <a href="{{url_for('index')}}">
-                <img id="logo_footer" src="{{url_for('static', filename = logo_foto)}}" alt="">
+                <img id="logo_footer" src="{{datos_domus_main.3}}" alt="">
             </a>
             <hr>
             <div id="social">
-                <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://www.twitter.com"><i class="fa-brands fa-twitter"></i></a>
-                <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.whatsapp.com"><i class="fa-brands fa-whatsapp"></i></a>
-                <a href="https://www.tiktok.com"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+                {% for red_footer in redes_footer %}
+                    <a href="{{red_footer[3]}}"><i class="{{red_footer[2]}}"></i></a>
+                {% endfor %}
             </div>
         </div>
         <div id="footer_contactanos" class="footer_column">
             <h2>Contáctanos</h2>
             <p>
                 <i class="fa-solid fa-envelope"></i>
-                servicioalcliente@domus.pe
+                {{datos_domus_main.1}}
             </p>
             <p href="">
                 <i class="fa-solid fa-phone-volume"></i>
-                074 606240
+                {{datos_domus_main.2}}
             </p>
             <p href="">
                 <i class="fa-solid fa-clock"></i>
@@ -172,10 +169,11 @@
         </div>
         <div id="footer_servicio" class="footer_column">
             <h2>Servicio al Cliente</h2>
-            <a href="{{url_for('terminos')}}">Terminos y Condiciones</a>
-            <a href="{{url_for('faq')}}">Preguntas Frecuentes</a>
-            <a href="{{url_for('devoluciones')}}">Devoluciones y Cambios</a>
-            <a href="{{url_for('reclamos')}}">Reclamos</a>
+            {% for tipo in conts_info_footer %}
+                <a href="{{url_for('selectedContenidoInformativo',id=tipo.0)}}">
+                    {{tipo.1}}
+                </a>
+            {% endfor %}
         </div>
         <div id="footer_nosotros" class="footer_column">
             <h2>Sobre nosotros</h2>

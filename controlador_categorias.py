@@ -2,6 +2,7 @@ from bd import obtener_conexion
 tabla = 'categoria'
 import controlador_subcategorias
 
+
 def obtener_categorias_disponibles():
     conexion = obtener_conexion()
     categorias = []
@@ -12,14 +13,14 @@ def obtener_categorias_disponibles():
     return categorias
 
 
-def obtener_categoria_por_id(id):
-    conexion = obtener_conexion()
-    categoria = None
-    with conexion.cursor() as cursor:
-        sql = 'SELECT id, categoria, faicon_cat, disponibilidad FROM '+tabla + ' where id = '+str(id)
-        cursor.execute(sql)
-        categoria = cursor.fetchone()    
-    return categoria
+# def obtener_categoria_por_id(id):
+#     conexion = obtener_conexion()
+#     categoria = None
+#     with conexion.cursor() as cursor:
+#         sql = 'SELECT id, categoria, faicon_cat, disponibilidad FROM '+tabla + ' where id = '+str(id)
+#         cursor.execute(sql)
+#         categoria = cursor.fetchone()    
+#     return categoria
 
 
 def obtener_categorias_subcategorias():
@@ -78,6 +79,25 @@ def obtener_categorias():
     return categorias
 
 
+def obtener_listado_categorias():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            cat.id ,
+                            cat.categoria ,
+                            cat.faicon_cat ,
+                            cat.disponibilidad,
+                            count(sub.id)
+                        FROM categoria cat
+                        LEFT JOIN subcategoria sub on sub.categoriaid = cat.id
+                        Group by cat.id
+                        ''')
+        categorias = cursor.fetchall()
+    conexion.close()
+    return categorias
+
+
 def eliminar_categoria(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -105,6 +125,23 @@ def actualizar_categoria(categoria,faicon_cat,disponibilidad, id):
     conexion.close()
 
 
-
+def obtener_categoria_id_relacion(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            cat.id ,
+                            cat.categoria ,
+                            cat.faicon_cat ,
+                            cat.disponibilidad,
+                            count(sub.id)
+                        FROM categoria cat
+                        LEFT JOIN subcategoria sub on sub.categoriaid = cat.id
+                        where cat.id = '''+str(id)+'''
+                        group by cat.id
+                        ''')
+        categorias = cursor.fetchone()
+    conexion.close()
+    return categorias
 
 

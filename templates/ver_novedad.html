@@ -1,0 +1,232 @@
+
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+    Ver Novedad : {{ novedad[1] }}
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+
+<section class="h_section" id="mainSection">
+    
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">
+                Ver Información de Novedad
+            </h2>
+        </div>
+    </div>
+
+    <div enctype="multipart/form-data">
+        <input disabled type="hidden" name="id" value="{{ novedad[0] }}">
+        <div class="form-grid" id="col_add">
+
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">ID:</label>
+                    <input disabled required type="text" disabled class="input"
+                        id="nombre" value="{{ novedad[0] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="nombre">Fecha de Registro:</label>
+                    <input disabled disabled required type="text" class="input" name="nombre"
+                        id="nombre" value="{{ novedad[6] }}" style="text-align: center;">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">Nombre:</label>
+                    <input disabled required type="text" class="input"
+                        id="nombre" value="{{ novedad[1] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="">Tipo de Novedad:</label>
+                    {% for tipo in tiposNovedad %}
+                        {% if tipo[0] == novedad[10] %}
+                        <div class="celda_dato_externo color_texto" data-colorid="{{tipo.0}}">
+                            <p>{{ tipo[1] }}</p>
+                            {% if tipo[2] == 0 %}
+                                <p class="disponibilidad disp_no">No Disponible</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>           
+
+            <div class="row">
+
+                <div class="col column_text">
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="nombre">Título:</label>
+                            <input disabled required type="text" class="input"
+                                id="nombre" value="{{ novedad[2] }}" style="text-align: center;">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="stock">Fecha de Inicio:</label>
+                            <input disabled required type="text" class="input" name="stock" id="stock"
+                                value="{{ novedad[3] }}" style="text-align: center;">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="stock">Fecha de Vencimiento:</label>
+                            <input disabled required type="text" class="input" name="stock" id="stock"
+                                value="{{ novedad[4] }}" style="text-align: center;">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Disponibilidad:</label>                    
+                            <div class="celda_estado">
+                                {% if novedad.7 == 1 %}
+                                  <p class="disponibilidad disp_si">Disponible</p>
+                                {% else %}
+                                  <p class="disponibilidad disp_no">No Disponible</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col" id="space_info">
+                    <label for="infoAdicional">Terminos y Condiciones:</label>
+                    <textarea disabled name="infoAdicional" id="infoAdicional"
+                        >{{ novedad[5] }}</textarea>
+                </div>
+
+            </div>
+
+            <div class="row">
+                
+                <div class="col">
+                    <label for="">Marca:</label>
+                    {% if novedad[8] %}
+                        {% for marca in marcas %}
+                            {% if marca[0] == novedad[8] %}
+                            <div class="celda_dato_externo">
+                                <img src="{{marca[2]}}" alt="" class="clickable-image">
+                                <p>{{ marca[1] }}</p>
+                                {% if marca[5] == 0 %}
+                                    <p class="disponibilidad disp_no">No Disponible</p>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                    <div class="espacio_vacio">
+                        <p>
+                            Sin marca añadida
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col">
+                    <label for="">Categoria:</label>
+                    {% if novedad[9] %}
+                        {% for categoria in categorias %}
+                            {% if categoria[0] == novedad[11] %}
+                            <div class="celda_dato_externo">
+                                <i class="{{ categoria[2] }}"></i>
+                                <p>{{ categoria[1] }}</p>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="espacio_vacio">
+                            <p>
+                                Sin categoria añadida
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col">
+                    <label for="">Subcategoria:</label>
+                    {% if novedad[9] %}
+                        {% for subcategoria in subcategorias %}
+                            {% if subcategoria[0] == novedad[9] %}
+                            <div class="celda_dato_externo">
+                                <i class="{{ subcategoria[2] }}"></i>
+                                <p>{{ subcategoria[1] }}</p>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="espacio_vacio">
+                            <p>
+                                Sin subcategoria añadida
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="">Imágenes relacionadas:</label>
+                    <div class="espacio_img espacio_img_multi">
+                        {% for imagen in imagenes %}
+                            <div class="celda_dato_externo color_texto" data-colorid="{{imagen.3}}" style="font-size: 80%;">
+                                <img id="previewImg" src="{{imagen[2]}}" alt="" class="clickable-image">
+                                <p>Tipo {{imagen[5]}}</p>
+                                {% if imagen[6] == 0 %}
+                                    <p class="disponibilidad disp_no">Tipo No Disponible</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" id="">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('novedades_listado') }}" id="backbtn">Volver</a>
+                        <a href="{{ url_for('editar_novedad',id = novedad[0]) }}"><button class="button is-primary" >Editar</button></a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
+</section>
+
+<style>
+    .PrActive {
+        background-color: rgb(255, 255, 255);
+        color: #00095c;
+    }
+
+    /* Asegurar que el body permita scroll si el contenido excede el tamaño de la ventana */
+    
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin_productos.js"></script>
+<script src="/static/js/filtroCRUDListado.js"></script>
+<script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
+<script src="/static/js/textoCRUDcolor.js"></script>
+{% endblock %}

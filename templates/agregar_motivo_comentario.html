@@ -1,0 +1,38 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Agregar Motivo de Comentario
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Agregar Motivo de Comentario</h2>
+    <form action="{{ url_for('guardar_motivo_comentario') }}" method="post">
+      <div class="form-grid" id="col_add">
+        <div class="row">
+          <div class="col">
+            <label for="motivo">Motivo del Comentario:</label>
+            <input required type="text" class="input" placeholder="Motivo del comentario" name="motivo" id="motivo" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('motivos_comentario_listado') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/admin_motivos_comentario.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}

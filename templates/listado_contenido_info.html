@@ -1,0 +1,189 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Listado de Contenido Informativo
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+
+    <div class="row">
+      <div class="col">
+        <h2 class="fw-bolder">Listado de Contenido Informativo</h2>
+      </div>
+    </div>
+
+    <!-- <div class="row" id="break_nav">
+        <div class="col">
+            <form enctype="multipart/form-data" id="buscarFormulario" method="GET" action="{{ url_for('listado_contenido_info_buscar') }}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar por titulo  " aria-label="Buscar"
+                    {% if nombreBusqueda %}
+                        value="{{nombreBusqueda}}"
+                    {% endif %}
+                        name="buscarElemento" id="buscarElemento" />
+                    <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
+                        <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div> -->
+
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Seccion</th>
+            <th>Opciones</th>
+            <th>ID Cont</th>
+            <th>Titulo</th>
+            <th>Cuerpo</th>
+            <th class="opciones_column">Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for seccion in secciones %}
+          {% set datos_lista = datos | selectattr(3, 'equalto', seccion[0]) | list %}
+          {% if datos_lista | length > 0 %}
+            <tr class="
+            {% if seccion[5] == 1 %}
+              fila_disp_si
+            {% else %}
+              fila_disp_no
+            {% endif %}
+            ">
+              <td class="celda_id" rowspan="{{ datos_lista | length }}">{{ seccion[0] }}</td>
+              <td rowspan="{{ datos_lista | length }}">
+                <div class="celda_texto_bloque">
+                  <i class="{{ seccion[3] }}"></i>
+                  <span>{{ seccion[1] }}</span>
+                  {% if seccion.5 == 1 %}
+                    <p class="disponibilidad disp_si">Disponible</p>
+                  {% else %}
+                    <p class="disponibilidad disp_no">No Disponible</p>
+                  {% endif %}
+                </div>
+              </td>
+              <td rowspan="{{ datos_lista | length }}" class="opciones_column">
+                <div class="acciones">
+                  <a class="opciones_fila" href="{{url_for('selectedContenidoInformativo', id=seccion[0])}}">
+                    <i class="fa-solid fa-link"></i>
+                  </a>                  
+                </div>
+              </td>
+
+              <td>{{ datos_lista[0][0] }}</td>
+              <td>{{ datos_lista[0][1] }}</td>
+              <td>{{ datos_lista[0][2] }}</td>
+              <td class="opciones_column">
+                <div class="acciones">
+                  <a class="opciones_fila" href="{{ url_for('editar_contenido_info', id=datos_lista[0][0]) }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </a>
+                  <form class="opciones_fila" action="{{ url_for('eliminar_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                    <input type="hidden" name="id" value="{{ datos_lista[0][0] }}" />
+                    <button type="submit">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+
+            {% for dato in datos_lista[1:] %}
+              <tr class="
+              {% if seccion[5] == 1 %}
+                fila_disp_si
+              {% else %}
+                fila_disp_no
+              {% endif %}
+              ">
+                <td>{{ dato[0] }}</td>
+                <td>{{ dato[1] }}</td>
+                <td>{{ dato[2] }}</td>
+
+                <td class="opciones_column">
+                  <div class="acciones">
+                    <a class="opciones_fila" href="{{ url_for('editar_contenido_info', id=dato.0) }}">
+                      <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+                    <form class="opciones_fila" action="{{ url_for('eliminar_contenido_info') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                      <input type="hidden" name="id" value="{{ dato.0 }}" />
+                      <button type="submit">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+
+              </tr>
+            {% endfor %}
+
+          {% else %}
+            <tr>
+              <td>{{ seccion[0] }}</td>
+              <td>
+                <div class="celda_texto_bloque">
+                  <i class="{{ seccion[3] }}"></i>
+                  <span>{{ seccion[1] }}</span>
+                </div>
+              </td>
+              <td>{{ seccion[4] }}</td>
+              <td colspan="3">No hay datos aún</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="errorModalLabel">Error al eliminar pedido</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{ error }} <!-- Aquí se muestra el error que pasaste desde el backend -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <style>
+    .datoctive {
+      background-color: rgb(255, 255, 255);
+      color: #00095c;
+    }
+  </style>
+{% endblock %}
+
+{% block scripts %}
+
+{% if show_modal %}
+<script>
+    var modal = new bootstrap.Modal(document.getElementById('errorModal'));
+    modal.show();
+
+    setTimeout(function(){
+        window.location.href = "/listado_categorias";
+    }, 1500);
+</script>
+{% endif %}
+
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+    }
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
+{% endblock %}

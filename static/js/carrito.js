@@ -1,114 +1,5 @@
 //Variable global para saber si se ha aplicado un descuento o no 
 let descuentoAplicado = false;
-/*Empezamos un listener para asegurarnos que el documento esté cargado, por eso dice 'DOMContentLoaded', una vez
-haya sido cargado, usamos una función flecha*/
-/*Empezamos actualizando el carrito, en caso ya se hayan agregado elementos al carro desde otra página, va a carga
-su imagen, su nombre, su precio, la cantidad agregada y el subtotal */
-/*Cada vez que se obtiene un valor de una etiqueta html y sabes que no va a cambiar, la declaras como const
-Vamos a seleccionar todos los elementos que tengan la clase 'product_option_add', y por cada div que encuentre que ejecuta
-el evento de escucha, donde identifique que se hizo click, eso se guarda como un evento */
-
-document.addEventListener('DOMContentLoaded', () => {
-    actualizarCarrito();
-    actualizarCantidadCarrito();
-    const agregarDivs = document.querySelectorAll('.product_option_add');
-
-    agregarDivs.forEach(div => {
-        div.addEventListener('click', (event) => { //'click' es el evento que se dispara cuando se hace click en el elemento
-            console.log("CLICK EN AGREGAR");//Los consoles que veas fue pq salían errores y no sabía dónde estaba fallando, xd
-            const productElement = event.target.closest('.product');//aquí busca la etiqueta más cerca que contenga la clase product
-            if (productElement) { //si es que sí se encuentra, se extrae el nombre de producto, la imagen, y el precio
-                const nombreProducto = productElement.querySelector('.product_name').innerText;
-                const img = productElement.querySelector('.product_pic').src;
-                //la etiqueta de precio va a variar según lo que se encuentre
-                const priceOferta = productElement.querySelector('.price_for_sale .product_price_number');
-                const priceOnline = productElement.querySelector('.price_online .product_price_number');
-                const productoId = productElement.getAttribute('data-product-id');
-                let precio = 0; //lo declaramos como let porque va a variar
-
-                if (priceOferta) {//Si encuentra una etiqueta de precio oferta ejecuta la línea de código, sino usa
-                    // la etiqueta de precio online
-                    //Replace se usa para eliminar la parte del texto que indica la moneda ("S/. ") y dejar solo los números.
-                    //El otro replace se usa para eliminar la coma que separa los miles, si es que existe
-                    precio = parseFloat(priceOferta.innerText.replace('S/. ', '').replace(',', ''));
-                } else if (priceOnline) {
-                    precio = parseFloat(priceOnline.innerText.replace('S/. ', '').replace(',', ''));
-                }
-
-                agregarProducto(nombreProducto, precio, img, productoId); //Llama a la función agregar producto
-                actualizarCarrito(); //llama a la función actualizar carre
-                actualizarCantidadCarrito(); //Actualiza la cantidad de productos agregados que sale en el header
-                console.log(productElement); //por si acaso haya errores
-                // agregarCarritoBase(product_id)
-            } else {
-                console.log("No se encontró el elemento del producto."); //por si acaso haya errores x2 
-            }
-        });
-    });
-});
-/**********************PARA AGREGAR EL CARRITO A LA BASE DE DATOS*****************/
-// function agregarCarritoBase(productId) {
-//     carrito = obtenerCarrito(); 
-//     console.log(carrito);
-
-//     const data = {
-//         USUARIOid: 1,           
-//         product_id: productId,    
-//         quantity: carrito.cantidad
-//     };
-
-//     // Enviar los datos al servidor para crear el pedido y agregar el detalle
-//     fetch('/agregar_a_carrito', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(data)  // Convertir el objeto en JSON para enviarlo
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             console.log('Producto agregado al carrito.');
-//         } else {
-//             console.error('Error al agregar producto al carrito:', data.message);
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//     });
-// }
-
-
-// function generar_carrito() {
-//     carrito = obtenerCarrito(); 
-//     console.log(carrito);
-
-//     const data = {
-//         USUARIOid: 1,           
-//         estado:1
-//     };
-
-//     // Enviar los datos al servidor para crear el pedido y agregar el detalle
-//     fetch('/generar_carrito', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(data)  // Convertir el objeto en JSON para enviarlo
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             console.log('Producto agregado al carrito.');
-//         } else {
-//             console.error('Error al agregar producto al carrito:', data.message);
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//     });
-// }
-
 
 
 /*************************************************************************************** */
@@ -135,21 +26,7 @@ function obtenerCarrito() { //Estas son funciones localStorage para obtener los 
 
 function guardarCarrito(carrito) {
     localStorage.setItem('carrito', JSON.stringify(carrito)); //Guarda el carrito en el localStorage
-    //Carrito es un objeto de objetos, se guarda algo así
-    /*
-    {
-  "nombreProducto1": {
-    "precio": 20,
-    "img": "imagen1.png",
-    "cantidad": 1
-  },
-  "nombreProducto2": {
-    "precio": 30,
-    "img": "imagen2.png",
-    "cantidad": 1
-  }
-}
-     */
+
 }
 
 
@@ -179,7 +56,7 @@ function disminuir(button) {
     //obtenemos la etiqueta de descuento porque si va a eliminar productos, entonces su descuento ya no es válido
     const descuentoElement = document.getElementById('descuento');
     let carrito = obtenerCarrito();
-    
+
     if (carrito[nombreProducto]) {
         carrito[nombreProducto].cantidad -= 1;
         descuentoElement.querySelector('span').innerText = `S/.00.00`;
@@ -207,43 +84,6 @@ function actualizarCarrito() {
         total += totalProducto;
         unidades += producto.cantidad;
 
-//         const productoHTML = `
-//             <div class="product_item">
-//                 <div class="product_item_info">
-//                     <img src="${producto.img}" class="product_item_pic" alt="Imagen del Producto">
-                    
-//                     <div class="product_item_name">
-//                         <p class="nombreProducto">${nombre}</p>
-//                         <p class="vendido-por">Vendido por: <strong>Domus</strong></p>
-//                     </div>
-//                 </div>
-
-//                 <div class="product_item_price_unit">
-//                     <p class="precioProducto">S/ ${producto.precio.toFixed(2)}</p>
-//                 </div>
-
-//                 <div class="cantidades">
-//                 <form class="product_item_count"method="post">
-//                     <input type="hidden" name="producto_id" value="${producto.id}"> <!-- Campo oculto con el producto_id -->
-//                     <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">-</span></button>
-//                 </form>
-
-//                     <span class="cant">${producto.cantidad}</span>
-
-//                 <form class="product_item_count" action="${aumentarCarro}" method="post">
-//                     <input type="hidden" name="producto_id" value="${producto.id}"> <!-- Campo oculto con el producto_id -->
-//                     <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3"><span class="signo">+</span></button>
-//                 </form>
-
-//                 </div>
-
-//                 <div class="product_item_price_total">
-//                     <p class="total"> S/ ${totalProducto.toFixed(2)}</p>
-//                 </div>
-//             </div>
-//         `;
-
-//         carritoContenido.insertAdjacentHTML('beforeend', productoHTML);
     }
 
     document.getElementById('subtotal').querySelector('span').innerText = `S/. ${total.toFixed(2)}`;
@@ -266,15 +106,18 @@ function aplicarDescuento() {
             break;
         }
     }
+
     if (descuentoAplicado) {
-        alert('Cupon aplicado exitosamente.');
+        alert('Cupón ya aplicado.');
     } else {
         if (cupon === 'DOMUSESMICASA50' && disponible) {
             let total = parseFloat(totalElement.querySelector('span').innerText.replace('S/. ', ''));
-            descuento = total * 0.20;
+            descuento = total * 0.20;  // Aplicar el 20% de descuento
             descuentoElement.querySelector('span').innerText = `S/. ${descuento.toFixed(2)}`;
             total -= descuento;
             totalElement.querySelector('span').innerText = `S/. ${total.toFixed(2)}`;
+            document.getElementById('total_fijo').innerText = `S/. ${total.toFixed(2)}`;
+
             descuentoAplicado = true;
         } else {
             alert('Cupón no es válido o el carrito está vacío.');
@@ -282,8 +125,8 @@ function aplicarDescuento() {
     }
 }
 
+
 function validarCarro() {
-    // Obtener el carrito desde tu función existente
     const carrito = obtenerCarrito();
 
     // Verificar si el carrito tiene productos
@@ -296,50 +139,45 @@ function validarCarro() {
     }
 
     if (disponible) {
-        // Si hay productos, enviar el estado del pedido al servidor
-        const data = {
-            USUARIOid: 1,  // Aquí deberías usar el ID del usuario actual
-            ESTADO_PEDIDOid: 2  // Cambiar el estado del pedido a 2
-        };
-
-        fetch('/actualizar_estado_pedido', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirigir al siguiente paso (por ejemplo, a la página de pago)
-                    window.location.href = '/resumen_pedido';  // Redirige a la página de entrega o siguiente paso
-                } else {
-                    console.error('Error al actualizar el estado del pedido:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        obtenerTotal();
+        return true;
     } else {
         alert('Agregue productos a su carrito antes de continuar.');
+        return false;
     }
 }
 
 
-/***************************************PARA EL CONTADOR DE PRODUCTOS*****************************************************/
-function actualizarCantidadCarrito() {
-    const carrito = obtenerCarrito();
-    const contadorCarrito = document.getElementById('carrito_cant');
-    let totalCantidad = 0;
+function obtenerTotal() {
+    var totalTexto = document.getElementById("total_fijo").innerText;
 
-    for (let producto in carrito) {
-        totalCantidad += carrito[producto].cantidad;
-    }
+    var totalValor = totalTexto.replace('S/. ', '').replace(',', '');
 
-    contadorCarrito.innerText = `${totalCantidad}`;
-    contadorCarrito.classList.add('animate-bounce');
-    setTimeout(() => {
-        contadorCarrito.classList.remove('animate-bounce');
-    }, 500);
+    var totalNumero = parseFloat(totalValor) || 0;
+
+    console.log("Total a pagar: ", totalNumero);
+
+    document.getElementById("total_form").value = totalNumero;
+
+    return totalNumero;
 }
+
+
+function obtenerDescuento() {
+    if (typeof descuentoAplicado !== 'undefined' && descuentoAplicado) {  
+        var descuentoTexto = document.getElementById("descuentoValor").innerText;
+
+        var totalDescuento = descuentoTexto.replace('S/. ', '').replace(',', '');
+        var totalNumero = parseFloat(totalDescuento) || 0;  
+
+        console.log("Descuento aplicado: ", totalNumero);
+
+        document.getElementById("total_descuento").value = totalNumero;
+
+        return totalNumero;
+    } else {
+        console.log("Descuento no aplicado o descuentoAplicado indefinido.");
+        return 0;
+    }
+}
+

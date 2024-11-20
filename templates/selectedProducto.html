@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="static/css/styles.css">
     <link rel="stylesheet" href="static/css/stylesBrands.css">
     <link rel="stylesheet" href="static/css/stylesProductCard.css">
-    <link rel="stylesheet" href="static/css/stylesPageProduct.css">
+    <link rel="stylesheet" href="/static/css/stylesPageProduct.css">
 {% endblock %}
 
 {% block contenido %}
@@ -18,8 +18,8 @@
             <div class="breadcrumb">
                 <a href="{{url_for('index')}}"><i class="fa-solid fa-home"></i></a> >
                 <a href="{{url_for('categoria', id=categoria[0])}}">{{categoria[1]}}</a> >
-                <a href="{{url_for('categoria', id=categoria[0])}}">{{categoria[4]}}</a> >
-                <a class="product_breadcrumb" href="#">{{producto[1]}}</a>
+                <a href="{{url_for('categoria', id=categoria[0])}}">{{categoria[4]}}</a>
+                <!-- <a class="product_breadcrumb" href="#">{{producto[1]}}</a> -->
             </div>
 
             <div class="product_content">
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="product_head">
-                    <div class="product_rating">
+                    <!-- <div class="product_rating">
                         <div class="product_stars">
                             <div class="stars_icon">
                                 <i class="fa-solid fa-star"></i>
@@ -67,11 +67,9 @@
                                 <i class="fa-solid fa-star-half-stroke"></i>
                                 <i class="fa-regular fa-star"></i>
                             </div>
-                            <div class="stars_value">
-                                {{ producto[5] | round(1) }}
-                            </div>
+                            
                         </div>
-                    </div>
+                    </div> -->
                     
                     <div class="product_code">
                         ID: 
@@ -166,9 +164,14 @@
                         </div>
                     </div>                   
 
-                    <div class="product_cart_option product_cart_add">
-                        Agregar al carrito
-                    </div>
+                    <form action="{{url_for('agregar_carrito')}}" class="product_cart_option product_cart_add">
+
+                    <form id="compra_a_carrito" class="form_selected_producto" action="{{url_for('agregar_carrito')}}" method="post">
+                        <input type="hidden" name="producto_id" value="{{producto[0]}}" data-product-id="{{ producto.0 }}" />
+                        <button type="submit" class="product_option product_option_add" id="cant_aumentar">
+                          <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </form>
 
                     <div class="product_cart_option product_cart_fav">
                         <i class="fa-regular fa-heart"></i>
@@ -176,46 +179,64 @@
                 </div>
             </div>
     
-            <div class="product_details">
+            {% if producto[6] or caracteristicasSecundarias %}
+            <div class="row product_details">
                 <div class="product_page_title product_details_title">
                     MÁS DETALLES
                 </div>
 
                 <div class="product_details_content">
-                    {% if caracteristicasSecundarias %}
-                    <div class="product_specifications">
-                        <strong>Especificaciones</strong>
-                        <div class="product_features">
+                    <div class="row">
+                        {% if caracteristicasSecundarias %}
+                        <div class="col">
+                            <div class="product_specifications">
+                                <strong>Especificaciones</strong>
+                                <div class="product_features">
 
-                            {% for carac in caracteristicasSecundarias %}                  
-                            <div class="pf_date">
-                                <div class="pf_date_name">
-                                    {{carac[0]}}
-                                </div>
-                                <div class="pf_date_value">
-                                    {{carac[1]}}
+                                    {% for carac in caracteristicasSecundarias %}                  
+                                    <div class="pf_date">
+                                        <div class="pf_date_name">
+                                            {{carac[0]}}
+                                        </div>
+                                        <div class="pf_date_value">
+                                            {{carac[1]}}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                                        
                                 </div>
                             </div>
-                            {% endfor %}
-                                                   
                         </div>
-                    </div>
-                    <div class="space"></div>
-                    {% endif %}
+                        {% endif %}
 
-                    <div class="product_additional">
-                        <strong>Información adicional</strong>
-                        <div class="product_additional_content">{{ producto[6] | safe }}
-                        </div>                        
+                        <!-- {% if producto[6] and caracteristicasSecundarias %}
+                        <div class="col">
+                            <div class="space"></div>
+                        </div>
+                        {% endif %} -->
+
+                        {% if producto[6] %}
+                        <div class="col">
+                            <div class="product_additional">
+                                <strong>Información adicional</strong>
+                                <div class="product_additional_content">
+                                    {% if producto[6] %}
+                                        <div style="white-space: pre-wrap;">{{producto[6] | safe }}</div>
+                                    {% else %}
+                                        <b><i>No posee Información Adicional</i></b>                                    
+                                    {% endif %}
+                                </div>                        
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>                
-
-                <!-- <button class="product_details_more">Ver más</button> -->
             </div>
+            {% endif %}
 
         </article>
 
-        {% if productosMarca %}        
+        {% if productosMarca | length > 5  %}        
         <article class="article_products article_product_brand">
             <h1 class="title1_1">
                 MÁS SOBRE ESTA MARCA
@@ -288,7 +309,7 @@
         </article>
         {% endif %}
 
-        {% if productosSimilares %}
+        {% if productosSimilares | length > 5 %}
         <article class="article_products article_product_similar">
             <h1 class="title1_2">
                 ENCUENTRA PRODUCTOS SIMILARES

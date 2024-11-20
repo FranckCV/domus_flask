@@ -4,18 +4,18 @@
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Tipo de Novedad</h2><br /><br /><br />
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Agregar Tipo de Novedad</h2>
     <form action="{{ url_for('guardar_tipo_novedad') }}" method="post">
       <div class="form-grid" id="col_add">
-        <!-- Primera columna -->
+        
         <div class="row">
           <div class="col">
-            <label for="nombre_tipo">Nombre del Tipo de Novedad:</label><br />
+            <label for="nombre_tipo">Nombre del Tipo de Novedad:</label>
             <input required type="text" class="input" placeholder="Nombre del tipo de novedad" name="nombre_tipo" id="nombre_tipo" />
           </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="row">
           <div class="col" id="sbmt">
             <div class="form-buttons">
-              <a href="{{ url_for('novedades_listado') }}" id="backbtn">Volver</a>
+              <a href="{{ url_for('listado_tipos_novedad') }}" id="backbtn">Volver</a>
               <button type="submit" class="button is-primary">Agregar</button>
             </div>
           </div>

@@ -1,0 +1,61 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Editar Detalle de Pedido
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Detalle del Pedido</h2><br /><br /><br />
+    <form action="{{ url_for('actualizar_detalle_pedido') }}" method="post" enctype="multipart/form-data">
+
+      <div class="form-grid" id="col_add">
+        <!-- Primera columna -->
+        <div class="row">
+          <div class="col">
+            <label for="producto_id">Producto:</label><br />
+            <select name="producto_id" id="producto_id" class="input" required>
+                <!-- Opción por defecto, el producto actual -->
+                <option value="{{ detalle[0][2] }}" selected>{{ detalle[0][0] }}</option>
+                
+                <!-- Otras opciones de productos -->
+                {% for producto in productos %}
+                    <option value="{{ producto[1] }}">{{ producto[0] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+
+
+        <div class="row">
+          <div class="col">
+            <label for="cantidad">Cantidad:</label><br />
+            <input value="{{ detalle[0][1] }}" required type="number" class="input" placeholder="Cantidad" name="cantidad" id="cantidad" min="1"/>
+          </div>
+        </div>
+
+        <input type="hidden" name="pedido_id" id="pedido_id" value="{{detalle[0][3]}}">
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <!-- Botón de Volver -->
+              <a href="{{ url_for('detalle_pedido', id=detalle[0][3]) }}" id="backbtn" class="btn btn-secondary">Volver</a>
+              <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
+            </div>
+          </div>
+        </div>
+        
+        
+      </div>
+      
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

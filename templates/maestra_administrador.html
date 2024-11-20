@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block titulo %} {% endblock %}| Domus Market</title>
-  <link rel="shortcut icon" href="static/img/elementos/iconDomus.png">
+  <title> CRUD | {% block titulo %} {% endblock %}| Domus Market</title>
+  <link rel="shortcut icon" href="{{datos_domus_main.4}}">
   <link rel="stylesheet" href="static/css/common_styles/bootstrap.min.css">
   <link rel="stylesheet" href="static/css/common_styles/all.min.css">
   <link rel="stylesheet" href="static/css/common_styles/fontawesome.min.css">
@@ -16,51 +16,129 @@
   {% endblock %}
 </head>
 
-  <body class="body_section">
-    <header>
-      <a class="header_item" id="index_logo" href="{{ url_for('index') }}"><img class="img-fluid" id="logo_header" src="{{ url_for('static', filename=logo_foto) }}" alt="Logo" /></a>
+<body class="body_section">
+  <header>
+    <a class="header_item" id="index_logo" href="{{ url_for('index') }}"><img class="img-fluid" id="logo_header" src="{{datos_domus_main.3}}" alt="Logo" /></a>
 
-      <div class="header_item header_option" id="header_perfil">
-        <i class="fa-solid fa-user"></i>
-        <p>Mi perfil</p>
-        <div class="dropdown_menu" id="perfil_menu">
-          <ul>
-            <li>
-              <a href="{{ url_for('cuenta_administrativa') }}">Gestionar cuenta</a>
-            </li>
-            <li>
-              <a href="{{ url_for('index') }}">Cerrar sesión</a>
-            </li>
-          </ul>
-        </div>
+    <div class="header_item header_option" id="header_perfil">
+      <i class="fa-solid fa-user"></i>
+      <p>Mi perfil</p>
+      <div class="dropdown_menu" id="perfil_menu">
+        <ul>
+          <li>
+            <a class="falta" href="{{ url_for('cuenta_administrativa') }}">Gestionar cuenta</a>
+          </li>
+          <li>
+            <a class="falta" href="{{ url_for('index') }}">Cerrar sesión</a>
+          </li>
+        </ul>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <aside>
-      
-      <div id="usuario">
-        <img src="{{ url_for('static', filename='img/usuario/admin.jpeg') }}" alt="Perfil" />
-        <p>Nombre</p>
-      </div>
+  <aside>
+    
+    <div id="usuario">
+      <img src="{{ url_for('static', filename='img/usuario/admin.jpeg') }}" alt="Perfil" />
+      <p>Ing. Fabs</p>
+    </div>
 
-      <nav class="menu_items">
-        <a  href="{{url_for('dashboard')}}"><i class="fa-solid fa-house"></i> <p>Dashboard</p></a>
-        <a  href="{{url_for('productos')}}"><i class="fa-solid fa-clipboard-list"></i> <p>Productos</p></a>
-        <a  href="{{url_for('marcas')}}"><i class="fa-solid fa-tag"></i> <p>Marcas</p></a>
-        <a  href="{{url_for('categorias')}}"><i class="fa-solid fa-list"></i> <p>Categorias</p></a>
-        <a  href="{{url_for('novedades_listado')}}"><i class="fa-solid fa-star"></i> <p>Novedades</p></a>
-      </nav>
-    </aside>
+    <nav class="menu_items">
+      <a class="medio" href="{{url_for('dashboard')}}">
+        <i class="fa-solid fa-house"></i> 
+        <p>Dashboard</p>
+      </a>
+      <a class="" href="{{url_for('productos')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Productos</p>
+      </a>
+      <a class="medio" href="{{url_for('novedades_listado')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Novedades</p>
+      </a>
+      <a href="{{url_for('marcas')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Marcas</p>
+      </a>
+      <a class="falta" href="{{url_for('listado_clientes')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Clientes</p>
+      </a>
+      <a class="falta" href="{{url_for('pedido')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Compras y Pedidos</p>
+      </a>
+      <a class="falta" href="{{url_for('comentarios_listado')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Comentarios</p>
+      </a>
+      <a class="falta" href="{{url_for('listado_datos_principales')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Datos Principales</p>
+      </a>
+      <a class="falta" href="{{url_for('empleados_listado')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Empleados</p>
+      </a>
+      <a class="falta" href="{{url_for('listado_redes_sociales')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Redes Sociales</p>
+      </a>
+      <a class="falta" href="{{url_for('listado_tipo_contenido_info')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Contenido Informativo</p>
+      </a>
+      <a class="falta" href="{{url_for('categorias')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Categorias</p>
+      </a>  
+      <a class="falta" href="{{url_for('subcategorias')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Subcategorias</p>
+      </a>          
+      <a class="falta" href="{{url_for('caracteristicas')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Caracteristicas para Productos</p>
+      </a>
+      <a class="falta" href="{{url_for('listado_tipos_novedad')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Tipos de Novedades</p>
+      </a>
+      <a class="falta" href="{{url_for('tipos_img_novedad_listado')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Tipos de Imagenes de Novedades</p>
+      </a>
+      <a class="falta" href="{{url_for('motivos_comentario_listado')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Motivos de Comentarios</p>
+      </a>
+      <a class="falta" href="{{url_for('listado_tipos_usuario')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Tipos de Usuarios</p>
+      </a>
+      <a class="falta" href="{{url_for('listado_metodo_pago')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Metodos de Pago</p>
+      </a>
+      <a class="falta" href="{{url_for('listado_estado_pedido')}}">
+        <i class="fa-solid fa-caret-right"></i>
+        <p>Estados de Pedido</p>
+      </a>
 
-    <main>
-      {% block contenido %}
-        <!-- Aquí va el contenido principal -->
-      {% endblock %}
-    </main>
+    </nav>
+  </aside>
 
-    <script src="static/js/maestra_administradora.js"></script>
-    {% block scripts %}        
+  <main>
+    {% block contenido %}
+      <!-- Aquí va el contenido principal -->
     {% endblock %}
+  </main>
 
-  </body>
+  <script src="/static/js/common_script/jquery-3.7.1.min.js"></script>
+  <script src="/static/js/common_script/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/maestra_administradora.js"></script>
+  {% block scripts %}        
+  {% endblock %}
+
+</body>
 </html>

@@ -42,12 +42,12 @@
           </div>
         </div>
 
-        <div class="head_cart_continue">
-          <button id="seguir" onclick="window.location.href='catalogo.html'">
+        <form class="head_cart_continue" action="{{ url_for('index') }}">
+          <button id="seguir">
             <i class="fa-solid fa-arrow-left"></i>
             Seguir Comprando
           </button>
-        </div>
+        </form>
       </div>
 
       <div class="content_cart">
@@ -60,58 +60,52 @@
           </div>
 
           <div class="cart_list_body" id="carrito-contenido"></div>
-            {% for producto in productos %}
-              <div class="product_item">
-                <div class="product_item_info">
+          {% for producto in productos %}
+            <div class="product_item">
+              <div class="product_item_info">
+                <img src="{{ producto.0 }}" class="product_item_pic" alt="Imagen del Producto" />
 
-                  <img src="{{producto[0]}}" class="product_item_pic" alt="Imagen del Producto" />
-                  
-                  <div class="product_item_name">
-                    <p class="nombreProducto">{{ producto[1] }}</p>
-                    <p class="vendido-por">
-                      Vendido por: <strong>Domus</strong>
-                    </p>
-                  </div>
-                </div>
-            
-                <div class="product_item_price_unit">
-                  <p class="precioProducto">S/ {{ producto[2] }}</p>
-                </div>
-            
-                <!-- Controles de cantidades -->
-                <div class="cantidades">
-                  <!-- Disminuir cantidad -->
-                  <form class="product_item_count" action="{{ url_for('disminuir_carro') }}" method="post">
-                    <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id"/> <!-- Campo oculto con el producto_id -->
-                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="disminuir(this)">
-                      <span class="signo">-</span>
-                    </button>
-                  </form>
-            
-                  <!-- Mostrar cantidad actual -->
-                  <span class="cant">{{ producto[3] }}</span>
-            
-                  <!-- Aumentar cantidad -->
-                  <form class="product_item_count" action="{{ url_for('aumentar_carro') }}" method="post">
-                    <input type="hidden" name="producto_id" value="{{ producto[4] }}" id="producto_id" /> 
-                    <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="aumentar(this)">
-                      <span class="signo">+</span>
-                    </button>
-                  </form>
-                </div>
-            
-                <div class="product_item_price_total">
-                  <p class="total">
-                      S/ 
-                      {% if producto[2] is not none and producto[3] is not none %}
-                          {{ producto[3] * producto[2] }}
-                      {% else %}
-                          Error en precio o cantidad
-                      {% endif %}
+                <div class="product_item_name">
+                  <p class="nombreProducto">{{ producto.1 }}</p>
+                  <p class="vendido-por">
+                    Vendido por: <strong>Domus</strong>
                   </p>
+                </div>
               </div>
+
+              <div class="product_item_price_unit">
+                <p class="precioProducto">S/ {{ producto.2 }}</p>
               </div>
-            {% endfor %}  
+
+              <!-- Controles de cantidades -->
+              <div class="cantidades">
+                <!-- Disminuir cantidad -->
+                <form class="product_item_count" action="{{ url_for('disminuir_carro') }}" method="post">
+                  <input type="hidden" name="producto_id" value="{{ producto.4 }}" id="producto_id" /> <!-- Campo oculto con el producto_id -->
+                  <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="disminuir(this)"><span class="signo">-</span></button>
+                </form>
+
+                <!-- Mostrar cantidad actual -->
+                <span class="cant">{{ producto.3 }}</span>
+
+                <!-- Aumentar cantidad -->
+                <form class="product_item_count" action="{{ url_for('aumentar_carro') }}" method="post">
+                  <input type="hidden" name="producto_id" value="{{ producto.4 }}" id="producto_id" />
+                  <button type="submit" class="btn btn-outline-primary btn-responsive btn-round mx-3" onclick="aumentar(this)"><span class="signo">+</span></button>
+                </form>
+              </div>
+
+              <div class="product_item_price_total">
+                <p class="total">
+                  S/{% if producto.2 is not none and producto.3 is not none %}
+                    {{ producto.3 * producto.2 }}
+                  {% else %}
+                    Error en precio o cantidad
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          {% endfor %}
         </div>
 
         <div class="cart_space">
@@ -119,38 +113,37 @@
         </div>
 
         <div class="cart_total">
-          <div class="cart-summary">
-            <div class="discount-code">
-              <label for="coupon">¿Tienes algún cupón de descuento?</label>
-              <div class="d-flex">
-                <input type="text" id="coupon" value="DOMUSESMICASA50" />
-                <button id="aplicar" onclick="aplicarDescuento()">Aplicar</button>
+          <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post" onsubmit="return validarCarro();">
+            <div class="cart-summary">
+              <div class="discount-code">
+                <label for="coupon">¿Tienes algún cupón de descuento?</label>
+                <div class="d-flex">
+                  <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
+
+                  <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
+                </div>
+                <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
               </div>
-              <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
+
+              <div class="resumen">
+                <p id="subtotal">
+                  Subtotal: <span></span>
+                </p>
+                <p id="descuento">
+                  Descuento: <span id="descuentoValor">s/. 00.00</span>
+                </p>
+                <p id="total">
+                  Total: <span id="total_fijo"></span>
+                </p>
+              </div>
+
+              <div>
+                <input type="hidden" id="total_form" name="total_form" value="" />
+                <input type="hidden" id="total_descuento" name="total_descuento" value="" />
+                <button type="submit" class="checkout" onclick="validarCarro(); obtenerTotal(); obtenerDescuento()">Continuar</button>
+              </div>
             </div>
-
-            <div class="resumen">
-              <p id="subtotal">
-                Subtotal: <span></span>
-              </p>
-              <p id="descuento">
-                Descuento: <span>s/. 00.00</span>
-              </p>
-              <p id="total">
-                Total: <span></span>
-              </p>
-            </div>
-
-            <!--  <div class="actions">
-                            <a class="checkout" onclick="validarCarro()">Continuar</a>
-                        </div>  -->
-
-            <form class="actions" action="{{ url_for('confirmar_carrito') }}" method="post">
-              <input type="hidden" id="estado_pedido" value="2" />
-
-              <a class="checkout" onclick="validarCarro()">Continuar</a>
-            </form>
-          </div>
+          </form>
         </div>
       </div>
     </article>
@@ -201,13 +194,10 @@
               <div class="product_option product_option_fav button">
                 <i class="fa-regular fa-heart"></i>
               </div>
-              <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
-                <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
-                <button type="submit" class="product_option product_option_add" id="cant_aumentar">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
+              <form class="product_form_add" action="{{ url_for('agregar_carrito') }}" method="post">
+                <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
+                <button type="submit" class="product_option product_option_add" id="cant_aumentar"><i class="fa-solid fa-plus"></i></button>
               </form>
-
             </div>
           {% endfor %}
         </div>
@@ -215,9 +205,64 @@
       </div>
     </article>
   </main>
+
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalConfirmarCompraLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalConfirmarCompraLabel">Mensaje de error</h5>
+        </div>
+        <div class="modal-body">
+          <p>{{error_message}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}
 
 {% block scripts %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var errorModal = document.getElementById("errorModal");
+    var errorMessage = "{{ error_message }}";
+    if (errorMessage && errorMessage !== "None") {  
+        var bootstrapModal = new bootstrap.Modal(errorModal);
+        bootstrapModal.show();
+    }
+  });
+</script>
+
+<script>
+  //Para que lo qu está en la bd se guarde en el json
+  document.addEventListener("DOMContentLoaded", () => {
+    // Inicializamos el carrito en `localStorage` con los datos del servidor
+    const productosServidor = {{ productos | tojson }};
+    let carrito = {};
+
+    // Iteramos sobre los productos del servidor y los añadimos al carrito
+    productosServidor.forEach(producto => {
+      const [img, nombre, precio, cantidad, id] = producto;
+      carrito[nombre] = {
+        img: img,
+        precio: precio,
+        cantidad: cantidad,
+        id: id
+      };
+    });
+
+    // Guardamos el carrito inicializado en `localStorage`
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    actualizarCarrito(); // Actualizamos la vista del carrito con estos datos
+    actualizarCantidadCarrito(); // Actualizamos el contador en el header
+  });
+</script>
 
   <script src="static/js/carrito.js"></script>
   <script src="static/js/scriptListProduct.js"></script>

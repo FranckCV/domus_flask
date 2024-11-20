@@ -1,0 +1,181 @@
+{% extends 'maestra_general.html' %}
+
+{% block titulo %}
+  Resumen de pedido
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/resumenDePedido.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="body_page">
+    <h2 class="title_page">Pedido #<span></span></h2>
+    <div class="container mb-4">
+      <div class="row justify-content-center my-3">
+        <table class="table caption-top">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" class="existencia">existencia</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Subtotal</th>
+            </tr>
+          </thead>
+
+          <tbody id="tabla-contenido">
+            {% for existencia in existencias %}
+              <tr>
+                <th scope="row">{{ existencia.4 }}</th>
+
+                <td class="existencia">
+                  <img class="product_pic" src="{{ existencia.0 }}" alt="" />
+                  <span>{{ existencia.1 }}</span>
+                </td>
+
+                <td>s/.{{ existencia.2 }}</td>
+
+                <td>{{ existencia.3 }}</td>
+
+                <td class="total">
+                  S/{% if existencia.2 is not none and existencia.3 is not none %}
+                    {{ existencia.3 * existencia.2 }}
+                  {% else %}
+                    Error en precio o cantidad
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- cards -->
+      <form action="{{ url_for('confirmar_compra') }}" method="post" id="formCompra">
+        <div class="row justify-content-center my-4">
+          <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Dirección</h5>
+                <p class="card-text">Destinatario: Mirtha Paico Moreno</p>
+                <p class="card-text">La niña 170</p>
+                <p class="card-text">La Victoria</p>
+                <p class="card-text">Chiclayo, Lambayeque</p>
+                <p class="card-text">Perú</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Método de pago</h5>
+                <select id="metodo_pago" name="metodo_pago" class="form-select">
+                  {% for metodo in metodos_pago %}
+                    <option value="{{ metodo.0 }}">{{ metodo.1 }}</option>
+                  {% endfor %}
+                </select>
+
+                <p class="total card-text total_pagar">S/{{ total_pagar }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Resumen</h5>
+          
+                {% if valor_descuento is not none and valor_descuento|float > 0 %}
+                  <div class="card-text-total descuento">
+                    <b>Descuento aplicado</b>
+                  </div>
+                {% else %}
+                  <div class="card-text-total descuento">
+                    <i>No se aplicó descuento</i>
+                  </div>
+                {% endif %}
+          
+                <div class="card-text-total">
+                  <p>Subtotal</p>
+                  <span id="subtotal" class="total_pagar">S/{{ total_pagar }}</span>
+                </div>
+                {% if valor_descuento is not none and valor_descuento|float > 0 %}
+                  <div class="card-text-total ">
+                    <p>Cantidad de descuento:</p>
+                    <span id="total_descuento_aplicado" class="total_descuento">S/{{ valor_descuento }}</span>
+                  </div>
+                  <div class="card-text-total">
+                    <p>Subtotal con descuento:</p>
+                    <span id="subtotal_con_descuento" class="total_descuento">S/{{ (total_pagar|float - valor_descuento|float) | round(2) }}</span>
+                  </div>
+                {% else %}
+
+                {% endif %}
+                <div class="card-text-total">
+                  <p>Costo de envío</p>
+                  <span id="costo_envio">S/.10.00</span>
+                </div>
+          
+                <div class="card-text-total">
+                  <p>Total</p>
+                  <span id="total_sumado">S/{{ (total_pagar|float - valor_descuento|float + 10) | round(2) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-primary me-2 cancelar" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Cancelar compra</button>
+          <button class="btn btn-primary confirmar square" type="button" onclick="confirmarCompra(this)"  >Confirmar compra</button>
+          <span class="circle-expand"></span>
+          <div class="modal-thank">
+            <div class="text hvr-wobble-horizontal">¡Gracias por su compra!</div>
+          </div>
+        </div>
+      </form>
+      <!-- modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5 text-dark" id="exampleModalLabel">Ventana de confirmación</h1>
+            </div>
+            <div class="modal-body">
+              <p>Estás seguro de que quieres cancelar tu compra?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver al pedido</button>
+              <button type="button" class="btn btn-primary" onclick="cancelarCompra()">Confirmar cancelación</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de confirmación de compra -->
+      <div class="modal fade" id="modalConfirmarCompra" tabindex="-1" aria-labelledby="modalConfirmarCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalConfirmarCompraLabel">Confirmación de compra</h5>
+            </div>
+            <div class="modal-body">
+              <p>¿Estás seguro de que deseas confirmar la compra?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" id="btnConfirmarCompra">Confirmar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="static/js/resumenPedido.js"></script>
+{% endblock %}

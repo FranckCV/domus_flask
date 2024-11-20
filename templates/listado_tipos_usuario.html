@@ -1,0 +1,116 @@
+{% extends "maestra_administrador.html" %}
+{% block titulo %}
+Listado de Tipos de Usuario
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section" id="mainSection">
+
+  <div class="row">
+    <div class="col">
+      <h2 class="fw-bolder">Listado de Tipos de Usuario</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="input-group">      
+        <a href="{{ url_for('formulario_agregar_tipo_usuario') }}" class="button is-success add-btn">
+          <button type="button" class="main_btn">Agregar</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table cellspacing="0"class="table_listado product_if">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tipo</th>
+          <th>Descripción</th>
+          <th>Foto de Perfil</th>
+          <th>Disponibilidad</th>
+          <th>Cant. Usuarios</th>
+          <th class="opciones_column">Opciones</th>
+        </tr>
+      </thead>
+      <tbody id="productTableBody">
+        {% for tipo_usuario in tipos_usuario %}
+        <tr class="
+        {% if tipo_usuario.5 == 1 %}
+          fila_disp_si
+        {% else %}
+          fila_disp_no
+        {% endif %}
+        ">
+          <td class="celda_id">{{ tipo_usuario[0] }}</td>
+          <td>{{ tipo_usuario[1] }}</td>
+          <td>{{ tipo_usuario[2] }}</td>        
+          <td>
+            <div class="celda_texto_bloque">
+              <img src="{{ tipo_usuario[3] }}" alt="{{ tipo_usuario[1] }} foto" class="clickable-image">
+            </div>
+          </td>
+          <td>
+            <div class="celda_estado">
+              {% if tipo_usuario.5 == 1 %}
+                <p class="disponibilidad disp_si">Disponible</p>
+              {% else %}
+                <p class="disponibilidad disp_no">No Disponible</p>
+              {% endif %}
+            </div>
+          </td>
+          <td>
+            <div class="celda_numero">
+              <p class="
+                {% if tipo_usuario[4] > 0 %}
+                  num_cant
+                {% else %}
+                  num_cero
+                {% endif %}
+                ">
+                  {{ tipo_usuario[4] }}
+                </p>
+            </div>
+          </td>
+          <td class="opciones_column">
+            <div class="acciones">
+              <a class="opciones_fila" href="{{ url_for('editar_tipo_usuario', id=tipo_usuario[0]) }}">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </a>
+              <form class="opciones_fila" action="{{ url_for('eliminar_tipo_usuario') }}" method="POST" onsubmit="return confirmarEliminacion()">
+                <input type="hidden" name="id" value="{{ tipo_usuario[0] }}">
+                <button type="submit">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+    <img id="enlargedImage" class="enlarged-image" />
+  </div>
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+    }
+  </script>
+  <script src="/static/js/admin_productos.js"></script>
+  <script src="/static/js/imgsCRUDimagencompleta.js"></script>
+
+{% endblock %}

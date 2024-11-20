@@ -1,0 +1,247 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+Listado de Comentarios
+{% endblock %}
+
+{% block estilos %}
+    <link rel="stylesheet" href="static/css/administrativa/listados.css">
+    <!-- <link rel="stylesheet" href="/static/css/administrativa/colores.css"> -->
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section scrollable-section" id="mainSection">
+
+    <div class="row">
+        <div class="col">
+            <h2 class="fw-bolder">Listado de Comentarios</h2>
+        </div>
+
+        {% if nombreBusqueda %}
+            <div class="col-2" >
+            <div class="input-group">
+                <a class="button is-success add-btn" href="{{ url_for('comentarios_listado') }}">
+                <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+                </a>
+            </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+    <div class="row" id="break_nav">
+
+        <div class="col-3">
+
+            <table id="grid_resultados" cellspacing="0">
+              <tbody>
+                <tr>
+                  <th colspan="3">Resultados</th>
+                </tr>
+                <tr>
+                  <th>Total</th>
+                  <th>Atendidos</th>
+                  <th>Pendientes</th>
+                </tr>
+                <tr>
+                  <td id="num_resultados"></td>
+                  <td id="num_disp_si"></td>
+                  <td id="num_disp_no"></td>
+                </tr>
+              </tbody>
+            </table>
+      
+        </div>
+
+        <div class="col">
+            <form enctype="multipart/form-data" id="buscarFormulario" method="GET" action="{{ url_for('comentarios_listado_buscar') }}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar por nombre y apellidos o mensaje" aria-label="Buscar"
+                    {% if nombreBusqueda %}
+                        value="{{nombreBusqueda}}"
+                    {% endif %}
+                        name="buscarElemento" id="buscarElemento" />
+                    <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
+                        <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p class="fw-bolder lblchoosie">Filtrar por Motivo:</p>
+            <select id="motivoSelect" class="form-select choosie" aria-label="Filtrar por motivo">
+                <option value="0" selected>Todos</option>
+                {% for motivo in motivos %}
+                <option value="{{ motivo[0] }}">{{ motivo[1] }}</option> <!-- motivo[1] es el nombre del motivo -->
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col">
+            <p class="fw-bolder lblchoosie">Filtrar por Estado:</p>
+            <select id="estadoComSelect" class="form-select choosie" aria-label="Filtrar por motivo">
+                <option value="-1" selected>Todos</option>
+                <option value="0">Pendiente</option>
+                <option value="1">Leido</option>
+                <option value="2">Respondido</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="table-container">
+        <table cellspacing="0" class="table_listado product_if">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ID Usuario</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Email</th>
+                    <th>Celular</th>
+                    <th>Mensaje</th>
+                    <th>Motivo de Comentario</th>
+                    <th>Fecha Registro</th>
+                    <th>Estado</th>
+                    <th class="opciones_column">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                {% for comentario in comentarios %}
+                <tr class="
+                {% if comentario.7 == 1 or comentario.7 == 2 %}
+                  fila_disp_si
+                {% else %}
+                  fila_disp_no
+                {% endif %}
+                ">
+                    <td class="celda_id">{{ comentario[0] }}</td>
+                    <td>
+                        <div class="celda_texto_bloque">
+                        {% if comentario.11 %}
+                            <div class="celda_id">
+                                {{ comentario[11] }}
+                            </div>
+                        {% else %}
+                          <div class="espacio_vacio">
+                            <p>
+                              Usuario no registrado
+                            </p>
+                          </div> 
+                        {% endif %}
+                        </div>
+                    </td>
+                    <td>{{ comentario[1] }}</td>
+                    <td>{{ comentario[2] }}</td>
+                    <td>{{ comentario[3] }}</td>
+                    <td>{{ comentario[4] }}</td>
+                    <td>
+                        <div class="celda_texto_amplio">
+                            {{ comentario[5] }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="celda_texto_bloque color_texto" data-colorid="{{comentario.9}}" data-motivo="{{comentario.9}}">
+                            <p>{{ comentario[8] }}</p>
+                            {% if comentario[10] == 0 %}
+                                <p class="disponibilidad disp_no">No Disponible</p>
+                            {% endif %}
+                        </div>
+                    </td> 
+                    <td>{{ comentario[6] }}</td>
+                    <td>
+                        <div class="celda_estado" data-estado-comentario="{{comentario.7}}">
+                            <p class="estado_comentario texto_estado_{{comentario.7}}">
+                                {% if comentario.7 == 2 %}
+                                    Respondido
+                                {% elif comentario.7 == 1 %}
+                                    Leido
+                                {% elif comentario.7 == 0 %}
+                                    Pendiente
+                                {% endif %}
+                            </p>
+                        </div>
+                    </td>
+                    <td class="opciones_column">
+                        <div class="acciones">
+                            
+                            <a class="opciones_fila" href="{{url_for('ver_comentario', id=comentario[0])}}">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <form class="opciones_fila" action="{{ url_for('estado_comentario') }}" method="POST"
+                                onsubmit="return confirmarLectura()" id="deleteF">
+                                <input type="hidden" name="id" value="{{ comentario[0] }}">
+                                <button type="submit">
+                                    <i class="fa-regular fa-square-check"></i>
+                                </button>
+                            </form>
+
+                            <form class="opciones_fila" action="{{ url_for('estado_comentario_respondido') }}" method="POST"
+                                onsubmit="return confirmarRespuesta()" id="deleteF">
+                                <input type="hidden" name="id" value="{{ comentario[0] }}">
+                                <button type="submit">
+                                    <i class="fa-solid fa-reply"></i>
+                                </button>
+                            </form>                            
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="errorModalLabel">Error al eliminar pedido</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {{ error }} <!-- Aquí se muestra el error que pasaste desde el backend -->
+            </div>
+          </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+
+    {% if show_modal %}
+        <script>
+            var modal = new bootstrap.Modal(document.getElementById('errorModal'));
+            modal.show();
+            
+            // Redirigir automáticamente después de 3 segundos (3000 milisegundos)
+            setTimeout(function(){
+                window.location.href = "/listado_categorias";
+            }, 1500);
+        </script>
+    {% endif %}
+
+    <script>
+        // Función para confirmar acciones
+        function confirmarLectura() {
+            return confirm('¿Estás seguro que deseas marcar como leído este registro? Esta acción no se puede deshacer.');
+        }
+
+        function confirmarRespuesta() {
+            return confirm('¿Estás seguro que deseas marcar como Respondido este registro? Esta acción no se puede deshacer.');
+        }
+
+        function confirmarEliminacion() {
+            return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.');
+        }
+
+    </script>
+
+    <script src="/static/js/filtroCRUDListado.js"></script>
+    <script src="/static/js/textoCRUDcolor.js"></script>
+
+{% endblock %}

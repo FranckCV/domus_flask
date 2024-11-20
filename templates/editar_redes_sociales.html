@@ -1,0 +1,134 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+Editar Red Social
+{% endblock %}
+
+{% block estilos %}
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/css/fontawesome-iconpicker.min.css" integrity="sha512-BfgviGirSi7OFeVB2z9bxp856rzU1Tyy9Dtq2124oRUZSKXIQqpy+2LPuafc2zMd8dNUa+F7cpxbvUsZZXFltQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/static/css/administrativa/dashboard.css">
+    <style>
+    .body_section {
+        font-size: 14.5px;
+    }
+    </style>
+    <link rel="stylesheet" href="/static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Editar Red Social</h2>
+    <form action="{{ url_for('actualizar_redes_sociales') }}" method="post">
+        <input type="hidden" name="id" value="{{ red[0] }}"> 
+        
+        <div class="form-grid" id="col_add">
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">Nombre:</label>
+                    <input required type="text" class="input" placeholder="Nombre" name="nombre" id="nombre" value="{{ red[1] }}">
+                </div>
+            
+                <div class="col">
+                    <label for="icono">Icono:</label>
+                    <input required class="input icp icp-auto" data-input-search="true" name="icono" id="icono" value="{{ red[2] }}" type="text"/>
+                    <!-- <i class="{{ red[2] }}"></i> -->
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="nombre">Enlace:</label>
+                    <input required type="text" class="input" placeholder="Nombre" name="enlace" id="enlace" value="{{ red[3] }}">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" id="sbmt">
+                    <div class="form-buttons">
+                        <a href="{{ url_for('listado_redes_sociales') }}" id="backbtn">Volver</a>
+                        <button type="submit" class="button is-primary">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %} 
+
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/js/fontawesome-iconpicker.min.js" integrity="sha512-7dlzSK4Ulfm85ypS8/ya0xLf3NpXiML3s6HTLu4qDq7WiJWtLLyrXb9putdP3/1umwTmzIvhuu9EW7gHYSVtCQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/static/js/icon-picker/fontawesome-iconpicker.js"></script>
+
+<script>
+
+  $(function () {   
+    $('.icp-auto').iconpicker();
+
+    $('.icp-dd').iconpicker({
+    });
+
+    $('.icp-opts').iconpicker({
+        title: 'With custom options',
+        icons: [
+          {
+            title: "fab fa-github",
+            searchTerms: ['repository', 'code']
+          },
+          {
+            title: "fas fa-heart",
+            searchTerms: ['love']
+          },
+          {
+            title: "fab fa-html5",
+            searchTerms: ['web']
+          },
+          {
+            title: "fab fa-css3",
+            searchTerms: ['style']
+          }
+        ],
+        selectedCustomClass: 'label label-success',
+        mustAccept: true,
+        placement: 'bottomRight',
+        showFooter: true,
+        // note that this is ignored cause we have an accept button:
+        hideOnSelect: true,
+        // fontAwesome5: true,
+        templates: {
+          footer: '<div class="popover-footer">' +
+            '<div style="text-align:left; font-size:12px;">Placements: \n\
+            <a href="#" class=" action-placement">inline</a>\n\
+            <a href="#" class=" action-placement">topLeftCorner</a>\n\
+            <a href="#" class=" action-placement">topLeft</a>\n\
+            <a href="#" class=" action-placement">top</a>\n\
+            <a href="#" class=" action-placement">topRight</a>\n\
+            <a href="#" class=" action-placement">topRightCorner</a>\n\
+            <a href="#" class=" action-placement">rightTop</a>\n\
+            <a href="#" class=" action-placement">right</a>\n\
+            <a href="#" class=" action-placement">rightBottom</a>\n\
+            <a href="#" class=" action-placement">bottomRightCorner</a>\n\
+            <a href="#" class=" active action-placement">bottomRight</a>\n\
+            <a href="#" class=" action-placement">bottom</a>\n\
+            <a href="#" class=" action-placement">bottomLeft</a>\n\
+            <a href="#" class=" action-placement">bottomLeftCorner</a>\n\
+            <a href="#" class=" action-placement">leftBottom</a>\n\
+            <a href="#" class=" action-placement">left</a>\n\
+            <a href="#" class=" action-placement">leftTop</a>\n\
+            </div><hr></div>'
+        }
+    }).data('iconpicker').show();
+
+    $('.icp').on('iconpickerSelected', function (e) {
+      $('.lead .picker-target').get(0).className = 'picker-target fa-3x ' +
+        e.iconpickerInstance.options.iconBaseClass + ' ' +
+        e.iconpickerInstance.options.fullClassFormatter(e.iconpickerValue);
+    });
+  });
+
+</script>
+
+
+{% endblock %}

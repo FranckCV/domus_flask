@@ -1,0 +1,63 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Editar Tipo de Contenido Informativo
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="/static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Editar Articulo de Contenido Informativo</h2>
+    <form action="{{ url_for('actualizar_contenido_info') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="id" value="{{ tipo.0 }}" />
+      <div class="form-grid" id="col_add">
+
+        <div class="row">
+          <div class="col">
+            <label for="titulo">Titulo:</label>
+            <input required type="text" class="input" placeholder="Titulo" name="titulo" id="titulo" value="{{tipo.1}}"/>
+          </div>
+
+          <div class="col">
+            <label for="subcategorySelect">Sección:</label>
+            <select required class="input" name="tipo" id="tipo">
+              {% for seccion in secciones %}
+                <option value="{{seccion[0]}}"
+                {% if seccion[0] == tipo.3 %}
+                  selected
+                {% endif %}
+                >
+                  {{seccion[1]}}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="space_info">
+            <label for="cuerpo">Cuerpo:</label>
+            <textarea name="cuerpo" id="cuerpo" placeholder="Cuerpo">{{tipo.2}}</textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('listado_tipo_contenido_info') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Editar</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <!-- <script src="/static/js/admin_productos.js"></script> -->
+{% endblock %}

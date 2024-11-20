@@ -1,0 +1,229 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+Listado de Clientes
+{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="static/css/administrativa/listados.css" />
+{% endblock %}
+
+{% block contenido %}
+
+<section class="h_section scrollable-section" id="mainSection">
+
+  <div class="row">
+    <div class="col">
+      <h2 class="fw-bolder">Listado de Clientes</h2>
+    </div>
+
+    {% if nombreBusqueda %}
+      <div class="col-2" >
+        <div class="input-group">
+          <a class="button is-success add-btn" href="{{ url_for('listado_clientes') }}">
+            <button type="button" class="main_btn btn_return">Volver al Listado General</button>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <div class="row" id="break_nav">
+
+    <div class="col-3">
+
+      <table id="grid_resultados" cellspacing="0">
+        <tbody>
+          <tr>
+            <th colspan="3">Resultados</th>
+          </tr>
+          <tr>
+            <th>Total</th>
+            <th>Disp</th>
+            <th>No Disp</th>
+          </tr>
+          <tr>
+            <td id="num_resultados"></td>
+            <td id="num_disp_si"></td>
+            <td id="num_disp_no"></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="col">
+      <form enctype="multipart/form-data" method="GET" action="{{ url_for('listado_clientes_buscar') }}">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Buscar por nombre" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="45"
+          {% if nombreBusqueda %}
+            value="{{nombreBusqueda}}"
+          {% endif %}
+          />
+          <button class="btn btn-outline-secondary searchi" type="submit" id="button-addon2">
+            <img src="/static/img/elementosCRUD/loupe.png" alt="buscar" class="search_loupe" />
+          </button>          
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="table-container">
+    <table cellspacing="0" class="table_listado product_if">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellidos</th>
+          <th>Foto de Perfil</th>
+          <th>Documento de Identidad</th>
+          <th>Sexo</th>
+          <th>Teléfono</th>
+          <th>Correo Electrónico</th>
+          <th>Fecha Nacimiento</th>
+          <th>Fecha de Registro</th>
+          <th>Disponibilidad</th>
+          <th>Cant. Pedidos</th>
+          <th class="opciones_column">Opciones</th>
+        </tr>
+      </thead>
+      <tbody id="productTableBody">
+        {% for usuario in usuarios_clientes %}
+        <tr class="
+        {% if usuario.9 == 1 %}
+          fila_disp_si
+        {% else %}
+          fila_disp_no
+        {% endif %}
+        ">
+          <td class="celda_id">{{ usuario[0] }}</td>
+          <td>{{ usuario[1] }}</td>
+          <td>{{ usuario[2] }}</td>
+          <td>
+              <div class="celda_texto_bloque">
+                {% if usuario.4 %}
+                  {% for foto in imagenes %}
+                    {% if foto.0 == usuario[0] %}
+                      <img src="{{foto.1}}" alt="Foto de Usuario {{ usuario.0 }}" class="clickable-image" style="width: 70px"/> 
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  <div class="espacio_vacio">
+                    <p>
+                      Sin foto
+                    </p>
+                  </div> 
+                {% endif %}
+              </div>
+          </td>
+          <td>{{ usuario[3] }}</td>
+          <td>
+            <div class="celda_estado">
+              {% if usuario.5 == 1 %}
+                <p class="genero gen_mas">Masculino</p>
+              {% else %}
+                <p class="genero gen_fem">Femenino</p>
+              {% endif %}
+            </div>
+          </td>
+          <td>{{ usuario[7] }}</td>
+          <td>{{ usuario[8] }}</td>
+          <td>{{ usuario[6] }}</td>
+          <td>{{ usuario[11] }}</td>
+          <td>
+            <div class="celda_estado">
+              {% if usuario.9 == 1 %}
+                <p class="disponibilidad disp_si">Disponible</p>
+              {% else %}
+                <p class="disponibilidad disp_no">No Disponible</p>
+              {% endif %}
+            </div>
+          </td>
+          <td>
+            <div class="celda_numero">
+              <p class="
+              {% if usuario.10 > 0 %}
+                num_cant
+              {% else %}
+                num_cero
+              {% endif %}
+              ">
+                {{ usuario.10 }}
+              </p>
+            </div>
+          </td>
+          <td class="opciones_column">
+            <div class="acciones">
+              <a class="opciones_fila" href="{{ url_for('ver_cliente', id=usuario[0]) }}">
+                <i class="fa-solid fa-eye"></i>
+              </a>
+              <a class="opciones_fila" href="{{ url_for('editar_cliente', id=usuario[0]) }}">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </a>
+              <form class="opciones_fila" action="{{ url_for('eliminar_cliente') }}" method="POST" onsubmit="return confirmarEliminacion()"
+                id="deleteF">
+                <input type="hidden" name="id" value="{{ usuario[0] }}">
+                <button type="submit">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="errorModalLabel">Error al eliminar pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ error }} <!-- Aquí se muestra el error que pasaste desde el backend -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+    <img id="enlargedImage" class="enlarged-image" />
+  </div>
+
+</section>
+
+<style>
+  .Catective {
+    background-color: rgb(255, 255, 255);
+    color: #00095c;
+  }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+
+{% if show_modal %}
+<script>
+  var modal = new bootstrap.Modal(document.getElementById('errorModal'));
+  modal.show();
+
+  setTimeout(function () {
+    window.location.href = "/listado_categorias";
+  }, 1500);
+</script>
+{% endif %}
+
+<script>
+  function confirmarEliminacion() {
+    return confirm('¿Estás seguro que deseas eliminar este registro? Esta acción no se puede deshacer.')
+  }
+</script>
+<script src="/static/js/admin_productos.js"></script>
+<script src="/static/js/filtroCRUDListado.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
+{% endblock %}

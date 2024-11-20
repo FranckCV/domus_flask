@@ -1,0 +1,225 @@
+{% extends 'maestra_administrador.html' %}
+
+{% block titulo %}
+  Detalle del Pedido
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
+  <link rel="stylesheet" href="/static//css/administrativa/agregar.css">
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    
+    <div class="row">
+      <div class="col">
+        <h2 class="fw-bolder">Detalles de Pedido</h2>
+      </div>
+
+      <div class="col">
+        <div class="d-flex justify-content-end">
+          <div class="form-buttons">
+            <a href="{{ url_for('pedido')}}" id="backbtn" class="main_btn btn_return">Volver al Listado General</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label for="nombre">ID Pedido:</label>
+        <input disabled required type="text" disabled class="input" id="nombre" value="{{ pedido[0] }}" style="text-align: center;">
+      </div>
+      
+      <div class="col">
+        <label for="nombre">ID Usuario:</label>
+        <input disabled required type="text" disabled class="input" id="nombre" value="{{ pedido[8] }}" style="text-align: center;">
+      </div>
+
+      <div class="col">
+        <label for="nombre">Nombre del Usuario:</label>
+        <input disabled required type="text" disabled class="input" id="nombre" value="{{ pedido[4] }}" style="text-align: center;">
+      </div>
+      
+      <div class="col">
+        <label for="nombre">Estado de Pedido:</label>
+        <div class="celda_estado">
+          {% for estado in estados %}
+            {% if estado.0 == pedido.5 %}
+              <p class="disponibilidad
+
+              {% if estado.0 == 2 %}
+                disp_si
+              {% else %}
+                disp_no
+              {% endif %}
+
+              ">{{estado.1}}</p>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+    
+    <div class="row">
+      
+      <div class="col">
+        <label for="">Metodo de Pago:</label>
+        {% if pedido.3 %}
+          {% for metodo in metodos %}
+            {% if metodo.0 == pedido.3 %}
+            <div class="celda_dato_externo">
+              <input disabled required type="text" disabled class="input" id="nombre" style="text-align: center;"
+                value="{{ metodo[1] }}"
+              >
+              {% if metodo.2 == 0 %}
+                <p class="disponibilidad disp_no">No Disponible</p>
+              {% endif %}
+            </div>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <div class="espacio_vacio">
+            <p>
+              No registrado
+            </p>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="col">
+        <label for="nombre">Fecha Compra:</label>
+        {% if pedido.1 %}
+          <input disabled required type="text" disabled class="input" id="nombre" style="text-align: center;"
+            value="{{ pedido[1] }}"
+          >
+        {% else %}
+          <div class="espacio_vacio">
+            <p>
+              No registrado
+            </p>
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="col">
+        <label for="nombre">Total:</label>
+        {% if pedido.2 %}
+          <input disabled required type="text" disabled class="input" id="nombre" value="{{ pedido[2] }}" style="text-align: center; font-weight: bold;">
+        {% else %}
+          <div class="espacio_vacio">
+            <p>
+              No registrado
+            </p>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <div class="table-container">
+      <table cellspacing="0" class="table_listado product_if">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Imagen</th>
+            <th>Disponibilidad Actual</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <!-- <th class="opciones_column">Opciones</th> -->
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          {% for producto in detalles %}
+            <tr>
+              <td class="celda_id">{{ producto[4] }}</td>
+              <td>
+                <div class="celda_texto_amplio">
+                  {{ producto.1 }}
+                </div>
+              </td>
+              <td>
+                <div class="celda_texto_bloque">
+                  <img src="{{ producto[0] }}" alt="Imagen del Producto" class="clickable-image">
+                </div>
+              </td>
+              <td>
+                <div class="celda_estado">
+                  {% if producto.5 == 1 %}
+                    <p class="disponibilidad disp_si">Disponible</p>
+                  {% else %}
+                    <p class="disponibilidad disp_no">No Disponible</p>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                <div class="celda_precio">
+                  S/. {{ producto.2 }}
+                </div>
+              </td>
+              <td>
+                
+                <div class="celda_numero">
+                  <p class="
+                    {% if producto.3 > 0 %}
+                      num_cant
+                    {% else %}
+                      num_cero
+                    {% endif %}
+                    ">
+                    {{ producto[3] }}
+                    </p>
+                </div>
+              </td>
+              <td>
+                <div class="celda_precio">
+                  S/. {{ producto[2] * producto[3] }}
+                </div>
+              </td>
+
+              <!-- <td>
+                <form action="{{ url_for('editar_detalle', producto_id=producto[4], pedido_id=pedido_id) }}" method="POST">
+                  <input type="hidden" name="producto_id" value="{{ producto[4] }}">
+                  <input type="hidden" name="pedido_id" value="{{ pedido_id }}">
+                  <button type="submit" class="btn btn-primary">Editar</button>
+                </form>
+
+                <form action="{{ url_for('eliminar_detalle_pedido') }}" method="POST" onsubmit="return confirmarEliminacion();">
+                  <input type="hidden" name="producto_id" value="{{ producto[4] }}">
+                  <input type="hidden" name="pedido_id" value="{{ pedido_id }}">
+                  <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+              </td> -->
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>    
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+      <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
+  </section>
+
+  <style>
+    .MarcActive {
+      background-color: rgb(255, 255, 255);
+      color: #00095c;
+    }
+  </style>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function confirmarEliminacion() {
+      return confirm('¿Estás seguro que deseas eliminar este detalle? Esta acción no se puede deshacer.');
+    }
+  </script>
+  <script src="/static/js/imgsCRUDimagencompleta.js"></script>
+{% endblock %}

@@ -4,7 +4,18 @@
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/agregar.css" />
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/css/fontawesome-iconpicker.min.css" integrity="sha512-BfgviGirSi7OFeVB2z9bxp856rzU1Tyy9Dtq2124oRUZSKXIQqpy+2LPuafc2zMd8dNUa+F7cpxbvUsZZXFltQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="/static/css/administrativa/dashboard.css">
+<style>
+  .body_section {
+    font-size: 14.5px;
+  }
+</style>
+<link rel="stylesheet" href="/static/css/administrativa/formulario.css" />
+
+
 {% endblock %}
 
 {% block contenido %}
@@ -12,38 +23,18 @@
     <h2 class="fw-bolder">Agregar Categoría</h2>
     <form action="{{ url_for('guardar_categoria') }}" method="post">
       <div class="form-grid" id="col_add">
-        <!-- Primera columna -->
         <div class="row">
           <div class="col">
             <label for="categoria">Nombre de la Categoría:</label>
             <input required type="text" class="input" placeholder="Nombre de la Categoría" name="categoria" id="categoria" />
           </div>
-        </div>
-        <!-- Disponibilidad -->
-        <div class="row">
+        
           <div class="col">
-            <label for="disponibilidad">Disponibilidad:</label>
-            <div class="radio-group">
-              <label><input type="radio" name="disponibilidad" value="1" id="disponibilidad1" checked />Vigente</label>
-              <label><input type="radio" name="disponibilidad" value="0" id="disponibilidad2" />No Disponible</label>
-            </div>
+            <label for="icono">Icono:</label>
+            <input required type="text" class="input icp icp-auto" data-input-search="true" value="fas fa-file" name="faicon_cat" id="faicon_cat" />
           </div>
         </div>
-        <!-- Segunda fila -->
-        <div class="row">
-          <div class="col">
-            <label for="faicon_cat">Clase del Icono:</label>
-            <input required type="text" class="input" placeholder="Clase del Icono" name="faicon_cat" id="faicon_cat" />
-          </div>
-        </div>
-        <!-- Descripción -->
-        <div class="row">
-          <div class="col">
-            <label for="descripcion">Descripción:</label>
-            <textarea placeholder="Ingrese texto aquí" name="descripcion" id="descripcion"></textarea>
-          </div>
-        </div>
-        <!-- Botones -->
+        
         <div class="row">
           <div class="col">
             <div class="form-buttons">
@@ -58,27 +49,79 @@
 {% endblock %}
 
 {% block scripts %}
-  <script src="/static/js/admin_productos.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/js/fontawesome-iconpicker.min.js" integrity="sha512-7dlzSK4Ulfm85ypS8/ya0xLf3NpXiML3s6HTLu4qDq7WiJWtLLyrXb9putdP3/1umwTmzIvhuu9EW7gHYSVtCQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/static/js/icon-picker/fontawesome-iconpicker.js"></script>
 
-  <!-- Select2 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
 
-  <script>
-    $(document).ready(function () {
-      $('#faicon-cat').select2({
-        templateResult: formatIcon,
-        templateSelection: formatIcon,
-        width: '100%' // Ajusta el ancho si es necesario
-      })
-    
-      function formatIcon(option) {
-        if (!option.id) {
-          return option.text
+  $(function () {   
+    $('.icp-auto').iconpicker();
+
+    $('.icp-dd').iconpicker({
+    });
+
+    $('.icp-opts').iconpicker({
+        title: 'With custom options',
+        icons: [
+          {
+            title: "fab fa-github",
+            searchTerms: ['repository', 'code']
+          },
+          {
+            title: "fas fa-heart",
+            searchTerms: ['love']
+          },
+          {
+            title: "fab fa-html5",
+            searchTerms: ['web']
+          },
+          {
+            title: "fab fa-css3",
+            searchTerms: ['style']
+          }
+        ],
+        selectedCustomClass: 'label label-success',
+        mustAccept: true,
+        placement: 'bottomRight',
+        showFooter: true,
+        // note that this is ignored cause we have an accept button:
+        hideOnSelect: true,
+        // fontAwesome5: true,
+        templates: {
+          footer: '<div class="popover-footer">' +
+            '<div style="text-align:left; font-size:12px;">Placements: \n\
+            <a href="#" class=" action-placement">inline</a>\n\
+            <a href="#" class=" action-placement">topLeftCorner</a>\n\
+            <a href="#" class=" action-placement">topLeft</a>\n\
+            <a href="#" class=" action-placement">top</a>\n\
+            <a href="#" class=" action-placement">topRight</a>\n\
+            <a href="#" class=" action-placement">topRightCorner</a>\n\
+            <a href="#" class=" action-placement">rightTop</a>\n\
+            <a href="#" class=" action-placement">right</a>\n\
+            <a href="#" class=" action-placement">rightBottom</a>\n\
+            <a href="#" class=" action-placement">bottomRightCorner</a>\n\
+            <a href="#" class=" active action-placement">bottomRight</a>\n\
+            <a href="#" class=" action-placement">bottom</a>\n\
+            <a href="#" class=" action-placement">bottomLeft</a>\n\
+            <a href="#" class=" action-placement">bottomLeftCorner</a>\n\
+            <a href="#" class=" action-placement">leftBottom</a>\n\
+            <a href="#" class=" action-placement">left</a>\n\
+            <a href="#" class=" action-placement">leftTop</a>\n\
+            </div><hr></div>'
         }
-        var $option = $('<span><i class="' + $(option.element).data('icon') + '"></i> ' + option.text + '</span>')
-        return $option
-      }
-    })
-  </script>
+    }).data('iconpicker').show();
+
+    $('.icp').on('iconpickerSelected', function (e) {
+      $('.lead .picker-target').get(0).className = 'picker-target fa-3x ' +
+        e.iconpickerInstance.options.iconBaseClass + ' ' +
+        e.iconpickerInstance.options.fullClassFormatter(e.iconpickerValue);
+    });
+  });
+
+</script>
+
+
 {% endblock %}

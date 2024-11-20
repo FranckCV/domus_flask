@@ -1,5 +1,5 @@
 from bd import obtener_conexion
-
+import pymysql
 
 #PARA INSERTAR EN PEDIDO
 def insertar_pedido(usuario, estado):
@@ -20,26 +20,36 @@ def insertar_pedido(usuario, estado):
     return pedido_id
 
 #PARA INSERTAR EN DETALLE
+import pymysql
+
 def insertar_detalle(producto_id, pedido_id):
     conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        query = "SELECT * FROM detalles_pedido WHERE PRODUCTOid = %s AND PEDIDOid = %s"
-        cursor.execute(query, (producto_id, pedido_id))
-        result = cursor.fetchone()  # Obtener el resultado de la consulta. Usamos fetchOne para obtener solo un valor
-        
-        if result:  
-            sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
+    try:
+        with conexion.cursor() as cursor:
+            # Verifica si el producto ya está en el pedido
+            query = "SELECT * FROM detalles_pedido WHERE PRODUCTOid = %s AND PEDIDOid = %s"
+            cursor.execute(query, (producto_id, pedido_id))
+            result = cursor.fetchone()  # Obtener el resultado de la consulta
+            
+            if result:
+                # Actualiza la cantidad si el producto ya está en el pedido
+                sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
+            else:
+                # Inserta un nuevo registro si el producto no está en el pedido
+                sql = '''
+                    INSERT INTO detalles_pedido (PRODUCTOid, PEDIDOid, cantidad)
+                    VALUES (%s, %s, 1)
+                '''
+            
             cursor.execute(sql, (producto_id, pedido_id))
-        else:
-            sql = '''
-                INSERT INTO detalles_pedido (PRODUCTOid, PEDIDOid, cantidad)
-                VALUES (%s, %s, 1)
-            '''
-            cursor.execute(sql, (producto_id, pedido_id))
-    
-    # Confirmar los cambios
-    conexion.commit()
-    conexion.close()
+            conexion.commit()
+            return None
+    except pymysql.MySQLError as e:
+        return e 
+    finally:
+        if conexion:
+            conexion.close()
+
 
  #PARA CAMBIAR DE ESTADO 1 A 2   
 def actualizar_estado_pedido(usuario_id, estado_pedido_id):
@@ -51,8 +61,12 @@ def actualizar_estado_pedido(usuario_id, estado_pedido_id):
             WHERE USUARIOid = %s AND ESTADO_PEDIDOid = 1
         '''
         cursor.execute(sql, (estado_pedido_id, usuario_id))
+
+     
     conexion.commit()
     conexion.close()
+    
+    
     
 #Para eliminar del carre
 def eliminar_producto(pedido_id, producto_id):
@@ -112,11 +126,47 @@ def verificarIdPedido(usuario_id, estado_pedido):
     
 #PARA AUMENTAR CANTIDAD
 def aumentar_producto(pedido_id, producto_id):
+    try:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
+            cursor.execute(sql, (producto_id, pedido_id))
+            print(f"Filas afectadas: {cursor.rowcount}")
+        
+        conexion.commit()
+        return None 
+    except pymysql.MySQLError as e:
+        return e 
+    finally:
+        if conexion:
+            conexion.close()
+
+#Ultimo pedido
+def ultimoPedido(usuario_id):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = "SELECT MAX(id) FROM pedido WHERE USUARIOid = %s and ESTADO_PEDIDOid=1"
+            cursor.execute(sql, (usuario_id,))
+            resultado = cursor.fetchone()
+            return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Error al obtener el último pedido: {e}")
+        return None
+    finally:
+        conexion.close()
+#CANCELAR PEDIDO
+
+def cancelar_pedido(usuario_id, estado_pedido_id,pedido_id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
-        cursor.execute(sql, (producto_id, pedido_id))
-        print(f"Filas afectadas: {cursor.rowcount}") 
-    
+        sql = '''
+            UPDATE pedido
+            SET ESTADO_PEDIDOid = %s
+            WHERE USUARIOid = %s AND id = %s
+        '''
+        cursor.execute(sql, (estado_pedido_id, usuario_id,pedido_id))
+
+     
     conexion.commit()
     conexion.close()

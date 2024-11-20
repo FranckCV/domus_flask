@@ -56,16 +56,16 @@
 
         <div class="container-input form-field">
           <i class="fa-solid fa-venus-mars"></i>
-          <select id="genero" name="genero" required>
+          <select id="genero" name="genero" required onchange="cambiarColor(this)" >
               <option value="" disabled selected>Género</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Femenino">Femenino</option>
+              <option value="1">Masculino</option>
+              <option value="0">Femenino</option>
           </select>
         </div>
 
         <div class="container-input form-field">
           <i class="fa-solid fa-calendar-days"></i>
-          <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento" required>
+          <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento" onchange="cambiarColor(this)"  required>
         </div>
 
         <div class="container-input form-field">
@@ -92,10 +92,17 @@
           <small></small>
         </div>
         
+        <!-- <div class="check">
+          <input type="checkbox" name="terminos" value="1" id="terminos">
+          <a href="#">Acepta</a><a href="{{url_for('selectedContenidoInformativo',id=1)}}" > términos y condiciones</a>
+        <small></small>
+        </div> -->
+
         <div class="check">
           <input type="checkbox" name="terminos" value="1" id="terminos">
-        <a href="{{url_for('terminos')}}" >Acepta términos y condiciones</a>
-        <small></small>
+          <a href="#" onclick="toggleCheckbox(); return false;">Acepta</a>
+          <a href="{{ url_for('selectedContenidoInformativo',id=1) }}"> términos y condiciones</a>
+          <small></small>
         </div>
 
         <button type="submit" class="button">Registrarse</button>
@@ -143,6 +150,14 @@
 {% block scripts %}
   <script src="static/js/inicio_sesion.js"></script>
   <script src="static/js/validar_formulario.js"></script>
+
+  <script>
+    function toggleCheckbox() {
+      var checkbox = document.getElementById('terminos');
+      checkbox.checked = !checkbox.checked;
+    }
+  </script>
+
   {%if mostrar%}
     <script src="static/js/animacion.js"></script>
     {% elif mostrar == False %}
