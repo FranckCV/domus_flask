@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="static/css/styles.css">
     <link rel="stylesheet" href="static/css/stylesBrands.css">
     <link rel="stylesheet" href="static/css/stylesProductCard.css">
-    <link rel="stylesheet" href="static/css/stylesPageProduct.css">
+    <link rel="stylesheet" href="/static/css/stylesPageProduct.css">
 {% endblock %}
 
 {% block contenido %}
@@ -180,55 +180,63 @@
             </div>
     
             {% if producto[6] or caracteristicasSecundarias %}
-            <div class="product_details">
+            <div class="row product_details">
                 <div class="product_page_title product_details_title">
                     MÁS DETALLES
                 </div>
 
                 <div class="product_details_content">
-                    {% if caracteristicasSecundarias %}
-                    <div class="product_specifications">
-                        <strong>Especificaciones</strong>
-                        <div class="product_features">
+                    <div class="row">
+                        {% if caracteristicasSecundarias %}
+                        <div class="col">
+                            <div class="product_specifications">
+                                <strong>Especificaciones</strong>
+                                <div class="product_features">
 
-                            {% for carac in caracteristicasSecundarias %}                  
-                            <div class="pf_date">
-                                <div class="pf_date_name">
-                                    {{carac[0]}}
-                                </div>
-                                <div class="pf_date_value">
-                                    {{carac[1]}}
+                                    {% for carac in caracteristicasSecundarias %}                  
+                                    <div class="pf_date">
+                                        <div class="pf_date_name">
+                                            {{carac[0]}}
+                                        </div>
+                                        <div class="pf_date_value">
+                                            {{carac[1]}}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                                        
                                 </div>
                             </div>
-                            {% endfor %}
-                                                   
                         </div>
-                    </div>
-                    <div class="space"></div>
-                    {% endif %}
+                        {% endif %}
 
-                    <!-- {% if producto[6] %} -->
-                    <div class="product_additional">
-                        <strong>Información adicional</strong>
-                        <div class="product_additional_content">
-                            {% if producto[6] %}
-                                <div style="white-space: pre-wrap;">{{producto[6] | safe }}</div>
-                            {% else %}
-                                <b><i>No posee Información Adicional</i></b>                                    
-                            {% endif %}
-                        </div>                        
-                    </div>
-                    <!-- {% endif %} -->
+                        <!-- {% if producto[6] and caracteristicasSecundarias %}
+                        <div class="col">
+                            <div class="space"></div>
+                        </div>
+                        {% endif %} -->
 
+                        {% if producto[6] %}
+                        <div class="col">
+                            <div class="product_additional">
+                                <strong>Información adicional</strong>
+                                <div class="product_additional_content">
+                                    {% if producto[6] %}
+                                        <div style="white-space: pre-wrap;">{{producto[6] | safe }}</div>
+                                    {% else %}
+                                        <b><i>No posee Información Adicional</i></b>                                    
+                                    {% endif %}
+                                </div>                        
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>                
-
-                <!-- <button class="product_details_more">Ver más</button> -->
             </div>
             {% endif %}
 
         </article>
 
-        {% if productosMarca %}        
+        {% if productosMarca | length > 5  %}        
         <article class="article_products article_product_brand">
             <h1 class="title1_1">
                 MÁS SOBRE ESTA MARCA
@@ -301,7 +309,7 @@
         </article>
         {% endif %}
 
-        {% if productosSimilares %}
+        {% if productosSimilares | length > 5 %}
         <article class="article_products article_product_similar">
             <h1 class="title1_2">
                 ENCUENTRA PRODUCTOS SIMILARES

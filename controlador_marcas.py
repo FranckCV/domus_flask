@@ -196,7 +196,7 @@ def obtener_todas_marcas_recientes():
     marcas = []
     with conexion.cursor() as cursor:
         sql = '''
-                SELECT 
+                SELECT
                     id,
                     marca, 
                     img_logo, 

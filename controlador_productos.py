@@ -158,7 +158,8 @@ def obtenerEnTarjetasMasRecientes():
                     pr.precio_oferta,  
                     pr.MARCAid, 
                     pr.SUBCATEGORIAid, 
-                    ipr.imagen 
+                    ipr.imagen,
+                    sub.CATEGORIAid
                 FROM `producto` pr 
                 inner join img_producto ipr on pr.id = ipr.PRODUCTOid
                 INNER JOIN subcategoria sub on sub.id = pr.subcategoriaid
@@ -174,9 +175,9 @@ def obtenerEnTarjetasMasRecientes():
 
     productos_lista = []
     for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
+        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id= producto
         img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
+        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
     
     conexion.close()
     return productos_lista
@@ -274,10 +275,11 @@ def obtener_en_tarjetas_marca(id,marca, limit):
                     pr.precio_oferta,  
                     pr.MARCAid, 
                     pr.SUBCATEGORIAid, 
-                    ipr.imagen 
+                    ipr.imagen ,
+                    sub.categoriaid
                 FROM producto pr 
-                INNER JOIN img_producto ipr 
-                ON pr.id = ipr.PRODUCTOid 
+                INNER JOIN img_producto ipr ON pr.id = ipr.PRODUCTOid
+                INNER JOIN subcategoria sub on sub.id = pr.SUBCATEGORIAid
                 WHERE ipr.imgPrincipal = 1 AND pr.disponibilidad = 1 AND pr.id != '''+str(id)+''' AND pr.MARCAid = '''+str(marca)+'''
                 ORDER BY pr.fecha_registro desc
             '''
@@ -290,10 +292,10 @@ def obtener_en_tarjetas_marca(id,marca, limit):
     
     productos_lista = []
     for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
+        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id= producto
         img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
 
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
+        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
     
     conexion.close()
     return productos_lista
@@ -350,7 +352,8 @@ def obtener_en_tarjetas_categoria(id,categoria, limit):
                     pr.precio_oferta,  
                     pr.MARCAid, 
                     pr.SUBCATEGORIAid, 
-                    ipr.imagen 
+                    ipr.imagen,
+                    sub.categoriaid
                 FROM producto pr 
                 INNER JOIN img_producto ipr ON pr.id = ipr.PRODUCTOid
                 INNER JOIN subcategoria sub on sub.id = pr.SUBCATEGORIAid
@@ -367,10 +370,10 @@ def obtener_en_tarjetas_categoria(id,categoria, limit):
     
     productos_lista = []
     for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
+        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id = producto
         img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
 
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
+        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
     
     conexion.close()
     return productos_lista

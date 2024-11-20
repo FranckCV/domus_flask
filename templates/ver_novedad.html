@@ -80,11 +80,24 @@
                         </div>
                     </div>
 
-                    <div class="col">
+                    <div class="row">
                         <div class="col">
                             <label for="stock">Fecha de Vencimiento:</label>
                             <input disabled required type="text" class="input" name="stock" id="stock"
                                 value="{{ novedad[4] }}" style="text-align: center;">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Disponibilidad:</label>                    
+                            <div class="celda_estado">
+                                {% if novedad.7 == 1 %}
+                                  <p class="disponibilidad disp_si">Disponible</p>
+                                {% else %}
+                                  <p class="disponibilidad disp_no">No Disponible</p>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -22,63 +22,6 @@ Editar Novedad
                 </div>
 
                 <div class="col">
-                    <label for="titulo">Título:</label>
-                    <input required type="text" class="input" placeholder="Título" name="titulo" id="titulo" value="{{ novedad[2] }}">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="fecha_inicio">Fecha de Inicio:</label>
-                    <input required type="date" class="input" name="fecha_inicio" id="fecha_inicio" value="{{ novedad[3] }}">
-                </div>
-                <div class="col">
-                    <label for="fecha_vencimiento">Fecha de Vencimiento:</label>
-                    <input required type="date" class="input" name="fecha_vencimiento" id="fecha_vencimiento" value="{{ novedad[4] }}">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="terminos">Términos y Condiciones:</label>
-                    <textarea required class="input" placeholder="Términos y condiciones" name="terminos" id="terminos">{{ novedad[5] }}</textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="disponibilidad">Disponibilidad:</label>
-                    <select required class="input" name="disponibilidad" id="disponibilidad">
-                        <option value=1 {% if novedad[6]==1 %} selected {% endif %}>Disponible</option>
-                        <option value=0 {% if novedad[6]==0 %} selected {% endif %}>No Disponible</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="marca">Marca:</label>
-                    <select class="input" name="marca_id" id="marca">
-                        <option value="" disabled>Selecciona una marca</option>
-                        {% for marca in marcas %}
-                            <option value="{{ marca[0] }}" {% if marca[0] == novedad[7] %}selected{% endif %}>{{ marca[1] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col">
-                    <label for="subcategoria">Subcategoría:</label>
-                    <select class="input" name="subcategoria_id" id="subcategoria">
-                        <option value="" disabled>Selecciona una subcategoría</option>
-                        {% for subcategoria in subcategorias %}
-                            <option value="{{ subcategoria[0] }}" {% if subcategoria[0] == novedad[8] %}selected{% endif %}>{{ subcategoria[1] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
                     <label for="tipo_novedad">Tipo de Novedad:</label>
                     <select class="input" name="tipo_novedad_id" id="tipo_novedad">
                         <option value="" disabled>Selecciona un tipo de novedad</option>
@@ -89,6 +32,80 @@ Editar Novedad
                     </select>
                 </div>
             </div>
+            <div class="row">
+                <div class="col column_text">                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="titulo">Título:</label>
+                            <input required type="text" class="input" placeholder="Título" name="titulo" id="titulo" value="{{ novedad[2] }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="fecha_inicio">Fecha de Inicio:</label>
+                            <input required type="date" class="input" name="fecha_inicio" id="fecha_inicio" value="{{ novedad[3] }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="fecha_vencimiento">Fecha de Vencimiento:</label>
+                            <input required type="date" class="input" name="fecha_vencimiento" id="fecha_vencimiento" value="{{ novedad[4] }}">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="disponibilidad">Disponibilidad:</label>
+                            <select required class="input" name="disponibilidad" id="disponibilidad">
+                                <option value=1 {% if novedad[6]==1 %} selected {% endif %}>Disponible</option>
+                                <option value=0 {% if novedad[6]==0 %} selected {% endif %}>No Disponible</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col">
+                    <label for="terminos">Términos y Condiciones:</label>
+                    <textarea required class="input" placeholder="Términos y condiciones" name="terminos" id="terminos">{{ novedad[5] }}</textarea>
+                </div>
+            </div>
+            
+
+
+
+            <div class="row">
+                <div class="col">
+                  <label for="marca">Marca:</label>
+                  <select class="input" name="marca_id" id="marca_id">
+                    <option value="0" disabled selected>Selecciona una marca</option>
+                    {% for marca in marcas %}
+                        <option value="{{ marca[0] }}" {% if marca[0] == novedad[7] %}selected{% endif %}>{{ marca[1] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+      
+                <div class="col">
+                  <label class="fw-bolder lblchoosie">Categoría</label>
+                  <select class="input" aria-label="Default select example" id="categorySelect">
+                    <option value="0" selected>Todos</option>
+                    {% for categoria in categorias %}
+                    <option value="{{categoria[0]}}">{{categoria[1]}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+      
+                <div class="col">
+                  <label for="subcategoria">Subcategoría:</label>
+                  <select required class="input" name="subcategorySelect" id="subcategorySelect">
+                    <option value="0" disabled selected>Selecciona una subcategoría</option>
+                    <option value="null" {% if novedad[8] == None %}selected{% endif %}>Sin subcategoría</option>
+                    {% for subcategoria in subcategorias %}
+                        <option  data-category="{{subcategoria[4]}}" value="{{ subcategoria[0] }}" {% if subcategoria[0] == novedad[8] %}selected{% endif %}>{{ subcategoria[1] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+            </div>
+            
               
 
             <div class="row">
