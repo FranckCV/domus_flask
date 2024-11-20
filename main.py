@@ -302,9 +302,8 @@ def iniciar_sesion():
 
 @app.route("/registrate") #falta
 def registrate():
+
     return render_template("registrate.html")
-
-
 
 # PAGINAS USUARIO CLIENTE
 
@@ -1844,6 +1843,21 @@ def eliminar_cliente():
 
 #########################INICIO DE SESIÓN####################################
 #PARA GUARDAR
+
+# def registrar_usuario():
+#     email = request.form['username']
+#     password = request.form['password']
+#     confpassword = request.form['confpassword']
+
+#     if password == confpassword:
+#         h = hashlib.new('sha256')
+#         h.update(bytes(password, encoding='utf-8'))
+#         epassword = h.hexdigest()
+#         controlador_users.registrar_usuario(email, epassword)
+#         return redirect("/login")
+#     else:
+#         return redirect("/signup")
+
 @app.route("/registrar_cliente", methods=["POST"])
 def registrar_cliente():
     try:
@@ -1857,6 +1871,10 @@ def registrar_cliente():
         password = request.form["password"]
         disponibilidad=1
         tipo_usuario = 3
+
+        # h = hashlib.new('sha256')
+        # h.update(bytes(password, encoding='utf-8'))
+        # epassword = h.hexdigest()
 
         result = controlador_usuario_cliente.insertar_usuario(
             nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, password, disponibilidad, tipo_usuario
@@ -1994,10 +2012,7 @@ def api_obtenerdiscos():
     return jsonify(discos)
 
 
-
-
 # EJECUTAR
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000, debug=True)
