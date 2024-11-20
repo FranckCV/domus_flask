@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, flash, jsonify
+from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response
+from flask_jwt import JWT, jwt_required, current_identity
+import hashlib
 import base64
 import datetime
 import controlador_marcas
@@ -27,7 +29,72 @@ import controlador_metodo_pago
 import controlador_redes_sociales
 import controlador_informacion_domus
 
+
+# class User(object):
+#     def __init__(self, id, username, password):
+#         self.id = id
+#         self.username = username
+#         self.password = password
+
+#     def __str__(self):
+#         return "User(id='%s')" % self.id
+
+# def authenticate(username, password):
+#     data = controlador_users.obtener_user_por_email(username)
+#     user = User(data[0],data[1],data[2])
+#     if user and user.password.encode('utf-8') == password.encode('utf-8'):
+#         return user
+
+# def identity(payload):
+#     user_id = payload['identity']
+#     data = controlador_users.obtener_user_por_id(user_id)
+#     user = User(data[0],data[1],data[2])
+#     return user
+
+
+
+class User(object):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+    def __str__(self):
+        return "User(id='%s')" % self.id
+
+users = [
+    User(1, 'user1', 'abcxyz'),
+    User(2, 'user2', 'abcxyz'),
+]
+
+username_table = {u.username: u for u in users}
+userid_table = {u.id: u for u in users}
+
+def authenticate(username, password):
+    user = username_table.get(username, None)
+    if user and user.password.encode('utf-8') == password.encode('utf-8'):
+        return user
+
+def identity(payload):
+    user_id = payload['identity']
+    return userid_table.get(user_id, None)
+
+def encstringsha256(cadena_legible):
+    h = hashlib.new('sha256')
+    h.update(bytes(cadena_legible, encoding='utf-8'))
+    epassword = h.hexdigest()
+    return epassword
+
+
+
+
 app = Flask(__name__)
+app.debug = True
+app.config['SECRET_KEY'] = 'super-secret'
+
+jwt = JWT(app, authenticate, identity)
+
+
 
 logo_domus = 'img/elementos/logoDomus.png'
 
@@ -1919,8 +1986,12 @@ def actualizar_detalle_pedido():
 
 
 
-
-
+# TEST DE API
+@app.route("/api_obtenerdiscos")
+@jwt_required()
+def api_obtenerdiscos():
+    discos = controlador_categorias.obtener_listado_categorias()
+    return jsonify(discos)
 
 
 
