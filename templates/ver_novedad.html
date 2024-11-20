@@ -126,7 +126,7 @@
                     <label for="">Categoria:</label>
                     {% if novedad[9] %}
                         {% for categoria in categorias %}
-                            {% if categoria[0] == novedad[9] %}
+                            {% if categoria[0] == novedad[11] %}
                             <div class="celda_dato_externo">
                                 <i class="{{ categoria[2] }}"></i>
                                 <p>{{ categoria[1] }}</p>
@@ -170,7 +170,7 @@
                     <div class="espacio_img espacio_img_multi">
                         {% for imagen in imagenes %}
                             <div class="celda_dato_externo color_texto" data-colorid="{{imagen.3}}" style="font-size: 80%;">
-                                <img id="previewImg" src="{{imagen[2]}}" alt="" class="clickable-image" style="width: auto; height: 100px;">
+                                <img id="previewImg" src="{{imagen[2]}}" alt="" class="clickable-image">
                                 <p>Tipo {{imagen[5]}}</p>
                                 {% if imagen[6] == 0 %}
                                     <p class="disponibilidad disp_no">Tipo No Disponible</p>

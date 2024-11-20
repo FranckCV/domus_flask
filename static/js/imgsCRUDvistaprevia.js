@@ -1,19 +1,23 @@
-const secciones = document.querySelectorAll(".seccionImg");
-secciones.forEach(seccion => {
-    const imgInputs = seccion.querySelectorAll('.campoImg');
-    const previewImg = seccion.querySelector('#previewImg');
+const seccionesMulti = document.querySelectorAll(".seccionImg");
+seccionesMulti.forEach(seccion => {
+    const imgInput = seccion.querySelector('.campoImg');
+    const previewImgMulti = seccion.querySelector('.espacio_img');
 
-    imgInputs.forEach(imgInput => {
+    if (previewImgMulti) {
         imgInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImg.src = e.target.result;  // Cambia la imagen mostrada a la seleccionada
-            }
-            reader.readAsDataURL(file);  // Leer archivo como Data URL
+            previewImgMulti.innerHTML = ""; 
+            const files = event.target.files;
+    
+            for (const file of files) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.classList.add('clickable-image'); 
+                    previewImgMulti.appendChild(img);
+                };
+                reader.readAsDataURL(file);
             }
         });
-    });
-
+    }    
 });

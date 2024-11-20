@@ -402,12 +402,19 @@ main {
 
 
 
-
+aside a[href="/listado_caracteristicas"],
+aside a[href="/listado_marcas"] ,
+aside a[href="/listado_tipo_contenido_info"] ,
+aside a[href="/listado_contenido_info"] ,
+aside a[href="/listado_clientes"]  ,
 aside a[href="/listado_categorias"]  ,
 aside a[href="/listado_datos_principales"]  ,
 aside a[href="/listado_redes_sociales"]  ,
 aside a[href="/listado_tipos_novedad"] ,
 aside a[href="/listado_subcategorias"]  ,
+aside a[href="/listado_pedidos"] , 
+aside a[href="/comentarios_listado"]  ,
+aside a[href="/empleados_listado"] ,
 aside a[href="/tipos_img_novedad_listado"] ,
 aside a[href="/motivos_comentario_listado"]  ,
 aside a[href="/listado_tipos_usuario"]   ,
@@ -420,15 +427,7 @@ aside a[href="/listado_metodo_pago"]
 
 
 
-aside a[href="/listado_tipo_contenido_info"] ,
-aside a[href="/listado_contenido_info"] ,
-aside a[href="/empleados_listado"] ,
-aside a[href="/listado_clientes"]  ,
-aside a[href="/listado_pedidos"] , 
 aside a[href="/listado_novedades"]  ,
-aside a[href="/listado_caracteristicas"],
-aside a[href="/listado_marcas"] ,
-aside a[href="/comentarios_listado"]  ,
 aside a[href="/dashboard"]  ,
 aside a[href="/listado_productos"] 
 {

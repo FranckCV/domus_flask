@@ -5,59 +5,56 @@
 {% endblock %}
 
 {% block estilos %}
-    <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+    <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
 
 <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Producto</h2><br><br><br>
+    <h2 class="fw-bolder">Editar Producto</h2>
     <form action="{{ url_for('actualizar_producto') }}" method="post"  enctype="multipart/form-data">
         <input type="hidden" name="id" value="{{ producto[0] }}">
         <div class="form-grid" id="col_add">
 
             <div class="row">
                 <div class="col">
-                    <label for="nombre">Nombre:</label><br>
-                    <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre"
-                        id="nombre" value="{{ producto[1] }}" style="text-align: center;">
-                </div>
-            </div>
-
-            <div class="row">
-
-                <div class="col">
-                    <label for="stock">Stock:</label><br>
-                    <input required type="number" class="input" placeholder="Cantidad en Stock" name="stock" id="stock"
-                        value="{{ producto[7] }}" style="text-align: center;">
-                </div>
-                
-                <div class="col">
-                    <label for="disponibilidad">Disponibilidad:</label><br>
-                    <select required class="form-select choosie" name="disponibilidad" id="disponibilidad">
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <select required class="input" name="disponibilidad" id="disponibilidad">
                         <option value=1 {% if producto[11]==1 %} selected {% endif %}>Disponible</option>
                         <option value=0 {% if producto[11]==0 %} selected {% endif %}>No Disponible</option>
                     </select>
                 </div>
+            </div>
 
+            <div class="row">
+                <div class="col col-8">
+                    <label for="nombre">Nombre:</label>
+                    <input required type="text" class="input" placeholder="Nombre del Producto" name="nombre"
+                        id="nombre" value="{{ producto[1] }}" style="text-align: center;">
+                </div>
+                <div class="col">
+                    <label for="stock">Stock:</label>
+                    <input required type="number" class="input" placeholder="Cantidad en Stock" name="stock" id="stock"
+                        value="{{ producto[7] }}" style="text-align: center;">
+                </div>
             </div>
 
             <div class="row">
 
                 <div class="col">
-                    <label for="price_regular">Precio Regular:</label><br>
+                    <label for="price_regular">Precio Regular:</label>
                     <input type="number" class="input" placeholder="Precio Regular (Opcional)" name="price_regular"
                         id="price_regular" value="{{ producto[2] }}" style="text-align: center;" step="0.01">
                 </div>
 
                 <div class="col">
-                    <label for="price_online">Precio Online:</label><br>
+                    <label for="price_online">Precio Online:</label>
                     <input required type="number" class="input" placeholder="Precio Online" name="price_online"
                         id="price_online" value="{{ producto[3] }}" style="text-align: center;" step="0.01">
                 </div>
 
                 <div class="col">
-                    <label for="precio_oferta">Precio Oferta:</label><br>
+                    <label for="precio_oferta">Precio Oferta:</label>
                     <input type="number" class="input" placeholder="Precio Oferta (opcional)" name="precio_oferta"
                         id="precio_oferta" value="{{ producto[4] }}" style="text-align: center;" step="0.01">
                 </div>                
@@ -67,59 +64,156 @@
             <div class="row">
 
                 <div class="col">
-                    <label for="marca_id">Marca:</label><br>
-                    <select required class="form-select choosie" name="marca_id" id="marca_id">
+                    <label for="marca_id">Marca:</label>
+                    <select required class="input" name="marca_id" id="marca_id">
                         {% for marca in marcas %}
                         <option value="{{marca[0]}}" {% if marca[0] == producto[9] %} selected {% endif %}>{{marca[1]}}
                         </option>
                         {% endfor %}
                     </select>
-                    <!-- <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a
-                            href="{{url_for ('formulario_agregar_marca')}}"
-                            style=" color: #ffffff;">Agregar</a></button> -->
                 </div>
 
                 <div class="col">
-                    <label for="categorySelect">Categoría:</label><br>
-                    <select class="form-select choosie" aria-label="Default select example" id="categorySelect">
-                        <option value="0" selected>Todos</option>
-                      {% for categoria in categorias %}
-                        <option value="{{categoria[0]}}">{{categoria[1]}}</option>
-                      {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col">
-                    <label for="subcategoria_id">Subcategoría:</label><br>
-                    <select required class="form-select choosie" name="subcategorySelect" id="subcategorySelect">
-                        {% for subcategoria in subcategorias %}
-                        <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}" {% if subcategoria[0]==producto[10] %} selected {% endif %}>
-                            {{subcategoria[1]}}</option>
+                    <label for="categorySelect">Categoría:</label>
+                    <select class="input" aria-label="Default select example" id="categorySelect">
+                        <option value="0">Todos</option>
+                        {% for categoria in categorias %}
+                        <option value="{{categoria[0]}}" 
+                            {% if categoria[0]==producto[13] %} selected {% endif %}
+                        >
+                            {{categoria[1]}}
+                        </option>
                         {% endfor %}
                     </select>
-                    <!-- <button style="background-color:#2d4293; height: 55%; border-radius: 25px; width: fit-content;"><a
-                            href="{{url_for ('formulario_agregar_subcategoria')}}"
-                            style=" color: #ffffff;">Agregar</a></button> -->
+                </div>
+
+                <div class="col">
+                    <label for="subcategoria_id">Subcategoría:</label>
+                    <select required class="input" name="subcategorySelect" id="subcategorySelect">
+                        {% for subcategoria in subcategorias %}
+                        <option value="{{subcategoria[0]}}" data-category="{{subcategoria[4]}}" {% if subcategoria[0]==producto[10] %} selected {% endif %}>
+                            {{subcategoria[1]}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    
                 </div>
             </div>
 
             <div class="row">
 
+                <div class="col column_text">                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="infoAdicional">Caracteristicas Principales:</label>
+                            <table cellspacing="0" class="table_sublistado">
+                                <thead>
+                                    <tr>
+                                        <th>Campo</th>
+                                        <th>Valor</th>
+                                        <th>Disp. Campo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for carac in caracteristicasPrincipales %} 
+                                        <tr class="
+                                        {% if carac.2 == 1 %}
+                                          fila_disp_si
+                                        {% else %}
+                                          fila_disp_no
+                                        {% endif %}
+                                        ">
+                                            <td>
+                                                {{carac[0]}}
+                                            </td>
+                                            <td>
+                                                {{carac[1]}}
+                                            </td>
+                                            <td>
+                                                <div class="celda_estado">
+                                                    {% if carac.2 == 1 %}
+                                                      <p class="disponibilidad disp_si">Disponible</p>
+                                                    {% else %}
+                                                      <p class="disponibilidad disp_no">No Disponible</p>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="infoAdicional">Caracteristicas Secundarias:</label>
+                            <table cellspacing="0" class="table_sublistado">
+                                <thead>
+                                    <tr>
+                                        <th>Campo</th>
+                                        <th>Valor</th>
+                                        <th>Disp. Campo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for carac in caracteristicasSecundarias %} 
+                                        <tr class="
+                                        {% if carac.2 == 1 %}
+                                          fila_disp_si
+                                        {% else %}
+                                          fila_disp_no
+                                        {% endif %}
+                                        ">
+                                            <td>
+                                                {{carac[0]}}
+                                            </td>
+                                            <td>
+                                                {{carac[1]}}
+                                            </td>
+                                            <td>
+                                                <div class="celda_estado">
+                                                    {% if carac.2 == 1 %}
+                                                      <p class="disponibilidad disp_si">Disponible</p>
+                                                    {% else %}
+                                                      <p class="disponibilidad disp_no">No Disponible</p>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
                 <div class="col" id="space_info">
-                    <label for="infoAdicional">Información Adicional:</label><br>
+                    <label for="infoAdicional">Información Adicional:</label>
                     <textarea name="infoAdicional" id="infoAdicional" placeholder="Información Adicional (opcional)"
                         style="height: 200px;">{{ producto[6] }}</textarea>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col col-3 seccionImg">
+                    <label for="banner">Cambiar imagen principal:</label>
+                    <input type="file" class="campoImg" name="imagenProduct" id="imagenProduct"/>
+                    <div class="espacio_img">
+                      <img id="previewImg" src="{{producto[12]}}" alt="" class="clickable-image">
+                    </div>
                 </div>
 
                 <div class="col seccionImg">
-                    <label for="banner">Cambiar imagen principal de Producto:</label>
-                    <input type="file" class="campoImg" name="imagenProduct" id="imagenProduct"/>
-                    <div class="espacio_img">
-                      <img id="previewImg" src="{{producto[12]}}" alt="">
+                    <label for="">Cambiar imagenes secundarias (Al menos 1):</label>
+                    <input type="file" class="campoImg" name="imgsProd" id="imgsProd" multiple accept="image/*" />
+                    <div class="espacio_img espacio_img_multi">
                     </div>
                 </div>
             </div>
+
+            
 
             <div class="row">
                 <div class="col" id="sbmt">
@@ -131,6 +225,11 @@
             </div>
         </div>
     </form>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+        <img id="enlargedImage" class="enlarged-image" />
+    </div>
+    
 </section>
 
 <style>
@@ -148,4 +247,5 @@
 <script src="/static/js/admin_productos.js"></script>
 <script src="/static/js/filtroCRUDListado.js"></script>
 <script src="/static/js/imgsCRUDvistaprevia.js"></script>
+<script src="/static/js/imgsCRUDimagencompleta.js"></script>
 {% endblock %}

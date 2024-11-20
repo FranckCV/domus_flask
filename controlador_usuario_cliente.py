@@ -174,7 +174,7 @@ def obtener_usuario_cliente_por_id(id):
         conexion.close()
 
 
-def actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad):
+def actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad , imagen):
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
@@ -188,10 +188,11 @@ def actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fe
                     fecha_nacimiento = %s, 
                     telefono = %s, 
                     correo = %s, 
-                    disponibilidad = %s
+                    disponibilidad = %s,
+                    img_usuario = %s
                 WHERE id = %s AND TIPO_USUARIOid = 3
             '''
-            cursor.execute(sql, (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad, id))
+            cursor.execute(sql, (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad, imagen,id))
             conexion.commit()
 
             return True

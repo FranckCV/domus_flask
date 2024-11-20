@@ -5,23 +5,23 @@
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 {% block contenido %}
   <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Marca</h2><br /><br /><br />
+    <h2 class="fw-bolder">Editar Marca</h2>
     <form action="{{ url_for('actualizar_marca') }}" method="post" enctype="multipart/form-data">
       <input type="hidden" name="id" value="{{ marca.0 }}" />
       <div class="form-grid" id="col_add">
         <!-- Primera columna -->
         <div class="row">
           <div class="col">
-            <label for="nombre">Marca:</label><br />
+            <label for="nombre">Marca:</label>
             <input value="{{ marca.1 }}" type="text" required class="input" placeholder="Nombre de la marca" name="marca" id="marca" />
           </div>
           <div class="col">
-            <label for="disponibilidad">Disponibilidad:</label><br>
+            <label for="disponibilidad">Disponibilidad:</label>
             <select required class="input" name="disponibilidad" id="disponibilidad">
                 <option value=1 {% if marca[4]==1 %} selected {% endif %}>Disponible</option>
                 <option value=0 {% if marca[4]==0 %} selected {% endif %}>No Disponible</option>
@@ -32,17 +32,17 @@
         <div class="row">
           <div class="col seccionImg">
             <label for="logo">Subir logo de marca:</label>
-            <input type="file" class="campoImg" name="logo" id="logo" />
+            <input type="file" class="campoImg" name="logo" id="logo" accept="image/*" />
             <div class="espacio_img">
-              <img id="previewImg" src="{{ marca.2 }}" alt="">
+              <img id="previewImg" src="{{ marca.2 }}" alt="" class="clickable-image">
             </div>
           </div>
 
           <div class="col seccionImg">
             <label for="banner">Subir banner de marca: (Opcional)</label>
-            <input type="file" class="campoImg" name="banner" id="banner"/>
+            <input type="file" class="campoImg" name="banner" id="banner" accept="image/*" />
             <div class="espacio_img">
-              <img id="previewImg" src="{{ marca.3 }}" alt="">
+              <img id="previewImg" src="{{ marca.3 }}" alt="" class="clickable-image">
             </div>
           </div>
         </div>
@@ -57,9 +57,15 @@
         </div>
       </div>
     </form>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+      <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
   </section>
 {% endblock %}
 
 {% block scripts %}
    <script src="/static/js/imgsCRUDvistaprevia.js"></script>
+   <script src="/static/js/imgsCRUDimagencompleta.js"></script>
 {% endblock %}

@@ -530,15 +530,15 @@ def anuncioSelect(id):
     return elemento_promo
 
 
-def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId):
+def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, marcaId, subcategoriaId, tipoNovedadId):
     novedadId = None
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
             INSERT INTO novedad (nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, disponibilidad, MARCAid, SUBCATEGORIAid, TIPO_NOVEDADid, fecha_registro)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_DATE)
+            VALUES (%s, %s, %s, %s, %s, 1, %s, %s, %s, CURRENT_DATE)
         '''
-        cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId))
+        cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, marcaId, subcategoriaId, tipoNovedadId))
         novedadId = cursor.lastrowid
     
     conexion.commit()
@@ -622,9 +622,11 @@ def obtener_novedad_id(id):
                     nov.disponibilidad, 
                     nov.MARCAid, 
                     nov.SUBCATEGORIAid, 
-                    nov.TIPO_NOVEDADid 
+                    nov.TIPO_NOVEDADid,
+                    sub.categoriaid
                 FROM novedad nov
-                WHERE id = '''+str(id)+'''
+                left join subcategoria sub on sub.id = nov.SUBCATEGORIAid 
+                WHERE nov.id = '''+str(id)+'''
             '''
         cursor.execute(sql)
         novedad = cursor.fetchone()

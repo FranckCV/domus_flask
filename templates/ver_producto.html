@@ -36,23 +36,6 @@
                     <input disabled disabled required type="text" class="input" name="nombre"
                         id="nombre" value="{{ producto[8] }}" style="text-align: center;">
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="nombre">Nombre:</label>
-                    <input disabled required type="text" class="input"
-                        id="nombre" value="{{ producto[1] }}" style="text-align: center;">
-                </div>
-            </div>
-
-            <div class="row">
-
-                <div class="col">
-                    <label for="stock">Stock:</label>
-                    <input disabled required type="number" class="input" name="stock" id="stock"
-                        value="{{ producto[7] }}" style="text-align: center;">
-                </div>
                 
                 <div class="col">
                     <label for="">Disponibilidad:</label>                    
@@ -64,7 +47,20 @@
                         {% endif %}
                     </div>
                 </div>
+            </div>
 
+            <div class="row">
+                <div class="col col-8">
+                    <label for="nombre">Nombre:</label>
+                    <input disabled required type="text" class="input"
+                        id="nombre" value="{{ producto[1] }}" style="text-align: center;">
+                </div>
+
+                <div class="col">
+                    <label for="stock">Stock:</label>
+                    <input disabled required type="number" class="input" name="stock" id="stock"
+                        value="{{ producto[7] }}" style="text-align: center;">
+                </div>
             </div>
 
             <div class="row">
@@ -258,6 +254,7 @@
                 <div class="col" id="">
                     <div class="form-buttons">
                         <a href="{{ url_for('productos') }}" id="backbtn">Volver</a>
+                        <a href="{{ url_for('producto',id = producto[0]) }}"><button class="button is-secondary" >Ir a Producto</button></a>
                         <a href="{{ url_for('editar_producto',id = producto[0]) }}"><button class="button is-primary" >Editar</button></a>
                     </div>
                 </div>
@@ -272,15 +269,6 @@
 
 </section>
 
-<style>
-    .PrActive {
-        background-color: rgb(255, 255, 255);
-        color: #00095c;
-    }
-
-    /* Asegurar que el body permita scroll si el contenido excede el tamaño de la ventana */
-    
-</style>
 {% endblock %}
 
 {% block scripts %}
