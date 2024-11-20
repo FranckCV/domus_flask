@@ -1873,13 +1873,33 @@ def registrar_cliente():
         return "Error en el servidor", 500 
 
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form.get('email-login')
-        password = request.form.get('password-login')
+    
+    email = request.form.get('email-login')
+    password = request.form.get('password-login')
+    
+    user=controlador_usuario_cliente
+    
     return render_template('iniciar_sesion.html')
 
+
+# @app.route("/iniciar_sesion" , methods=["POST"])
+# def iniciar_sesion():
+#     email = request.form['username']
+#     password = request.form['password']
+#     user = controlador_users.obtener_user_por_email(email)
+#     epassword=encstringsha256(password)
+
+
+#     if user and user[2] == epassword:
+#         session['username'] = email
+#         resp = make_response(redirect("/discos"))
+#         resp.set_cookie('username',email)
+#         #return redirect("/discos")
+#         return resp
+#     else:
+#         return redirect("/login")
 
 #####################FIN INICIO DE SESIÓN######################
 ###################################CONFIRMAR PEDIDO###############################
