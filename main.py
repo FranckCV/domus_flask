@@ -66,7 +66,6 @@ users = [
     User(1, 'user1', 'abcxyz'),
     User(2, 'user2', 'abcxyz'),
 ]
-
 username_table = {u.username: u for u in users}
 userid_table = {u.id: u for u in users}
 
@@ -136,20 +135,24 @@ def catalogo():
     categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()    
     return render_template("catalogo.html", productos = productos, categoriasFiltro = categoriasFiltro)
 
+
 @app.route("/novedades") #falta
 def novedades():
     productosOfertas = controlador_productos.obtenerEnTarjetasOfertas()
     return render_template("novedades.html" , productosOfertas = productosOfertas)
+
 
 @app.route("/promociones") #falta
 def promociones():
     promociones = controlador_novedades.mostrarNovedadesPromociones()
     return render_template("promociones.html" , promociones = promociones)
 
+
 @app.route('/anuncios')
 def anuncios():
     anuncios = controlador_novedades.mostrarNovedadesAnuncios()
     return render_template('anuncios.html', anuncios=anuncios)
+
 
 @app.route("/error") 
 def error():
@@ -166,7 +169,8 @@ def categoria(id):
             subcategorias = controlador_subcategorias.obtenerSubcategoriasXCategoria(id)
             novedadesCategoria = controlador_novedades.obtenerNovedadesCategoria(id)
             productosCategoria = controlador_productos.obtener_en_tarjetas_categoria(0,id,0)
-            return render_template("selectedCategoria.html", productosCategoria = productosCategoria , categoria = categoria, subcategorias = subcategorias , novedadesCategoria = novedadesCategoria)
+            categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()   
+            return render_template("selectedCategoria.html", productosCategoria = productosCategoria , categoria = categoria, subcategorias = subcategorias , novedadesCategoria = novedadesCategoria , categoriasFiltro = categoriasFiltro)
         else:
             return redirect("/error")
     except:
@@ -186,8 +190,8 @@ def marca(id):
             productosMarca = controlador_productos.obtener_en_tarjetas_marca(0,id,0)
             novedadesMarca = controlador_novedades.obtenerNovedadesMarca(id)
             subcategoriasMarca = controlador_subcategorias.obtenerSubcategoriasXMarca(id)
-
-            return render_template("selectedMarca.html", marca = marca , novedadesMarca = novedadesMarca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca)
+            categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()  
+            return render_template("selectedMarca.html", marca = marca , novedadesMarca = novedadesMarca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca , categoriasFiltro = categoriasFiltro)
             
         else:
             return redirect("/error")
@@ -234,11 +238,6 @@ def selectedNovedad(id):
 def tipo_novedad(id):
     promo = controlador_novedades.promoselect(id)
     return render_template("selectedPromocion.html" , promo = promo)
-
-
-
-
-
 
 
 @app.route("/selectedPromocion=<int:id>")  #falta
@@ -302,15 +301,10 @@ def iniciar_sesion():
 
 @app.route("/registrate") #falta
 def registrate():
+
     return render_template("registrate.html")
 
-
-
 # PAGINAS USUARIO CLIENTE
-
-
-
-
 
 
 
@@ -352,8 +346,6 @@ def agregar_carrito():
     else:
         return redirect(url_for('carrito', error_message=str(result)))
 
-    
-
 
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
@@ -374,7 +366,6 @@ def aumentar_carro():
            return redirect(url_for('carrito', error_message=str(result)))
     else:
         print("No se encontró un pedido activo.")
-    
 
 
 @app.route("/disminuir_carro", methods=["POST"])
@@ -390,7 +381,7 @@ def disminuir_carro():
     
     return redirect('/carrito')
 
-#PARA CONFIRMAR CARRE
+
 @app.route("/confirmar_carrito", methods=["POST"])
 def confirmar_carrito():
     estado = 1
@@ -428,9 +419,6 @@ def confirmar_carrito():
         return redirect('/carrito')
 
 
-
-######################################FIN CARRO#############################################    
-#######################################RESUMEN DE CARRITO##############################################
 @app.route("/resumen_de_pedido")
 def resumen_de_pedido():
     usuario=1
@@ -439,33 +427,17 @@ def resumen_de_pedido():
     print("los metodos son:",metodos_pago)
     existencias = controlador_detalle.obtener_Detalle_por_Id_pedido(pedido_id)
     # metodoID = request.form["metodo_pago"]
-    # controlador_pedido.actualizar_MetPago_Pedido(pedido_id,metodoID)
-
-    
+    # controlador_pedido.actualizar_MetPago_Pedido(pedido_id,metodoID)    
     return render_template("resumen_de_pedido.html", metodos_pago=metodos_pago, existencias=existencias)
+
 
 @app.route('/cancelar_compra')
 def cancelar_compra():
     usuario_id = 1  
-    estado_cancelado = 1
-    
-    pedido_id=controlador_carrito.ultimoPedido(usuario_id)
-    
+    estado_cancelado = 1    
+    pedido_id=controlador_carrito.ultimoPedido(usuario_id)    
     controlador_carrito.cancelar_pedido(usuario_id, estado_cancelado,pedido_id)
-
     return redirect('/carrito')
-
-
-#############################################################################################################
-# PAGINAS USUARIO EMPLEADO
-
-
-
-
-
-
-
-
 
 
 
@@ -652,13 +624,14 @@ def actualizar_caracteristica():
 
 
 
-# SUBCATEGORIAS   
+########################     SUBCATEGORIA      #########################
 
 @app.route("/listado_subcategorias")
 def subcategorias():
     categorias = controlador_categorias.obtener_listado_categorias()
     subcategorias =controlador_subcategorias.obtener_listado_subcategorias()
     return render_template("listado_subcategorias.html", categorias=categorias,subcategorias = subcategorias)
+
 
 @app.route("/listado_subcategorias_buscar")
 def subcategorias_buscar():
@@ -706,10 +679,8 @@ def actualizar_subcategoria():
     controlador_subcategorias.actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id,id)
     return redirect("/listado_subcategorias")
 
-########## FIN SUB-CATEGORIA ##########
 
-
-# CATEGORIAS
+########################     CATEGORIA      #########################
 
 @app.route("/agregar_categoria")
 def formulario_agregar_categoria():
@@ -760,10 +731,6 @@ def actualizar_categoria():
     return redirect("/listado_categorias")
 
 
-
-
-
-
 ######################### PARA COMENTARIO ##############################
 
 @app.route("/comentarios_listado")
@@ -772,7 +739,6 @@ def comentarios_listado():
     motivos = controlador_motivo_comentario.obtener_motivos_disponibles()
 
     return render_template("listado_comentarios.html", comentarios=comentarios, motivos=motivos)
-
 
 
 @app.route("/ver_comentario=<int:id>")
@@ -811,16 +777,19 @@ def guardar_comentario():
     
     return redirect("/")
 
+
 @app.route("/eliminar_comentario", methods=["POST"])
 def eliminar_comentario():
     controlador_comentario.eliminar_comentario(request.form["id"])
     return redirect("/comentarios_listado")
+
 
 @app.route("/estado_comentario", methods=["POST"])
 def estado_comentario():
     controlador_comentario.estado_comentario(request.form["id"])
     # return redirect("/comentarios_listado")
     return redirect(request.referrer)
+
 
 @app.route("/estado_comentario_respondido", methods=["POST"])
 def estado_comentario_respondido():
@@ -843,7 +812,6 @@ def motivos_comentario_buscar():
     return render_template("listado_motivos_comentarios.html", motivos=motivos , nombreBusqueda = nombreBusqueda)
 
 
-
 @app.route("/agregar_motivo_comentario")
 def formulario_agregar_motivo_comentario():
     return render_template("agregar_motivo_comentario.html")
@@ -855,15 +823,18 @@ def guardar_motivo_comentario():
     controlador_motivo_comentario.insertar_motivo(motivo, 1)
     return redirect("/motivos_comentario_listado")
 
+
 @app.route("/eliminar_motivo_comentario", methods=["POST"])
 def eliminar_motivo_comentario():
     controlador_motivo_comentario.eliminar_motivo(request.form["id"])
     return redirect("/motivos_comentario_listado")
 
+
 @app.route("/formulario_editar_motivo_comentario=<int:id>")
 def editar_motivo_comentario(id):
     motivo_comentario = controlador_motivo_comentario.obtener_motivo_por_id(id)
     return render_template("editar_motivo_comentario.html", motivo_comentario=motivo_comentario)
+
 
 @app.route("/actualizar_motivo_comentario", methods=["POST"])
 def actualizar_motivo_comentario(): 
@@ -872,6 +843,7 @@ def actualizar_motivo_comentario():
     disponibilidad = request.form["disponibilidad"]
     controlador_motivo_comentario.actualizar_motivo(motivo, disponibilidad, id)
     return redirect("/motivos_comentario_listado")
+
 
 ######################### FIN MOTIVO COMENTARIO ##############################
 
@@ -1292,9 +1264,10 @@ def eliminar_novedad():
 def editar_novedad(id):
     novedad = controlador_novedades.obtenerNovedadPorId(id)
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
+    categorias = controlador_categorias.obtener_categoriasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategorias()
     tiposNovedad = controlador_tipos_novedad.obtener_tipos_novedad()
-    return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tipos_novedad=tiposNovedad, novedad_id = id)
+    return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tipos_novedad=tiposNovedad, novedad_id = id , categorias = categorias)
 
 @app.route("/actualizar_novedad", methods=["POST"])
 def actualizar_novedad():
@@ -1306,7 +1279,9 @@ def actualizar_novedad():
     terminos = request.form["terminos"]
     disponibilidad = request.form["disponibilidad"]
     marca_id = request.form["marca_id"]
-    subcategoria_id = request.form["subcategoria_id"]
+    subcategoria_id = request.form["subcategorySelect"]
+    if (subcategoria_id == "null" or subcategoria_id == None or subcategoria_id == 0):
+        subcategoria_id = None
     tipo_novedad_id = request.form["tipo_novedad_id"]
 
     imagen = request.files["imagen"].read() if "imagen" in request.files else None
@@ -1645,6 +1620,11 @@ def eliminar_redes_sociales():
     controlador_redes_sociales.eliminar_redes_sociales(request.form["id"])
     return redirect("/listado_redes_sociales")
 
+######################## CUPONES #######################
+# @app.route("/listado_cupones")
+# def listado_cupones():
+#     redes = controlador_redes_sociales.obtener_redes_sociales()
+#     return render_template("listado_redes_sociales.html", redes = redes)
 
 
 
@@ -1844,6 +1824,21 @@ def eliminar_cliente():
 
 #########################INICIO DE SESIÓN####################################
 #PARA GUARDAR
+
+# def registrar_usuario():
+#     email = request.form['username']
+#     password = request.form['password']
+#     confpassword = request.form['confpassword']
+
+#     if password == confpassword:
+#         h = hashlib.new('sha256')
+#         h.update(bytes(password, encoding='utf-8'))
+#         epassword = h.hexdigest()
+#         controlador_users.registrar_usuario(email, epassword)
+#         return redirect("/login")
+#     else:
+#         return redirect("/signup")
+
 @app.route("/registrar_cliente", methods=["POST"])
 def registrar_cliente():
     try:
@@ -1857,6 +1852,10 @@ def registrar_cliente():
         password = request.form["password"]
         disponibilidad=1
         tipo_usuario = 3
+
+        # h = hashlib.new('sha256')
+        # h.update(bytes(password, encoding='utf-8'))
+        # epassword = h.hexdigest()
 
         result = controlador_usuario_cliente.insertar_usuario(
             nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, password, disponibilidad, tipo_usuario
@@ -2014,10 +2013,7 @@ def api_obtenerdiscos():
     return jsonify(discos)
 
 
-
-
 # EJECUTAR
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000, debug=True)

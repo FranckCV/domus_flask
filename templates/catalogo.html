@@ -23,7 +23,7 @@
                         <hr>
                         <span>
                             Resultados: 
-                            <b>{{productos | length}}</b>
+                            <b id="cantProductsCatalogue">{{productos | length}}</b>
                         </span>
                     </div>
 
@@ -38,7 +38,7 @@
                         <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
 
                             {% for categoria in categoriasFiltro %}
-                                <div class="ctlg_filters_subelement">
+                                <div class="ctlg_filters_subelement filter_cat"  data-category="{{categoria[0]}}">
                                     <i class="{{categoria[2]}}"></i>
                                     {{categoria[1]}}
                                     <input type="checkbox" value="{{categoria[0]}}">
@@ -56,10 +56,10 @@
                         <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
                             {% for categoria in categoriasFiltro %}
                                 {% for subcategoria in categoria[4] %}
-                                    <div class="ctlg_filters_subelement">
+                                    <div class="ctlg_filters_subelement filter_subcat" data-category="{{subcategoria[3]}}" >
                                         <i class="{{subcategoria[2]}}"></i>
                                         {{subcategoria[1]}}
-                                        <input type="checkbox" data-category="{{subcategoria[3]}}" value="{{subcategoria[0]}}">
+                                        <input type="checkbox" value="{{subcategoria[0]}}">
                                     </div>
                                 {% endfor %}
                             {% endfor %}
@@ -72,15 +72,11 @@
                         </div>
 
                         <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
-                        </div>
-
-                        <div class="ctlg_filters_element">
-                            <i class="fa-solid fa-star"></i>
-                            <p>CALIFICACION</p>
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-
-                        <div class="ctlg_filters_subcontent ctlg_filters_subcontent_hidden">
+                            <label for="min_price">Mín:</label>
+                            <input type="number" id="min_price" min="0" placeholder="S/. 0">
+                        
+                            <label for="max_price">Máx:</label>
+                            <input type="number" id="max_price" min="0" placeholder="S/. 9999">
                         </div>
 
                     </div>
@@ -95,15 +91,13 @@
 
                         <div class="ctlg_select">
                             <p>Ordenar por:</p>
-                            <select id="ctlg_products_order" name="order">                                    
-                                <option value="1">Más Populares</option>
-                                <option value="2">Más Recientes</option>
-                                <option value="3">Mejores Descuentos</option>
-                                <option value="4">Mejores Calificaciones</option>
-                                <option value="5">Desde el Menor Precio</option>
-                                <option value="6">Desde el Mayor Precio</option>
-                                <option value="7">A - Z</option>
-                                <option value="8">Z - A</option>
+                            <select id="ctlg_products_order" name="order">
+                                <option value="1">Más Recientes</option>
+                                <option value="2">Más Populares</option>
+                                <option value="3">Desde el Menor Precio</option>
+                                <option value="4">Desde el Mayor Precio</option>
+                                <option value="5">A - Z</option>
+                                <option value="6">Z - A</option>
                             </select>
                         </div>
 
@@ -124,8 +118,14 @@
                         
                         {% for producto in productos %}
 
-                        <div class="product" data-subcategory="{{producto[6]}}">
-                            <a class="product_info" href="{{url_for('producto', id=producto[0])}}" data-subcategory="{{producto[6]}}">
+                        <div class="product" data-subcategory="{{producto[6]}}" data-category="{{producto[8]}}" 
+                        {% if producto[4] %}
+                            data-price="{{producto[4]}}" 
+                        {% else %}
+                            data-price="{{producto[3]}}"
+                        {% endif %}
+                        >
+                            <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
                                 <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
 
                                 <p class="product_name">
@@ -206,6 +206,6 @@
 {% endblock %}
 
 {% block scripts %} 
-    <script src="static/js/scriptCatalogue.js"></script>
+    <script src="/static/js/scriptCatalogue.js"></script>
     <!-- <script src="static/js/scriptInfoProduct.js"></script> -->
 {% endblock %}
