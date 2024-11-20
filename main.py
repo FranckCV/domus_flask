@@ -1853,16 +1853,18 @@ def registrar_cliente():
         disponibilidad=1
         tipo_usuario = 3
 
-        # h = hashlib.new('sha256')
-        # h.update(bytes(password, encoding='utf-8'))
-        # epassword = h.hexdigest()
+        h = hashlib.new('sha256')
+        h.update(bytes(password, encoding='utf-8'))
+        epassword = h.hexdigest()
 
         result = controlador_usuario_cliente.insertar_usuario(
-            nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, password, disponibilidad, tipo_usuario
+            nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, epassword, disponibilidad, tipo_usuario
         )
+
         print(result)
         if result == 1:
-            return render_template("iniciar_sesion.html", mostrar=True)
+            # return render_template("iniciar_sesion.html", mostrar=True)
+            return redirect ("/")
         elif result == 0:
             return render_template("iniciar_sesion.html", mostrar=False)
         else:
