@@ -172,6 +172,27 @@ def obtener_usuario_cliente_por_id(id):
         return None
     finally:
         conexion.close()
+        
+        
+    def obtener_usuario_cliente_por_email(id):
+        conexion = obtener_conexion()
+        try:
+            with conexion.cursor() as cursor:
+                sql = '''
+                    SELECT 
+                        id
+                    FROM USUARIO
+                    WHERE email = %s AND TIPO_USUARIOid = 3
+                '''
+                cursor.execute(sql, (id,))
+                usuario = cursor.fetchone()
+
+                return usuario
+        except Exception as e:
+            print(f"Error al obtener el usuario cliente por ID: {e}")
+            return None
+        finally:
+            conexion.close()    
 
 
 def actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad , imagen):
