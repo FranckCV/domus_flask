@@ -186,7 +186,7 @@ def obtener_usuario_cliente_por_email(email):
                     FROM USUARIO
                     WHERE correo = %s
                 '''
-                cursor.execute(sql, (id,))
+                cursor.execute(sql, (email,))
                 usuario = cursor.fetchone()
 
                 return usuario

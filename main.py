@@ -1886,7 +1886,7 @@ def login():
     
     if user and user[2]==epassword:
         session['username']=email
-        resp=make_response(redirect("/index"))
+        resp=make_response(redirect("/"))
         resp.set_cookie('username',email)
         return resp
     else:
