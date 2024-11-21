@@ -351,17 +351,17 @@ def agregar_carrito():
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
     producto_id = request.form.get("producto_id")
-    print(f"Producto ID recibido: {producto_id}") 
+    # print(f"Producto ID recibido: {producto_id}") 
     usuario_id = 1 
     estado = 1 
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    print(f"Pedido ID encontrado: {pedido_id}")  
+    # print(f"Pedido ID encontrado: {pedido_id}")  
 
     if pedido_id:
         result=controlador_carrito.aumentar_producto(pedido_id,producto_id)
         if result is None:
-            print("Producto aumentado correctamente.")
+            # print("Producto aumentado correctamente.")
             return redirect('/carrito')
         else:
            return redirect(url_for('carrito', error_message=str(result)))
@@ -401,8 +401,8 @@ def confirmar_carrito():
         total_producto = cantidad * precio_unitario
         subtotal += total_producto
     
-    print(f"Total del pedido: {subtotal}")
-    print(f"Descuento aplicado: {valor_descuento}")
+    # print(f"Total del pedido: {subtotal}")
+    # print(f"Descuento aplicado: {valor_descuento}")
     #Obtengo el pedido_id del usuario
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
     #Obtengo el detalle de ese pedido_id
@@ -1865,7 +1865,11 @@ def registrar_cliente():
         print(result)
         if result == 1:
             # return render_template("iniciar_sesion.html", mostrar=True)
-            return redirect ("/")
+            session['username']=correo
+            resp=make_response(redirect("/"))
+            resp.set_cookie('username',correo)
+            return resp
+
         elif result == 0:
             return render_template("iniciar_sesion.html", mostrar=False)
         else:
