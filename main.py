@@ -98,6 +98,7 @@ jwt = JWT(app, authenticate, identity)
 logo_domus = 'img/elementos/logoDomus.png'
 
 
+
 @app.context_processor
 def inject_globals():
     # General
@@ -1878,9 +1879,16 @@ def login():
     email = request.form.get('email-login')
     password = request.form.get('password-login')
     
-    user=controlador_usuario_cliente
+    user=controlador_usuario_cliente.obtener_usuario_cliente_por_email(email)
+    epassword=encstringsha256(password)
     
-    return render_template('iniciar_sesion.html')
+    if user and user[2]==epassword:
+        session['username']=email
+        resp=make_response(redirect("/index"))
+        resp.set_cookie('username',email)
+        return resp
+    else:
+        return redirect('/iniciar_sesion.html')
 
 
 # @app.route("/iniciar_sesion" , methods=["POST"])

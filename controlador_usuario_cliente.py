@@ -174,15 +174,17 @@ def obtener_usuario_cliente_por_id(id):
         conexion.close()
         
         
-    def obtener_usuario_cliente_por_email(id):
+def obtener_usuario_cliente_por_email(email):
         conexion = obtener_conexion()
         try:
             with conexion.cursor() as cursor:
                 sql = '''
                     SELECT 
-                        id
+                        id,
+                        correo,
+                        contraseña
                     FROM USUARIO
-                    WHERE email = %s AND TIPO_USUARIOid = 3
+                    WHERE correo = %s
                 '''
                 cursor.execute(sql, (id,))
                 usuario = cursor.fetchone()
