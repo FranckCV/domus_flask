@@ -188,7 +188,6 @@ def obtener_usuario_cliente_por_email(email):
                 '''
                 cursor.execute(sql, (email,))
                 usuario = cursor.fetchone()
-
                 return usuario
         except Exception as e:
             print(f"Error al obtener el usuario cliente por ID: {e}")
