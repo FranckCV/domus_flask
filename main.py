@@ -326,30 +326,26 @@ from flask import request, redirect, url_for
 def agregar_carrito():
     producto_id = request.form["producto_id"]
     estado = 1
-    usuario_id = session['id']
+    usuario_id = 1
     
-    if usuario_id is not None:
-
-        pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-        
-        if pedido_id is None:
-            pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
-        
-        result=controlador_carrito.insertar_detalle(producto_id, pedido_id)
-        
-        referrer = request.referrer
-        
-        if result is None:
-            # Si el usuario estaba en la página del carrito, redirige al carrito
-            if "carrito" in referrer:
-                return redirect(url_for('carrito'))
-            else:
-                # Mantener en la página actual devolviendo un código 204 (sin contenido)
-                return '', 204
+    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+    
+    if pedido_id is None:
+        pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
+    
+    result=controlador_carrito.insertar_detalle(producto_id, pedido_id)
+    
+    referrer = request.referrer
+    
+    if result is None:
+         # Si el usuario estaba en la página del carrito, redirige al carrito
+        if "carrito" in referrer:
+            return redirect(url_for('carrito'))
         else:
-            return redirect(url_for('carrito', error_message=str(result)))
+            # Mantener en la página actual devolviendo un código 204 (sin contenido)
+            return '', 204
     else:
-        return redirect('/login')
+        return redirect(url_for('carrito', error_message=str(result)))
 
 
 @app.route("/aumentar_carro", methods=["POST"])
@@ -1888,19 +1884,17 @@ def login():
     
     email = request.form.get('email-login')
     password = request.form.get('password-login')
-    user=()
+    
     user=controlador_usuario_cliente.obtener_usuario_cliente_por_email(email)
-    print(user)
     epassword=encstringsha256(password)
-    print(epassword)
+    
     if user and user[2]==epassword:
-        session['id']=user[0]
-        session['username'] = email
-        resp=make_response(redirect("/"))
+        session['username']=email
+        resp=make_response(redirect("/index"))
         resp.set_cookie('username',email)
         return resp
     else:
-        return redirect('/iniciar_sesion')
+        return redirect('/iniciar_sesion.html')
 
 
 # @app.route("/iniciar_sesion" , methods=["POST"])
