@@ -99,6 +99,7 @@ jwt = JWT(app, authenticate, identity)
 logo_domus = 'img/elementos/logoDomus.png'
 
 
+
 @app.context_processor
 def inject_globals():
     # General
@@ -302,9 +303,8 @@ def iniciar_sesion():
 
 @app.route("/registrate") #falta
 def registrate():
+
     return render_template("registrate.html")
-
-
 
 # PAGINAS USUARIO CLIENTE
 
@@ -352,17 +352,17 @@ def agregar_carrito():
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
     producto_id = request.form.get("producto_id")
-    print(f"Producto ID recibido: {producto_id}") 
+    # print(f"Producto ID recibido: {producto_id}") 
     usuario_id = 1 
     estado = 1 
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    print(f"Pedido ID encontrado: {pedido_id}")  
+    # print(f"Pedido ID encontrado: {pedido_id}")  
 
     if pedido_id:
         result=controlador_carrito.aumentar_producto(pedido_id,producto_id)
         if result is None:
-            print("Producto aumentado correctamente.")
+            # print("Producto aumentado correctamente.")
             return redirect('/carrito')
         else:
            return redirect(url_for('carrito', error_message=str(result)))
@@ -402,8 +402,8 @@ def confirmar_carrito():
         total_producto = cantidad * precio_unitario
         subtotal += total_producto
     
-    print(f"Total del pedido: {subtotal}")
-    print(f"Descuento aplicado: {valor_descuento}")
+    # print(f"Total del pedido: {subtotal}")
+    # print(f"Descuento aplicado: {valor_descuento}")
     #Obtengo el pedido_id del usuario
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
     #Obtengo el detalle de ese pedido_id
@@ -1869,6 +1869,21 @@ def eliminar_cliente():
 
 #########################INICIO DE SESIÓN####################################
 #PARA GUARDAR
+
+# def registrar_usuario():
+#     email = request.form['username']
+#     password = request.form['password']
+#     confpassword = request.form['confpassword']
+
+#     if password == confpassword:
+#         h = hashlib.new('sha256')
+#         h.update(bytes(password, encoding='utf-8'))
+#         epassword = h.hexdigest()
+#         controlador_users.registrar_usuario(email, epassword)
+#         return redirect("/login")
+#     else:
+#         return redirect("/signup")
+
 @app.route("/registrar_cliente", methods=["POST"])
 def registrar_cliente():
     try:
@@ -1883,12 +1898,22 @@ def registrar_cliente():
         disponibilidad=1
         tipo_usuario = 3
 
+        h = hashlib.new('sha256')
+        h.update(bytes(password, encoding='utf-8'))
+        epassword = h.hexdigest()
+
         result = controlador_usuario_cliente.insertar_usuario(
-            nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, password, disponibilidad, tipo_usuario
+            nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, epassword, disponibilidad, tipo_usuario
         )
+
         print(result)
         if result == 1:
-            return render_template("iniciar_sesion.html", mostrar=True)
+            # return render_template("iniciar_sesion.html", mostrar=True)
+            session['username']=correo
+            resp=make_response(redirect("/"))
+            resp.set_cookie('username',correo)
+            return resp
+
         elif result == 0:
             return render_template("iniciar_sesion.html", mostrar=False)
         else:
@@ -1898,13 +1923,40 @@ def registrar_cliente():
         return "Error en el servidor", 500 
 
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form.get('email-login')
-        password = request.form.get('password-login')
-    return render_template('iniciar_sesion.html')
+    
+    email = request.form.get('email-login')
+    password = request.form.get('password-login')
+    
+    user=controlador_usuario_cliente.obtener_usuario_cliente_por_email(email)
+    epassword=encstringsha256(password)
+    
+    if user and user[2]==epassword:
+        session['username']=email
+        resp=make_response(redirect("/index"))
+        resp.set_cookie('username',email)
+        return resp
+    else:
+        return redirect('/iniciar_sesion.html')
 
+
+# @app.route("/iniciar_sesion" , methods=["POST"])
+# def iniciar_sesion():
+#     email = request.form['username']
+#     password = request.form['password']
+#     user = controlador_users.obtener_user_por_email(email)
+#     epassword=encstringsha256(password)
+
+
+#     if user and user[2] == epassword:
+#         session['username'] = email
+#         resp = make_response(redirect("/discos"))
+#         resp.set_cookie('username',email)
+#         #return redirect("/discos")
+#         return resp
+#     else:
+#         return redirect("/login")
 
 #####################FIN INICIO DE SESIÓN######################
 ###################################CONFIRMAR PEDIDO###############################
@@ -2019,10 +2071,7 @@ def api_obtenerdiscos():
     return jsonify(discos)
 
 
-
-
 # EJECUTAR
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000, debug=True)

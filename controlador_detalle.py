@@ -44,7 +44,7 @@ def obtener_Detalle():
             producto_id = producto[3]  
 
             productos_lista.append((imagen, nombre, precio_final, cantidad, producto_id))
-            print(productos_lista)
+            # print(productos_lista)
     
     conexion.close()
     return productos_lista

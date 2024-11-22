@@ -131,7 +131,7 @@ def aumentar_producto(pedido_id, producto_id):
         with conexion.cursor() as cursor:
             sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
             cursor.execute(sql, (producto_id, pedido_id))
-            print(f"Filas afectadas: {cursor.rowcount}")
+            # print(f"Filas afectadas: {cursor.rowcount}")
         
         conexion.commit()
         return None 

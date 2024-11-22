@@ -10,19 +10,19 @@
 
     <!-- Inicio de Sesión -->
     <div class="container-form">
-      <form class="sign-in" id="login-form">
+      <form class="sign-in" id="login-form"  action="{{ url_for('login') }}" method="post">
         <h2>Iniciar sesión</h2>
         <span>Ingrese su correo y contraseña</span>
 
         <div class="container-input form-field">
           <i class="fa-solid fa-envelope"></i>
-          <input type="email" id="email-login" name="email" placeholder="Correo" required />
+          <input type="email" id="email-login" name="email-login" placeholder="Correo" required />
           <small></small>
         </div>
 
         <div class="container-input form-field">
           <i class="fa-solid fa-lock"></i>
-          <input type="password" id="password-login" name="password" placeholder="Contraseña" required />
+          <input type="password" id="password-login" name="password-login" placeholder="Contraseña" required />
           <small></small>
         </div>
 

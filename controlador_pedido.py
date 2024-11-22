@@ -3,17 +3,17 @@ import base64
 import controlador_productos
 tabla = 'pedido'
 
-def actualizar_MetPago_Pedido(pedido_id, metodo):
-    conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        query = """
-            UPDATE pedido
-            SET METODO_PAGOid = %s  
-            WHERE id = %s
-        """
-        cursor.execute(query, (metodo, pedido_id))
-    conexion.commit()
-    conexion.close()
+# def actualizar_MetPago_Pedido(pedido_id, metodo):
+#     conexion = obtener_conexion()
+#     with conexion.cursor() as cursor:
+#         query = """
+#             UPDATE pedido
+#             SET METODO_PAGOid = %s  
+#             WHERE id = %s
+#         """
+#         cursor.execute(query, (metodo, pedido_id))
+#     conexion.commit()
+#     conexion.close()
 
 
 def actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuario_id):
