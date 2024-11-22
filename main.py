@@ -1921,50 +1921,61 @@ def registrar_cliente():
         telefono = request.form["telefono"]
         correo = request.form["correo"]
         password = request.form["password"]
-        disponibilidad=1
+        disponibilidad = 1
         tipo_usuario = 3
 
-        h = hashlib.new('sha256')
-        h.update(bytes(password, encoding='utf-8'))
-        epassword = h.hexdigest()
+        epassword = encstringsha256(password)
 
         result = controlador_usuario_cliente.insertar_usuario(
             nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, epassword, disponibilidad, tipo_usuario
         )
 
-        print(result)
         if result == 1:
-            # return render_template("iniciar_sesion.html", mostrar=True)
-            session['username']=correo
-            resp=make_response(redirect("/"))
-            resp.set_cookie('username',correo)
+            
+            usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_email(correo)
+            user_id = usuario[0] 
+            
+            session['username'] = correo
+            session['id'] = user_id
+            resp = make_response(redirect(f"/perfil/{user_id}"))
+            resp.set_cookie('username', correo)
             return resp
-
         elif result == 0:
-            return render_template("iniciar_sesion.html", mostrar=False)
+            return render_template(
+                "iniciar_sesion.html",
+                mostrar_modal=True,
+                mensaje_modal="El correo usado ya fue registrado. Por favor, intente con otro."
+            )
         else:
-            return "Error al procesar la solicitud", 400 
+            return "Error al procesar la solicitud", 400
     except Exception as e:
         print(f"Error en registrar_cliente: {e}")
-        return "Error en el servidor", 500 
+        return render_template(
+            "iniciar_sesion.html",
+            mostrar_modal=True,
+            mensaje_modal="Error en el servidor. Por favor, intente más tarde."
+        )
+
 
 
 @app.route("/login", methods=['POST'])
 def login():
-    
     email = request.form.get('email-login')
     password = request.form.get('password-login')
     
-    user=controlador_usuario_cliente.obtener_usuario_cliente_por_email(email)
-    epassword=encstringsha256(password)
+    user = controlador_usuario_cliente.obtener_usuario_cliente_por_email(email)
     
-    if user and user[2]==epassword:
-        session['username']=email
-        resp=make_response(redirect("/index"))
-        resp.set_cookie('username',email)
-        return resp
+    if user:
+        epassword = encstringsha256(password)
+        if user[2] == epassword:
+            session['username'] = email
+            resp = make_response(redirect("/"))
+            resp.set_cookie('username', email)
+            return resp
+        else:
+            return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Contraseña incorrecta.")
     else:
-        return redirect('/iniciar_sesion.html')
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Usuario no registrado.")
 
 @app.route("/logout")
 def logout():

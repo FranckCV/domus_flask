@@ -132,40 +132,39 @@
 
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Error en el registro</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ mensaje_modal }}
+            </div>
         </div>
-        <div class="modal-body">
-          El correo usado ya fue registrado, utilíce otro. Por favor, inténtelo nuevamente.
-        </div>
-      </div>
     </div>
-  </div>
+</div>
+
+
   
 </section>
 {% endblock %}
 
 {% block scripts %}
-  <script src="static/js/inicio_sesion.js"></script>
-  <script src="static/js/validar_formulario.js"></script>
+<script src="static/js/inicio_sesion.js"></script>
+<script src="static/js/validar_formulario.js"></script>
 
-  <script>
+<script>
     function toggleCheckbox() {
-      var checkbox = document.getElementById('terminos');
-      checkbox.checked = !checkbox.checked;
+        var checkbox = document.getElementById('terminos');
+        checkbox.checked = !checkbox.checked;
     }
-  </script>
+</script>
 
-  {%if mostrar%}
-    <script src="static/js/animacion.js"></script>
-    {% elif mostrar == False %}
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
+{% if mostrar_modal %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
         var modal = new bootstrap.Modal(document.getElementById('exampleModal'));
         modal.show();
-      });
-    </script>
-  {% endif %}
+    });
+</script>
+{% endif %}
 {% endblock %}
