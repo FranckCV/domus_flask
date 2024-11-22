@@ -346,7 +346,7 @@ def agregar_carrito():
             else:
                 # Mantener en la página actual devolviendo un código 204 (sin contenido)
                 return '', 204
-=======
+
     usuario_id = 1
     
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
@@ -362,7 +362,6 @@ def agregar_carrito():
          # Si el usuario estaba en la página del carrito, redirige al carrito
         if "carrito" in referrer:
             return redirect(url_for('carrito'))
->>>>>>> 71f5ec13baca9fc361cb471b84f0e718dcc1a961
         else:
             # Mantener en la página actual devolviendo un código 204 (sin contenido)
             return '', 204
@@ -373,13 +372,10 @@ def agregar_carrito():
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
     producto_id = request.form.get("producto_id")
-<<<<<<< HEAD
     print(f"Producto ID recibido: {producto_id}") 
     usuario_id = session['id']
-=======
     # print(f"Producto ID recibido: {producto_id}") 
     usuario_id = 1 
->>>>>>> 71f5ec13baca9fc361cb471b84f0e718dcc1a961
     estado = 1 
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
