@@ -1,0 +1,69 @@
+{% extends 'maestra_administrador.html' %}
+{% block titulo %}
+  Agregar Cupón
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="/static/css/administrativa/formulario.css" />
+{% endblock %}
+
+{% block contenido %}
+  <section class="h_section" id="mainSection">
+    <h2 class="fw-bolder">Agregar Cupón</h2>
+    <form action="{{ url_for('guardar_cupones') }}" method="post" enctype="multipart/form-data">
+      <div class="form-grid" id="col_add">
+
+        <div class="row">
+          <div class="col">
+            <label for="nombre">Código del Cupon:</label>
+            <input required type="text" class="input" placeholder="Código de Cupon" name="codigo" id="codigo" />
+          </div>
+
+          <div class="col">
+            <label for="nombre">Porcentaje de Dcto:</label>
+            <input required type="number" class="input" placeholder="Porcentaje de Descuento" name="cant_dcto" id="cant_dcto" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="fecha_inicio">Fecha de Inicio:</label>
+            <input required type="date" class="input" name="fecha_inicio" id="fecha_inicio" />
+          </div>
+
+          <div class="col">
+            <label for="fecha_vencimiento">Fecha de Vencimiento:</label>
+            <input required type="date" class="input" name="fecha_vencimiento" id="fecha_vencimiento" />
+          </div>
+        </div>
+
+
+
+
+        <div class="row">
+          <div class="col" id="sbmt">
+            <div class="form-buttons">
+              <a href="{{ url_for('novedades_listado') }}" id="backbtn">Volver</a>
+              <button type="submit" class="button is-primary">Agregar</button>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+    </form>
+
+    <div id="overlayImage" class="overlayImage" onclick="closeImage()">
+      <img id="enlargedImage" class="enlarged-image" />
+    </div>
+
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/filtroCRUDListado.js"></script>
+  <script src="/static/js/imgsCRUDvistaprevia.js"></script>
+  <script src="/static/js/fechaCRUDnovedades.js"></script>
+  <script src="/static/js/imgsCRUDimagencompleta.js"></script>
+{% endblock %}

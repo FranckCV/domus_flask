@@ -1,4 +1,4 @@
-from bd import obtener_conexion
+from controladores.bd import obtener_conexion
 
 import base64
 

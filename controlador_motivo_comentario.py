@@ -1,6 +1,6 @@
 
 
-from bd import obtener_conexion
+from controladores.bd import obtener_conexion
 tabla = 'motivo_comentario'
 
 

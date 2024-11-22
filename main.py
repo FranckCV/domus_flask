@@ -9,8 +9,8 @@ import controlador_productos
 import controlador_imagenes_productos
 import controlador_tipos_novedad
 import controlador_imagenes_novedades
-import controlador_caracteristicas_productos
-import controlador_caracteristicas_subcategorias
+import controladores.controlador_caracteristicas_productos as controlador_caracteristicas_productos
+import controladores.controlador_caracteristicas_subcategorias as controlador_caracteristicas_subcategorias
 import controlador_caracteristicas
 import controlador_subcategorias
 import controlador_usuario_cliente
@@ -28,6 +28,7 @@ import controlador_estado_pedido
 import controlador_metodo_pago
 import controlador_redes_sociales
 import controlador_informacion_domus
+import controlador_cupon
 
 
 # class User(object):
@@ -1621,11 +1622,54 @@ def eliminar_redes_sociales():
     controlador_redes_sociales.eliminar_redes_sociales(request.form["id"])
     return redirect("/listado_redes_sociales")
 
+
 ######################## CUPONES #######################
-# @app.route("/listado_cupones")
-# def listado_cupones():
-#     redes = controlador_redes_sociales.obtener_redes_sociales()
-#     return render_template("listado_redes_sociales.html", redes = redes)
+@app.route("/listado_cupones")
+def listado_cupones():
+    cupones = controlador_cupon.obtener_cupones()
+    return render_template("listado_cupones.html", cupones = cupones)
+
+
+@app.route("/formulario_agregar_cupones")
+def formulario_agregar_cupones():
+    return render_template("agregar_cupon.html")
+
+
+@app.route("/eliminar_cupones", methods=["POST"])
+def eliminar_cupones():
+    controlador_cupon.eliminar_cupon(request.form["id"])
+    return redirect("/listado_cupones")
+
+
+@app.route("/guardar_cupones", methods=["POST"])
+def guardar_cupones():
+    codigo = request.form["codigo"]
+    fecha_ini = request.form["fecha_inicio"]
+    fecha_ven = request.form["fecha_vencimiento"]
+    cant_dcto = request.form["cant_dcto"]
+    controlador_cupon.insertar_cupon(codigo,fecha_ini,fecha_ven,cant_dcto)
+    return redirect("/listado_cupones")
+
+
+@app.route("/formulario_editar_cupones=<int:id>")
+def editar_cupones(id):
+    cupon = controlador_cupon.obtener_cupon_por_id(id)
+    return render_template("editar_cupones.html", cupon=cupon)
+
+
+@app.route("/actualizar_cupones", methods=["POST"])
+def actualizar_cupones():
+    id = request.form["id"]
+    codigo = request.form["codigo"]
+    fecha_ini = request.form["fecha_inicio"]
+    fecha_ven = request.form["fecha_vencimiento"]
+    cant_dcto = request.form["cant_dcto"]
+    disponibilidad = request.form["disponibilidad"]
+    controlador_cupon.actualizar_cupon_por_id(codigo,fecha_ini,fecha_ven,cant_dcto,disponibilidad,id)
+    return redirect("/listado_cupones")
+
+
+
 
 
 

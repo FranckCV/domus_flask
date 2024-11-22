@@ -1,4 +1,4 @@
-from bd import obtener_conexion
+from controladores.bd import obtener_conexion
 import base64
 
 def obtenerBannersNovedadesRecientes():
@@ -585,7 +585,7 @@ def actualizarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            UPDATE IMG_NOVEDAD
+            UPDATE img_novedad
             SET nomImagen = %s, imagen = %s, TIPO_IMG_NOVEDADid = %s
             WHERE id = %s
         '''
@@ -598,7 +598,7 @@ def eliminarImagenNovedad(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            DELETE FROM IMG_NOVEDAD
+            DELETE FROM img_novedad
             WHERE id = %s
         '''
         cursor.execute(sql, (id,))
