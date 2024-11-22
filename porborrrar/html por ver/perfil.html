@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/elementos/iconDomus.png">
+    <link rel="stylesheet" href="css/common_styles/bootstrap.min.css">
+    <link rel="stylesheet" href="css/common_styles/all.min.css">
+    <link rel="stylesheet" href="css/common_styles/fontawesome.min.css">
+    <link rel="stylesheet" href="css/common_styles/fonts.css">
+    <link rel="stylesheet" href="css/common_styles/domus_styles.css">
+    <link rel="stylesheet" href="css/usuario.css">
+    <link rel="stylesheet" href="css/perfil.css">
+    <title> | Domus Market</title>
+</head>
+
+<body class="body_section">
+    <header>
+        <a class="header_item" id="index_logo" href="index.html">            
+            <img class="img-fluid" id="logo_header" src="img/elementos/logoDomus.png" alt="Logo">            
+        </a>        
+        <div class="header_item" id="search">
+            <input type="text">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <a class="header_item header_option" id="header_carrito" href="carrito.html">
+            <div class="d-flex flex-row">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <div class="burbuja_carrito_cant">
+                    <span id="carrito_cant"></span>
+                </div>
+            </div>
+            <p>Mi Carrito</p>
+        </a>
+        <a class="header_item header_option" id="header_perfil" href="iniciar_sesion.html">
+            <i class="fa-solid fa-user"></i>
+            <p>Mi Perfil</p>            
+        </a>
+        <nav>
+            <div id="menu_button" class="nav_element active_menu">
+                <i class="fa-solid fa-bars"></i>
+                <p>Menú</p>
+            </div>
+            <a class="nav_element" href="catalogo.html">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <p>Catálogo</p>
+            </a>
+            <a class="nav_element" href="servicioCliente.html">
+                <i class="fa-regular fa-circle-question"></i>
+                <p>Servicio al Cliente</p>
+            </a>
+            <a class="nav_element" href="contactanos.html">
+                <i class="fa-solid fa-message"></i>
+                <p>Contáctanos</p>
+            </a>
+            <a href="exclusividad.html" class="nav_element menu_exclusividad">
+                <i class="fa-solid fa-star"></i>
+                <!-- <img class="img-fluid" src="img/elementos/iconDomus.png"></img> -->
+                <p>Exclusividad Domus</p>
+            </a>   
+        </nav>
+    </header>
+    <aside id="menu_content" class="menu_items desplegar">
+        <div class="menu_element">
+            <i class="fa-solid fa-list"></i>
+            <span>Categorias</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="submenu_content" id="menu_categories">
+            <a href="#">
+                <i class="fa-solid fa-drumstick-bite"></i>
+                Alimentos
+            </a>
+            <a href="#">
+                <i class="fa-solid fa-person-running"></i>
+                Deporte
+            </a>
+            <a href="#">
+                <i class="fa-solid fa-house-chimney"></i>
+                Hogar
+            </a>
+            <a href="#">
+                <i class="fa-solid fa-book"></i>
+                Libreria y Oficina
+            </a>
+            <a href="#">
+                <i class="fa-solid fa-paw"></i>
+                Mascotas
+            </a>
+            <a href="#">
+                <i class="fa-solid fa-shirt"></i>
+                Ropa y Calzado
+            </a>
+            <a href="categoriaTecnologia.html">
+                <i class="fa-solid fa-microchip"></i>
+                Tecnología
+            </a>
+        </div>        
+        <div class="menu_element">
+            <i class="fa-solid fa-tag"></i>
+            <span>Marcas Asociadas</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="submenu_content" id="menu_brands">
+            <a href="marcaSamsung.html">
+                <img src="img/marcas/samsung_logo.png" alt="">
+                Samsung
+            </a>
+            <a href="#">
+                <img src="img/marcas/oster_logo.png" alt="">
+                Oster
+            </a>
+            <a href="#">
+                <img src="img/marcas/logo_gloria.png" alt="">
+                Gloria
+            </a>
+            <a href="#">
+                <img src="img/marcas/Logo_of_the_LG_Corporation_(1995-2014).png" alt="">
+                LG
+            </a>
+            <a href="#">
+                <img src="img/marcas/logo_inca_kola.png" alt="">
+                Inka Cola
+            </a>
+            <a href="#">
+                <img src="img/marcas/LOGO-NESTLE.png" alt="">
+                Nestle
+            </a>
+            <a href="#">
+                <img src="img/marcas/logo_lenovo.png" alt="">
+                Lenovo
+            </a>
+            <a href="marcas.html">
+                <i class="fa-solid fa-plus"></i> 
+                Ver más... 
+            </a>
+        </div>  
+        <a href="exclusividad.html" class="menu_element menu_exclusividad">                
+            <i class="fa-solid fa-star"></i>
+            <span>Exclusividad Domus</span>                
+        </a>     
+    </aside>
+
+    <!-- contenido propio -->
+    <section class="body_page">
+        <div class="contenedor_perfil">
+            <aside class="aside_perfil">
+                <div class="profile">
+                    <img src="img/iconos/usuario.png" alt="Foto de perfil" id="foto_perfil">
+                    <h2>¡Hola, Fabiana!</h2>
+                </div>
+                <div id="opciones_perfil">
+                    <a href="perfil.html" class="opcion_perfil">
+                        <img src="img/iconos/user.png" alt="" class="img_perfil">
+                        <p>Mi perfil</p>
+                        <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    </a>
+
+                    <a href="misDirecciones.html" class="opcion_perfil">
+                        <img src="img/iconos/ubicacion.png" class="img_perfil" alt="">
+                        <p>Direcciones</p>
+                        <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    </a>
+
+                    <a href="misTarjetas.html" class="opcion_perfil">
+                        <img src="img/iconos/tarjeta-de-credito.png" alt="" class="img_perfil">
+                        <p>Tarjeta de crédito</p>
+                        <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    </a>
+
+                    <a href="misPedidos.html" class="opcion_perfil">
+                        <img src="img/iconos/entrega-de-pedidos.png" alt="" class="img_perfil">
+                        <p>Mis pedidos</p>
+                        <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    </a>
+
+                    <a href="ListaDeseos.html" class="opcion_perfil">
+                        <img src="img/iconos/me-gusta.png" alt="" class="img_perfil">
+                        <p>Lista de deseos</p>
+                        <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    </a>
+                    <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <img src="img/iconos/cerrar.png" class="img_perfil">
+                        <p>Cerrar sesión</p>
+                        <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmación de cierre</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>¿Estás seguro de que quieres cerrar sesión?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="confirmarCierreSesion">Confirmar</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+
+            <main class="main_perfil">
+                <div class="header_perfil">
+                    <h1>Perfil</h1>
+
+                    <div class="iconos">
+
+                        <div>
+                            <a href="perfil.html">
+                                <i class="fa-regular fa-user"></i>
+                            </a>
+                        </div>
+
+                        <div>
+                            <a href="misDirecciones.html">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </a>
+                        </div>
+
+                        <div>
+                            <a href="tarjetas.html">
+                                <i class="fa-regular fa-credit-card"></i>
+                            </a>
+                        </div>
+
+                        <div>
+                            <a>
+                                <i class="fa-solid fa-list"></i>
+                            </a>
+                        </div>
+
+                        <div>
+                            <a href="favoritos.html">
+                                <i class="fa-regular fa-heart"></i>
+                            </a>
+                        </div>
+
+                        <div>
+                            <a onclick="confirmarCierreSesion()">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </a>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <hr>
+                <!-- contenido propio -->
+                <div class="profile-details">
+
+                    <div class="detalle">
+
+                        <div class="datos_perfil">
+                            <strong>Nombres:</strong>
+                            <p>Fabiana Lucía</p>
+                        </div>
+
+                        <div class="datos_perfil">
+                            <strong>Apellidos:</strong>
+                            <p>Paucar Mejía</p>
+                        </div>
+
+                        <div class="datos_perfil">
+                            <strong>Email:</strong>
+                            <p>fabianapm060126@gmail.com</p>
+                        </div>
+
+                        <div class="datos_perfil">
+                            <strong>Documento de identidad:</strong>
+                            <p>72428857</p>
+                        </div>
+
+                        <div class="datos_perfil">
+                            <strong>Género:</strong>
+                            <p>Prefiero no decirlo</p>
+                        </div>
+
+                        <div class="datos_perfil">
+                            <strong>Fecha de nacimiento:</strong>
+                            <p>06/01/2005</p>
+                        </div>
+
+                        <div class="datos_perfil">
+                            <strong>Teléfono:</strong>
+                            <p>906300905</p>
+                        </div>
+
+                    </div>
+
+                    <div class="boletin">
+                        <h3>Boletín informativo</h3>
+                        <div>
+                            <p id="informativo">¿Quiere recibir informativos promocionales?</p>
+                            <span id="confirmar_boletin">
+                                <input type="checkbox" id="checkbox_boletin" checked>
+                                <label for="checkbox_boletin">Quiero recibir el boletín informativo con
+                                    promociones.</label>
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+    </section>
+    <!-- -------- -->
+
+    <footer>
+        <div id="footer_pictures">
+            <a href="index.html">
+                <img id="logo_footer" src="img/elementos/logoDomus.png" alt="">
+            </a>
+            <hr>
+            <div id="social">
+                <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.twitter.com"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.whatsapp.com"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.tiktok.com"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.youtube.com"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div id="footer_contactanos" class="footer_column">
+            <h2>Contáctanos</h2>
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                servicioalcliente@domus.pe
+            </p>
+            <p href="">
+                <i class="fa-solid fa-phone-volume"></i>
+                074 606240
+            </p>
+            <p href="">
+                <i class="fa-solid fa-clock"></i>
+                Lun-Vie: <br>
+                8:00 am - 05:00 pm
+            </p>
+            <p>
+                <i class="fa-solid fa-message"></i>
+                Dejanos tu contacto: <br>
+                <a href="contactanos.html">
+                    Ir a Formulario
+                </a>
+            </p>
+        </div>
+        <div id="footer_servicio" class="footer_column">
+            <h2>Servicio al Cliente</h2>
+            <a href="terminos.html">Terminos y Condiciones</a>
+            <a href="faq.html">Preguntas Frecuentes</a>
+            <a href="devoluciones.html">Devoluciones y Cambios</a>
+            <a href="reclamos.html">Reclamos</a>
+        </div>
+        <div id="footer_nosotros" class="footer_column">
+            <h2>Sobre nosotros</h2>
+            <a href="nosotros.html">Conócenos</a>
+            <p>Puntos de Venta</p>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.0777467455528!2d-79.86560812524452!3d-6.760374293236254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x904ceeeffd190ddd%3A0xce387ae6229aa09e!2sUSAT!5e0!3m2!1ses-419!2spe!4v1724621773294!5m2!1ses-419!2spe"
+                width="250" height="150" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </footer>
+    <div class="footer_end">
+        &copy; 2024 Copyright: Grupo 02 <br>
+        Cortez Villaseca, Franco | Gil Alarcon, Gabriel | Guzman Salazar, Leonardo | Paucar Mejia, Fabiana | Perez
+        Davila, Junior
+    </div>
+
+    <script src="js/common_script/bootstrap.bundle.min.js"></script>
+    <script src="js/common_script/gsap.min.js"></script>
+    <script src="js/common_script/ScrollTrigger.min.js"></script>
+    <script src="js/common_script/jquery-3.7.1.min.js"></script>
+    <script src="js/common_script/domus_script.js"></script>
+    <script src="js/common_script/mo.umd.min.js"></script>
+    <script src="js/common_script/agregarCarrito.js"></script>
+    <script src="js/common_script/estadoCarro.js"></script>
+    <script src="js/perfilScript.js"></script>
+
+</body>
+
+</html>
