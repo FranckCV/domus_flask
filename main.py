@@ -1990,7 +1990,8 @@ def logout():
 @app.route("/perfil/<int:user_id>")
 def perfil(user_id):
     if 'id' in session and session['id'] == user_id:
-        return render_template('perfil.html', user_id=user_id)
+        usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+        return render_template('perfil.html', user_id=user_id,usuario=usuario )
     else:
         return redirect('/login')
 

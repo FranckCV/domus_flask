@@ -228,6 +228,7 @@ def actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fe
         conexion.close()
 
 
+
 def eliminar_usuario_cliente(id):
     conexion = obtener_conexion()
     try:
