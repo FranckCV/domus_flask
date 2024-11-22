@@ -1,7 +1,8 @@
 {% extends "maestra_general.html" %}
+
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/iniciar_sesion.css"/>
-  <link rel="stylesheet" href="static/css/modal.css"/>
+<link rel="stylesheet" href="static/css/iniciar_sesion.css"/>
+<link rel="stylesheet" href="static/css/modal.css"/>
 {% endblock %}
 
 {% block contenido %}
@@ -10,20 +11,22 @@
 
     <!-- Inicio de Sesión -->
     <div class="container-form">
-      <form class="sign-in" id="login-form"  action="{{ url_for('login') }}" method="post">
+      <form class="sign-in" id="login-form" action="{{ url_for('login') }}" method="post">
         <h2>Iniciar sesión</h2>
         <span>Ingrese su correo y contraseña</span>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-envelope"></i>
+          <label for="email-login">
+            <i class="fa-solid fa-envelope"></i>
+          </label>
           <input type="email" id="email-login" name="email-login" placeholder="Correo" required />
-          <small></small>
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-lock"></i>
+          <label for="password-login">
+            <i class="fa-solid fa-lock"></i>
+          </label>
           <input type="password" id="password-login" name="password-login" placeholder="Contraseña" required />
-          <small></small>
         </div>
 
         <a href="#" class="text-light" onclick="forgotPassword()">¿Olvidaste tu contraseña?</a>
@@ -31,87 +34,91 @@
       </form>
     </div>
 
-    <!--Registro -->
+    <!-- Registro -->
     <div class="container-form">
       <form class="sign-up" id="signup-form" action="{{ url_for('registrar_cliente') }}" method="post">
         <h2>Registrar cuenta</h2>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-user"></i>
+          <label for="username">
+            <i class="fa-solid fa-user"></i>
+          </label>
           <input type="text" id="username" name="nombres" placeholder="Nombres" required />
-          <small></small>
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-user"></i>
-          <input type="text" id="lastname" name="apellidos" placeholder="Apellidos" required>
-          <small></small>
+          <label for="lastname">
+            <i class="fa-solid fa-user"></i>
+          </label>
+          <input type="text" id="lastname" name="apellidos" placeholder="Apellidos" required />
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-id-card"></i>
-          <input type="text" id="dni" name="dni" placeholder="Documento de identidad" pattern="\d{8}" required>
-          <small></small>
+          <label for="dni">
+            <i class="fa-solid fa-id-card"></i>
+          </label>
+          <input type="text" id="dni" name="dni" placeholder="Documento de identidad" pattern="\d{8}" required />
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-venus-mars"></i>
-          <select id="genero" name="genero" required onchange="cambiarColor(this)" >
-              <option value="" disabled selected>Género</option>
-              <option value="1">Masculino</option>
-              <option value="0">Femenino</option>
+          <label for="genero">
+            <i class="fa-solid fa-venus-mars"></i>
+          </label>
+          <select id="genero" name="genero" required>
+            <option value="" disabled selected>Género</option>
+            <option value="1">Masculino</option>
+            <option value="0">Femenino</option>
           </select>
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-calendar-days"></i>
-          <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento" onchange="cambiarColor(this)"  required>
+          <label for="fecha_nacimiento">
+            <i class="fa-solid fa-calendar-days"></i>
+          </label>
+          <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required />
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-mobile-retro"></i>
-          <input type="tel" id="telefono" name="telefono" placeholder="Número de celular" pattern="9[0-9]{8}" required>
-          <small></small>
+          <label for="telefono">
+            <i class="fa-solid fa-mobile-retro"></i>
+          </label>
+          <input type="tel" id="telefono" name="telefono" placeholder="Número de celular" pattern="9[0-9]{8}" required />
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-envelope"></i>
-          <input type="email" id="email-signup" name="correo" placeholder="Correo electrónico" required>
-          <small></small>
+          <label for="email-signup">
+            <i class="fa-solid fa-envelope"></i>
+          </label>
+          <input type="email" id="email-signup" name="correo" placeholder="Correo electrónico" required />
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-lock"></i>
-          <input type="password" id="password" name="password" placeholder="Contraseña" required>
-          <small></small>
+          <label for="password">
+            <i class="fa-solid fa-lock"></i>
+          </label>
+          <input type="password" id="password" name="password" placeholder="Contraseña" required />
         </div>
 
         <div class="container-input form-field">
-          <i class="fa-solid fa-check"></i>
-          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirmar contraseña" required>
-          <small></small>
+          <label for="confirm-password">
+            <i class="fa-solid fa-check"></i>
+          </label>
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirmar contraseña" required />
         </div>
-        
-        <!-- <div class="check">
-          <input type="checkbox" name="terminos" value="1" id="terminos">
-          <a href="#">Acepta</a><a href="{{url_for('selectedContenidoInformativo',id=1)}}" > términos y condiciones</a>
-        <small></small>
-        </div> -->
 
         <div class="check">
-          <input type="checkbox" name="terminos" value="1" id="terminos">
-          <a href="#" onclick="toggleCheckbox(); return false;">Acepta</a>
-          <a href="{{ url_for('selectedContenidoInformativo',id=1) }}"> términos y condiciones</a>
-          <small></small>
+          <input type="checkbox" name="terminos" id="terminos" value="1">
+          <label for="terminos">
+            <a href="#" onclick="toggleCheckbox(); return false;">Acepta</a>
+          </label>
+          <a href="{{ url_for('selectedContenidoInformativo', id=1) }}"> términos y condiciones</a>
         </div>
 
         <button type="submit" class="button">Registrarse</button>
-
       </form>
     </div>
 
     <div class="container-welcome">
-
       <div class="welcome-sign-up welcome">
         <h3>¡Bienvenido!</h3>
         <p>Si aún no tienes cuenta, regístrate para disfrutar de todas las funcionalidades:</p>
@@ -123,49 +130,41 @@
         <p>Si ya tienes cuenta, inicia sesión aquí:</p>
         <button class="button" id="btn-sign-in">Iniciar sesión</button>
       </div>
-
     </div>
-
-
-
   </div>
 
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Error en el registro</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          El correo usado ya fue registrado, utilíce otro. Por favor, inténtelo nuevamente.
+          {{ mensaje_modal }}
         </div>
       </div>
     </div>
   </div>
-  
 </section>
 {% endblock %}
 
 {% block scripts %}
-  <script src="static/js/inicio_sesion.js"></script>
-  <script src="static/js/validar_formulario.js"></script>
+<script src="static/js/inicio_sesion.js"></script>
+<script src="static/js/validar_formulario.js"></script>
 
-  <script>
-    function toggleCheckbox() {
-      var checkbox = document.getElementById('terminos');
-      checkbox.checked = !checkbox.checked;
-    }
-  </script>
+<script>
+  function toggleCheckbox() {
+    var checkbox = document.getElementById('terminos');
+    checkbox.checked = !checkbox.checked;
+  }
+</script>
 
-  {%if mostrar%}
-    <script src="static/js/animacion.js"></script>
-    {% elif mostrar == False %}
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var modal = new bootstrap.Modal(document.getElementById('exampleModal'));
-        modal.show();
-      });
-    </script>
-  {% endif %}
+{% if mostrar_modal %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+    modal.show();
+  });
+</script>
+{% endif %}
 {% endblock %}

@@ -37,10 +37,11 @@
         </div>
         <p>Mi Carrito</p>
       </a>
+
       <a class="header_item header_option"
         id="header_perfil"
         href="{% if logueado %}
-          {{ url_for('perfil') }}
+          {{ url_for('perfil', user_id=user_id) }}
         {% else %}
           {{ url_for('iniciar_sesion') }}
         {% endif %}">
@@ -75,10 +76,10 @@
           <i class="fa-solid fa-star"></i>
           <p>Novedades</p>
         </a>
-        <!--   <a href="exclusividad.html" class="nav_element menu_exclusividad">
+        <!--    <a href="exclusividad.html" class="nav_element menu_exclusividad">
                 <i class="fa-solid fa-star"></i>
                 <p>Exclusividad Domus</p>
-            </a>      -->
+            </a>       -->
       </nav>
     </header>
 
@@ -114,7 +115,7 @@
           Ver más...
         </a>
       </div>
-      <!--   <div class="menu_element">
+      <!--    <div class="menu_element">
             <i class="fa-solid fa-star"></i>
             <span>Novedades</span>
             <i class="fa-solid fa-chevron-down"></i>
@@ -133,11 +134,11 @@
                 Ver más... 
             </a>
             
-        </div>   -->
-      <!--   <a href="exclusividad.html" class="menu_element menu_exclusividad">                
+        </div>    -->
+      <!--    <a href="exclusividad.html" class="menu_element menu_exclusividad">                
             <i class="fa-solid fa-star"></i>
             <span>Exclusividad Domus</span>                
-        </a>        -->
+        </a>         -->
     </aside>
 
     {% block contenido %}
