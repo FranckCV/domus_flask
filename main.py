@@ -326,7 +326,6 @@ from flask import request, redirect, url_for
 def agregar_carrito():
     producto_id = request.form["producto_id"]
     estado = 1
-<<<<<<< HEAD
     usuario_id = session['id']
     print(usuario_id)
     if usuario_id is not None:
