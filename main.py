@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response
 from flask_jwt import JWT, jwt_required, current_identity
+
+from clase_user_v1.usuario import Usuario
 import hashlib
 import base64
 import datetime
@@ -53,39 +55,41 @@ import controlador_cupon
 #     return user
 
 
-class User(object):
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
 
-    def __str__(self):
-        return "User(id='%s')" % self.id
+# class User(object):
+#     def __init__(self, id, username, password):
+#         self.id = id
+#         self.username = username
+#         self.password = password
 
-users = [
-    User(1, 'user1', 'abcxyz'),
-    User(2, 'user2', 'abcxyz'),
-]
-username_table = {u.username: u for u in users}
-userid_table = {u.id: u for u in users}
+#     def __str__(self):
+#         return "User(id='%s')" % self.id
+
+# users = [
+#     User(1, 'user1', 'abcxyz'),
+#     User(2, 'user2', 'abcxyz'),
+# ]
+
+# username_table = {u.username: u for u in users}
+# userid_table = {u.id: u for u in users}
 
 def authenticate(username, password):
-    user = username_table.get(username, None)
-    if user and user.password.encode('utf-8') == password.encode('utf-8'):
+    data = controlador_usuario_cliente.obtener_usuario_cliente_por_email(username)
+    user = Usuario(id=data[0], correo=data[1], contraseña=data[2])
+    if user and user.contraseña.encode('utf-8') == password.encode('utf-8'):
         return user
 
 def identity(payload):
     user_id = payload['identity']
-    return userid_table.get(user_id, None)
+    data = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    user = Usuario(id=data[0], correo=data[1], contraseña=data[2])
+    return user
 
 def encstringsha256(cadena_legible):
     h = hashlib.new('sha256')
     h.update(bytes(cadena_legible, encoding='utf-8'))
     epassword = h.hexdigest()
     return epassword
-
-
-
 
 app = Flask(__name__)
 app.debug = True
@@ -326,7 +330,6 @@ from flask import request, redirect, url_for
 def agregar_carrito():
     producto_id = request.form["producto_id"]
     estado = 1
-<<<<<<< HEAD
     usuario_id = session['id']
     print(usuario_id)
     if usuario_id is not None:
@@ -347,7 +350,7 @@ def agregar_carrito():
             else:
                 # Mantener en la página actual devolviendo un código 204 (sin contenido)
                 return '', 204
-=======
+
     usuario_id = 1
     
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
@@ -363,7 +366,6 @@ def agregar_carrito():
          # Si el usuario estaba en la página del carrito, redirige al carrito
         if "carrito" in referrer:
             return redirect(url_for('carrito'))
->>>>>>> 71f5ec13baca9fc361cb471b84f0e718dcc1a961
         else:
             # Mantener en la página actual devolviendo un código 204 (sin contenido)
             return '', 204
@@ -374,13 +376,10 @@ def agregar_carrito():
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
     producto_id = request.form.get("producto_id")
-<<<<<<< HEAD
     print(f"Producto ID recibido: {producto_id}") 
     usuario_id = session['id']
-=======
     # print(f"Producto ID recibido: {producto_id}") 
     usuario_id = 1 
->>>>>>> 71f5ec13baca9fc361cb471b84f0e718dcc1a961
     estado = 1 
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
