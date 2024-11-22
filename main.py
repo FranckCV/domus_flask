@@ -75,14 +75,14 @@ import controlador_cupon
 
 def authenticate(username, password):
     data = controlador_usuario_cliente.obtener_usuario_cliente_por_email(username)
-    user = Usuario(id=data[0], correo=data[1], contraseña=data[2])
-    if user and user.contraseña.encode('utf-8') == password.encode('utf-8'):
+    user = Usuario(id=data[0], correo=data[1], contrasenia=data[2])
+    if user and user.contrasenia.encode('utf-8') == password.encode('utf-8'):
         return user
 
 def identity(payload):
     user_id = payload['identity']
     data = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
-    user = Usuario(id=data[0], correo=data[1], contraseña=data[2])
+    user = Usuario(id=data[0], correo=data[1], contrasenia=data[2])
     return user
 
 def encstringsha256(cadena_legible):

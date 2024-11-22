@@ -1,7 +1,7 @@
 from controladores.bd import obtener_conexion
 import base64
 
-def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario):
+def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuario):
     conexion = obtener_conexion() 
     try:
         with conexion.cursor() as cursor:
@@ -14,7 +14,7 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
             cursor.execute(
                 "INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario)
+                (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuario)
             )
 
             usuario_id = cursor.lastrowid # pa mandarle mensaje de exito por pantalla maybe
@@ -28,11 +28,11 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
         conexion.close() 
 
 
-def confirmarDatos(correo, contraseña):
+def confirmarDatos(correo, contrasenia):
     conexion= obtener_conexion()
     try:
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT correo,contrasenia FROM usuario WHERE correo = %s , contrasenia=%s", (correo,contraseña,))
+            cursor.execute("SELECT correo,contrasenia FROM usuario WHERE correo = %s , contrasenia=%s", (correo,contrasenia,))
             result = cursor.fetchone()
 
             if result is not None:
@@ -161,7 +161,8 @@ def obtener_usuario_cliente_por_id(id):
                     genero, 
                     fecha_nacimiento, 
                     telefono, 
-                    correo, 
+                    correo,
+                    contrasenia, 
                     disponibilidad
                 FROM USUARIO
                 WHERE id = %s AND TIPO_USUARIOid = 3
@@ -185,7 +186,7 @@ def obtener_usuario_cliente_por_email(email):
                     SELECT 
                         id,
                         correo,
-                        contraseña
+                        contrasenia
                     FROM USUARIO
                     WHERE correo = %s
                 '''
