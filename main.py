@@ -105,15 +105,24 @@ logo_domus = 'img/elementos/logoDomus.png'
 
 @app.context_processor
 def inject_globals():
-    # General
     categoriasMenu = controlador_categorias.obtener_categorias_disponibles()
     marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
     logo_foto = logo_domus
     redes_footer = controlador_redes_sociales.obtener_redes_sociales()
     conts_info_footer = controlador_contenido_info.obtener_tipos_contenido()
     datos_domus_main = controlador_informacion_domus.obtener_informacion_domus()
-    logueado_dato = session.get('id') is not None 
-    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , redes_footer = redes_footer , conts_info_footer = conts_info_footer , datos_domus_main = datos_domus_main, logueado=logueado_dato)
+    logueado_dato = session.get('id') is not None
+    user_id = session.get('id') if logueado_dato else None  
+    return dict(
+        marcasMenu=marcasMenu,
+        logo_foto=logo_foto,
+        categoriasMenu=categoriasMenu,
+        redes_footer=redes_footer,
+        conts_info_footer=conts_info_footer,
+        datos_domus_main=datos_domus_main,
+        logueado=logueado_dato,
+        user_id=user_id 
+    )
 
 
 # PAGINAS GENERALES
@@ -1968,6 +1977,7 @@ def login():
     if user:
         epassword = encstringsha256(password)
         if user[2] == epassword:
+            session['id'] = user[0]
             session['username'] = email
             resp = make_response(redirect("/"))
             resp.set_cookie('username', email)
@@ -1979,7 +1989,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.clear()  # Limpia todos los datos de la sesión
+    session.clear()  
     return redirect('/')
 
 
@@ -2002,7 +2012,7 @@ def logout():
 
 #####################FIN INICIO DE SESIÓN######################
 #####################################PARA PERFIL#################################################
-@app.route("/perfil/<int:user_id>")
+@app.route("/perfil=<int:user_id>")
 def perfil(user_id):
     if 'id' in session and session['id'] == user_id:
         usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)

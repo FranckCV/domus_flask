@@ -1,4 +1,4 @@
-{% extends 'maestra_administrador.html' %}
+{% extends 'maestra_general.html' %}
 
 {% block titulo %}
   Perfil del Usuario
@@ -9,55 +9,42 @@
 {% endblock %}
 
 {% block contenido %}
-
 <section class="body_page">
     <div class="contenedor_perfil">
         <aside class="aside_perfil">
             <div class="profile">
-                <img src="{{ usuario.img_usuario }}" alt="Foto de perfil" id="foto_perfil">
+                <img src="{{ usuario.img_usuario }}" alt="Foto de perfil del usuario" id="foto_perfil">
                 <h2>¡Hola, {{ usuario.nombres }}!</h2>
             </div>
             <div id="opciones_perfil">
-                <a href="/perfil/{{ user_id }}" class="opcion_perfil">
-                    <img src="img/iconos/user.png" alt="" class="img_perfil">
+                <a href="{{ url_for('perfil', user_id=user_id) }}" class="opcion_perfil">
+                    <img src="{{ url_for('static', filename='img/iconos/user.png') }}" alt="Icono de perfil" class="img_perfil">
                     <p>Mi perfil</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
                 </a>
 
 
-                <a href="/misPedidos/{{ user_id }}" class="opcion_perfil">
-                    <img src="img/iconos/entrega-de-pedidos.png" alt="" class="img_perfil">
-                    <p>Mis pedidos</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
-                </a>
-
-                <a href="/ListaDeseos/{{ user_id }}" class="opcion_perfil">
-                    <img src="img/iconos/me-gusta.png" alt="" class="img_perfil">
-                    <p>Lista de deseos</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
-                </a>
-                <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <img src="img/iconos/cerrar.png" class="img_perfil">
+                <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#modalCerrarSesion">
+                    <img src="{{ url_for('static', filename='img/iconos/cerrar.png') }}" alt="Icono de cierre de sesión" class="img_perfil">
                     <p>Cerrar sesión</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
                 </div>
+
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                <div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmación de cierre</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                                <h1 class="modal-title fs-5" id="modalCerrarSesionLabel">Confirmación de cierre</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="confirmarCierreSesion">Confirmar</button>
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="confirmarCierreSesion" onclick="location.href='{{ url_for('logout') }}';">Confirmar</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             </div>
                         </div>
                     </div>
@@ -112,9 +99,7 @@
         </main>
     </div>
 </section>
-
 {% endblock %}
 
 {% block scripts %}
-
 {% endblock %}
