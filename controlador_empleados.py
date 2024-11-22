@@ -1,4 +1,4 @@
-from bd import obtener_conexion
+from controladores.bd import obtener_conexion
 import base64
 tabla = 'usuario'
 
@@ -7,7 +7,7 @@ def obtener_usuario_por_id(id):
     usuario = None
     with conexion.cursor() as cursor:
         sql = """
-        SELECT id, nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, TIPO_USUARIOid
+        SELECT id, nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid
         FROM """ + tabla + """ WHERE id = %s
         """
         cursor.execute(sql, (id,))
@@ -21,10 +21,10 @@ def insertar_usuario(nombres, apellidos, doc_identidad, img_usuario, genero, fec
     with conexion.cursor() as cursor:
         # Si hay imagen, insertar con ella
         if img_usuario is not None:
-            cursor.execute("INSERT INTO " + tabla + "(nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, TIPO_USUARIOid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 2)", 
+            cursor.execute("INSERT INTO " + tabla + "(nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 2)", 
                            (nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad))
         else:
-            cursor.execute("INSERT INTO " + tabla + "(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, TIPO_USUARIOid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 2)", 
+            cursor.execute("INSERT INTO " + tabla + "(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 2)", 
                            (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad))
     conexion.commit()
     conexion.close()
@@ -34,10 +34,10 @@ def actualizar_usuario(nombres, apellidos, doc_identidad, img_usuario, genero, f
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         if img_usuario is not None:
-            cursor.execute("UPDATE " + tabla + " SET nombres = %s, apellidos = %s, doc_identidad = %s, img_usuario = %s, genero = %s, fecha_nacimiento = %s, telefono = %s, correo = %s, contraseña = %s, disponibilidad = %s WHERE id = %s", 
+            cursor.execute("UPDATE " + tabla + " SET nombres = %s, apellidos = %s, doc_identidad = %s, img_usuario = %s, genero = %s, fecha_nacimiento = %s, telefono = %s, correo = %s, contrasenia = %s, disponibilidad = %s WHERE id = %s", 
                            (nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, id))
         else:
-            cursor.execute("UPDATE " + tabla + " SET nombres = %s, apellidos = %s, doc_identidad = %s, genero = %s, fecha_nacimiento = %s, telefono = %s, correo = %s, contraseña = %s, disponibilidad = %s WHERE id = %s", 
+            cursor.execute("UPDATE " + tabla + " SET nombres = %s, apellidos = %s, doc_identidad = %s, genero = %s, fecha_nacimiento = %s, telefono = %s, correo = %s, contrasenia = %s, disponibilidad = %s WHERE id = %s", 
                            (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, id))
     conexion.commit()
     conexion.close()
@@ -48,7 +48,7 @@ def obtener_usuarios_emp():
     usuarios = []
     with conexion.cursor() as cursor:
         sql = """
-        SELECT u.id, u.nombres, u.apellidos, u.doc_identidad, u.img_usuario, u.genero, u.fecha_nacimiento, u.telefono, u.correo, u.contraseña, u.disponibilidad, tu.tipo
+        SELECT u.id, u.nombres, u.apellidos, u.doc_identidad, u.img_usuario, u.genero, u.fecha_nacimiento, u.telefono, u.correo, u.contrasenia, u.disponibilidad, tu.tipo
         FROM usuario u
         JOIN tipo_usuario tu ON u.TIPO_USUARIOid = tu.id WHERE TIPO_USUARIOid = 2
         """
@@ -91,9 +91,9 @@ def obtener_listado_usuarios_empleados():
                     usu.telefono, 
                     usu.correo,
                     usu.disponibilidad,
-                    usu.contraseña,
+                    usu.contrasenia,
                     usu.fecha_registro
-                FROM USUARIO usu
+                FROM usuario usu
                 WHERE usu.TIPO_USUARIOid = 2
         '''
         cursor.execute(sql)
@@ -118,8 +118,8 @@ def buscar_listado_usuarios_empleados_nombre(nombre):
                     usu.telefono, 
                     usu.correo,
                     usu.disponibilidad,
-                    usu.contraseña
-                FROM USUARIO usu
+                    usu.contrasenia
+                FROM usuario usu
                 WHERE UPPER(CONCAT(usu.nombres, ' ' , usu.apellidos)) LIKE UPPER ('%'''+str(nombre)+'''%') and usu.TIPO_USUARIOid = 2
         '''
         cursor.execute(sql)
@@ -135,7 +135,7 @@ def obtener_listado_imagenes_usuario_empleado():
             SELECT
                 usu.id,
                 usu.img_usuario
-            FROM USUARIO usu
+            FROM usuario usu
             WHERE usu.TIPO_USUARIOid = 2
         '''
         cursor.execute(sql)
@@ -172,11 +172,11 @@ def ver_info_usuario_empleado(id):
                     usu.telefono, 
                     usu.correo, 
                     usu.disponibilidad,
-                    usu.contraseña,
+                    usu.contrasenia,
                     usu.fecha_registro,
                     count(com.id),
-                    usu.contraseña
-                FROM USUARIO usu
+                    usu.contrasenia
+                FROM usuario usu
                 LEFT JOIN pedido ped on ped.usuarioid = usu.id
                 LEFT JOIN comentario com on com.usuarioid = usu.id
                 WHERE TIPO_USUARIOid = 2 and usu.id = '''+str(id)+'''
@@ -200,7 +200,7 @@ def obtener_imagen_usuario_empleado_id(id):
             SELECT
                 usu.id,
                 usu.img_usuario
-            FROM USUARIO usu
+            FROM usuario usu
             WHERE TIPO_USUARIOid = 2 and usu.id = '''+str(id)+'''
         '''
         cursor.execute(sql)

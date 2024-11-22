@@ -1,4 +1,4 @@
-from bd import obtener_conexion
+from controladores.bd import obtener_conexion
 import base64
 tabla = 'producto'
 
@@ -13,7 +13,7 @@ def obtener_imagenes_disponibles_por_novedad(id):
                 img.imagen, 
                 img.tipo_img_novedadid, 
                 img.NOVEDADid 
-            FROM IMG_NOVEDAD img
+            FROM img_novedad img
             LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
             WHERE NOVEDADid = %s and tip.disponibilidad = 1
             ORDER BY OCTET_LENGTH(img.imagen) DESC 
@@ -77,7 +77,7 @@ def obtener_imagen_novedad_por_tipo(novedad_id, tipo_img_id):
                 id, 
                 nomImagen, 
                 imagen 
-            FROM IMG_NOVEDAD 
+            FROM img_novedad 
             WHERE NOVEDADid = %s AND TIPO_IMG_NOVEDADid = %s
         '''
         cursor.execute(sql, (novedad_id, tipo_img_id))
@@ -102,7 +102,7 @@ def insertar_imagen_novedad(nomImagen, imagen_binaria, tipo_img_id, novedad_id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            INSERT INTO IMG_NOVEDAD (nomImagen, imagen, TIPO_IMG_NOVEDADid, NOVEDADid)
+            INSERT INTO img_novedad (nomImagen, imagen, TIPO_IMG_NOVEDADid, NOVEDADid)
             VALUES (%s, %s, %s, %s)
         '''
         cursor.execute(sql, (nomImagen, imagen_binaria, tipo_img_id, novedad_id))
@@ -115,14 +115,14 @@ def actualizar_imagen_novedad(id, nomImagen, imagen_binaria, tipo_img_id, noveda
     with conexion.cursor() as cursor:
         if imagen_binaria:
             sql = '''
-                UPDATE IMG_NOVEDAD 
+                UPDATE img_novedad 
                 SET nomImagen = %s, imagen = %s, TIPO_IMG_NOVEDADid = %s, NOVEDADid = %s
                 WHERE id = %s
             '''
             cursor.execute(sql, (nomImagen, imagen_binaria, tipo_img_id, novedad_id, id))
         else:
             sql = '''
-                UPDATE IMG_NOVEDAD 
+                UPDATE img_novedad 
                 SET nomImagen = %s, TIPO_IMG_NOVEDADid = %s, NOVEDADid = %s
                 WHERE id = %s
             '''
@@ -134,7 +134,7 @@ def actualizar_imagen_novedad(id, nomImagen, imagen_binaria, tipo_img_id, noveda
 def eliminar_imagen_novedad(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("DELETE FROM IMG_NOVEDAD WHERE id = %s", (id,))
+        cursor.execute("DELETE FROM img_novedad WHERE id = %s", (id,))
     conexion.commit()
     conexion.close()
 
@@ -150,7 +150,7 @@ def obtener_todas_imagenes_novedad():
                 imagen, 
                 TIPO_IMG_NOVEDADid, 
                 NOVEDADid 
-            FROM IMG_NOVEDAD
+            FROM img_novedad
             ORDER BY id DESC
         '''
         cursor.execute(sql)
@@ -182,7 +182,7 @@ def obtener_imagenes_novedad_por_id(novedad_id):
                 img.imagen, 
                 tip.tipo, 
                 img.NOVEDADid 
-            FROM IMG_NOVEDAD img
+            FROM img_novedad img
             LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
             WHERE NOVEDADid = %s
             ORDER BY nomImagen ASC
@@ -212,7 +212,7 @@ def obtener_novedad_id_por_imagen_id(imagen_id):
         sql = '''
             SELECT 
                 NOVEDADid 
-            FROM IMG_NOVEDAD
+            FROM img_novedad
             WHERE id = %s
         '''
         cursor.execute(sql, (imagen_id,))
@@ -239,7 +239,7 @@ def obtener_imagenes_novedad_id(id):
                 img.NOVEDADid,
                 tip.tipo,
                 tip.disponibilidad
-            FROM IMG_NOVEDAD img
+            FROM img_novedad img
             LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
             WHERE NOVEDADid = %s
             ORDER BY OCTET_LENGTH(img.imagen) DESC 

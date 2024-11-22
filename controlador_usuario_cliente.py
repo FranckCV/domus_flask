@@ -1,4 +1,4 @@
-from bd import obtener_conexion
+from controladores.bd import obtener_conexion
 import base64
 
 def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario):
@@ -12,7 +12,7 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
                 return 0  # retornar un 0 pa decirle que ya existe que mejor recupere su contra XD
 
             cursor.execute(
-                "INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, TIPO_USUARIOid) "
+                "INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario)
             )
@@ -32,7 +32,7 @@ def confirmarDatos(correo, contraseña):
     conexion= obtener_conexion()
     try:
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT correo,contraseña FROM usuario WHERE correo = %s , contraseña=%s", (correo,contraseña,))
+            cursor.execute("SELECT correo,contrasenia FROM usuario WHERE correo = %s , contrasenia=%s", (correo,contraseña,))
             result = cursor.fetchone()
 
             if result is not None:
@@ -91,7 +91,7 @@ def obtener_listado_usuarios_clientes():
                     usu.correo, 
                     usu.disponibilidad,
                     count(ped.id),
-                    usu.fecha_registro,
+                    (usu.fecha_registro),
                     count(com.id)
                 FROM USUARIO usu
                 LEFT JOIN pedido ped on ped.usuarioid = usu.id
@@ -126,9 +126,12 @@ def buscar_listado_usuarios_clientes_nombre(nombre):
                     usu.telefono, 
                     usu.correo, 
                     usu.disponibilidad,
-                    count(ped.id)
+                    count(ped.id),
+                    (usu.fecha_registro),
+                    count(com.id)
                 FROM USUARIO usu
                 LEFT JOIN pedido ped on ped.usuarioid = usu.id
+                LEFT JOIN comentario com on com.usuarioid = usu.id
                 WHERE TIPO_USUARIOid = 3 and 
                 UPPER(CONCAT(usu.nombres, ' ' , usu.apellidos)) LIKE UPPER ('%'''+nombre+'''%')
                 GROUP by usu.id
@@ -287,7 +290,7 @@ def ver_info_usuario_cliente(id):
                     usu.correo, 
                     usu.disponibilidad,
                     count(ped.id),
-                    usu.fecha_registro,
+                    (usu.fecha_registro),
                     count(com.id)
                 FROM USUARIO usu
                 LEFT JOIN pedido ped on ped.usuarioid = usu.id

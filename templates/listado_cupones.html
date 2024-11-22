@@ -1,7 +1,7 @@
 {% extends "maestra_administrador.html" %}
 
 {% block titulo %}
-  Listado de Redes Sociales
+  Listado de Cupones
 {% endblock %}
 
 {% block estilos %}
@@ -13,14 +13,14 @@
 
     <div class="row">
       <div class="col">
-        <h2 class="fw-bolder">Listado de Redes Sociales</h2>
+        <h2 class="fw-bolder">Listado de Cupones</h2>
       </div>
     </div>
 
     <div class="row" id="break_nav">
       <div class="col">
         <div class="input-group mb-3">          
-          <a href="{{ url_for('formulario_agregar_redes_sociales') }}" class="button is-success add-btn">
+          <a href="{{ url_for('formulario_agregar_cupones') }}" class="button is-success add-btn">
             <button type="button" class="main_btn">Agregar</button>
           </a>
         </div>
@@ -32,30 +32,46 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Nombre</th>
-            <th>Icono</th>
-            <th>Enlace</th>
+            <th>Codigo</th>
+            <th>Porcentaje Dcto.</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Vencimiento</th>
+            <th>Fecha Registro </th>
+            <th>Disponibilidad </th>
             <th class="opciones_column">Opciones</th>
           </tr>
         </thead>
         <tbody id="productTableBody">
-          {% for red in redes %}
-          <tr>
-            <td class="celda_id">{{ red[0] }}</td>
-            <td>{{ red[1] }}</td>
+          {% for cupon in cupones %}
+          <tr class="
+          {% if cupon.6 == 1 %}
+            fila_disp_si
+          {% else %}
+            fila_disp_no
+          {% endif %}
+          ">
+            <td class="celda_id">{{ cupon[0] }}</td>
+            <td>{{ cupon[1] }}</td>
+            <td>{{ cupon[5] }}</td>
+            <td>{{ cupon[3] }}</td>
+            <td>{{ cupon[4] }}</td>
+            <td>{{ cupon[2] }}</td>
             <td>
-              <i class="{{ red[2] }}"></i>
-            </td>  
-            <td>
-              <a href="{{ red[3] }}">{{ red[3] }}</a>
+              <div class="celda_estado">
+                {% if cupon.6 == 1 %}
+                  <p class="disponibilidad disp_si">Disponible</p>
+                {% else %}
+                  <p class="disponibilidad disp_no">No Disponible</p>
+                {% endif %}
+              </div>
             </td>
             <td class="opciones_column">
               <div class="acciones">
-                <a class="opciones_fila" href="{{ url_for('editar_redes_sociales', id=red[0]) }}">
+                <a class="opciones_fila" href="{{ url_for('editar_cupones', id=cupon[0]) }}">
                   <i class="fa-regular fa-pen-to-square"></i>
                 </a>
-                <form class="opciones_fila" action="{{ url_for('eliminar_redes_sociales') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                  <input type="hidden" name="id" value="{{ red[0] }}">
+                <form class="opciones_fila" action="{{ url_for('eliminar_cupones') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                  <input type="hidden" name="id" value="{{ cupon[0] }}">
                   <button type="submit">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>

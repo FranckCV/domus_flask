@@ -1,4 +1,4 @@
-from bd import obtener_conexion
+from controladores.bd import obtener_conexion
 
 def obtener_tipos_img_novedad():
     conexion = obtener_conexion()
