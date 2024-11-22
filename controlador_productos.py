@@ -1,4 +1,4 @@
-from bd import obtener_conexion
+from controladores.bd import obtener_conexion
 import base64
 
 tabla = 'producto'
@@ -199,7 +199,7 @@ def obtenerEnTarjetasMasPopulares():
                     ipr.imagen,
                     SUM(dp.cantidad) AS total_compras
                 FROM 
-                    PRODUCTO pr
+                    producto pr
                 inner join img_producto ipr on pr.id = ipr.PRODUCTOid
                 INNER JOIN detalles_pedido dp ON pr.id = dp.PRODUCTOid
                 INNER JOIN subcategoria sub on sub.id = pr.subcategoriaid
@@ -586,7 +586,7 @@ def obtener_por_nombre(nombre):
 def buscar_en_caracteristica_producto(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT * FROM CARACTERISTICA_PRODUCTO WHERE PRODUCTOid = %s", (id,))
+        cursor.execute("SELECT * FROM caracteristica_producto WHERE PRODUCTOid = %s", (id,))
         result = cursor.fetchone()
     conexion.close()
     return result
