@@ -53,7 +53,6 @@ import controlador_cupon
 #     return user
 
 
-
 class User(object):
     def __init__(self, id, username, password):
         self.id = id
@@ -109,8 +108,8 @@ def inject_globals():
     redes_footer = controlador_redes_sociales.obtener_redes_sociales()
     conts_info_footer = controlador_contenido_info.obtener_tipos_contenido()
     datos_domus_main = controlador_informacion_domus.obtener_informacion_domus()
-
-    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , redes_footer = redes_footer , conts_info_footer = conts_info_footer , datos_domus_main = datos_domus_main)
+    logueado_dato = session.get('id') is not None 
+    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , redes_footer = redes_footer , conts_info_footer = conts_info_footer , datos_domus_main = datos_domus_main, logueado=logueado_dato)
 
 
 # PAGINAS GENERALES
@@ -327,6 +326,28 @@ from flask import request, redirect, url_for
 def agregar_carrito():
     producto_id = request.form["producto_id"]
     estado = 1
+<<<<<<< HEAD
+    usuario_id = session['id']
+    print(usuario_id)
+    if usuario_id is not None:
+
+        pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+        
+        if pedido_id is None:
+            pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
+        
+        result=controlador_carrito.insertar_detalle(producto_id, pedido_id)
+        
+        referrer = request.referrer
+        
+        if result is None:
+            # Si el usuario estaba en la página del carrito, redirige al carrito
+            if "carrito" in referrer:
+                return redirect(url_for('carrito'))
+            else:
+                # Mantener en la página actual devolviendo un código 204 (sin contenido)
+                return '', 204
+=======
     usuario_id = 1
     
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
@@ -342,6 +363,7 @@ def agregar_carrito():
          # Si el usuario estaba en la página del carrito, redirige al carrito
         if "carrito" in referrer:
             return redirect(url_for('carrito'))
+>>>>>>> 71f5ec13baca9fc361cb471b84f0e718dcc1a961
         else:
             # Mantener en la página actual devolviendo un código 204 (sin contenido)
             return '', 204
@@ -352,8 +374,13 @@ def agregar_carrito():
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
     producto_id = request.form.get("producto_id")
+<<<<<<< HEAD
+    print(f"Producto ID recibido: {producto_id}") 
+    usuario_id = session['id']
+=======
     # print(f"Producto ID recibido: {producto_id}") 
     usuario_id = 1 
+>>>>>>> 71f5ec13baca9fc361cb471b84f0e718dcc1a961
     estado = 1 
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
@@ -373,7 +400,7 @@ def aumentar_carro():
 @app.route("/disminuir_carro", methods=["POST"])
 def disminuir_carro():
     producto_id = request.form["producto_id"]
-    usuario_id = 1
+    usuario_id = session['id']
     estado = 1
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
@@ -1940,6 +1967,11 @@ def login():
     else:
         return redirect('/iniciar_sesion.html')
 
+@app.route("/logout")
+def logout():
+    session.clear()  # Limpia todos los datos de la sesión
+    return redirect('/')
+
 
 # @app.route("/iniciar_sesion" , methods=["POST"])
 # def iniciar_sesion():
@@ -1959,6 +1991,16 @@ def login():
 #         return redirect("/login")
 
 #####################FIN INICIO DE SESIÓN######################
+#####################################PARA PERFIL#################################################
+@app.route("/perfil/<int:user_id>")
+def perfil(user_id):
+    if 'id' in session and session['id'] == user_id:
+        return render_template('perfil.html', user_id=user_id)
+    else:
+        return redirect('/login')
+
+
+#################################################################################
 ###################################CONFIRMAR PEDIDO###############################
 @app.route("/confirmar_compra", methods=['POST'])
 def confirmar_compra():
