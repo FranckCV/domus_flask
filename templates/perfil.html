@@ -12,22 +12,40 @@
 <section class="body_page">
     <div class="contenedor_perfil">
         <aside class="aside_perfil">
+
             <div class="profile">
-                <img src="{{ usuario.img_usuario }}" alt="Foto de perfil del usuario" id="foto_perfil">
-                <h2>¡Hola, {{ usuario.nombres }}!</h2>
+                <div class="content_img">
+                    {% if usuario.4 is not none %}
+                    <img src="{{ img.1 }}" alt="Foto de perfil del usuario" id="foto_perfil">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/iconos/usuario.png') }}" alt="Foto de perfil del usuario" id="foto_perfil">
+                    {% endif %}
+                </div>
+                
+                <h2>¡Hola, {{ usuario.1 }}!</h2>
+                <form action="{{ url_for('imagen_usuario') }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="inputImagen" name="imagen" accept="image/*" style="display: none;" required>
+                    <button type="button" class="btn btn-primary" id="btnSubirImagen">Subir Imagen</button>
+                </form>
             </div>
+            
             <div id="opciones_perfil">
                 <a href="{{ url_for('perfil', user_id=user_id) }}" class="opcion_perfil">
-                    <img src="{{ url_for('static', filename='img/iconos/user.png') }}" alt="Icono de perfil" class="img_perfil">
+                    <!-- <img src="{{ url_for('static', filename='img/iconos/user.png') }}" alt="Icono de perfil" class="img_perfil"> -->
+                    <i class="fa-solid fa-user"></i>
                     <p>Mi perfil</p>
-                    <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
+                    <!-- <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha"> -->
+                    <i class="fa-solid fa-angle-right"></i>
                 </a>
 
 
                 <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#modalCerrarSesion">
-                    <img src="{{ url_for('static', filename='img/iconos/cerrar.png') }}" alt="Icono de cierre de sesión" class="img_perfil">
+                    <!--  <img src="{{ url_for('static', filename='img/iconos/cerrar.png') }}" alt="Icono de cierre de sesión" class="img_perfil">-->
+                    <i class="fa-solid fa-right-from-bracket"></i>
                     <p>Cerrar sesión</p>
-                    <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
+                    <!--   <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
+                      -->
+                    <i class="fa-solid fa-angle-right"></i>
                 </div>
 
                 <!-- Modal -->
@@ -53,53 +71,55 @@
         </aside>
 
         <main class="main_perfil">
-            <div class="header_perfil">
-                <h1>Perfil</h1>
-            </div>
-            <hr>
-            <!-- contenido propio -->
-            <div class="profile-details">
                 <div class="detalle">
                     <div class="datos_perfil">
                         <strong>Nombres:</strong>
-                        <p>{{ usuario.nombres }}</p>
+                        <p>{{ usuario.1 }}</p>
                     </div>
 
                     <div class="datos_perfil">
                         <strong>Apellidos:</strong>
-                        <p>{{ usuario.apellidos }}</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Documento de identidad:</strong>
-                        <p>{{ usuario.doc_identidad }}</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Email:</strong>
-                        <p>{{ usuario.correo }}</p>
+                        <p>{{ usuario.2 }}</p>
                     </div>
 
                     <div class="datos_perfil">
                         <strong>Género:</strong>
-                        <p>{{ usuario.genero }}</p>
+                        {% if usuario.5 ==1  %}
+                        <p>Masculino</p>
+                        {% else %}
+                        <p>Femenino</p>
+                        {% endif %}
                     </div>
 
                     <div class="datos_perfil">
                         <strong>Fecha de nacimiento:</strong>
-                        <p>{{ usuario.fecha_nacimiento }}</p>
+                        <p>{{ usuario.6 }}</p>
                     </div>
 
                     <div class="datos_perfil">
                         <strong>Teléfono:</strong>
-                        <p>{{ usuario.telefono }}</p>
+                        <p>{{ usuario.7 }}</p>
                     </div>
+
+                    <div class="datos_perfil">
+                        <strong>Documento de identidad:</strong>
+                        <p>{{ usuario.3 }}</p>
+                    </div>
+
+                    <div class="datos_perfil">
+                        <strong>Email:</strong>
+                        <p>{{ usuario.8 }}</p>
+                    </div>
+
+
                 </div>
-            </div>
         </main>
     </div>
 </section>
 {% endblock %}
 
 {% block scripts %}
+
+<script src="static/js/subir_imagen.js"></script>
+
 {% endblock %}
