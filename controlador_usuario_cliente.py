@@ -161,7 +161,8 @@ def obtener_usuario_cliente_por_id(id):
                     genero, 
                     fecha_nacimiento, 
                     telefono, 
-                    correo, 
+                    correo,
+                    contrasenia, 
                     disponibilidad
                 FROM usuario
                 WHERE id = %s AND TIPO_USUARIOid = 3
