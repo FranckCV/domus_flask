@@ -17,6 +17,9 @@ class Usuario:
         self.fecha_registro = fecha_registro
         self.tipo_usuario_id = tipo_usuario_id
 
+    def to_dict(self):
+        return {'id': self.id, "correo": self.correo} 
+
     def __str__(self):
         return (
             f"Usuario(id='{self.id}', nombres='{self.nombres}', apellidos='{self.apellidos}', "

@@ -163,7 +163,8 @@ def obtener_usuario_cliente_por_id(id):
                     telefono, 
                     correo,
                     contrasenia, 
-                    disponibilidad
+                    disponibilidad,
+                    TIPO_USUARIOid
                 FROM usuario
                 WHERE id = %s AND TIPO_USUARIOid = 3
             '''
@@ -186,7 +187,8 @@ def obtener_usuario_cliente_por_email(email):
                     SELECT 
                         id,
                         correo,
-                        contrasenia
+                        contrasenia,
+                        TIPO_USUARIOid
                     FROM usuario
                     WHERE correo = %s
                 '''

@@ -32,58 +32,24 @@ import controlador_redes_sociales
 import controlador_informacion_domus
 import controlador_cupon
 
-
-# class User(object):
-#     def __init__(self, id, username, password):
-#         self.id = id
-#         self.username = username
-#         self.password = password
-
-#     def __str__(self):
-#         return "User(id='%s')" % self.id
-
-# def authenticate(username, password):
-#     data = controlador_users.obtener_user_por_email(username)
-#     user = User(data[0],data[1],data[2])
-#     if user and user.password.encode('utf-8') == password.encode('utf-8'):
-#         return user
-
-# def identity(payload):
-#     user_id = payload['identity']
-#     data = controlador_users.obtener_user_por_id(user_id)
-#     user = User(data[0],data[1],data[2])
-#     return user
-
-
-
-# class User(object):
-#     def __init__(self, id, username, password):
-#         self.id = id
-#         self.username = username
-#         self.password = password
-
-#     def __str__(self):
-#         return "User(id='%s')" % self.id
-
-# users = [
-#     User(1, 'user1', 'abcxyz'),
-#     User(2, 'user2', 'abcxyz'),
-# ]
-
-# username_table = {u.username: u for u in users}
-# userid_table = {u.id: u for u in users}
-
 def authenticate(username, password):
     data = controlador_usuario_cliente.obtener_usuario_cliente_por_email(username)
-    user = Usuario(id=data[0], correo=data[1], contrasenia=data[2])
-    if user and user.contrasenia.encode('utf-8') == password.encode('utf-8'):
-        return user
+    if not data:
+        return None
+    user = Usuario(id=data[0], correo=data[1], contrasenia=data[2], tipo_usuario_id=data[3])
+    
+    if user and user.contrasenia == hashlib.sha256(password.encode('utf-8')).hexdigest():
+        if user.tipo_usuario_id in [1, 2, 3]:
+            return user
+    
+    return None
 
 def identity(payload):
     user_id = payload['identity']
     data = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
     user = Usuario(id=data[0], correo=data[1], contrasenia=data[2])
     return user
+
 
 def encstringsha256(cadena_legible):
     h = hashlib.new('sha256')
@@ -493,8 +459,10 @@ def cuenta_administrativa():
 
 @app.route("/dashboard")
 def dashboard():
+    # if session['tipo'] == 2:
     return render_template("dashboard.html")
-
+    # else:
+        # return redirect('/')
 
 
 
@@ -1159,7 +1127,9 @@ def actualizar_producto():
 
 #########################PARA TIPO NOVEDAD##############################
 
+
 @app.route("/listado_tipos_novedad")
+# @jwt_required()
 def listado_tipos_novedad():
     tipos_novedad = controlador_tipos_novedad.obtener_listado_tipos_novedad()
     return render_template("listado_tipos_novedad.html", tipos_novedad=tipos_novedad)
@@ -1978,7 +1948,9 @@ def login():
         epassword = encstringsha256(password)
         if user[2] == epassword:
             session['id'] = user[0]
+            session['tipo'] = user[3]
             session['username'] = email
+
             resp = make_response(redirect("/"))
             resp.set_cookie('username', email)
             return resp
@@ -2014,7 +1986,7 @@ def logout():
 #####################################PARA PERFIL#################################################
 @app.route("/perfil=<int:user_id>")
 def perfil(user_id):
-    if 'id' in session and session['id'] == user_id:
+    if 'id' in session and session['id'] == user_id and session['tipo'] == 3:
         usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
         return render_template('perfil.html', user_id=user_id,usuario=usuario )
     else:
@@ -2132,6 +2104,79 @@ def actualizar_detalle_pedido():
 def api_obtenerdiscos():
     discos = controlador_categorias.obtener_listado_categorias()
     return jsonify(discos)
+
+
+############################################  APIs  ###############################################
+# @app.route("/api_error_adm")  # /error_adm
+# @app.route("/api_cuenta_administrativa")  # /cuenta_administrativa
+# @app.route("/api_dashboard")  # /dashboard
+
+## MARCAS ##
+@app.route("/api_guardar_marca", methods=["POST"])
+@jwt_required()
+def api_guardar_marca():
+    marca = request.json["marca"]
+    img_logo = request.json["img_logo"]
+    img_banner = request.json.get("img_banner")  # Es opcional
+    dictRespuesta = {}
+    try:
+        controlador_marcas.insertar_marca(marca, img_logo, img_banner)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Marca registrada con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al registrar la marca: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listado_marcas")
+@jwt_required()
+def api_listado_marcas():
+    dictRespuesta = {}
+    try:
+        marcas = controlador_marcas.obtener_listado_marcas()
+        dictRespuesta["status"] = 1
+        dictRespuesta["data"] = marcas
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el listado de marcas: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_marca", methods=["POST"])
+@jwt_required()
+def api_eliminar_marca():
+    id_marca = request.json["id"]
+    dictRespuesta = {}
+    try:
+        controlador_marcas.eliminar_marca(id_marca)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Marca eliminada con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar la marca: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_marca", methods=["POST"])
+@jwt_required()
+def api_actualizar_marca():
+    id_marca = request.json["id"]
+    marca = request.json["marca"]
+    img_logo = request.json.get("img_logo")
+    img_banner = request.json.get("img_banner")
+    disponibilidad = request.json["disponibilidad"]
+    dictRespuesta = {}
+    try:
+        controlador_marcas.actualizar_marca(marca, img_logo, img_banner, disponibilidad, id_marca)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Marca actualizada con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la marca: {str(e)}"
+        return jsonify(dictRespuesta)
+
 
 
 # EJECUTAR
