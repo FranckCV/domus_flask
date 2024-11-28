@@ -1916,7 +1916,7 @@ def registrar_cliente():
             
             session['username'] = correo
             session['id'] = user_id
-            resp = make_response(redirect(f"/perfil/{user_id}"))
+            resp = make_response(redirect(f"/perfil={user_id}"))
             resp.set_cookie('username', correo)
             return resp
         elif result == 0:
@@ -1988,9 +1988,32 @@ def logout():
 def perfil(user_id):
     if 'id' in session and session['id'] == user_id and session['tipo'] == 3:
         usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
-        return render_template('perfil.html', user_id=user_id,usuario=usuario )
+        img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+        return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
     else:
-        return redirect('/login')
+        return redirect('/iniciar_sesion')
+    
+@app.route("/insertar_imagen_usuario", methods=['POST'])
+def imagen_usuario():
+    if 'imagen' not in request.files:
+        flash('No se seleccionó ninguna imagen.', 'error')
+        return redirect(url_for('perfil', user_id=session.get('id')))
+    
+    imagen = request.files["imagen"]
+    if imagen.filename == '':
+        flash('No se seleccionó ninguna imagen.', 'error')
+        return redirect(url_for('perfil', user_id=session.get('id')))
+
+    try:
+        imagen_bin = imagen.read()
+        id = session.get('id')
+        controlador_usuario_cliente.insertar_imagen(id,imagen_bin)
+        img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(id)
+        flash('Imagen actualizada correctamente.', 'success')
+    except Exception as e:
+        flash(f'Error al guardar la imagen: {e}', 'error')
+
+    return redirect(url_for('perfil', user_id=session.get('id') ))
 
 
 #################################################################################
