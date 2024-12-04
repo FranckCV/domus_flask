@@ -1,7 +1,7 @@
 from controladores.bd import obtener_conexion
 import base64
 
-def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario):
+def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuario):
     conexion = obtener_conexion() 
     try:
         with conexion.cursor() as cursor:
@@ -14,7 +14,7 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
             cursor.execute(
                 "INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, tipo_usuario)
+                (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuario)
             )
 
             usuario_id = cursor.lastrowid # pa mandarle mensaje de exito por pantalla maybe
@@ -28,11 +28,11 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
         conexion.close() 
 
 
-def confirmarDatos(correo, contraseña):
+def confirmarDatos(correo, contrasenia):
     conexion= obtener_conexion()
     try:
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT correo,contrasenia FROM usuario WHERE correo = %s , contrasenia=%s", (correo,contraseña,))
+            cursor.execute("SELECT correo,contrasenia FROM usuario WHERE correo = %s , contrasenia=%s", (correo,contrasenia,))
             result = cursor.fetchone()
 
             if result is not None:
@@ -161,8 +161,10 @@ def obtener_usuario_cliente_por_id(id):
                     genero, 
                     fecha_nacimiento, 
                     telefono, 
-                    correo, 
-                    disponibilidad
+                    correo,
+                    contrasenia, 
+                    disponibilidad,
+                    TIPO_USUARIOid
                 FROM usuario
                 WHERE id = %s AND TIPO_USUARIOid = 3
             '''
@@ -176,6 +178,23 @@ def obtener_usuario_cliente_por_id(id):
     finally:
         conexion.close()
         
+def insertar_imagen(id, img):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+                UPDATE usuario
+                SET img_usuario = %s
+                WHERE id = %s AND TIPO_USUARIOid = 3
+            '''
+            cursor.execute(sql, (img, id,))
+            conexion.commit()
+    except Exception as e:
+        print(f"Error al actualizar la imagen del usuario: {e}")
+    finally:
+        conexion.close()
+ 
+      
         
 def obtener_usuario_cliente_por_email(email):
         conexion = obtener_conexion()
@@ -185,7 +204,8 @@ def obtener_usuario_cliente_por_email(email):
                     SELECT 
                         id,
                         correo,
-                        contrasenia
+                        contrasenia,
+                        TIPO_USUARIOid
                     FROM usuario
                     WHERE correo = %s
                 '''
@@ -226,6 +246,7 @@ def actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fe
         return False
     finally:
         conexion.close()
+
 
 
 def eliminar_usuario_cliente(id):
@@ -317,9 +338,9 @@ def obtener_imagen_usuario_cliente_id(id):
                 usu.id,
                 usu.img_usuario
             FROM usuario usu
-            WHERE TIPO_USUARIOid = 3 and usu.id = '''+str(id)+'''
+            WHERE TIPO_USUARIOid = 3 and usu.id = %s
         '''
-        cursor.execute(sql)
+        cursor.execute(sql,(id,))
         usuario = cursor.fetchone()
 
     elemento = None

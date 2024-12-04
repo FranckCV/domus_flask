@@ -71,20 +71,25 @@ import controladores.controlador_detalle as controlador_detalle
 #     User(2, 'user2', 'abcxyz'),
 # ]
 
-# username_table = {u.username: u for u in users}
-# userid_table = {u.id: u for u in users}
 
 def authenticate(username, password):
     data = controlador_usuario_cliente.obtener_usuario_cliente_por_email(username)
-    user = Usuario(id=data[0], correo=data[1], contraseña=data[2])
-    if user and user.contraseña.encode('utf-8') == password.encode('utf-8'):
-        return user
+    if not data:
+        return None
+    user = Usuario(id=data[0], correo=data[1], contrasenia=data[2], tipo_usuario_id=data[3])
+    
+    if user and user.contrasenia == hashlib.sha256(password.encode('utf-8')).hexdigest():
+        if user.tipo_usuario_id in [1, 2, 3]:
+            return user
+    
+    return None
 
 def identity(payload):
     user_id = payload['identity']
     data = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
-    user = Usuario(id=data[0], correo=data[1], contraseña=data[2])
+    user = Usuario(id=data[0], correo=data[1], contrasenia=data[2])
     return user
+
 
 def encstringsha256(cadena_legible):
     h = hashlib.new('sha256')
@@ -110,8 +115,18 @@ def inject_globals():
     redes_footer = controlador_redes_sociales.obtener_redes_sociales()
     conts_info_footer = controlador_contenido_info.obtener_tipos_contenido()
     datos_domus_main = controlador_informacion_domus.obtener_informacion_domus()
-    logueado_dato = session.get('id') is not None 
-    return dict(marcasMenu=marcasMenu , logo_foto = logo_foto , categoriasMenu = categoriasMenu , redes_footer = redes_footer , conts_info_footer = conts_info_footer , datos_domus_main = datos_domus_main, logueado=logueado_dato)
+    logueado_dato = session.get('id') is not None
+    user_id = session.get('id') if logueado_dato else None  
+    return dict(
+        marcasMenu=marcasMenu,
+        logo_foto=logo_foto,
+        categoriasMenu=categoriasMenu,
+        redes_footer=redes_footer,
+        conts_info_footer=conts_info_footer,
+        datos_domus_main=datos_domus_main,
+        logueado=logueado_dato,
+        user_id=user_id 
+    )
 
 
 # PAGINAS GENERALES
@@ -538,8 +553,10 @@ def cuenta_administrativa():
 
 @app.route("/dashboard")
 def dashboard():
+    # if session['tipo'] == 2:
     return render_template("dashboard.html")
-
+    # else:
+        # return redirect('/')
 
 
 
@@ -1207,7 +1224,9 @@ def actualizar_producto():
 
 #########################PARA TIPO NOVEDAD##############################
 
+
 @app.route("/listado_tipos_novedad")
+# @jwt_required()
 def listado_tipos_novedad():
     tipos_novedad = controlador_tipos_novedad.obtener_listado_tipos_novedad()
     return render_template("listado_tipos_novedad.html", tipos_novedad=tipos_novedad)
@@ -1973,54 +1992,72 @@ def registrar_cliente():
         telefono = request.form["telefono"]
         correo = request.form["correo"]
         password = request.form["password"]
-        disponibilidad=1
+        disponibilidad = 1
         tipo_usuario = 3
 
-        h = hashlib.new('sha256')
-        h.update(bytes(password, encoding='utf-8'))
-        epassword = h.hexdigest()
+        epassword = encstringsha256(password)
 
         result = controlador_usuario_cliente.insertar_usuario(
             nombres, apellidos, dni, genero, fecha_nacimiento, telefono, correo, epassword, disponibilidad, tipo_usuario
         )
 
-        print(result)
         if result == 1:
-            # return render_template("iniciar_sesion.html", mostrar=True)
-            session['username']=correo
-            resp=make_response(redirect("/"))
-            resp.set_cookie('username',correo)
+            
+            usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_email(correo)
+            user_id = usuario[0] 
+            
+            session['username'] = correo
+            session['id'] = user_id
+            resp = make_response(redirect(f"/perfil={user_id}"))
+            resp.set_cookie('username', correo)
             return resp
-
         elif result == 0:
-            return render_template("iniciar_sesion.html", mostrar=False)
+            return render_template(
+                "iniciar_sesion.html",
+                mostrar_modal=True,
+                mensaje_modal="El correo usado ya fue registrado. Por favor, intente con otro."
+            )
         else:
-            return "Error al procesar la solicitud", 400 
+            return "Error al procesar la solicitud", 400
     except Exception as e:
         print(f"Error en registrar_cliente: {e}")
-        return "Error en el servidor", 500 
+        return render_template(
+            "iniciar_sesion.html",
+            mostrar_modal=True,
+            mensaje_modal="Error en el servidor. Por favor, intente más tarde."
+        )
+
 
 
 @app.route("/login", methods=['POST'])
 def login():
-    
     email = request.form.get('email-login')
     password = request.form.get('password-login')
+    user = controlador_usuario_cliente.obtener_usuario_cliente_por_email(email)
     
-    user=controlador_usuario_cliente.obtener_usuario_cliente_por_email(email)
-    epassword=encstringsha256(password)
-    
-    if user and user[2]==epassword:
-        session['username']=email
-        resp=make_response(redirect("/"))
-        resp.set_cookie('username',email)
-        return resp
+    # if user and user[2]==epassword:
+    #     session['username']=email
+    #     resp=make_response(redirect("/"))
+    #     resp.set_cookie('username',email)
+    #     return resp
+    if user:
+        epassword = encstringsha256(password)
+        if user[2] == epassword:
+            session['id'] = user[0]
+            session['tipo'] = user[3]
+            session['username'] = email
+
+            resp = make_response(redirect("/"))
+            resp.set_cookie('username', email)
+            return resp
+        else:
+            return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Contraseña incorrecta.")
     else:
-        return redirect('/iniciar_sesion.html')
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Usuario no registrado.")
 
 @app.route("/logout")
 def logout():
-    session.clear()  # Limpia todos los datos de la sesión
+    session.clear()  
     return redirect('/')
 
 
@@ -2043,12 +2080,36 @@ def logout():
 
 
 #####################################PARA PERFIL#################################################
-@app.route("/perfil/<int:user_id>")
+@app.route("/perfil=<int:user_id>")
 def perfil(user_id):
-    if 'id' in session and session['id'] == user_id:
-        return render_template('perfil.html', user_id=user_id)
+    if 'id' in session and session['id'] == user_id and session['tipo'] == 3:
+        usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+        img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+        return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
     else:
-        return redirect('/login')
+        return redirect('/iniciar_sesion')
+    
+@app.route("/insertar_imagen_usuario", methods=['POST'])
+def imagen_usuario():
+    if 'imagen' not in request.files:
+        flash('No se seleccionó ninguna imagen.', 'error')
+        return redirect(url_for('perfil', user_id=session.get('id')))
+    
+    imagen = request.files["imagen"]
+    if imagen.filename == '':
+        flash('No se seleccionó ninguna imagen.', 'error')
+        return redirect(url_for('perfil', user_id=session.get('id')))
+
+    try:
+        imagen_bin = imagen.read()
+        id = session.get('id')
+        controlador_usuario_cliente.insertar_imagen(id,imagen_bin)
+        img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(id)
+        flash('Imagen actualizada correctamente.', 'success')
+    except Exception as e:
+        flash(f'Error al guardar la imagen: {e}', 'error')
+
+    return redirect(url_for('perfil', user_id=session.get('id') ))
 
 
 ###################################CONFIRMAR PEDIDO###############################
@@ -2162,6 +2223,567 @@ def actualizar_detalle_pedido():
 def api_obtenerdiscos():
     discos = controlador_categorias.obtener_listado_categorias()
     return jsonify(discos)
+
+
+############################################  APIs  ###############################################
+# @app.route("/api_error_adm")  # /error_adm
+# @app.route("/api_cuenta_administrativa")  # /cuenta_administrativa
+# @app.route("/api_dashboard")  # /dashboard
+
+## MARCAS ##
+@app.route("/api_guardar_marca", methods=["POST"])
+@jwt_required()
+def api_guardar_marca():
+    marca = request.json["marca"]
+    img_logo = request.json["img_logo"]
+    img_banner = request.json.get("img_banner")  # Es opcional
+    dictRespuesta = {}
+    try:
+        controlador_marcas.insertar_marca(marca, img_logo, img_banner)
+        dictRespuesta["status"] = 1
+        dictRespuesta["message"] = "Marca registrada con éxito"
+        dictRespuesta["data"] = {}
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["message"] = f"Error al registrar la marca: {str(e)}"
+        dictRespuesta["data"] = {}
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_listado_marcas")
+@jwt_required()
+def api_listado_marcas():
+    dictRespuesta = {}
+    try:
+        marcas = controlador_marcas.obtener_listado_marcas()
+        dictRespuesta["status"] = 1
+        dictRespuesta["message"] = "Listado de marcas obtenido correctamente"
+        dictRespuesta["data"] = {
+            "marcas": []
+        }
+
+        for marca in marcas:
+            marca_data = {
+                "id_marca": marca[0],
+                "nombre_marca": marca[1],
+                "logo": marca[2],
+                "banner": marca[3],
+                "fecha_registro": marca[4].strftime('%Y-%m-%d %H:%M:%S'),
+                "disponibilidad": marca[5],
+                "productos": marca[6],
+                "novedades": marca[7]
+            }
+            dictRespuesta["data"]["marcas"].append(marca_data)
+        
+        dictRespuesta["data"]["total_marcas"] = len(marcas)
+        
+        return jsonify(dictRespuesta)
+    
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["message"] = f"Error al obtener el listado de marcas: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_marca", methods=["POST"])
+@jwt_required()
+def api_eliminar_marca():
+    id_marca = request.json["id"]
+    dictRespuesta = {}
+    try:
+        controlador_marcas.eliminar_marca(id_marca)
+        dictRespuesta["status"] = 1
+        dictRespuesta["message"] = "Marca eliminada con éxito"
+        dictRespuesta["data"] = {}
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["message"] = f"Error al eliminar la marca: {str(e)}"
+        dictRespuesta["data"] = {}
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_actualizar_marca", methods=["POST"])
+@jwt_required()
+def api_actualizar_marca():
+    id_marca = request.json["id"]
+    marca = request.json["marca"]
+    img_logo = request.json.get("img_logo")
+    img_banner = request.json.get("img_banner")
+    disponibilidad = request.json["disponibilidad"]
+    dictRespuesta = {}
+    try:
+        controlador_marcas.actualizar_marca(marca, img_logo, img_banner, disponibilidad, id_marca)
+        dictRespuesta["status"] = 1
+        dictRespuesta["message"] = "Marca actualizada con éxito"
+        dictRespuesta["data"] = {}
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["message"] = f"Error al actualizar la marca: {str(e)}"
+        dictRespuesta["data"] = {}
+        return jsonify(dictRespuesta)
+
+################# APIs PRODUCTOS ###################
+@app.route("/api_listado_productos")
+@jwt_required()
+def api_listado_productos():
+    dictRespuesta = {}
+    try:
+        productos = controlador_productos.obtener_listado_productos()
+        productos_formateados = []
+
+        for producto in productos:
+            id_producto = producto[0]
+            nombre_producto = producto[1]
+            price_regular = producto[2]
+            precio_online = producto[3]
+            precio_oferta = producto[4]
+            info_adicional = producto[5]
+            stock = producto[6]
+            fecha_registro = producto[7]
+            disponibilidad = producto[8]
+            cantidad_novedades = producto[9]
+            cantidad_caracteristicas = producto[10]
+            marca = producto[11]
+            subcategoria = producto[12]
+            
+            if isinstance(fecha_registro, int):
+                fecha_registro = datetime.fromtimestamp(fecha_registro)
+            
+            productos_formateados.append({
+                "idproducto": id_producto,
+                "nombre": nombre_producto,
+                "price_regular": price_regular,
+                "precio_online": precio_online,
+                "precio_oferta": precio_oferta,
+                "info_adicional": info_adicional,
+                "stock": stock,
+                "fecha_registro": fecha_registro.strftime("%Y-%m-%d %H:%M:%S"),
+                "disponibilidad": disponibilidad,
+                "cantidad_novedades": cantidad_novedades,
+                "cantidad_caracteristicas": cantidad_caracteristicas,
+                "marca": marca,
+                "subcategoria": subcategoria
+            })
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["data"] = productos_formateados
+        dictRespuesta["message"] = "Productos obtenidos correctamente"
+        return jsonify(dictRespuesta)
+    
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el listado de productos: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_guardar_producto", methods=["POST"])
+@jwt_required()
+def api_guardar_producto():
+    dictRespuesta = {}
+    try:
+        nombre = request.json["nombre"]
+        price_regular = request.json.get("price_regular", None)
+        precio_online = request.json["precio_online"]
+        precio_oferta = request.json.get("precio_oferta", None)
+        info_adicional = request.json.get("info_adicional", "")
+        stock = request.json["stock"]
+        marcaid = request.json["marcaid"]
+        subcategoriaid = request.json["subcategoriaid"]
+        disponibilidad = request.json["disponibilidad"]
+        
+        controlador_productos.insertar_producto(
+            nombre, price_regular, precio_online, precio_oferta, 
+            info_adicional, stock, marcaid, subcategoriaid, disponibilidad
+        )
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Producto guardado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al guardar el producto: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_producto", methods=["POST"])
+@jwt_required()
+def api_eliminar_producto():
+    dictRespuesta = {}
+    try:
+        id_producto = request.json["id"]
+        controlador_productos.eliminar_producto(id_producto)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Producto eliminado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el producto: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_producto", methods=["POST"])
+@jwt_required()
+def api_actualizar_producto():
+    dictRespuesta = {}
+    try:
+        id_producto = request.json["id"]
+        nombre = request.json.get("nombre", "")
+        price_regular = request.json.get("price_regular", None)
+        precio_online = request.json["precio_online"]
+        precio_oferta = request.json.get("precio_oferta", None)
+        info_adicional = request.json.get("info_adicional", "")
+        stock = request.json["stock"]
+        marcaid = request.json["marcaid"]
+        subcategoriaid = request.json["subcategoriaid"]
+        disponibilidad = request.json["disponibilidad"]
+
+        controlador_productos.actualizar_producto(
+            id_producto, nombre, price_regular, precio_online, 
+            precio_oferta, info_adicional, stock, marcaid, 
+            subcategoriaid, disponibilidad
+        )
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Producto actualizado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el producto: {str(e)}"
+        return jsonify(dictRespuesta)
+
+#############SUBCATEGORIA#############
+
+@app.route("/api_listado_subcategorias")
+# @jwt_required()
+def api_listado_subcategorias():
+    dictRespuesta = {}
+    try:
+        subcategorias = controlador_subcategorias.obtener_subcategorias()
+        subcategorias_formateadas = []
+        for subcategoria in subcategorias:
+            subcategoria_id = subcategoria[0]
+            subcategoria_nombre = subcategoria[1]
+            faicon_subcat = subcategoria[2]
+            disponibilidad_subcat = subcategoria[3]
+            categoria_id = subcategoria[4]
+            categoria_nombre = subcategoria[5]
+            faicon_categoria = subcategoria[6]
+            cantidad_productos = subcategoria[7]
+            cantidad_novedades = subcategoria[8]
+
+            subcategoria_formateada = {
+                "subcategoria_id": subcategoria_id,
+                "subcategoria": subcategoria_nombre,
+                "faicon_subcat": faicon_subcat,
+                "disponibilidad_subcat": disponibilidad_subcat,
+                "categoria": {
+                    "categoria_id": categoria_id,
+                    "categoria_nombre": categoria_nombre,
+                    "faicon_categoria": faicon_categoria
+                },
+                "cantidad_productos": cantidad_productos,
+                "cantidad_novedades": cantidad_novedades
+            }
+            subcategorias_formateadas.append(subcategoria_formateada)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["data"] = subcategorias_formateadas
+        dictRespuesta["mensaje"] = "Listado de subcategorías obtenido correctamente"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el listado de subcategorías: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_guardar_subcategoria", methods=["POST"])
+# @jwt_required()
+def api_guardar_subcategoria():
+    dictRespuesta = {}
+    try:
+        subcategoria = request.json["subcategoria"]
+        faicon_subcat = request.json["faicon_subcat"]
+        disponibilidad = request.json["disponibilidad"]
+        categoriaid = request.json["categoriaid"]
+
+        controlador_subcategorias.insertar_subcategoria(subcategoria, faicon_subcat, disponibilidad, categoriaid)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Subcategoría registrada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al registrar la subcategoría: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_eliminar_subcategoria", methods=["POST"])
+# @jwt_required()
+def api_eliminar_subcategoria():
+    dictRespuesta = {}
+    try:
+        id_subcategoria = request.json["id"]
+        controlador_subcategorias.eliminar_subcategoria(id_subcategoria)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Subcategoría eliminada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar la subcategoría: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_subcategoria", methods=["POST"])
+@jwt_required()
+def api_actualizar_subcategoria():
+    dictRespuesta = {}
+    try:
+        id_subcategoria = request.json["id"]
+        subcategoria = request.json.get("subcategoria", "")
+        faicon_subcat = request.json.get("faicon_subcat", "")
+        disponibilidad = request.json["disponibilidad"]
+        categoriaid = request.json["categoriaid"]
+
+        controlador_subcategorias.actualizar_subcategoria(
+            id_subcategoria, subcategoria, faicon_subcat, disponibilidad, categoriaid
+        )
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Subcategoría actualizada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la subcategoría: {str(e)}"
+        return jsonify(dictRespuesta)
+
+###################APIs CATEGORIA###############
+@app.route("/api_guardar_categoria", methods=["POST"])
+@jwt_required()
+def api_guardar_categoria():
+    categoria = request.json["categoria"]
+    faicon_cat = request.json["faicon_cat"]
+    disponibilidad = request.json["disponibilidad"]
+    dictRespuesta = {}
+    try:
+        controlador_categorias.insertar_categoria(categoria, faicon_cat, disponibilidad)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Categoría registrada con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al registrar la categoría: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listado_categorias")
+# @jwt_required()
+def api_listado_categorias():
+    dictRespuesta = {}
+    try:
+        categorias = controlador_categorias.obtener_listado_categorias()
+
+        categorias_procesadas = []
+    
+        for categoria in categorias:
+            id_categoria = categoria[0]
+            nombre_categoria = categoria[1]
+            faicon_categoria = categoria[2]
+            disponibilidad = categoria[3]
+            subcategorias_count = categoria[4]
+
+            categorias_procesadas.append({
+                "id": id_categoria,
+                "categoria": nombre_categoria,
+                "faicon_cat": faicon_categoria,
+                "disponibilidad": disponibilidad,
+                "subcategorias_count": subcategorias_count
+            })
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["data"] = categorias_procesadas
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el listado de categorías: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_categoria", methods=["POST"])
+# @jwt_required()
+def api_eliminar_categoria():
+    id_categoria = request.json["id"]
+    dictRespuesta = {}
+    try:
+        controlador_categorias.eliminar_categoria(id_categoria)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Categoría eliminada con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar la categoría: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_categoria", methods=["POST"])
+@jwt_required()
+def api_actualizar_categoria():
+    id_categoria = request.json["id"]
+    categoria = request.json["categoria"]
+    faicon_cat = request.json["faicon_cat"]
+    disponibilidad = request.json["disponibilidad"]
+    dictRespuesta = {}
+    try:
+        controlador_categorias.actualizar_categoria(categoria, faicon_cat, disponibilidad, id_categoria)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Categoría actualizada con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la categoría: {str(e)}"
+        return jsonify(dictRespuesta)
+    
+################APIs USUARIOS###########
+@app.route("/api_guardar_usuario_cliente", methods=["POST"])
+@jwt_required()
+def api_guardar_usuario():
+    usuario = request.json["usuario"]
+    doc_identidad = request.json["doc_identidad"]
+    img_usuario = request.json.get("img_usuario")
+    genero = request.json["genero"]
+    fecha_nacimiento = request.json["fecha_nacimiento"]
+    telefono = request.json["telefono"]
+    correo = request.json["correo"]
+    contrasenia = request.json["contrasenia"]
+    disponibilidad = request.json["disponibilidad"]
+    tipo_usuarioid = request.json["tipo_usuarioid"]
+    
+    dictRespuesta = {}
+    try:
+        controlador_usuario_cliente.insertar_usuario(usuario, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuarioid)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Usuario registrado con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al registrar el usuario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+from datetime import datetime
+
+@app.route("/api_listado_usuarios_clientes")
+# @jwt_required()
+def api_listado_usuarios_clientes():
+    dictRespuesta = {}
+    try:
+        usuarios = controlador_usuario_cliente.obtener_listado_usuarios_clientes()
+
+        usuarios_procesados = []
+        
+        for usuario in usuarios:
+            id_usuario = usuario[0]
+            nombres = usuario[1]
+            apellidos = usuario[2]
+            doc_identidad = usuario[3]
+            img_usuario_binario = usuario[4]
+            genero = usuario[5]
+            fecha_nacimiento = usuario[6]
+            telefono = usuario[7]
+            correo = usuario[8]
+            disponibilidad = usuario[9]
+            cantidad_pedidos = usuario[10]
+            fecha_registro = usuario[11]
+            cantidad_comentarios = usuario[12]
+
+            if img_usuario_binario:
+                img_usuario_base64 = base64.b64encode(img_usuario_binario).decode('utf-8')
+                img_usuario_formato = f"data:image/png;base64,{img_usuario_base64}"
+            else:
+                img_usuario_formato = None
+
+            fecha_nacimiento_formateada = None
+            if isinstance(fecha_nacimiento, datetime):
+                try:
+                    fecha_nacimiento_formateada = fecha_nacimiento.strftime('%Y-%m-%d')
+                except Exception:
+                    fecha_nacimiento_formateada = None
+
+            fecha_registro_formateada = None
+            if isinstance(fecha_registro, datetime):
+                try:
+                    fecha_registro_formateada = fecha_registro.strftime('%Y-%m-%d %H:%M:%S')
+                except Exception:
+                    fecha_registro_formateada = None
+
+            usuarios_procesados.append({
+                "id": id_usuario,
+                "nombres": nombres,
+                "apellidos": apellidos,
+                "doc_identidad": doc_identidad,
+                "img_usuario": img_usuario_formato,
+                "genero": genero,
+                "fecha_nacimiento": fecha_nacimiento_formateada,
+                "telefono": telefono,
+                "correo": correo,
+                "disponibilidad": disponibilidad,
+                "cantidad_pedidos": cantidad_pedidos,
+                "fecha_registro": fecha_registro_formateada,
+                "cantidad_comentarios": cantidad_comentarios
+            })
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["data"] = usuarios_procesados
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el listado de usuarios: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+
+@app.route("/api_eliminar_usuario", methods=["POST"])
+@jwt_required()
+def api_eliminar_usuario():
+    id_usuario = request.json["id"]
+    dictRespuesta = {}
+    try:
+        controlador_usuario_cliente.eliminar_usuario_cliente(id_usuario)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Usuario eliminado con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el usuario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_usuario", methods=["POST"])
+@jwt_required()
+def api_actualizar_usuario():
+    id_usuario = request.json["id"]
+    usuario = request.json["usuario"]
+    doc_identidad = request.json["doc_identidad"]
+    img_usuario = request.json.get("img_usuario")  # Es opcional
+    genero = request.json["genero"]
+    fecha_nacimiento = request.json["fecha_nacimiento"]
+    telefono = request.json["telefono"]
+    correo = request.json["correo"]
+    contrasenia = request.json["contrasenia"]
+    disponibilidad = request.json["disponibilidad"]
+    tipo_usuarioid = request.json["tipo_usuarioid"]
+    
+    dictRespuesta = {}
+    try:
+        controlador_usuario_cliente.actualizar_usuario_cliente(id_usuario, usuario, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuarioid)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Usuario actualizado con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el usuario: {str(e)}"
+        return jsonify(dictRespuesta)
 
 
 # EJECUTAR

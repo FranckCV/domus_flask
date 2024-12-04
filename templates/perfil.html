@@ -1,199 +1,125 @@
-{% extends 'maestra_administrador.html' %}
+{% extends 'maestra_general.html' %}
 
 {% block titulo %}
-  Detalle del Pedido
+  Perfil del Usuario
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/listados.css" />
-  <link rel="stylesheet" href="/static//css/administrativa/agregar.css">
+  <link rel="stylesheet" href="static/css/perfil.css" />
 {% endblock %}
 
 {% block contenido %}
-
 <section class="body_page">
     <div class="contenedor_perfil">
         <aside class="aside_perfil">
+
             <div class="profile">
-                <img src="img/iconos/usuario.png" alt="Foto de perfil" id="foto_perfil">
-                <h2>¡Hola, Fabiana!</h2>
+                <div class="content_img">
+                    {% if usuario.4 is not none %}
+                    <img src="{{ img.1 }}" alt="Foto de perfil del usuario" id="foto_perfil">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/iconos/usuario.png') }}" alt="Foto de perfil del usuario" id="foto_perfil">
+                    {% endif %}
+                </div>
+                
+                <h2>¡Hola, {{ usuario.1 }}!</h2>
+                <form action="{{ url_for('imagen_usuario') }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="inputImagen" name="imagen" accept="image/*" style="display: none;" required>
+                    <button type="button" class="btn btn-primary" id="btnSubirImagen">Subir Imagen</button>
+                </form>
             </div>
+            
             <div id="opciones_perfil">
-                <a href="perfil.html" class="opcion_perfil">
-                    <img src="img/iconos/user.png" alt="" class="img_perfil">
+                <a href="{{ url_for('perfil', user_id=user_id) }}" class="opcion_perfil">
+                    <!-- <img src="{{ url_for('static', filename='img/iconos/user.png') }}" alt="Icono de perfil" class="img_perfil"> -->
+                    <i class="fa-solid fa-user"></i>
                     <p>Mi perfil</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    <!-- <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha"> -->
+                    <i class="fa-solid fa-angle-right"></i>
                 </a>
 
-                <a href="misDirecciones.html" class="opcion_perfil">
-                    <img src="img/iconos/ubicacion.png" class="img_perfil" alt="">
-                    <p>Direcciones</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
-                </a>
 
-                <a href="misTarjetas.html" class="opcion_perfil">
-                    <img src="img/iconos/tarjeta-de-credito.png" alt="" class="img_perfil">
-                    <p>Tarjeta de crédito</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
-                </a>
-
-                <a href="misPedidos.html" class="opcion_perfil">
-                    <img src="img/iconos/entrega-de-pedidos.png" alt="" class="img_perfil">
-                    <p>Mis pedidos</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
-                </a>
-
-                <a href="ListaDeseos.html" class="opcion_perfil">
-                    <img src="img/iconos/me-gusta.png" alt="" class="img_perfil">
-                    <p>Lista de deseos</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
-                </a>
-                <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <img src="img/iconos/cerrar.png" class="img_perfil">
+                <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#modalCerrarSesion">
+                    <!--  <img src="{{ url_for('static', filename='img/iconos/cerrar.png') }}" alt="Icono de cierre de sesión" class="img_perfil">-->
+                    <i class="fa-solid fa-right-from-bracket"></i>
                     <p>Cerrar sesión</p>
-                    <img src="img/iconos/flecha.png" alt="" class="flecha">
+                    <!--   <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
+                      -->
+                    <i class="fa-solid fa-angle-right"></i>
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                <div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmación de cierre</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                                <h1 class="modal-title fs-5" id="modalCerrarSesionLabel">Confirmación de cierre</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <p>¿Estás seguro de que quieres cerrar sesión?</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="confirmarCierreSesion">Confirmar</button>
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="confirmarCierreSesion" onclick="location.href='{{ url_for('logout') }}';">Confirmar</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </aside>
 
         <main class="main_perfil">
-            <div class="header_perfil">
-                <h1>Perfil</h1>
-
-                <div class="iconos">
-
-                    <div>
-                        <a href="perfil.html">
-                            <i class="fa-regular fa-user"></i>
-                        </a>
-                    </div>
-
-                    <div>
-                        <a href="misDirecciones.html">
-                            <i class="fa-solid fa-location-dot"></i>
-                        </a>
-                    </div>
-
-                    <div>
-                        <a href="tarjetas.html">
-                            <i class="fa-regular fa-credit-card"></i>
-                        </a>
-                    </div>
-
-                    <div>
-                        <a>
-                            <i class="fa-solid fa-list"></i>
-                        </a>
-                    </div>
-
-                    <div>
-                        <a href="favoritos.html">
-                            <i class="fa-regular fa-heart"></i>
-                        </a>
-                    </div>
-
-                    <div>
-                        <a onclick="confirmarCierreSesion()">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        </a>
-                    </div>
-
-
-                </div>
-
-            </div>
-            <hr>
-            <!-- contenido propio -->
-            <div class="profile-details">
-
                 <div class="detalle">
-
                     <div class="datos_perfil">
                         <strong>Nombres:</strong>
-                        <p>Fabiana Lucía</p>
+                        <p>{{ usuario.1 }}</p>
                     </div>
 
                     <div class="datos_perfil">
                         <strong>Apellidos:</strong>
-                        <p>Paucar Mejía</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Email:</strong>
-                        <p>fabianapm060126@gmail.com</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Documento de identidad:</strong>
-                        <p>72428857</p>
+                        <p>{{ usuario.2 }}</p>
                     </div>
 
                     <div class="datos_perfil">
                         <strong>Género:</strong>
-                        <p>Prefiero no decirlo</p>
+                        {% if usuario.5 ==1  %}
+                        <p>Masculino</p>
+                        {% else %}
+                        <p>Femenino</p>
+                        {% endif %}
                     </div>
 
                     <div class="datos_perfil">
                         <strong>Fecha de nacimiento:</strong>
-                        <p>06/01/2005</p>
+                        <p>{{ usuario.6 }}</p>
                     </div>
 
                     <div class="datos_perfil">
                         <strong>Teléfono:</strong>
-                        <p>906300905</p>
+                        <p>{{ usuario.7 }}</p>
                     </div>
 
-                </div>
-
-                <div class="boletin">
-                    <h3>Boletín informativo</h3>
-                    <div>
-                        <p id="informativo">¿Quiere recibir informativos promocionales?</p>
-                        <span id="confirmar_boletin">
-                            <input type="checkbox" id="checkbox_boletin" checked>
-                            <label for="checkbox_boletin">Quiero recibir el boletín informativo con
-                                promociones.</label>
-                        </span>
+                    <div class="datos_perfil">
+                        <strong>Documento de identidad:</strong>
+                        <p>{{ usuario.3 }}</p>
                     </div>
 
-                </div>
+                    <div class="datos_perfil">
+                        <strong>Email:</strong>
+                        <p>{{ usuario.8 }}</p>
+                    </div>
 
-            </div>
+
+                </div>
         </main>
     </div>
-
 </section>
-
 {% endblock %}
 
 {% block scripts %}
-  <script>
-    function confirmarEliminacion() {
-      return confirm('¿Estás seguro que deseas eliminar este detalle? Esta acción no se puede deshacer.');
-    }
-  </script>
-  <script src="/static/js/imgsCRUDimagencompleta.js"></script>
+
+<script src="static/js/subir_imagen.js"></script>
+
 {% endblock %}

@@ -1,7 +1,7 @@
 class Usuario:
     def __init__(self, id, nombres=None, apellidos=None, doc_identidad=None, img_usuario=None, 
                  genero=None, fecha_nacimiento=None, telefono=None, correo=None, 
-                 contraseña=None, disponibilidad=None, fecha_registro=None, 
+                 contrasenia=None, disponibilidad=None, fecha_registro=None, 
                  tipo_usuario_id=None):
         self.id = id
         self.nombres = nombres
@@ -12,10 +12,13 @@ class Usuario:
         self.fecha_nacimiento = fecha_nacimiento
         self.telefono = telefono
         self.correo = correo
-        self.contraseña = contraseña
+        self.contrasenia = contrasenia
         self.disponibilidad = disponibilidad
         self.fecha_registro = fecha_registro
         self.tipo_usuario_id = tipo_usuario_id
+
+    def to_dict(self):
+        return {'id': self.id, "correo": self.correo} 
 
     def __str__(self):
         return (
