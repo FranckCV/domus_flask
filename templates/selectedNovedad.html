@@ -13,7 +13,15 @@
 <main id="anunciosM">
     <section id="promotion-section">
 
-        <a href="" class="promo-link">Volver a {{tipo[1]}}</a>
+        <a href="
+        {% if tipo[0] == 3 %}
+            {{url_for('promociones')}}
+        {% elif tipo[0] == 2 %}
+            {{url_for('avisos')}}
+        {% elif tipo[0] == 1 %}
+            {{url_for('anuncios')}}
+        {% endif %}
+        " class="promo-link">Volver a {{tipo[1]}}</a>
 
         <div class="promotion">
             <div class="promo-content">

@@ -12,7 +12,6 @@ def obtener_conexion():
 
 
 
-# import pymysql
 
 # def obtener_conexion():
 #     return pymysql.connect(

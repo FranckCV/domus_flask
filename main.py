@@ -5,32 +5,33 @@ from clase_user_v1.usuario import Usuario
 import hashlib
 import base64
 import datetime
-import controlador_marcas
-import controlador_categorias
-import controlador_productos
-import controlador_imagenes_productos
-import controlador_tipos_novedad
-import controlador_imagenes_novedades
+
 import controladores.controlador_caracteristicas_productos as controlador_caracteristicas_productos
 import controladores.controlador_caracteristicas_subcategorias as controlador_caracteristicas_subcategorias
-import controlador_caracteristicas
-import controlador_subcategorias
-import controlador_usuario_cliente
-import controlador_novedades
-import controlador_tipos_img_novedad
-import controlador_carrito
-import controlador_detalle
-import controlador_contenido_info
-import controlador_tipos_usuario
-import controlador_pedido
-import controlador_metodo_pago
-import controlador_motivo_comentario
-import controlador_comentario
-import controlador_estado_pedido
-import controlador_metodo_pago
-import controlador_redes_sociales
-import controlador_informacion_domus
-import controlador_cupon
+import controladores.controlador_caracteristicas as controlador_caracteristicas
+import controladores.controlador_carrito as controlador_carrito
+import controladores.controlador_comentario as controlador_comentario
+import controladores.controlador_contenido_info as controlador_contenido_info
+import controladores.controlador_tipos_usuario as controlador_tipos_usuario
+import controladores.controlador_pedido as controlador_pedido
+import controladores.controlador_metodo_pago as controlador_metodo_pago
+import controladores.controlador_motivo_comentario as controlador_motivo_comentario
+import controladores.controlador_estado_pedido as controlador_estado_pedido
+import controladores.controlador_metodo_pago as controlador_metodo_pago
+import controladores.controlador_redes_sociales as controlador_redes_sociales
+import controladores.controlador_informacion_domus as controlador_informacion_domus
+import controladores.controlador_cupon as controlador_cupon
+import controladores.controlador_marcas as controlador_marcas
+import controladores.controlador_categorias as controlador_categorias
+import controladores.controlador_productos as controlador_productos
+import controladores.controlador_imagenes_productos as controlador_imagenes_productos
+import controladores.controlador_tipos_novedad as controlador_tipos_novedad
+import controladores.controlador_imagenes_novedades as controlador_imagenes_novedades
+import controladores.controlador_subcategorias as controlador_subcategorias
+import controladores.controlador_usuario_cliente as controlador_usuario_cliente
+import controladores.controlador_novedades as controlador_novedades
+import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
+import controladores.controlador_detalle as controlador_detalle
 
 
 # class User(object):
@@ -97,15 +98,12 @@ app.config['SECRET_KEY'] = 'super-secret'
 
 jwt = JWT(app, authenticate, identity)
 
-
-
 logo_domus = 'img/elementos/logoDomus.png'
 
-
+# General
 
 @app.context_processor
 def inject_globals():
-    # General
     categoriasMenu = controlador_categorias.obtener_categorias_disponibles()
     marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
     logo_foto = logo_domus
@@ -130,33 +128,89 @@ def index():
 
 @app.route("/nuestras_marcas")
 def nuestras_marcas():
-    marcas = controlador_marcas.obtener_todas_marcas_recientes()
+    marcas = []
+    valor = request.args.get("ctlg_products_order")  # Obtener el valor del orden
+
+    if valor:
+        if valor == "1": 
+            marcas = controlador_marcas.obtener_todas_marcas_recientes()
+        elif valor == "2": 
+            marcas = controlador_marcas.obtener_todas_marcas_alfabetico(0)
+        elif valor == "3": 
+            marcas = controlador_marcas.obtener_todas_marcas_alfabetico(1)
+    else:
+        marcas = controlador_marcas.obtener_todas_marcas_recientes() 
+
     return render_template("nuestras_marcas.html", marcas = marcas)
 
 
-@app.route("/catalogo") #falta
+@app.route("/catalogo")
 def catalogo():
-    productos = controlador_productos.obtenerEnTarjetasMasRecientes()
-    categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()    
-    return render_template("catalogo.html", productos = productos, categoriasFiltro = categoriasFiltro)
+    productos = []
+    valor = request.args.get("ctlg_products_order")  # Obtener el valor del orden
+
+    if valor:
+        if valor == "1":  # Más Recientes
+            productos = controlador_productos.obtenerEnTarjetasMasRecientes()
+        elif valor == "2":  # Más Populares
+            productos = controlador_productos.obtenerEnTarjetasMasPopulares_catalogo()
+        elif valor == "3":  # Menor Precio
+            productos = controlador_productos.obtenerEnTarjetasxPrecio(1)
+        elif valor == "4":  # Mayor Precio
+            productos = controlador_productos.obtenerEnTarjetasxPrecio(0)
+        elif valor == "5":  # A - Z
+            productos = controlador_productos.obtenerEnTarjetasAlfabetico(0)
+        elif valor == "6":  # Z - A
+            productos = controlador_productos.obtenerEnTarjetasAlfabetico(1)
+    else:
+        productos = controlador_productos.obtenerEnTarjetasMasRecientes()  # Valor predeterminado
+
+    categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()
+    return render_template("catalogo.html", productos=productos, categoriasFiltro=categoriasFiltro)
 
 
-@app.route("/novedades") #falta
+@app.route("/buscar")
+def buscar_elementos():
+    nombreBusqueda = request.args.get("buscarElemento")
+    productos = controlador_productos.buscarEnTarjetasMasRecientes(nombreBusqueda)
+    categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()   
+    return render_template("catalogo.html", productos = productos, categoriasFiltro = categoriasFiltro , nombreBusqueda = nombreBusqueda)
+
+
+@app.route("/novedades") 
 def novedades():
+    novedades_promo = controlador_novedades.mostrarNovedadesxTipo(3,5)
+    novedades_anun = controlador_novedades.mostrarNovedadesxTipo(1,5)
+    novedades_avis = controlador_novedades.mostrarNovedadesxTipo(2,5)
     productosOfertas = controlador_productos.obtenerEnTarjetasOfertas()
-    return render_template("novedades.html" , productosOfertas = productosOfertas)
+    return render_template("novedades.html" , productosOfertas = productosOfertas , novedades_promo = novedades_promo , novedades_anun = novedades_anun , novedades_avis = novedades_avis)
 
 
-@app.route("/promociones") #falta
+@app.route("/promociones") 
 def promociones():
     promociones = controlador_novedades.mostrarNovedadesPromociones()
-    return render_template("promociones.html" , promociones = promociones)
+    if promociones:
+        return render_template("promociones.html" , promociones = promociones)
+    else:
+        return redirect("/error")
 
 
 @app.route('/anuncios')
 def anuncios():
-    anuncios = controlador_novedades.mostrarNovedadesAnuncios()
-    return render_template('anuncios.html', anuncios=anuncios)
+    anuncios = controlador_novedades.mostrarNovedadesxTipo(1,0)
+    if anuncios:
+        return render_template('anuncios.html', anuncios=anuncios)
+    else:
+        return redirect("/error")
+    
+
+@app.route('/avisos')
+def avisos():
+    avisos = controlador_novedades.mostrarNovedadesxTipo(2,0)
+    if avisos:
+        return render_template('avisos.html', avisos=avisos)
+    else:
+        return redirect("/error")
 
 
 @app.route("/error") 
@@ -876,7 +930,7 @@ def actualizar_motivo_comentario():
 ######################### FIN MOTIVO COMENTARIO ##############################
 
 
-import controlador_empleados
+import controladores.controlador_empleados as controlador_empleados
 
 
 ######################### PARA USUARIO EMPLEADO ##############################
@@ -1112,11 +1166,14 @@ def ver_producto(id):
 
 @app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
+    imagenes = controlador_imagenes_productos.obtener_listado_imagenes_por_producto(id)
+    caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
+    caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
     producto = controlador_productos.obtener_info_por_id(id)
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
     categorias = controlador_categorias.obtener_categoriasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
-    return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias,categorias = categorias)
+    return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias,categorias = categorias , imagenes = imagenes , caracteristicasPrincipales = caracteristicasPrincipales , caracteristicasSecundarias = caracteristicasSecundarias)
 
 @app.route("/actualizar_producto", methods=["POST"])
 def actualizar_producto():
@@ -1231,24 +1288,10 @@ def guardar_novedad():
     for file in files:
         nom_file = nombre+'_'+file.filename
         data = file.read()
-        controlador_imagenes_novedades.insertar_imagen_novedad(nom_file, data, 1, idNovedad)
+        controlador_imagenes_novedades.insertar_imagen_novedad(nom_file, data, 2, idNovedad)
 
     # return render_template('agregar_img_novedad.html', novedad_id=idNovedad, tipos_img_novedad = tipos_img_novedad)
     return redirect("/listado_novedades")
-
-@app.route("/guardar_img_novedad", methods=["POST"])
-def guardar_img_novedad():
-    novedad_id = request.form["novedad_id"]
-    nomImagen = request.form["nomImagen"]
-    tipo_img_novedad_id = request.form["tipo_img_novedad"]
-    img = request.files["imagen"]
-
-    if img:
-        imagen = img.read()
-        controlador_imagenes_novedades.insertar_imagen_novedad(nomImagen, imagen, tipo_img_novedad_id, novedad_id)
-    
-    return render_template("agregar_img_novedad.html", novedad_id=novedad_id, tipos_img_novedad=controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles(), imagen_agregada=True)
-
 
 @app.route("/listado_novedades")
 def novedades_listado():
@@ -1318,6 +1361,20 @@ def actualizar_novedad():
     return redirect("/listado_novedades")
 
 
+@app.route("/guardar_img_novedad", methods=["POST"])
+def guardar_img_novedad():
+    novedad_id = request.form["novedad_id"]
+    nomImagen = request.form["nomImagen"]
+    tipo_img_novedad_id = request.form["tipo_img_novedad"]
+    img = request.files["imagen"]
+
+    if img:
+        imagen = img.read()
+        controlador_imagenes_novedades.insertar_imagen_novedad(nomImagen, imagen, tipo_img_novedad_id, novedad_id)
+    
+    return redirect(f"/img_novedades_listado={novedad_id}")
+
+
 @app.route("/agregar_img_novedad=<int:novedad_id>")
 def formulario_agregar_img_novedad(novedad_id):
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
@@ -1326,9 +1383,10 @@ def formulario_agregar_img_novedad(novedad_id):
 
 @app.route("/img_novedades_listado=<int:novedad_id>")
 def img_novedades_listado(novedad_id):
-    novedad_info = novedad_id
+    novedad = controlador_novedades.obtenerNovedadPorId(novedad_id)
     img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)
-    return render_template("listado_img_novedades.html", img_novedades=img_novedades, novedad_id=novedad_id)
+    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
+    return render_template("listado_img_novedades.html", img_novedades=img_novedades, novedad_id=novedad_id, novedad = novedad , tipos_img_novedad = tipos_img_novedad)
 
 
 @app.route("/eliminar_img_novedad", methods=["POST"])
@@ -1340,11 +1398,11 @@ def eliminar_img_novedad():
 
 @app.route("/formulario_editar_img_novedad=<int:id>")
 def editar_img_novedad(id):
+    img_nov = controlador_imagenes_novedades.obtener_imagen_novedad_por_img_id(id)
     img_novedad = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(id)
     novedad_id = controlador_imagenes_novedades.obtener_novedad_id_por_imagen_id(id)
-    print(novedad_id)
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
-    return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad, novedad_id = novedad_id, id=id)
+    return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad, novedad_id = novedad_id,id = id , img_nov = img_nov)
 
 
 @app.route("/actualizar_img_novedad", methods=["POST"])
@@ -1354,14 +1412,8 @@ def actualizar_img_novedad():
     tipo_img_novedad_id = request.form["tipo_img_novedad"]
     novedad_id = request.form["novedad_id"]
 
-    imagen = request.files["imagen"].read() if "imagen" in request.files else None
 
-    # print(f"ID: {id}")
-    # print(f"Nombre de Imagen: {nom_imagen}")
-    # print(f"Tipo de Imagen ID: {tipo_img_novedad_id}")
-    # print(f"Novedad ID: {novedad_id}")
-
-    controlador_imagenes_novedades.actualizar_imagen_novedad(id, nom_imagen, imagen, tipo_img_novedad_id, novedad_id)
+    controlador_imagenes_novedades.actualizar_imagen_novedad(id, nom_imagen, tipo_img_novedad_id, novedad_id)
     return redirect(f"/img_novedades_listado={novedad_id}")
 
 
@@ -1960,7 +2012,7 @@ def login():
     
     if user and user[2]==epassword:
         session['username']=email
-        resp=make_response(redirect("/index"))
+        resp=make_response(redirect("/"))
         resp.set_cookie('username',email)
         return resp
     else:
@@ -1989,7 +2041,7 @@ def logout():
 #     else:
 #         return redirect("/login")
 
-#####################FIN INICIO DE SESIÓN######################
+
 #####################################PARA PERFIL#################################################
 @app.route("/perfil/<int:user_id>")
 def perfil(user_id):
@@ -1999,8 +2051,8 @@ def perfil(user_id):
         return redirect('/login')
 
 
-#################################################################################
 ###################################CONFIRMAR PEDIDO###############################
+
 @app.route("/confirmar_compra", methods=['POST'])
 def confirmar_compra():
     usuario_id = 1

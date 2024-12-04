@@ -77,10 +77,17 @@ if (document.getElementById('categorySelect')) {
 }
 
 
+if (document.getElementById('tiposImgNovedad')) {
+  filtroTableSelect('tiposImgNovedad','tipo-img','0');
+}
+
 if (document.getElementById('subcategorySelect')) {
   filtroTableSelect('subcategorySelect','subcategory','0');
 }
 
+if (document.getElementById('subcategorySelect')) {
+  filtroTableSelect('subcategorySelect','subcategory','0');
+}
 
 if (document.getElementById('brandSelect')) {
   filtroTableSelect('brandSelect','brand','0');

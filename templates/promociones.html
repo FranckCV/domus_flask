@@ -6,35 +6,26 @@
 
 {% block estilos %} 
     <link rel="stylesheet" href="static/css/promociones.css">
+{% endblock %}
 
-    {% endblock %}
-
-    {% block contenido %}
-    <main>
-        <div class="grid-container">
-   
-            {% for promo in promociones %}    
-
+{% block contenido %}
+<main>
+    <div class="grid-container">   
+        {% for promo in promociones %}
             <a href="{{url_for('promocion', id=promo[0])}}">
                 <div class="promo-card">
                     <div class="promo-image-container">
-                        <img src="{{promo[1]}}" alt="Audífonos Sony">
+                        <img src="{{promo[1]}}" alt="{{promo[2]}}">
                     </div>
                     <div class="promo-details">
-                        <h2>{{promo[2]}}</h2>
-                        
+                        <h2>{{promo[2]}}</h2>                        
                     </div>
                 </div>
             </a>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}
 
-            {% endfor %}
-            
-        </div>
-    </main>
-
-    {% endblock %}
-
-    {% block scripts %} 
-    
-    <!-- <script src="static/js/promociones.js"></script> -->
-    {% endblock %}
+{% block scripts %} 
+{% endblock %}

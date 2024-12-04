@@ -60,7 +60,7 @@ def obtener_usuarios_clientes():
                     telefono, 
                     correo, 
                     disponibilidad
-                FROM USUARIO
+                FROM usuario
                 WHERE TIPO_USUARIOid = 3
             '''
             cursor.execute(sql)
@@ -91,9 +91,9 @@ def obtener_listado_usuarios_clientes():
                     usu.correo, 
                     usu.disponibilidad,
                     count(ped.id),
-                    (usu.fecha_registro),
+                    date(usu.fecha_registro),
                     count(com.id)
-                FROM USUARIO usu
+                FROM usuario usu
                 LEFT JOIN pedido ped on ped.usuarioid = usu.id
                 LEFT JOIN comentario com on com.usuarioid = usu.id
                 WHERE TIPO_USUARIOid = 3
@@ -127,9 +127,9 @@ def buscar_listado_usuarios_clientes_nombre(nombre):
                     usu.correo, 
                     usu.disponibilidad,
                     count(ped.id),
-                    (usu.fecha_registro),
+                    date(usu.fecha_registro),
                     count(com.id)
-                FROM USUARIO usu
+                FROM usuario usu
                 LEFT JOIN pedido ped on ped.usuarioid = usu.id
                 LEFT JOIN comentario com on com.usuarioid = usu.id
                 WHERE TIPO_USUARIOid = 3 and 
@@ -163,7 +163,7 @@ def obtener_usuario_cliente_por_id(id):
                     telefono, 
                     correo, 
                     disponibilidad
-                FROM USUARIO
+                FROM usuario
                 WHERE id = %s AND TIPO_USUARIOid = 3
             '''
             cursor.execute(sql, (id,))
@@ -185,8 +185,8 @@ def obtener_usuario_cliente_por_email(email):
                     SELECT 
                         id,
                         correo,
-                        contraseña
-                    FROM USUARIO
+                        contrasenia
+                    FROM usuario
                     WHERE correo = %s
                 '''
                 cursor.execute(sql, (email,))
@@ -204,7 +204,7 @@ def actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fe
     try:
         with conexion.cursor() as cursor:
             sql = '''
-                UPDATE USUARIO 
+                UPDATE usuario 
                 SET 
                     nombres = %s, 
                     apellidos = %s, 
@@ -233,7 +233,7 @@ def eliminar_usuario_cliente(id):
     try:
         with conexion.cursor() as cursor:
             
-            sql = "DELETE FROM USUARIO WHERE id = %s AND TIPO_USUARIOid = 3"
+            sql = "DELETE FROM usuario WHERE id = %s AND TIPO_USUARIOid = 3"
             cursor.execute(sql, (id,))
             conexion.commit()
 
@@ -252,7 +252,7 @@ def obtener_listado_imagenes_usuario_cliente():
             SELECT
                 usu.id,
                 usu.img_usuario
-            FROM USUARIO usu
+            FROM usuario usu
             WHERE usu.TIPO_USUARIOid = 3
         '''
         cursor.execute(sql)
@@ -290,9 +290,9 @@ def ver_info_usuario_cliente(id):
                     usu.correo, 
                     usu.disponibilidad,
                     count(ped.id),
-                    (usu.fecha_registro),
+                    date(usu.fecha_registro),
                     count(com.id)
-                FROM USUARIO usu
+                FROM usuario usu
                 LEFT JOIN pedido ped on ped.usuarioid = usu.id
                 LEFT JOIN comentario com on com.usuarioid = usu.id
                 WHERE TIPO_USUARIOid = 3 and usu.id = '''+str(id)+'''
@@ -316,7 +316,7 @@ def obtener_imagen_usuario_cliente_id(id):
             SELECT
                 usu.id,
                 usu.img_usuario
-            FROM USUARIO usu
+            FROM usuario usu
             WHERE TIPO_USUARIOid = 3 and usu.id = '''+str(id)+'''
         '''
         cursor.execute(sql)

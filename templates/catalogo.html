@@ -5,13 +5,16 @@
 {% endblock %}
 
 {% block estilos %} 
-    <link rel="stylesheet" href="static/css/stylesCatalogue.css">
+    <link rel="stylesheet" href="/static/css/stylesCatalogue.css">
     <link rel="stylesheet" href="static/css/stylesProductCard.css">
 {% endblock %}
 
 {% block contenido %}
     <section class="body_page">
-        <article id="general_catalogue" class="article_catalogue">            
+        <article id="general_catalogue" class="article_catalogue">
+            {% if nombreBusqueda %}
+            <p class="resultado_busqueda">Productos relacionados con: "<b>{{nombreBusqueda}}</b>"</p>
+            {% endif %}
             <div class="catalogue_product">
 
                 <div class="catalogue_filters">
@@ -91,30 +94,39 @@
 
                         <div class="ctlg_select">
                             <p>Ordenar por:</p>
-                            <select id="ctlg_products_order" name="order">
-                                <option value="1">Más Recientes</option>
-                                <option value="2">Más Populares</option>
-                                <option value="3">Desde el Menor Precio</option>
-                                <option value="4">Desde el Mayor Precio</option>
-                                <option value="5">A - Z</option>
-                                <option value="6">Z - A</option>
-                            </select>
+                            <form method="GET" action="{{ url_for('catalogo') }}">
+                                <select id="ctlg_products_order" name="ctlg_products_order"
+                                    {% if nombreBusqueda %}
+                                    disabled
+                                    {% endif %}
+                                >
+                                    <option value="1" {% if request.args.get('ctlg_products_order') == '1' %}selected{% endif %}>Más Recientes</option>
+                                    <option value="2" {% if request.args.get('ctlg_products_order') == '2' %}selected{% endif %}>Más Populares</option>
+                                    <option value="3" {% if request.args.get('ctlg_products_order') == '3' %}selected{% endif %}>Desde el Menor Precio</option>
+                                    <option value="4" {% if request.args.get('ctlg_products_order') == '4' %}selected{% endif %}>Desde el Mayor Precio</option>
+                                    <option value="5" {% if request.args.get('ctlg_products_order') == '5' %}selected{% endif %}>A - Z</option>
+                                    <option value="6" {% if request.args.get('ctlg_products_order') == '6' %}selected{% endif %}>Z - A</option>
+                                </select>
+                                <button type="submit" style="display: none;">Ordenar</button> <!-- Botón oculto para permitir el envío -->
+                            </form>
                         </div>
 
                         <div class="ctlg_pagination">
-                            <i class="fa-solid fa-caret-left"></i>
-                            <p>1</p>
-                            <p>2</p>
-                            <p>3</p>
-                            <!-- <p>4</p> -->
-                            <!-- <p>5</p> -->
-                            <p>...</p>
-                            <p>16</p>
-                            <i class="fa-solid fa-caret-right"></i>
+                            <p class="page-item previous-page disable">
+                                <a class="page-link" href="javascript:void(0)">
+                                    <i class="fa-solid fa-caret-left"></i>
+                                </a>
+                            </p>
+                            
+                            <p class="page-item next-page">
+                                <a class="page-link" href="javascript:void(0)">
+                                    <i class="fa-solid fa-caret-right"></i>
+                                </a>
+                            </p>
                         </div>
                     </div>
 
-                    <div class="gallery_product">
+                    <div class="gallery_product" id="gallery_product">
                         
                         {% for producto in productos %}
 
@@ -182,18 +194,17 @@
 
                     </div>
                     <div class="ctlg_pagination">
-                        <i class="fa-solid fa-caret-left"></i>
-                        <p>1</p>
-                        <p>2</p>
-                        <p>3</p>
-                        <p>4</p>
-                        <p>5</p>
-                        <p>6</p>
-                        <p>7</p>
-                        <p>8</p>
-                        <p>...</p>
-                        <p>16</p>
-                        <i class="fa-solid fa-caret-right"></i>
+                        <p class="page-item previous-page disable">
+                            <a class="page-link" href="javascript:void(0)">
+                                <i class="fa-solid fa-caret-left"></i>
+                            </a>
+                        </p>
+                        
+                        <p class="page-item next-page">
+                            <a class="page-link" href="javascript:void(0)">
+                                <i class="fa-solid fa-caret-right"></i>
+                            </a>
+                        </p>
                     </div>
                 </div>
 
@@ -207,5 +218,5 @@
 
 {% block scripts %} 
     <script src="/static/js/scriptCatalogue.js"></script>
-    <!-- <script src="static/js/scriptInfoProduct.js"></script> -->
+    <script src="/static/js/scriptCataloguePagination.js"></script>
 {% endblock %}

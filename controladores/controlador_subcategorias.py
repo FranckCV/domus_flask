@@ -54,9 +54,9 @@ def obtenerSubcategoriasXMarca(marca):
                 s.subcategoria , 
                 s.faicon_subcat , 
                 m.marca
-            FROM SUBCATEGORIA s 
-            INNER JOIN PRODUCTO p ON p.SUBCATEGORIAid = s.id 
-            INNER JOIN MARCA m ON m.id = p.MARCAid 
+            FROM subcategoria s 
+            INNER JOIN producto p ON p.SUBCATEGORIAid = s.id 
+            INNER JOIN marca m ON m.id = p.MARCAid 
             WHERE m.id = '''+str(marca)+''' AND s.disponibilidad = 1 AND m.disponibilidad = 1;
         '''
         cursor.execute(sql)

@@ -24,10 +24,18 @@
   <body class="body_section">
     <header>
       <a class="header_item" id="index_logo" href="{{ url_for('index') }}"><img class="img-fluid" id="logo_header" src="{{ datos_domus_main.3 }}" alt="Logo Domus" /></a>
-      <div class="header_item" id="search">
-        <input type="text" />
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </div>
+      
+      <form enctype="multipart/form-data" method="GET" action="{{ url_for('buscar_elementos') }}" class="header_item" id="search">
+        <input required type="text" placeholder="Busca el producto que quieras" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="150"
+          {% if nombreBusqueda %}
+            value="{{nombreBusqueda}}"
+          {% endif %}
+        />
+        <button type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+
       <a class="header_item header_option" id="header_carrito" href="{{ url_for('carrito') }}">
         <div class="d-flex flex-row">
           <i class="fa-solid fa-cart-shopping"></i>

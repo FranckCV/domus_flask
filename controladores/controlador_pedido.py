@@ -1,6 +1,6 @@
 from controladores.bd import obtener_conexion
 import base64
-import controlador_productos
+import controladores.controlador_productos as controlador_productos
 tabla = 'pedido'
 
 # def actualizar_MetPago_Pedido(pedido_id, metodo):

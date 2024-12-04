@@ -1,88 +1,111 @@
-const paginations = document.querySelectorAll(".ctlg_pagination");
-paginations.forEach(pagination => {
-    
+document.addEventListener("DOMContentLoaded", () => {
+    const paginations = document.querySelectorAll(".ctlg_pagination");
+    const galleryItems = document.querySelectorAll(".gallery_brand .brand_picture");
+    const limitPerPage = 24; // Número de elementos por página
+    const paginationSize = 5; // Número máximo de elementos en la paginación
+    let currentPage = 1;
+
     function getPageList(totalPages, page, maxLength) {
         function range(start, end) {
-            return Array.from(Array(end - start + 1), (_, i) => i + start);
+            return Array.from({ length: end - start + 1 }, (_, i) => i + start);
         }
-    
-        var sideWidth = maxLength < 9 ? 1 : 2;
-        var leftWidth = (maxLength - sideWidth * 2 - 3) >> 1;
-        var rightWidth = (maxLength - sideWidth * 2 - 3) >> 1;
-    
-    
+
+        const sideWidth = maxLength < 9 ? 1 : 2;
+        const leftWidth = (maxLength - sideWidth * 2 - 3) >> 1;
+        const rightWidth = (maxLength - sideWidth * 2 - 3) >> 1;
+
         if (totalPages <= maxLength) {
             return range(1, totalPages);
         }
-    
-    
+
         if (page <= maxLength - sideWidth - 1 - rightWidth) {
             return range(1, maxLength - sideWidth - 1).concat(0, range(totalPages - sideWidth + 1, totalPages));
         }
-    
-    
+
         if (page >= totalPages - sideWidth - 1 - rightWidth) {
             return range(1, sideWidth).concat(0, range(totalPages - sideWidth - 1 - rightWidth - leftWidth, totalPages));
         }
-    
-    
-        return range(1, sideWidth).concat(0, range(page - leftWidth, page + rightWidth), 0, range(totalPages - sideWidth + 1, totalPages));
-    
-    }
-    
-    $(function() {
-        var numberOfItems = $(".gallery_brand .brand_picture").length;
-        var limitPerPage = 24; //No. of cards to show per page
-        var totalPages = Math.ceil(numberOfItems / limitPerPage);
-        var paginationSize = 5; //pagination items to show
-        var currentPage;
-    
-    
-        function showPage(whichPage) {
-            if (whichPage < 1 || whichPage > totalPages) return false;
-    
-            currentPage = whichPage;
-    
-            $(".gallery_brand .brand_picture").hide().slice((currentPage - 1) * limitPerPage, currentPage * limitPerPage).show();
-    
-            $(".ctlg_pagination p").slice(1, -1).remove();
-    
-            getPageList(totalPages, currentPage, paginationSize).forEach(item => {
-                $("<p>").addClass("page-item").addClass(item ? "current-page" : "dots").toggleClass("active", item === currentPage).append($("<a>").addClass("page-link").attr({ href: "javascript:void(0)" }).text(item || "...")).insertBefore(".next-page");
-            });
-    
-            $(".previous-page").toggleClass("disable", currentPage === 1);
-            $(".next-page").toggleClass("disable", currentPage === totalPages);
-            return true;
-        }
-    
-    
-        $(pagination).append(
-            $("<p>").addClass("page-item").addClass("previous-page").append($("<a>").addClass("page-link").attr({ href: "javascript:void(0)" }).text("Prev")),
-            $("<p>").addClass("page-item").addClass("next-page").append($("<a>").addClass("page-link").attr({ href: "javascript:void(0)" }).text(""))
-        );
-    
-    
-        $(".gallery_brand").show();
-        showPage(1);
-    
-    
-        $(document).on("click", ".ctlg_pagination p.current-page:not(.active)", function() {
-            return showPage(+$(this).text());
-        });
-    
-    
-    
-        $(".next-page").on("click", function() {
-            return showPage(currentPage + 1);
-        });
-    
-    
-        $(".previous-page").on("click", function() {
-            return showPage(currentPage - 1);
-        });
-    
-    
-    });
 
-})
+        return range(1, sideWidth).concat(0, range(page - leftWidth, page + rightWidth), 0, range(totalPages - sideWidth + 1, totalPages));
+    }
+
+    function showPage(page) {
+        const totalPages = Math.ceil(galleryItems.length / limitPerPage);
+
+        if (page < 1 || page > totalPages) return false;
+        currentPage = page;
+
+        // Mostrar los elementos de la página actual
+        galleryItems.forEach((item, index) => {
+            if (index >= (currentPage - 1) * limitPerPage && index < currentPage * limitPerPage) {
+                item.style.display = "flex"; // Usar flex ya que los elementos lo requieren
+            } else {
+                item.style.display = "none";
+            }
+        });
+
+        // Actualizar ambas paginaciones
+        paginations.forEach(pagination => {
+            pagination.innerHTML = ""; // Limpiar paginación
+
+            // Agregar botón "Anterior"
+            const prev = document.createElement("p");
+            prev.className = `page-item previous-page${currentPage === 1 ? " disable" : ""}`;
+            prev.innerHTML = `<a class="page-link" href="#galeria_marca"><i class="fa-solid fa-caret-left"></i></a>`;
+            prev.addEventListener("click", () => showPage(currentPage - 1));
+            pagination.appendChild(prev);
+
+            // Agregar números de página
+            getPageList(totalPages, currentPage, paginationSize).forEach(item => {
+                const pageItem = document.createElement("p");
+                pageItem.className = `page-item ${item ? "current-page" : "dots"}${item === currentPage ? " active" : ""}`;
+                pageItem.innerHTML = item
+                    ? `<a class="page-link" href="#galeria_marca">${item}</a>`
+                    : `<span class="page-link">...</span>`;
+                if (item) {
+                    pageItem.addEventListener("click", () => showPage(item));
+                }
+                pagination.appendChild(pageItem);
+            });
+
+            // Agregar botón "Siguiente"
+            const next = document.createElement("p");
+            next.className = `page-item next-page${currentPage === totalPages ? " disable" : ""}`;
+            next.innerHTML = `<a class="page-link" href="#galeria_marca"><i class="fa-solid fa-caret-right"></i></a>`;
+            next.addEventListener("click", () => showPage(currentPage + 1));
+            pagination.appendChild(next);
+        });
+
+        // Volver a agregar el desplazamiento ajustado a los enlaces
+        addScrollToPaginationLinks();
+
+        return true;
+    }
+
+    function addScrollToPaginationLinks() {
+        document.querySelectorAll('.ctlg_pagination a').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition = target.getBoundingClientRect().top + window.scrollY; // Posición relativa al documento
+                    window.scrollTo({
+                        top: targetPosition - headerHeight, // Ajustar con el alto del header
+                        behavior: 'smooth' // Desplazamiento suave
+                    });
+                }
+            });
+        });
+    }
+
+    const orderSelect = document.getElementById("ctlg_products_order");
+    if (orderSelect) {
+        orderSelect.addEventListener("change", () => {
+            orderSelect.form.submit(); // Envía el formulario automáticamente
+        });
+    }
+
+    // Inicializar ambas paginaciones
+    showPage(1);
+});

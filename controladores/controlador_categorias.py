@@ -1,6 +1,6 @@
 from controladores.bd import obtener_conexion
 tabla = 'categoria'
-import controlador_subcategorias
+import controladores.controlador_subcategorias as controlador_subcategorias
 
 
 def obtener_categorias_disponibles():

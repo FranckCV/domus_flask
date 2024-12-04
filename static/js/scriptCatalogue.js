@@ -159,8 +159,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const orderSelect = document.getElementById("ctlg_products_order");
+    if (orderSelect) {
+        orderSelect.addEventListener("change", () => {
+            orderSelect.form.submit(); // Envía el formulario automáticamente
+        });
+    }
+
     // Inicialización
     applyFilters();
     cantidad_productos();
+
+
 
 });

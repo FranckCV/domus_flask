@@ -27,7 +27,6 @@ Editar Novedad
                         <option value="" disabled>Selecciona un tipo de novedad</option>
                         {% for tipo in tipos_novedad %}
                             <option value="{{ tipo[0] }}" {% if tipo[0] == novedad[9] %}selected{% endif %}>{{ tipo[1] }}</option>
-
                         {% endfor %}
                     </select>
                 </div>

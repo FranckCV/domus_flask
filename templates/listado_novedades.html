@@ -280,19 +280,22 @@
                   <td class="opciones_column">
                       <div class="acciones">
                           <a class="opciones_fila" href="{{url_for('selectedNovedad', id=novedad[0])}}">
-                              <i class="fa-solid fa-link"></i>
+                            <i class="fa-solid fa-link"></i>
                           </a>
                           <a class="opciones_fila" href="{{url_for('ver_novedad', id=novedad[0])}}">
-                              <i class="fa-solid fa-eye"></i>
+                            <i class="fa-solid fa-eye"></i>
                           </a>
                           <a class="opciones_fila" href="{{ url_for('editar_novedad', id=novedad[0]) }}">
-                              <i class="fa-regular fa-pen-to-square"></i>
+                            <i class="fa-regular fa-pen-to-square"></i>
+                          </a>
+                          <a class="opciones_fila" href="{{url_for('img_novedades_listado', novedad_id=novedad[0])}}">
+                            <i class="fa-solid fa-image"></i>
                           </a>
                           <form class="opciones_fila" action="{{ url_for('eliminar_novedad') }}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
-                              <input type="hidden" name="id" value="{{ novedad[0] }}">
-                              <button type="submit">
-                                <i class="fa-solid fa-trash-can"></i>
-                              </button>
+                            <input type="hidden" name="id" value="{{ novedad[0] }}">
+                            <button type="submit">
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
                           </form>
                       </div>                        
                   </td>

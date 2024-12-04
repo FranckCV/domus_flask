@@ -92,7 +92,7 @@ def obtener_listado_usuarios_empleados():
                     usu.correo,
                     usu.disponibilidad,
                     usu.contrasenia,
-                    usu.fecha_registro
+                    date(usu.fecha_registro)
                 FROM usuario usu
                 WHERE usu.TIPO_USUARIOid = 2
         '''
@@ -173,7 +173,7 @@ def ver_info_usuario_empleado(id):
                     usu.correo, 
                     usu.disponibilidad,
                     usu.contrasenia,
-                    usu.fecha_registro,
+                    date(usu.fecha_registro),
                     count(com.id),
                     usu.contrasenia
                 FROM usuario usu

@@ -259,7 +259,7 @@
 
 }
 
-.ctlg_pagination p {
+.ctlg_pagination p a {
     color: var(--font2);
     padding: 0;
     margin: 0;
@@ -272,12 +272,118 @@
     transition: 0.075s ease;
     background-color: #2709ac;
     color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.ctlg_pagination p:hover {
-    color: #2709ac;
-    background-color: white;
+.ctlg_pagination p a:hover {
+    background-color: #4d9fe2;
 }
+
+.ctlg_pagination .page-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ctlg_pagination .page-item .page-link {
+    background-color: transparent;
+    display: flex;
+    border-radius: 100%;
+}
+
+.ctlg_pagination .page-item .page-link:hover {
+    background-color: transparent;
+}
+
+
+
+
+
+.ctlg_pagination p {
+    margin: 0 .4rem;
+    padding: 0;
+}
+
+.ctlg_pagination p a {
+    color: #ccc;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+.ctlg_pagination p a.active {
+    color: #3045ff;
+    background: #fff;
+}
+
+.ctlg_pagination p a:hover,
+.ctlg_pagination p a:focus {
+    color: #fff;
+    background: #333;
+}
+
+.ctlg_pagination {
+    text-align: center;
+    user-select: none;
+}
+
+.ctlg_pagination p a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+
+
+
+.previous-page,
+.next-page {
+    background: #0e2461;
+    border-radius: 45px;
+    cursor: pointer;
+}
+
+.previous-page:hover {
+    transform: translateX(-5px);
+}
+
+.next-page:hover {
+    transform: translateX(5px);
+}
+
+.current-page,
+.dots {
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.current-page:hover,
+.dots:hover {
+    transform: translateY(-5px);
+}
+
+.ctlg_pagination p.active {
+    background: #eff4ff;
+    border: 0;
+}
+
+.ctlg_pagination p.active a {
+    background: #eff4ff;
+    color: #032a77;
+    font-weight: bold;
+    border: 0;
+}
+
+.ctlg_pagination .disable {
+    background: #dfdfdf;
+}
+
+.ctlg_pagination .disable i {
+    color: #0a0068;
+}
+
+
 
 /* Productos contenido catalogo */
 
@@ -322,6 +428,12 @@
     text-align: center;
 }
 
+.resultado_busqueda {
+    color: white;
+    font-size: 135%;
+    align-self: flex-start;
+    margin-inline: 3vw;
+}
 
 /* Responsividad */
 

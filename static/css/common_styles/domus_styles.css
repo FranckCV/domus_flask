@@ -162,18 +162,25 @@ header p {
     border: 0px;
     padding-block: 7.5px;
     margin-bottom: 10px;
+    font-size: 80%;
 }
 
-#search i {
+/* #search button {
     position: absolute;
-    right: 50px;
+} */
+
+#search button {
+    position: absolute;
+    right: 55px;
     color: #888;
-    padding: 7px;
+    padding: 0px;
     border-radius: var(--border-item);
     transition: 0.25s ease;
+    border: 0;
+    font-size: 90%;
 }
 
-#search i:hover {
+#search button:hover {
     background-color: var(--color5);
     color: white;
 }

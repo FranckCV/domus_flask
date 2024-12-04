@@ -171,19 +171,21 @@
                         </div>
 
                         <div class="ctlg_pagination">
-                            <i class="fa-solid fa-caret-left"></i>
-                            <p>1</p>
-                            <p>2</p>
-                            <p>3</p>
-                            <!-- <p>4</p> -->
-                            <!-- <p>5</p> -->
-                            <p>...</p>
-                            <p>16</p>
-                            <i class="fa-solid fa-caret-right"></i>
+                            <p class="page-item previous-page disable">
+                                <a class="page-link" href="javascript:void(0)">
+                                    <i class="fa-solid fa-caret-left"></i>
+                                </a>
+                            </p>
+                            
+                            <p class="page-item next-page">
+                                <a class="page-link" href="javascript:void(0)">
+                                    <i class="fa-solid fa-caret-right"></i>
+                                </a>
+                            </p>
                         </div>
                     </div>
 
-                    <div class="gallery_product">
+                    <div class="gallery_product" id="gallery_product">
                         
                         {% for producto in productosCategoria %}
 
@@ -251,18 +253,17 @@
 
                     </div>
                     <div class="ctlg_pagination">
-                        <i class="fa-solid fa-caret-left"></i>
-                        <p>1</p>
-                        <p>2</p>
-                        <p>3</p>
-                        <p>4</p>
-                        <p>5</p>
-                        <p>6</p>
-                        <p>7</p>
-                        <p>8</p>
-                        <p>...</p>
-                        <p>16</p>
-                        <i class="fa-solid fa-caret-right"></i>
+                        <p class="page-item previous-page disable">
+                            <a class="page-link" href="javascript:void(0)">
+                                <i class="fa-solid fa-caret-left"></i>
+                            </a>
+                        </p>
+                        
+                        <p class="page-item next-page">
+                            <a class="page-link" href="javascript:void(0)">
+                                <i class="fa-solid fa-caret-right"></i>
+                            </a>
+                        </p>
                     </div>
                 </div>
 
@@ -278,6 +279,7 @@
 
 {% block scripts %}    
     <script src="static/js/scriptCatalogue.js"></script>
+    <script src="/static/js/scriptCataloguePagination.js"></script>
     <script src="static/js/scriptListSubcategory.js"></script>
 {% endblock %}
 

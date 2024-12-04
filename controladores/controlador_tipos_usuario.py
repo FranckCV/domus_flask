@@ -10,7 +10,7 @@ def obtener_tipos_usuario():
                 id, 
                 tipo, 
                 descripcion
-            FROM TIPO_USUARIO
+            FROM tipo_usuario
             ORDER BY id ASC
         '''
         cursor.execute(sql)
@@ -32,7 +32,7 @@ def obtener_listado_tipos_usuario():
                 tip.imagen,
                 count(usu.id),
                 tip.disponibilidad
-            FROM TIPO_USUARIO tip
+            FROM tipo_usuario tip
             left join usuario usu on tip.id = usu.tipo_usuarioid
             group by tip.id
             ORDER BY tip.id ASC
@@ -66,7 +66,7 @@ def obtener_tipo_usuario_por_id(id):
                 descripcion,
                 imagen,
                 disponibilidad
-            FROM TIPO_USUARIO
+            FROM tipo_usuario
             WHERE id = %s
         '''
         cursor.execute(sql, (id,))
@@ -94,7 +94,7 @@ def insertar_tipo_usuario(tipo, descripcion,img_user):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            INSERT INTO TIPO_USUARIO (tipo, descripcion, imagen,disponibilidad)
+            INSERT INTO tipo_usuario (tipo, descripcion, imagen,disponibilidad)
             VALUES (%s, %s, %s,1)
         '''
         cursor.execute(sql, (tipo, descripcion,img_user))
@@ -106,7 +106,7 @@ def actualizar_tipo_usuario(id, tipo, descripcion , imagen , disponibilidad):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            UPDATE TIPO_USUARIO SET 
+            UPDATE tipo_usuario SET 
             tipo = %s, 
             descripcion = %s,
             imagen = %s ,
@@ -122,7 +122,7 @@ def eliminar_tipo_usuario(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            DELETE FROM TIPO_USUARIO
+            DELETE FROM tipo_usuario
             WHERE id = %s
         '''
         cursor.execute(sql, (id,))
@@ -137,7 +137,7 @@ def obtener_img_tipo_usuario_por_id(id):
         sql = '''
             SELECT 
                 imagen
-            FROM TIPO_USUARIO
+            FROM tipo_usuario
             WHERE id = %s
         '''
         cursor.execute(sql, (id,))

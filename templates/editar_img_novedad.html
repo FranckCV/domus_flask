@@ -4,41 +4,29 @@ Editar Imagen de Novedad
 {% endblock %}
 
 {% block estilos %}
-  <link rel="stylesheet" href="static/css/administrativa/modificar.css" />
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
 
 {% block contenido %}
 <section class="h_section" id="mainSection">
-    <h2 class="fw-bolder" style="margin-top: 0.5rem;">Editar Imagen de Novedad</h2><br><br><br>
+    <h2 class="fw-bolder">Editar Imagen de Novedad ID: {{ novedad_id }}</h2>
     <form action="{{ url_for('actualizar_img_novedad') }}" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="{{ id }}">
+        <input type="hidden" name="id" value="{{ id}}">
+        <input type="hidden" name="novedad_id" value="{{ novedad_id }}">
         
         <div class="form-grid" id="col_add">
-            <!-- Primera columna -->
             <div class="row">
-                <input type="hidden" name="novedad_id" value="{{ novedad_id }}">
-                <p>Novedad ID: {{ novedad_id }}</p>
-
                 <div class="col">
-                    <label for="nomImagen">Nombre de la Imagen:</label><br>
-                    <input value="{{ img_novedad[1][1] }}" required type="text" class="input" placeholder="Nombre de la imagen" name="nomImagen" id="nomImagen">
+                    <label for="nomImagen">Nombre de la Imagen:</label>
+                    <input value="{{ img_nov[1] }}" required type="text" class="input" placeholder="Nombre de la imagen" name="nomImagen" id="nomImagen">
                 </div>
-            </div>
 
-            <div class="row">
                 <div class="col">
-                    <label for="imagen">Subir nueva imagen (opcional):</label>
-                    <input type="file" name="imagen" id="imagen">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="tipo_img_novedad">Tipo de Imagen:</label><br>
+                    <label for="tipo_img_novedad">Tipo de Imagen:</label>
                     <select class="input" name="tipo_img_novedad" id="tipo_img_novedad" required>
                         {% for tipo in tipos_img_novedad %}
-                            <option value="{{ tipo[0] }}" {% if tipo[0] == img_novedad[3] %}selected{% endif %}>{{ tipo[1] }}</option>
+                            <option value="{{ tipo[0] }}" {% if tipo[0] == img_nov[5] %}selected{% endif %}>{{ tipo[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -47,7 +35,7 @@ Editar Imagen de Novedad
             <div class="row">                    
                 <div class="col" id="sbmt">
                     <div class="form-buttons">
-                        <a href="{{ url_for('novedades_listado') }}">Volver</a>
+                        <a href="{{url_for('img_novedades_listado', novedad_id=novedad_id)}}" id="backbtn">Volver</a>
                         <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
                     </div>
                 </div>

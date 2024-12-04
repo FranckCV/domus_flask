@@ -18,6 +18,8 @@ def obtenerBannersNovedadesRecientes():
                     imnov.TIPO_IMG_NOVEDADid = 1 
                     AND nov.disponibilidad = 1
                     and tip.disponibilidad = 1
+                    and nov.fecha_inicio <= NOW() 
+                    AND nov.fecha_vencimiento >= NOW()
                 GROUP BY 
                     nov.id, nov.nombre
                 ORDER BY 
@@ -50,7 +52,7 @@ def obtenerTiposNovedades():
         sql = '''
                 SELECT 
                     tn.nomTipo 
-                FROM `tipo_novedad` tn
+                FROM tipo_novedad tn
             '''
         cursor.execute(sql)
         productos = cursor.fetchall()    
@@ -146,7 +148,9 @@ def obtener_info_novedad_id(id):
             left join subcategoria sub on sub.id = nov.subcategoriaid
             left join categoria cat on cat.id = sub.categoriaid
             left join marca mar on mar.id = nov.marcaid
-            where nov.id = '''+str(id)+''' and nov.disponibilidad = 1 and
+            where nov.id = '''+str(id)+''' 
+            and nov.fecha_inicio <= NOW() AND nov.fecha_vencimiento >= NOW()
+            and nov.disponibilidad = 1 and
             	((nov.MARCAid is not null and mar.disponibilidad = 1) or nov.MARCAid is null) and
                 ((nov.SUBCATEGORIAid is not null and sub.disponibilidad = 1) or nov.SUBCATEGORIAid is null) AND
                 ((nov.SUBCATEGORIAid is not null and cat.disponibilidad = 1) or nov.SUBCATEGORIAid is null)
@@ -157,6 +161,57 @@ def obtener_info_novedad_id(id):
         novedades = cursor.fetchone()
     conexion.close()
     return novedades
+
+
+def mostrarNovedadesxTipo(tipo, limite):
+    conexion = obtener_conexion()
+    elementos = []
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT 
+                    nov.id, 
+                    imgnov.imagen AS max_imagen,
+                    nov.titulo,
+                    imgnov.tipo_img_novedadid
+                FROM novedad nov
+                INNER JOIN img_novedad imgnov ON imgnov.NOVEDADid = nov.id
+                WHERE nov.disponibilidad = 1 
+                AND nov.TIPO_NOVEDADid = ''' + str(tipo) + ''' 
+                AND nov.fecha_inicio <= NOW() 
+                AND nov.fecha_vencimiento >= NOW()
+                AND imgnov.imagen = (
+                    SELECT MAX(imgnov2.imagen)
+                    FROM img_novedad imgnov2
+                    WHERE imgnov2.NOVEDADid = nov.id
+                )
+                ORDER BY
+                    CASE 
+                        WHEN imgnov.tipo_img_novedadid IN (1, 4) THEN 0 
+                        ELSE 1 
+                    END,
+                    nov.fecha_vencimiento DESC, 
+                    nov.fecha_inicio DESC, 
+                    nov.fecha_registro DESC
+            '''
+        
+        if 0 < limite:
+            sql += ' limit '+str(limite)
+
+        cursor.execute(sql)
+        elementos = cursor.fetchall()   
+
+    img_lista = []
+    for dato in elementos:
+        nov_id, nov_img, nov_nom , tipo_id = dato
+        if nov_img:
+            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
+            img_url = f"data:image/png;base64,{logo_base64}"
+        else:
+            img_url = ""
+        
+        img_lista.append((nov_id, img_url, nov_nom,tipo_id))
+    conexion.close()
+    return img_lista
 
 
 def buscar_listado_novedades_nombre_titulo(texto):
@@ -264,6 +319,7 @@ def obtenerNovedadesMarca(marca):
                     img_novedad imnov ON nov.id = imnov.NOVEDADid 
                 WHERE 
                     nov.disponibilidad = 1 and nov.MARCAid = '''+str(marca)+'''
+                    and nov.fecha_inicio <= NOW() AND nov.fecha_vencimiento >= NOW()
                 GROUP BY 
                     nov.id
                 ORDER BY 
@@ -304,18 +360,20 @@ def obtenerNovedadesCategoria(categoria):
                 INNER JOIN 
                     img_novedad imnov ON nov.id = imnov.NOVEDADid
                 WHERE 
-                    nov.disponibilidad = 1 and nov.MARCAid in (
+                    nov.disponibilidad = 1
+                    and nov.fecha_inicio <= NOW() AND nov.fecha_vencimiento >= NOW()
+                    and nov.MARCAid in (
                         SELECT DISTINCT 
                         	m.id 
-                        FROM SUBCATEGORIA s 
-                        INNER JOIN PRODUCTO p ON p.SUBCATEGORIAid = s.id 
-                        INNER JOIN MARCA m ON m.id = p.MARCAid 
+                        FROM subcategoria s 
+                        INNER JOIN producto p ON p.SUBCATEGORIAid = s.id 
+                        INNER JOIN marca m ON m.id = p.MARCAid 
                         WHERE s.disponibilidad = 1 AND m.disponibilidad = 1
                         and s.CATEGORIAid = '''+str(categoria)+'''
                     ) or nov.SUBCATEGORIAid in (
                     	SELECT 
                         	sub.id 
-                        FROM SUBCATEGORIA sub
+                        FROM subcategoria sub
                         WHERE sub.disponibilidad = 1 and sub.CATEGORIAid = '''+str(categoria)+'''
                     )
                 GROUP BY 
@@ -360,6 +418,7 @@ def obtenerNovedadesRecientes():
                 WHERE 
                     nov.disponibilidad = 1 and imnov.tipo_img_novedadid != 1 
                     and tip.disponibilidad = 1
+                    and nov.fecha_inicio <= NOW() AND nov.fecha_vencimiento >= NOW()
                 GROUP BY 
                     nov.id
                 ORDER BY 
@@ -415,6 +474,7 @@ def mostrarNovedadesPromociones():
         img_lista.append((nov_id, img_url, nov_nom))
     conexion.close()
     return img_lista
+
 
 
 def promoselect(id):

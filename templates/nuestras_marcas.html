@@ -20,43 +20,32 @@
                 <div class="ctlg_order">
                     <div class="ctlg_select">
                         <p>Ordenar por:</p>
-                        <select id="ctlg_products_order" name="order">                                    
-                            <option value="1">Más Recientes</option>
-                            <option value="2">Más Populares</option>
-                            <option value="3">A - Z</option>
-                            <option value="4">Z - A</option>
-                        </select>
+                        <form method="GET" action="{{ url_for('nuestras_marcas') }}">
+                            <select id="ctlg_products_order" name="ctlg_products_order">
+                                <option value="1" {% if request.args.get('ctlg_products_order') == '1' %}selected{% endif %}>Más Recientes</option>
+                                <option value="2" {% if request.args.get('ctlg_products_order') == '2' %}selected{% endif %}>A - Z</option>
+                                <option value="3" {% if request.args.get('ctlg_products_order') == '3' %}selected{% endif %}>Z - A</option>
+                            </select>
+                            <button type="submit" style="display: none;">Ordenar</button>
+                        </form>
                     </div>
     
-                    <!-- <div class="ctlg_pagination">
+                    <div class="ctlg_pagination">
                         <p class="page-item previous-page disable">
-                            <a class="page-link" href="#">
+                            <a class="page-link" href="javascript:void(0)">
                                 <i class="fa-solid fa-caret-left"></i>
                             </a>
                         </p>
-                        <p class="page-item dots">
-                            <a class="page-link" href="#">1</a>
-                        </p>
-                        <p class="page-item dots">
-                            <a class="page-link" href="#">...</a>
-                        </p>
-                        <p class="page-item current-page">
-                            <a class="page-link" href="#">5</a>
-                        </p>
-                        <p class="page-item current-page">
-                            <a class="page-link" href="#">6</a>
-                        </p>
-                        <p class="page-item dots">
-                            <a class="page-link" href="#">...</a>
-                        </p>
+                        
                         <p class="page-item next-page">
-                            <a class="page-link" href="#">
+                            <a class="page-link" href="javascript:void(0)">
                                 <i class="fa-solid fa-caret-right"></i>
                             </a>
-                        </p>                    
-                    </div> -->
+                        </p>
+                    </div>
+                    
                 </div>
-                <div class="gallery_brand">
+                <div class="gallery_brand" id="galeria_marca">
                     
                     {% for marca in marcas %}
                     <a class="brand_picture" href="{{url_for('marca', id=marca[0])}}">
@@ -68,60 +57,21 @@
                     {% endfor %}
 
                 </div>
-                <!-- <div class="ctlg_pagination">
-                    <p class="page-item previous-page disable">
-                        <a class="page-link" href="#">
-                            <i class="fa-solid fa-caret-left"></i>
-                        </a>
-                    </p>
-                    <p class="page-item dots">
-                        <a class="page-link" href="#">1</a>
-                    </p>
-                    <p class="page-item dots">
-                        <a class="page-link" href="#">...</a>
-                    </p>
-                    <p class="page-item current-page">
-                        <a class="page-link" href="#">5</a>
-                    </p>
-                    <p class="page-item current-page">
-                        <a class="page-link" href="#">6</a>
-                    </p>
-                    <p class="page-item dots">
-                        <a class="page-link" href="#">...</a>
-                    </p>
-                    <p class="page-item next-page">
-                        <a class="page-link" href="#">
-                            <i class="fa-solid fa-caret-right"></i>
-                        </a>
-                    </p>                    
-                </div> -->
+
                 <div class="ctlg_pagination">
                     <p class="page-item previous-page disable">
-                        <a class="page-link" href="#">
+                        <a class="page-link" href="javascript:void(0)">
                             <i class="fa-solid fa-caret-left"></i>
                         </a>
                     </p>
-                    <p class="page-item dots">
-                        <a class="page-link" href="#">1</a>
-                    </p>
-                    <p class="page-item dots">
-                        <a class="page-link" href="#">...</a>
-                    </p>
-                    <p class="page-item current-page">
-                        <a class="page-link" href="#">5</a>
-                    </p>
-                    <p class="page-item current-page">
-                        <a class="page-link" href="#">6</a>
-                    </p>
-                    <p class="page-item dots">
-                        <a class="page-link" href="#">...</a>
-                    </p>
+                    
                     <p class="page-item next-page">
-                        <a class="page-link" href="#">
+                        <a class="page-link" href="javascript:void(0)">
                             <i class="fa-solid fa-caret-right"></i>
                         </a>
-                    </p>                    
+                    </p>
                 </div>
+
             </div>
             
         </article> 
@@ -129,7 +79,7 @@
 {% endblock %}
 
 {% block scripts %} 
-    <script src="static/js/scriptBrands.js"></script>
+    <script src="/static/js/scriptBrands.js"></script>
 {% endblock %}
 
 

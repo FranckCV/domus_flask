@@ -110,23 +110,15 @@ def insertar_imagen_novedad(nomImagen, imagen_binaria, tipo_img_id, novedad_id):
     conexion.close()
 
 
-def actualizar_imagen_novedad(id, nomImagen, imagen_binaria, tipo_img_id, novedad_id):
+def actualizar_imagen_novedad(id, nomImagen, tipo_img_id, novedad_id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        if imagen_binaria:
-            sql = '''
-                UPDATE img_novedad 
-                SET nomImagen = %s, imagen = %s, TIPO_IMG_NOVEDADid = %s, NOVEDADid = %s
-                WHERE id = %s
-            '''
-            cursor.execute(sql, (nomImagen, imagen_binaria, tipo_img_id, novedad_id, id))
-        else:
-            sql = '''
-                UPDATE img_novedad 
-                SET nomImagen = %s, TIPO_IMG_NOVEDADid = %s, NOVEDADid = %s
-                WHERE id = %s
-            '''
-            cursor.execute(sql, (nomImagen, tipo_img_id, novedad_id, id))
+        sql = '''
+            UPDATE img_novedad 
+            SET nomImagen = %s, TIPO_IMG_NOVEDADid = %s, NOVEDADid = %s
+            WHERE id = %s
+        '''
+        cursor.execute(sql, (nomImagen, tipo_img_id, novedad_id, id))
     conexion.commit()
     conexion.close()
 
@@ -180,8 +172,9 @@ def obtener_imagenes_novedad_por_id(novedad_id):
                 img.id, 
                 img.nomImagen, 
                 img.imagen, 
-                tip.tipo, 
-                img.NOVEDADid 
+                tip.tipo,  
+                img.NOVEDADid,
+                tip.id
             FROM img_novedad img
             LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
             WHERE NOVEDADid = %s
@@ -192,14 +185,14 @@ def obtener_imagenes_novedad_por_id(novedad_id):
 
     imagenes_lista = []
     for imagen in imagenes:
-        img_id, img_nombre, img_binario, tipo_img_id, novedad_id = imagen
+        img_id, img_nombre, img_binario, tipo_img_id, novedad_id , tipo_id = imagen
         if img_binario:
             img_base64 = base64.b64encode(img_binario).decode('utf-8')
             img_url = f"data:image/png;base64,{img_base64}"
         else:
             img_url = "" 
 
-        imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id, novedad_id))
+        imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id, novedad_id,tipo_id))
     
     conexion.close()
     return imagenes_lista
@@ -223,7 +216,6 @@ def obtener_novedad_id_por_imagen_id(imagen_id):
 
     conexion.close()
     return novedad_id
-
 
 
 def obtener_imagenes_novedad_id(id):
@@ -257,6 +249,40 @@ def obtener_imagenes_novedad_id(id):
             img_url = "" 
 
         imagenes_lista.append((img_id, img_nombre, img_url, tipo_img_id, novedad_id, tipo , tip_dip))
+    
+    conexion.close()
+    return imagenes_lista
+
+
+
+def obtener_imagen_novedad_por_img_id(img_id):
+    conexion = obtener_conexion()
+    imagenes = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                img.id, 
+                img.nomImagen, 
+                img.imagen, 
+                tip.tipo,  
+                img.NOVEDADid,
+                tip.id
+            FROM img_novedad img
+            LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
+            WHERE img.id = %s
+            ORDER BY nomImagen ASC
+        '''
+        cursor.execute(sql, (img_id))
+        imagenes = cursor.fetchone()
+
+    img_id, img_nombre, img_binario, tipo_nov, novedad_id , tipo_id = imagenes
+    if img_binario:
+        img_base64 = base64.b64encode(img_binario).decode('utf-8')
+        img_url = f"data:image/png;base64,{img_base64}"
+    else:
+        img_url = "" 
+
+    imagenes_lista = (img_id, img_nombre, img_url, tipo_nov, novedad_id,tipo_id)
     
     conexion.close()
     return imagenes_lista

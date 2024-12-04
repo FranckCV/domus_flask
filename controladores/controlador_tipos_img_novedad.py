@@ -9,7 +9,7 @@ def obtener_tipos_img_novedad():
                 id, 
                 tipo, 
                 disponibilidad 
-            FROM TIPO_IMG_NOVEDAD
+            FROM tipo_img_novedad
             ORDER BY id asc
         '''
         cursor.execute(sql)
@@ -29,7 +29,7 @@ def obtener_listado_tipos_img_novedad():
                 tin.tipo, 
                 tin.disponibilidad,
                 count(img.id)
-            FROM TIPO_IMG_NOVEDAD tin
+            FROM tipo_img_novedad tin
             left join img_novedad img on img.tipo_img_novedadid = tin.id
             group by tin.id
         '''
@@ -49,7 +49,7 @@ def obtener_tipo_img_novedad_por_id(id):
                 id, 
                 tipo, 
                 disponibilidad 
-            FROM TIPO_IMG_NOVEDAD
+            FROM tipo_img_novedad
             WHERE id = %s
         '''
         cursor.execute(sql, (id,))
@@ -75,7 +75,7 @@ def actualizar_tipo_img_novedad(id, tipo, disponibilidad):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            UPDATE TIPO_IMG_NOVEDAD
+            UPDATE tipo_img_novedad
             SET tipo = %s, disponibilidad = %s
             WHERE id = %s
         '''
@@ -88,7 +88,7 @@ def eliminar_tipo_img_novedad(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         sql = '''
-            DELETE FROM TIPO_IMG_NOVEDAD
+            DELETE FROM tipo_img_novedad
             WHERE id = %s
         '''
         cursor.execute(sql, (id,))
@@ -104,7 +104,7 @@ def obtener_tipos_img_novedad_disponibles():
             SELECT 
                 id, 
                 tipo 
-            FROM TIPO_IMG_NOVEDAD
+            FROM tipo_img_novedad
             WHERE disponibilidad = 1
             ORDER BY id DESC
         '''

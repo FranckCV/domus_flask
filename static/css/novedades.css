@@ -1,5 +1,8 @@
 #anunciosM {
     padding: 20px;
+    gap: 50px;
+    display: flex;
+    flex-direction: column;
 }
 
 #delivery {
@@ -119,45 +122,61 @@
 /* Ofertas estilo */
 #ofertas {
     text-align: center;
-    margin: 40px 0;
 }
 
 
 /* Promociones estilo */
 #promociones {
     text-align: center;
-    margin: 40px 0;
 }
 
 #promociones h2 {
-    margin-bottom: 20px;
     font-size: 2em;
-    color: #333;
 }
 
+/* 
 #promociones p {
     margin-bottom: 20px;
     color: #666;
-}
+} */
 
 .promociones-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    /* display: grid; */
+    /* grid-template-columns: 2fr 1fr 1fr; */
+    /* grid-template-rows: 1fr 1fr; */
     gap: 20px;
     margin: 0 20px;
+    align-items: center;
 }
 
 .promocion-item {
-    background-color: #f0f0f0;
+    /* background: linear-gradient(#f9ffff,#ced9ff); */
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 30vw;
+    box-shadow: 0px 5px 10px rgba(12, 26, 221, 0.459);
+    transition: 0.15s ease;
 }
+
+.promocion-item:hover {
+    scale: 1.035;
+}
+
+.promocion-item.ver {
+    width: 20vw;
+}
+
+.promocion-item.hor {
+    width: 40vw;
+}
+
 
 .promocion-item.grande {
     grid-column: 1 / 2;
@@ -168,18 +187,12 @@
     justify-content: center;
 }
 
-.promocion-item.grande h3, 
-.promocion-item.grande h2, 
-.promocion-item.grande p {
-    text-align: left;
-    padding-left: 20px;
-}
-
 .promocion-item img {
     max-width: 100%;
     height: auto;
     border-radius: 10px;
     margin: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .promocion-item h3 {
@@ -196,8 +209,17 @@
 
 .promocion-item p {
     font-size: 1.2em;
-    margin-bottom: 10px;
     color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.titulo_enlace {
+    color: #333;
+}
+
+.titulo_enlace h2:hover {
+    color: #0c00b1;
 }
 
 /* ------------------- PROMOCIÓN Y ANUNCIOS SELECCIONADOS --------------- */

@@ -1,6 +1,6 @@
 from controladores.bd import obtener_conexion
 import base64
-import controlador_productos
+import controladores.controlador_productos as controlador_productos
 tabla = 'marca'
 
 
@@ -201,11 +201,50 @@ def obtener_todas_marcas_recientes():
                     marca, 
                     img_logo, 
                     img_banner,
-                    fecha_registro,
+                    date(fecha_registro),
                     disponibilidad
                 FROM marca 
                 where disponibilidad = 1
                 order by fecha_registro desc
+                '''
+        cursor.execute(sql)
+        marcas = cursor.fetchall()
+    
+    marcas_lista = []
+    for marca in marcas:
+        marca_id, marca_nombre, logo_binario, img_bin , fec , disp= marca
+        if logo_binario:
+            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
+            logo_url = f"data:image/png;base64,{logo_base64}"
+        else:
+            logo_url = ""  
+        marcas_lista.append((marca_id, marca_nombre, logo_url))
+    
+    conexion.close()
+    return marcas_lista
+
+
+def obtener_todas_marcas_alfabetico(orden):
+    conexion = obtener_conexion()
+    marcas = []
+
+    if orden == 0 :
+        ordenar = 'asc'
+    elif orden == 1: 
+        ordenar = 'desc'
+
+    with conexion.cursor() as cursor:
+        sql = '''
+                SELECT
+                    id,
+                    marca, 
+                    img_logo, 
+                    img_banner,
+                    date(fecha_registro),
+                    disponibilidad
+                FROM marca 
+                where disponibilidad = 1
+                order by marca '''+ordenar+'''
                 '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
@@ -267,7 +306,7 @@ def obtener_listado_marcas():
                     m.marca, 
                     m.img_logo, 
                     m.img_banner,
-                    m.fecha_registro,
+                    date(m.fecha_registro),
                     m.disponibilidad,
                     COUNT(DISTINCT p.id) AS cantidad_productos,
                     COUNT(DISTINCT n.id) AS cantidad_novedades
@@ -322,7 +361,7 @@ def obtener_listado_marcas_nombre():
                     m.marca, 
                     m.img_logo, 
                     m.img_banner,
-                    m.fecha_registro,
+                    date(m.fecha_registro),
                     m.disponibilidad,
                     COUNT(DISTINCT p.id) AS cantidad_productos,
                     COUNT(DISTINCT n.id) AS cantidad_novedades
@@ -377,7 +416,7 @@ def buscar_listado_marcas_nombre(nombre):
                     m.marca, 
                     m.img_logo, 
                     m.img_banner,
-                    m.fecha_registro,
+                    date(m.fecha_registro),
                     m.disponibilidad,
                     COUNT(DISTINCT p.id) AS cantidad_productos,
                     COUNT(DISTINCT n.id) AS cantidad_novedades

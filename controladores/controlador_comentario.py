@@ -5,7 +5,7 @@ def obtener_comentarios_disponibles():
     conexion = obtener_conexion()
     comentarios = []
     with conexion.cursor() as cursor:
-        sql = 'SELECT id, nombres, apellidos, email, celular, mensaje, fecha_registro, estado, MOTIVO_COMENTARIOid, USUARIOid FROM ' + tabla + ' WHERE estado = 1'
+        sql = 'SELECT id, nombres, apellidos, email, celular, mensaje, date(fecha_registro), estado, MOTIVO_COMENTARIOid, USUARIOid FROM ' + tabla + ' WHERE estado = 1'
         cursor.execute(sql)
         comentarios = cursor.fetchall()
     conexion.close()
@@ -24,7 +24,7 @@ def obtener_comentario_por_id(id):
                     email, 
                     celular, 
                     mensaje, 
-                    fecha_registro, 
+                    date(fecha_registro), 
                     estado, 
                     MOTIVO_COMENTARIOid, 
                     USUARIOid 
@@ -49,7 +49,7 @@ def ver_comentario_por_id(id):
                     com.email, 
                     com.celular, 
                     com.mensaje, 
-                    com.fecha_registro, 
+                    date(com.fecha_registro), 
                     com.estado, 
                     com.MOTIVO_COMENTARIOid, 
                     com.USUARIOid 
@@ -66,7 +66,7 @@ def insertar_comentario(nombres, apellidos, email, celular, mensaje, estado, MOT
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         # Usar CURDATE() para guardar solo la fecha actual
-        cursor.execute("INSERT INTO " + tabla + "(nombres, apellidos, email, celular, mensaje, fecha_registro, estado, MOTIVO_COMENTARIOid, USUARIOid) VALUES (%s, %s, %s, %s, %s, CURDATE(), %s, %s, %s)", 
+        cursor.execute("INSERT INTO " + tabla + "(nombres, apellidos, email, celular, mensaje, date(fecha_registro), estado, MOTIVO_COMENTARIOid, USUARIOid) VALUES (%s, %s, %s, %s, %s, CURDATE(), %s, %s, %s)", 
                        (nombres, apellidos, email, celular, mensaje, estado, MOTIVO_COMENTARIOid, USUARIOid))
     conexion.commit()
     conexion.close()
@@ -79,7 +79,7 @@ def obtener_comentarios():
         
         sql = """
         SELECT 
-            c.id, c.nombres, c.apellidos, c.email, c.celular, c.mensaje, c.fecha_registro, c.estado, 
+            c.id, c.nombres, c.apellidos, c.email, c.celular, c.mensaje, date(c.fecha_registro), c.estado, 
             mc.motivo
         FROM comentario c
         JOIN motivo_comentario mc ON c.MOTIVO_COMENTARIOid = mc.id
@@ -103,7 +103,7 @@ def obtener_listado_comentarios():
                 c.email, 
                 c.celular, 
                 c.mensaje, 
-                c.fecha_registro, 
+                date(c.fecha_registro), 
                 c.estado,
                 mc.motivo,
                 mc.id,
@@ -132,7 +132,7 @@ def buscar_listado_comentarios_mensaje(mensaje):
                 c.email, 
                 c.celular, 
                 c.mensaje, 
-                c.fecha_registro, 
+                date(c.fecha_registro), 
                 c.estado, 
                 mc.motivo,
                 mc.id
@@ -160,7 +160,7 @@ def buscar_listado_comentarios_nombre(nombre):
                 c.email, 
                 c.celular, 
                 c.mensaje, 
-                c.fecha_registro, 
+                date(c.fecha_registro), 
                 c.estado, 
                 mc.motivo,
                 mc.id
@@ -187,7 +187,7 @@ def buscar_listado_comentarios_palabra(palabra):
                 c.email, 
                 c.celular, 
                 c.mensaje, 
-                c.fecha_registro, 
+                date(c.fecha_registro), 
                 c.estado, 
                 mc.motivo,
                 mc.id

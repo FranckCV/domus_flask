@@ -1,0 +1,40 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %} 
+    Promociones 
+{% endblock %}
+
+{% block estilos %} 
+    <link rel="stylesheet" href="static/css/promociones.css">
+
+    {% endblock %}
+
+    {% block contenido %}
+    <main>
+        <div class="grid-container">
+   
+            {% for promo in avisos %}    
+
+            <a href="{{url_for('promocion', id=promo[0])}}">
+                <div class="promo-card">
+                    <div class="promo-image-container">
+                        <img src="{{promo[1]}}" alt="">
+                    </div>
+                    <div class="promo-details">
+                        <h2>{{promo[2]}}</h2>
+                        
+                    </div>
+                </div>
+            </a>
+
+            {% endfor %}
+            
+        </div>
+    </main>
+
+    {% endblock %}
+
+    {% block scripts %} 
+    
+    <!-- <script src="static/js/promociones.js"></script> -->
+    {% endblock %}
