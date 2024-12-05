@@ -2785,6 +2785,32 @@ def api_actualizar_usuario():
         dictRespuesta["mensaje"] = f"Error al actualizar el usuario: {str(e)}"
         return jsonify(dictRespuesta)
 
+###########################COMENTARIOS###############################
+@app.route("/api_guardar_comentario", methods=["POST"])
+@jwt_required()
+def api_guardar_comentario():
+    nombres = request.json["nombres"]
+    apellidos = request.json["apellidos"]
+    email = request.json["email"]
+    celular = request.json["celular"]
+    mensaje = request.json["mensaje"]
+    estado = request.json["estado"]
+    motivo_comentarioid = request.json["motivo_comentarioid"]
+    usuarioid = request.json.get("usuarioid")  # Opcional
+    
+    dictRespuesta = {}
+    try:
+        controlador_comentario.insertar_comentario(nombres, apellidos, email, celular, mensaje, estado, motivo_comentarioid, usuarioid)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Comentario registrado con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al registrar el comentario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+############################FIN COMENTARIOS####################################UUUUUUUUUUU
+
 
 # EJECUTAR
 
