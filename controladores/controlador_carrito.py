@@ -20,22 +20,18 @@ def insertar_pedido(usuario, estado):
     return pedido_id
 
 #PARA INSERTAR EN DETALLE
-import pymysql
 
 def insertar_detalle(producto_id, pedido_id):
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
-            # Verifica si el producto ya está en el pedido
             query = "SELECT * FROM detalles_pedido WHERE PRODUCTOid = %s AND PEDIDOid = %s"
             cursor.execute(query, (producto_id, pedido_id))
             result = cursor.fetchone()  # Obtener el resultado de la consulta
             
             if result:
-                # Actualiza la cantidad si el producto ya está en el pedido
                 sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
             else:
-                # Inserta un nuevo registro si el producto no está en el pedido
                 sql = '''
                     INSERT INTO detalles_pedido (PRODUCTOid, PEDIDOid, cantidad)
                     VALUES (%s, %s, 1)
@@ -43,7 +39,7 @@ def insertar_detalle(producto_id, pedido_id):
             
             cursor.execute(sql, (producto_id, pedido_id))
             conexion.commit()
-            return None
+            return result
     except pymysql.MySQLError as e:
         return e 
     finally:

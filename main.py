@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response
 from flask_jwt import JWT, jwt_required, current_identity
-
+import uuid
 from clase_user_v1.usuario import Usuario
 import hashlib
 import base64
@@ -138,7 +138,8 @@ def index():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasPopulares()
     novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
     novedadesRecientes = controlador_novedades.obtenerNovedadesRecientes()
-    return render_template("index.html", novedadesRecientes = novedadesRecientes , marcasBloque = marcasBloque , productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
+    return render_template("index.html", novedadesRecientes = novedadesRecientes , marcasBloque = marcasBloque ,
+                           productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
 
 
 @app.route("/nuestras_marcas")
@@ -387,7 +388,8 @@ def registrate():
 @app.route("/carrito") 
 def carrito():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-    productos = controlador_detalle.obtener_Detalle()  
+    print(session.get('id'))
+    productos = controlador_detalle.obtener_Detalle(session.get('id'))  
     error_message = request.args.get("error_message")  
     
     return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
@@ -395,69 +397,70 @@ def carrito():
 
 from flask import request, redirect, url_for
 
-@app.route("/agregar_carrito", methods=["POST"]) 
+@app.route("/agregar_carrito", methods=["POST"])
 def agregar_carrito():
+    # Obtener el ID del producto desde el formulario
     producto_id = request.form["producto_id"]
-    estado = 1
-    usuario_id = session['id']
-    print(usuario_id)
-    if usuario_id is not None:
+    estado = 1  # Estado de activo (puedes ajustarlo si es necesario)
+    
+    # Obtener el ID del usuario desde la sesión, si existe
+    usuario_id = session.get('id')
 
+    # Si el usuario está autenticado, usar su usuario_id
+    if usuario_id is not None:
         pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
         
         if pedido_id is None:
             pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
         
-        result=controlador_carrito.insertar_detalle(producto_id, pedido_id)
+        # Intentar agregar el producto al detalle del pedido
+        result = controlador_carrito.insertar_detalle(producto_id, pedido_id)
         
-        referrer = request.referrer
-        
-        if result is None:
-            # Si el usuario estaba en la página del carrito, redirige al carrito
-            if "carrito" in referrer:
-                return redirect(url_for('carrito'))
-            else:
-                # Mantener en la página actual devolviendo un código 204 (sin contenido)
-                return '', 204
-
-    usuario_id = 1
-    
-    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    
-    if pedido_id is None:
-        pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
-    
-    result=controlador_carrito.insertar_detalle(producto_id, pedido_id)
-    
-    referrer = request.referrer
-    
-    if result is None:
-         # Si el usuario estaba en la página del carrito, redirige al carrito
-        if "carrito" in referrer:
-            return redirect(url_for('carrito'))
-        else:
-            # Mantener en la página actual devolviendo un código 204 (sin contenido)
+        # Si la inserción fue exitosa
+        if result is not None:
             return '', 204
+        else:
+            return redirect(url_for('carrito', error_message="No se pudo agregar el producto al carrito."))
+    
+    # Si el usuario no está autenticado, usar session_id para el carrito
     else:
-        return redirect(url_for('carrito', error_message=str(result)))
+        # Crear un session_id único si no existe en la sesión
+        session_id = session.get('session_id')
+        if not session_id:
+            session_id = str(uuid.uuid4())  # Generar un ID de sesión único
+            session['session_id'] = session_id  # Guardarlo en las cookies del navegador
+        
+        # Verificar si ya existe un pedido para este session_id
+        pedido_id = controlador_carrito.verificarIdPedido(session_id, estado)
+        
+        if pedido_id is None:
+            # Si no existe un pedido, creamos uno nuevo
+            pedido_id = controlador_carrito.insertar_pedido(session_id, estado)
+        
+        # Intentar agregar el producto al detalle del pedido
+        result = controlador_carrito.insertar_detalle(producto_id, pedido_id)
+        
+        # Si la inserción fue exitosa
+        if result is not None:
+            return '', 204
+        else:
+            return redirect(url_for('carrito', error_message="No se pudo agregar el producto al carrito."))
+
+
 
 
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
     producto_id = request.form.get("producto_id")
     print(f"Producto ID recibido: {producto_id}") 
-    usuario_id = session['id']
-    # print(f"Producto ID recibido: {producto_id}") 
-    usuario_id = 1 
+    usuario_id = session.get('id')
     estado = 1 
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    # print(f"Pedido ID encontrado: {pedido_id}")  
 
     if pedido_id:
         result=controlador_carrito.aumentar_producto(pedido_id,producto_id)
         if result is None:
-            # print("Producto aumentado correctamente.")
             return redirect('/carrito')
         else:
            return redirect(url_for('carrito', error_message=str(result)))
@@ -468,7 +471,7 @@ def aumentar_carro():
 @app.route("/disminuir_carro", methods=["POST"])
 def disminuir_carro():
     producto_id = request.form["producto_id"]
-    usuario_id = session['id']
+    usuario_id =session.get('id')
     estado = 1
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
@@ -2044,7 +2047,6 @@ def login():
         epassword = encstringsha256(password)
         if user[2] == epassword:
             session['id'] = user[0]
-            session['tipo'] = user[3]
             session['username'] = email
 
             resp = make_response(redirect("/"))
@@ -2082,7 +2084,7 @@ def logout():
 #####################################PARA PERFIL#################################################
 @app.route("/perfil=<int:user_id>")
 def perfil(user_id):
-    if 'id' in session and session['id'] == user_id and session['tipo'] == 3:
+    if 'id' in session and session['id'] == user_id:
         usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
         img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
         return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
