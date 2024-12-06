@@ -50,13 +50,11 @@
 
             <div class="row">
                 <div class="col">
-                    <label for="contraseña">Contraseña:</label>
-                    <div class="input-group">
-                        <input type="password" class="input form-control" placeholder="Contraseña" value="{{ usuario[9] }}"  name="contraseña" id="contraseña">
-                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
-                          <i id="toggleIcon" class="fas fa-eye"></i>
-                        </button>
-                      </div>
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <select name="disponibilidad" id="disponibilidad" class="input" required>
+                        <option value="1" {% if usuario[10] == 1 %}selected{% endif %}>Disponible</option>
+                        <option value="0" {% if usuario[10] == 0 %}selected{% endif %}>No Disponible</option>
+                    </select>
                 </div>
                 <div class="col">
                     <label for="genero">Género:</label>
@@ -68,13 +66,7 @@
             </div>
 
             <div class="row">
-                <div class="col">
-                    <label for="disponibilidad">Disponibilidad:</label>
-                    <select name="disponibilidad" id="disponibilidad" class="input" required>
-                        <option value="1" {% if usuario[10] == 1 %}selected{% endif %}>Disponible</option>
-                        <option value="0" {% if usuario[10] == 0 %}selected{% endif %}>No Disponible</option>
-                    </select>
-                </div>
+                
                 <div class="col seccionImg">
                     <label for="img_usuario">Imagen de Usuario (opcional):</label>
                     <input type="file" class="campoImg" name="img_usuario" id="img_usuario"/>
@@ -88,7 +80,7 @@
                 <div class="col" id="sbmt">
                     <div class="form-buttons">
                         <a href="{{ url_for('empleados_listado') }}" id="backbtn">Volver</a>
-                        <button type="submit" class="button is-primary">Actualizar</button>
+                        <button type="submit" class="button is-primary">Guardar</button>
                     </div>
                 </div>
             </div>

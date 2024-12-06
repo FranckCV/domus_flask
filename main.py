@@ -31,6 +31,7 @@ import controladores.controlador_usuario_cliente as controlador_usuario_cliente
 import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
+import controladores.controlador_empleados as controlador_empleados
 
 from datetime import datetime, date
 
@@ -202,9 +203,9 @@ def catalogo():
         elif valor == "2":  # Más Populares
             productos = controlador_productos.obtenerEnTarjetasMasPopulares_catalogo()
         elif valor == "3":  # Menor Precio
-            productos = controlador_productos.obtenerEnTarjetasxPrecio(1)
-        elif valor == "4":  # Mayor Precio
             productos = controlador_productos.obtenerEnTarjetasxPrecio(0)
+        elif valor == "4":  # Mayor Precio
+            productos = controlador_productos.obtenerEnTarjetasxPrecio(1)
         elif valor == "5":  # A - Z
             productos = controlador_productos.obtenerEnTarjetasAlfabetico(0)
         elif valor == "6":  # Z - A
@@ -998,10 +999,32 @@ def actualizar_motivo_comentario():
 ######################### FIN MOTIVO COMENTARIO ##############################
 
 
-import controladores.controlador_empleados as controlador_empleados
 
 
 ######################### PARA USUARIO EMPLEADO ##############################
+
+@app.route("/cambiar_contrasenia=<int:id>")
+def cambiar_contrasenia(id):
+    usuario = controlador_empleados.obtener_usuario_por_id(id)
+    clave_default = controlador_empleados.clave_default_empleado()
+    clave_actual = None
+    if usuario[9] == controlador_empleados.clave_default_empleado():
+        clave_actual = clave_default
+    return render_template("nueva_contrasenia_admin.html", usuario=usuario , clave_actual = clave_actual)
+
+
+@app.route("/guardar_contrasenia_empleado", methods=["POST"])
+def guardar_contrasenia_empleado():
+    id = request.form["id"]
+    contrasenia = request.form["contrasenia"]
+    confcontrasenia = request.form["confcontrasenia"]
+    password = encstringsha256(contrasenia)
+    if contrasenia == confcontrasenia:
+        controlador_empleados.cambiar_contrasenia_usuario(password,id)
+        return redirect("/dashboard")
+    else:
+        return redirect("/cambiar_contrasenia="+id)
+
 
 @app.route("/empleados_listado")
 def empleados_listado():
@@ -1046,7 +1069,8 @@ def guardar_empleado():
     fecha_nacimiento = request.form["fecha_nacimiento"]
     telefono = request.form["telefono"]
     correo = request.form["correo"]
-    contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
+    contraseña = controlador_empleados.clave_default_empleado()  
+    # contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
     
     disponibilidad = 1
 
@@ -1075,12 +1099,13 @@ def actualizar_empleado():
     fecha_nacimiento = request.form["fecha_nacimiento"]
     telefono = request.form["telefono"]
     correo = request.form["correo"]
-    contraseña = request.form["contraseña"]  # Aquí también se mantiene la contraseña sin cifrado
+    # contraseña = request.form["contraseña"]  # Aquí también se mantiene la contraseña sin cifrado
     disponibilidad = request.form["disponibilidad"]
 
-    controlador_empleados.actualizar_usuario(
+    # epassword = encstringsha256(contraseña)
+    controlador_empleados.actualizar_usuario_empleado(
         nombres, apellidos, doc_identidad, img_usuario, genero, 
-        fecha_nacimiento, telefono, correo, contraseña, disponibilidad, id
+        fecha_nacimiento, telefono, correo, disponibilidad, id
     )
     return redirect("/empleados_listado")
 
@@ -1103,6 +1128,15 @@ def eliminar_empleado():
 
 
 ########## INICIO PRODUCTOS ##########
+
+@app.route("/eliminar_img_producto", methods=["POST"])
+def eliminar_img_producto():
+    id = request.form["img_id"]
+    imagen = controlador_imagenes_productos.obtener_imagen_por_id(id)
+    idpro = imagen[2]
+    controlador_imagenes_productos.eliminar_img_producto_x_id(id)
+    return redirect("/formulario_editar_producto="+str(idpro))
+
 
 @app.route("/agregar_producto")
 def formulario_agregar_producto():
@@ -1234,7 +1268,7 @@ def ver_producto(id):
 
 @app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
-    imagenes = controlador_imagenes_productos.obtener_listado_imagenes_por_producto(id)
+    imagenes = controlador_imagenes_productos.obtener_listado_imagenes_sec_por_producto(id)
     caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
     caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
     producto = controlador_productos.obtener_info_por_id(id)
@@ -1242,6 +1276,7 @@ def editar_producto(id):
     categorias = controlador_categorias.obtener_categoriasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
     return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias,categorias = categorias , imagenes = imagenes , caracteristicasPrincipales = caracteristicasPrincipales , caracteristicasSecundarias = caracteristicasSecundarias)
+
 
 @app.route("/actualizar_producto", methods=["POST"])
 def actualizar_producto():
@@ -2136,8 +2171,8 @@ def logout():
 #     else:
 #         return redirect("/login")
 
+##################################### PARA PERFIL #################################################
 
-#####################################PARA PERFIL#################################################
 @app.route("/perfil=<int:user_id>")
 def perfil(user_id):
     if 'id' in session and session['id'] == user_id:
@@ -3372,7 +3407,7 @@ def api_actualizar_comentario():
 
 ############################FIN COMENTARIOS####################################UUUUUUUUUUU
 
-############################PEDIDO#############################
+############################APIS PEDIDO#############################
 @app.route("/api_guardar_pedido", methods=["POST"])
 # @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_guardar_pedido():
@@ -3577,8 +3612,143 @@ def api_listar_pedido():
 
         return jsonify(dictRespuesta)
 
-
 ############################FIN PEDIDOS########################
+
+##################3APIS DETALLE#############3
+@app.route("/api_obtener_detalles_por_usuario", methods=["POST"])
+# @jwt_required()
+def api_obtener_detalles_por_usuario():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del usuario desde el cuerpo de la solicitud
+        id_usuario = request.json.get("id")
+
+        if not id_usuario:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        # Obtener los detalles del pedido para el usuario
+        detalles = controlador_detalle.obtener_Detalle(id_usuario)
+
+        if detalles:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Detalles obtenidos con éxito"
+            dictRespuesta["data"] = detalles
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "No se encontraron detalles"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los detalles: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_detalles_por_pedido", methods=["POST"])
+# @jwt_required()
+def api_obtener_detalles_por_pedido():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del pedido desde el cuerpo de la solicitud
+        id_pedido = request.json.get("id")
+
+        if not id_pedido:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        # Obtener los detalles del pedido
+        detalles = controlador_detalle.obtener_Detalle_por_Id_pedido(id_pedido)
+
+        if detalles:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Detalles obtenidos con éxito"
+            dictRespuesta["data"] = detalles
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "No se encontraron detalles"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los detalles: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_detalle", methods=["POST"])
+# @jwt_required()
+def api_eliminar_detalle():
+    dictRespuesta = {}
+    try:
+        # Obtener los parámetros desde el cuerpo de la solicitud
+        producto_id = request.json.get("producto_id")
+        pedido_id = request.json.get("pedido_id")
+
+        if not producto_id or not pedido_id:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Los campos 'producto_id' y 'pedido_id' son obligatorios"
+            return jsonify(dictRespuesta)
+
+        # Eliminar el detalle del pedido
+        controlador_detalle.eliminar_detalle(producto_id, pedido_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Detalle eliminado correctamente"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar detalle: {str(e)}"
+        return jsonify(dictRespuesta)
+    
+@app.route("/api_editar_detalle", methods=["POST"])
+@jwt_required()
+def api_editar_detalle():
+    dictRespuesta = {}
+    try:
+        # Obtener los parámetros desde el cuerpo de la solicitud
+        producto_id = request.json.get("producto_id")
+        pedido_id = request.json.get("pedido_id")
+        nueva_cantidad = request.json.get("nueva_cantidad")
+
+        if not producto_id or not pedido_id or not nueva_cantidad:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Los campos 'producto_id', 'pedido_id' y 'nueva_cantidad' son obligatorios"
+            return jsonify(dictRespuesta)
+
+        # Editar la cantidad del detalle
+        controlador_detalle.editar_detalle(producto_id, pedido_id, nueva_cantidad)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Detalle actualizado correctamente"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al editar detalle: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route('/api_guardar_detalle', methods=['POST'])
+def api_guardar_detalle():
+    try:
+        # Recibimos los datos desde el JSON de la petición
+        data = request.get_json()
+        producto_id = data['producto_id']
+        pedido_id = data['pedido_id']
+        cantidad = data['cantidad']
+
+        # Llamamos a la función para guardar el detalle
+        controlador_detalle.guardar_detalle(producto_id, pedido_id, cantidad)
+
+        # Retornamos una respuesta de éxito
+        return jsonify({"message": "Detalle guardado correctamente"}), 200
+    except Exception as e:
+        # Retornamos una respuesta de error
+        return jsonify({"message": f"Error al guardar detalle: {e}"}), 400
+
 
 # EJECUTAR
 

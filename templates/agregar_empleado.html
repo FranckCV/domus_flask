@@ -59,7 +59,7 @@
       </div>
 
       <div class="row">
-        <div class="col">
+        <!-- <div class="col">
           <label for="contraseña">Contraseña:</label>          
           <div class="input-group">
             <input type="password" class="input form-control" placeholder="Contraseña" value="{{ contraseña }}"  name="contraseña" id="contraseña">
@@ -67,7 +67,7 @@
               <i id="toggleIcon" class="fas fa-eye"></i>
             </button>
           </div>
-        </div>
+        </div> -->
 
         <div class="col">
           <label for="genero">Género:</label>
@@ -76,9 +76,7 @@
             <option value="0" {% if genero=='0' %}selected{% endif %}>Femenino</option>
           </select>
         </div>
-      </div>
-
-      <div class="row">
+      
         <div class="col seccionImg">
           <label for="img_usuario">Imagen de Usuario (opcional):</label>
           <input type="file" class="campoImg" name="img_usuario" id="img_usuario"/>

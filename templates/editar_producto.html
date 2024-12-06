@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block estilos %}
+<link rel="stylesheet" href="/static/css/administrativa/listados.css">
     <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
 {% endblock %}
 
@@ -196,21 +197,66 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col col-3 seccionImg">
+            <div class="row" style="align-items: flex-start;">
+                <div class="col col-4 seccionImg">
                     <label for="banner">Cambiar imagen principal:</label>
                     <input type="file" class="campoImg" name="imagenProduct" id="imagenProduct"/>
                     <div class="espacio_img">
                       <img id="previewImg" src="{{producto[12]}}" alt="" class="clickable-image">
                     </div>
                 </div>
-
-                <div class="col seccionImg">
-                    <label for="">Cambiar imagenes secundarias (Al menos 1):</label>
-                    <input type="file" class="campoImg" name="imgsProd" id="imgsProd" multiple accept="image/*" />
+                
+                <div class="col">
+                    <label for="">Imágenes secundarias:</label>
                     <div class="espacio_img espacio_img_multi">
+                        {% for imagen in imagenes %}
+                            <div class="cont_img">
+                                <img id="previewImg" src="{{imagen[2]}}" alt="" class="clickable-image">
+                                <div>
+                                    <input type="hidden" name="img_id" id="img_id" value="{{ imagen[0] }}">
+                                    <button type="button" onclick="enviarFormulario('{{url_for('eliminar_img_producto')}}', '{{imagen[0]}}')">
+                                        <i class="fa-solid fa-x"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
+
+                <!-- <div class="col">
+                    <label for="infoAdicional">Cambiar imagenes secundarias:</label>
+                    <table cellspacing="0" class="table_sublistado">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th class="opciones_column">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody">
+                            {% for img_product in imagenes %}
+                            <tr>
+                                <td>
+                                    <div class="celda_texto_bloque">
+                                        <img src="{{ img_product[2] }}" alt="Imagen de novedad" class="clickable-image">
+                                    </div>
+                                </td>
+                                <td class="opciones_column">
+                                    <div class="acciones">
+                                        <form class="opciones_fila" action="{{url_for('eliminar_img_producto')}}" method="POST" onsubmit="return confirmarEliminacion()" id="deleteF">
+                                            <input type="hidden" name="id" id="id" value="{{ img_product[0] }}">
+                                            <input type="hidden" name="novedad_id" id="novedad_id" value="{{ novedad_id }}">
+                                            <button type="submit">
+                                                <i class="fa-solid fa-x"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+            
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div> -->
             </div>
 
             
@@ -219,7 +265,7 @@
                 <div class="col" id="sbmt">
                     <div class="form-buttons">
                         <a href="{{ url_for('productos') }}" id="backbtn">Volver</a>
-                        <button type="submit" class="button is-primary" style="border-radius: 20px;">Editar</button>
+                        <button type="submit" class="button is-primary" >Guardar</button>
                     </div>
                 </div>
             </div>
@@ -244,6 +290,22 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    function enviarFormulario(url, imgId) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url;
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'img_id';
+        input.value = imgId;
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
 <script src="/static/js/admin_productos.js"></script>
 <script src="/static/js/filtroCRUDListado.js"></script>
 <script src="/static/js/imgsCRUDvistaprevia.js"></script>
