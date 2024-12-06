@@ -383,5 +383,20 @@ def obtener_imagen_usuario_cliente_id(id):
     conexion.close()
     return elemento
 
+def cambiar_contrasenia(usuario_id, nueva_contraseña):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute('''
+                UPDATE usuario_cliente
+                SET password = %s
+                WHERE id = %s
+            ''', (nueva_contraseña, usuario_id))
+            conexion.commit()
+    except Exception as e:
+        print("Error al actualizar la contraseña:", e)
+        conexion.rollback()
+    finally:
+        conexion.close()
 
 
