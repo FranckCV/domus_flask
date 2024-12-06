@@ -3700,10 +3700,6 @@ def pedidos(user_id):
 #     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
 #     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
 #     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
-<<<<<<< HEAD
-=======
-
->>>>>>> a7b65f67b8f19d893c5e9025f630cab3b3f7929f
 
 
 @app.route("/lista_deseos=<int:user_id>")
@@ -3768,7 +3764,7 @@ def confirmar_compra():
         precio_unitario = producto[2]
         producto_id = producto[4]  
         total_producto = cantidad * precio_unitario
-        controlador_detalle.reducir_detalle(producto_id, pedido_id, cantidad)
+        controlador_detalle.reducir_detalle(producto_id, cantidad)
         subtotal += total_producto
 
     controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuario_id)
