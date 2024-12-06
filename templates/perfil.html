@@ -1,125 +1,52 @@
-{% extends 'maestra_general.html' %}
+{% extends 'maestra_perfil.html' %}
 
-{% block titulo %}
-  Perfil del Usuario
+{% block estilos_perfil %}
+
 {% endblock %}
 
-{% block estilos %}
-  <link rel="stylesheet" href="static/css/perfil.css" />
-{% endblock %}
-
-{% block contenido %}
-<section class="body_page">
-    <div class="contenedor_perfil">
-        <aside class="aside_perfil">
-
-            <div class="profile">
-                <div class="content_img">
-                    {% if usuario.4 is not none %}
-                    <img src="{{ img.1 }}" alt="Foto de perfil del usuario" id="foto_perfil">
-                    {% else %}
-                    <img src="{{ url_for('static', filename='img/iconos/usuario.png') }}" alt="Foto de perfil del usuario" id="foto_perfil">
-                    {% endif %}
-                </div>
-                
-                <h2>¡Hola, {{ usuario.1 }}!</h2>
-                <form action="{{ url_for('imagen_usuario') }}" method="POST" enctype="multipart/form-data">
-                    <input type="file" id="inputImagen" name="imagen" accept="image/*" style="display: none;" required>
-                    <button type="button" class="btn btn-primary" id="btnSubirImagen">Subir Imagen</button>
-                </form>
-            </div>
-            
-            <div id="opciones_perfil">
-                <a href="{{ url_for('perfil', user_id=user_id) }}" class="opcion_perfil">
-                    <!-- <img src="{{ url_for('static', filename='img/iconos/user.png') }}" alt="Icono de perfil" class="img_perfil"> -->
-                    <i class="fa-solid fa-user"></i>
-                    <p>Mi perfil</p>
-                    <!-- <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha"> -->
-                    <i class="fa-solid fa-angle-right"></i>
-                </a>
-
-
-                <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#modalCerrarSesion">
-                    <!--  <img src="{{ url_for('static', filename='img/iconos/cerrar.png') }}" alt="Icono de cierre de sesión" class="img_perfil">-->
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <p>Cerrar sesión</p>
-                    <!--   <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
-                      -->
-                    <i class="fa-solid fa-angle-right"></i>
-                </div>
-
-                <!-- Modal -->
-                <div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="modalCerrarSesionLabel">Confirmación de cierre</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>¿Estás seguro de que quieres cerrar sesión?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="confirmarCierreSesion" onclick="location.href='{{ url_for('logout') }}';">Confirmar</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <main class="main_perfil">
-                <div class="detalle">
-                    <div class="datos_perfil">
-                        <strong>Nombres:</strong>
-                        <p>{{ usuario.1 }}</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Apellidos:</strong>
-                        <p>{{ usuario.2 }}</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Género:</strong>
-                        {% if usuario.5 ==1  %}
-                        <p>Masculino</p>
-                        {% else %}
-                        <p>Femenino</p>
-                        {% endif %}
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Fecha de nacimiento:</strong>
-                        <p>{{ usuario.6 }}</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Teléfono:</strong>
-                        <p>{{ usuario.7 }}</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Documento de identidad:</strong>
-                        <p>{{ usuario.3 }}</p>
-                    </div>
-
-                    <div class="datos_perfil">
-                        <strong>Email:</strong>
-                        <p>{{ usuario.8 }}</p>
-                    </div>
-
-
-                </div>
-        </main>
+{% block contenido_perfil %}
+  <div class="detalle">
+    <div class="datos_perfil">
+      <strong>Nombres:</strong>
+      <p>{{ usuario.1 }}</p>
     </div>
-</section>
+
+    <div class="datos_perfil">
+      <strong>Apellidos:</strong>
+      <p>{{ usuario.2 }}</p>
+    </div>
+
+    <div class="datos_perfil">
+      <strong>Género:</strong>
+      {% if usuario.5 == 1 %}
+        <p>Masculino</p>
+      {% else %}
+        <p>Femenino</p>
+      {% endif %}
+    </div>
+
+    <div class="datos_perfil">
+      <strong>Fecha de nacimiento:</strong>
+      <p>{{ usuario.6 }}</p>
+    </div>
+
+    <div class="datos_perfil">
+      <strong>Teléfono:</strong>
+      <p>{{ usuario.7 }}</p>
+    </div>
+
+    <div class="datos_perfil">
+      <strong>Documento de identidad:</strong>
+      <p>{{ usuario.3 }}</p>
+    </div>
+
+    <div class="datos_perfil">
+      <strong>Email:</strong>
+      <p>{{ usuario.8 }}</p>
+    </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
-
-<script src="static/js/subir_imagen.js"></script>
 
 {% endblock %}

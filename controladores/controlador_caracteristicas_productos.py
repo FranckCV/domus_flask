@@ -42,7 +42,69 @@ def obtenerCaracteristicasxProducto(id,valor):
     return caracteristicas
 
 
+def insertar_caracteristica_producto(caracteristica_producto):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            INSERT INTO caracteristica_producto (caracteristicaid, productoid, valor, principal)
+            VALUES (%s, %s, %s, %s)
+        '''
+        cursor.execute(sql, (caracteristica_producto.CARACTERISTICAid, caracteristica_producto.PRODUCTOid,
+                             caracteristica_producto.valor, caracteristica_producto.principal))
+    conexion.commit()
+    conexion.close()
 
 
+def obtener_caracteristicas_producto(producto_id):
+    conexion = obtener_conexion()
+    caracteristicas = []
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT caracteristicaid, productoid, valor, principal
+            FROM caracteristica_producto
+            WHERE productoid = %s
+        '''
+        cursor.execute(sql, (producto_id,))
+        caracteristicas = cursor.fetchall()
+    conexion.close()
+    return caracteristicas
+
+def actualizar_caracteristica_producto(caracteristica_producto):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            UPDATE caracteristica_producto
+            SET valor = %s, principal = %s
+            WHERE caracteristicaid = %s AND productoid = %s
+        '''
+        cursor.execute(sql, (caracteristica_producto.valor, caracteristica_producto.principal,
+                             caracteristica_producto.CARACTERISTICAid, caracteristica_producto.PRODUCTOid))
+    conexion.commit()
+    conexion.close()
+
+def eliminar_caracteristica_producto(caracteristica_id, producto_id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            DELETE FROM caracteristica_producto
+            WHERE caracteristicaid = %s AND productoid = %s
+        '''
+        cursor.execute(sql, (caracteristica_id, producto_id))
+    conexion.commit()
+    conexion.close()
+
+def obtener_caracteristica_producto(caracteristica_id, producto_id):
+    conexion = obtener_conexion()
+    caracteristica = None
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT caracteristicaid, productoid, valor, principal
+            FROM caracteristica_producto
+            WHERE caracteristicaid = %s AND productoid = %s
+        '''
+        cursor.execute(sql, (caracteristica_id, producto_id))
+        caracteristica = cursor.fetchone()
+    conexion.close()
+    return caracteristica
 
 
