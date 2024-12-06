@@ -3280,12 +3280,13 @@ def logout():
 
     return resp
 
+from flask import redirect, make_response
 
 @app.route('/cambiar_contrasenia_cliente', methods=['GET', 'POST'])
 def cambiar_contrasenia_cliente():
-    user_id=session.get('id')
-    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
-    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+    user_id = session.get('id')
+    usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    img = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
     
     if request.method == 'POST':
         current_password = request.form['current-password']
@@ -3294,19 +3295,24 @@ def cambiar_contrasenia_cliente():
         
         if new_password != confirm_password:
             error_message = "Las contraseñas no coinciden."
-            return render_template('cambiarContraseñaCliente.html', error_message=error_message,user_id=user_id,usuario=usuario,img=img)
+            return render_template('cambiarContraseñaCliente.html', error_message=error_message, user_id=user_id, usuario=usuario, img=img)
 
-        usuario_id = session.get('id')
-        usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(usuario_id)
-        
         if usuario and usuario[9] == encstringsha256(current_password): 
-            controlador_usuario_cliente.cambiar_contrasenia(usuario_id, encstringsha256(new_password))
-            return redirect(url_for('perfil'))  
+            controlador_usuario_cliente.cambiar_contrasenia(user_id, encstringsha256(new_password))
+            
+            session.clear()
+            
+            resp = make_response(redirect('/iniciar_sesion'))  
+            resp.delete_cookie('username') 
+            return resp  
+
         else:
             error_message = "La contraseña actual es incorrecta."
-            return render_template('cambiarContraseñaCliente.html', error_message=error_message,user_id=user_id,usuario=usuario,img=img)
+            return render_template('cambiarContraseñaCliente.html', error_message=error_message, user_id=user_id, usuario=usuario, img=img)
 
-    return render_template('cambiarContraseñaCliente.html',user_id=user_id,usuario=usuario,img=img)
+    return render_template('cambiarContraseñaCliente.html', user_id=user_id, usuario=usuario, img=img)
+
+
 
 
 
