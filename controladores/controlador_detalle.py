@@ -1,7 +1,7 @@
 from controladores.bd import obtener_conexion
 import base64
 
-def obtener_Detalle():
+def obtener_Detalle(id):
     conexion = obtener_conexion()
     productos = []
     productos_lista = []
@@ -14,8 +14,9 @@ def obtener_Detalle():
             inner join pedido Pe on Pe.id=DP.PEDIDOid
             INNER JOIN img_producto IMP ON P.id = IMP.PRODUCTOid
             WHERE IMP.imgPrincipal = 1 and Pe.ESTADO_PEDIDOid=1
+            and pe.usuarioid = %s
         '''
-        cursor.execute(sql)
+        cursor.execute(sql,(id,))
         productos = cursor.fetchall()
         
         for producto in productos:
