@@ -46,3 +46,5 @@ def agregar_a_lista_deseos(usuario_id,producto_id):
         print(f"Error al agregar o quitar producto: {e}")
     finally:
         conexion.close()
+
+
