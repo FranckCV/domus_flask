@@ -192,7 +192,7 @@ def obtener_cantidad_en_carrito(pedido_id, producto_id):
         with conexion.cursor() as cursor:
             sql = '''
                 SELECT cantidad
-                FROM detalle_pedido
+                FROM detalles_pedido
                 WHERE pedidoid = %s AND productoid = %s
             '''
             cursor.execute(sql, (pedido_id, producto_id))
@@ -205,3 +205,22 @@ def obtener_cantidad_en_carrito(pedido_id, producto_id):
     finally:
         if conexion:
             conexion.close()
+
+def obtener_cantidad_en_carrito_v2(pedido_id, producto_id):
+    try:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute(''' 
+                SELECT cantidad FROM detalles_pedido WHERE pedidoid = %s AND productoid = %s 
+            ''', (pedido_id, producto_id))
+            result = cursor.fetchone()
+            if result:
+                return result[0]  # Devuelve la cantidad actual del producto en el carrito
+            return 0  # Si no hay el producto en el carrito, devuelve 0
+    except Exception as e:
+        print(f"Error al obtener cantidad en carrito: {e}")
+        return 0  # Retorna 0 en caso de error
+    finally:
+        conexion.close()
+
+
