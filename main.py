@@ -1684,8 +1684,8 @@ def guardar_empleado():
         correo = request.form["correo"]
         # contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
 
-        objUsuario = Usuario(
-            p_id=id,
+        objEmp = clsUsuario(
+            p_id = None,
             p_nombres=nombres,
             p_apellidos=apellidos,
             p_doc_identidad=doc_identidad,
@@ -1701,13 +1701,13 @@ def guardar_empleado():
         )
 
     # Verificar si el correo ya existe
-        if controlador_empleados.verificar_correo_existente(objUsuario.correo):
+        if controlador_empleados.verificar_correo_existente(objEmp.correo):
             error = "El correo se encuentra registrado. Intente con otro correo."
             return render_template("agregar_empleado.html", error=error, nombres=nombres, apellidos=apellidos, doc_identidad=doc_identidad, genero=genero, fecha_nacimiento=fecha_nacimiento, telefono=telefono, correo=correo)
 
         controlador_empleados.insertar_usuario(
-            objUsuario.nombres, objUsuario.apellidos, objUsuario.doc_identidad, objUsuario.img_usuario, objUsuario.genero, 
-            objUsuario.fecha_nacimiento, objUsuario.telefono, objUsuario.correo, objUsuario.contraseña, objUsuario.disponibilidad
+            objEmp.nombres, objEmp.apellidos, objEmp.doc_identidad, objEmp.img_usuario, objEmp.genero, 
+            objEmp.fecha_nacimiento, objEmp.telefono, objEmp.correo, objEmp.contrasenia, objEmp.disponibilidad
         )
         return redirect("/empleados_listado")
     else:
@@ -1740,7 +1740,7 @@ def actualizar_empleado():
         disponibilidad = request.form["disponibilidad"]
 
         # epassword = encstringsha256(contraseña)
-        objUsuario = Usuario(
+        objUsuario = clsUsuario(
             p_id=id,
             p_nombres=nombres,
             p_apellidos=apellidos,
