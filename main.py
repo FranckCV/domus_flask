@@ -3620,7 +3620,7 @@ def login():
         else:
             return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Contraseña incorrecta.")
     else:
-        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Usuario no registrado.")
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Usuario no válido. Si es cliente, regístrese.")
 
 
 @app.route("/logout")
@@ -3676,6 +3676,16 @@ def perfil(user_id):
         return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
     else:
         return redirect('/iniciar_sesion')
+<<<<<<< HEAD
+    
+@app.route("/pedidos=<int:user_id>")
+def pedidos(user_id):
+    usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    img = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+    
+    
+    return render_template("misPedidos.html", user_id=user_id, usuario=usuario, img=img)
+=======
 
 
 @app.route("/detalle_pedido_perfil=<int:user_id>")
@@ -3684,10 +3694,8 @@ def detalle_pedido_perfil(user_id):
     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+>>>>>>> aff974b0d1e528eb993fd35afa82b6edd0ed878f
 
-    return render_template("miDetallePedido_perfil.html", 
-                           pedidos=pedidos,  # Ahora pasamos todos los pedidos
-                           metodos=metodos, user_id=user_id,usuario=usuario,img=img )
 
 
 @app.route("/lista_deseos=<int:user_id>")
