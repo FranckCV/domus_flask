@@ -249,13 +249,19 @@
                                 {% endif %}
 
                             </a>
-                            <div class="product_option product_option_fav button" id="heart">
-                                <i class="fa-regular fa-heart"></i>
-                            </div>
+                            <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST">
+                                <div class="" id="heart">
+                                    <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
+                                    <button type="submit" class="product_option product_option_fav">
+                                        <i class="{% if producto.0 in lista_deseos_ids %} fa-solid fa-heart fav-active {% else %} fa-regular fa-heart {% endif %}"></i>
+                                    </button>
+                                </div>
+                            </form>
+                            
                             <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
                                 <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
                                 <button type="submit" class="product_option product_option_add" id="cant_aumentar">
-                                  <i class="fa-solid fa-plus"></i>
+                                <i class="fa-solid fa-plus"></i>
                                 </button>
                             </form>
                         </div>

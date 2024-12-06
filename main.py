@@ -33,11 +33,8 @@ import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
 import controladores.controlador_empleados as controlador_empleados
-<<<<<<< HEAD
 import controladores.controlador_lista_deseos as controlador_lista_deseos
-=======
 import controladores.controlador_usuario_admin as controlador_usuario_admin
->>>>>>> a0fba1ccc8eb59a31e909e2e531ccf50e560238e
 
 from datetime import datetime, date
 
@@ -131,7 +128,9 @@ def inject_globals():
     conts_info_footer = controlador_contenido_info.obtener_tipos_contenido()
     datos_domus_main = controlador_informacion_domus.obtener_informacion_domus()
     logueado_dato = session.get('id') is not None
-    user_id = session.get('id') if logueado_dato else None  
+    user_id = session.get('id') if logueado_dato else None 
+    lista_deseos = controlador_lista_deseos.obtenerListaDeseos(session.get('id'))
+    lista_deseos_ids = [producto[0] for producto in lista_deseos] 
     return dict(
         marcasMenu=marcasMenu,
         logo_foto=logo_foto,
@@ -140,7 +139,8 @@ def inject_globals():
         conts_info_footer=conts_info_footer,
         datos_domus_main=datos_domus_main,
         logueado=logueado_dato,
-        user_id=user_id 
+        user_id=user_id , 
+        lista_deseos_ids=lista_deseos_ids
     )
 
 
@@ -155,17 +155,13 @@ def index():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasPopulares()
     novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
     novedadesRecientes = controlador_novedades.obtenerNovedadesRecientes()
-    lista_deseos = controlador_lista_deseos.obtenerListaDeseos(session.get('id'))
-    
-    lista_deseos_ids = [producto[0] for producto in lista_deseos]
-    print(lista_deseos_ids)
+    # print(lista_deseos_ids)
     return render_template("index.html", 
                            novedadesRecientes=novedadesRecientes, 
                            marcasBloque=marcasBloque,
                            productosRecientes=productosRecientes, 
                            productosPopulares=productosPopulares,
-                           novedadesBanner=novedadesBanner, 
-                           lista_deseos_ids=lista_deseos_ids)
+                           novedadesBanner=novedadesBanner)
 
 @app.route("/nuestras_marcas")
 def nuestras_marcas():

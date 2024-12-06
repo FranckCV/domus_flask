@@ -233,6 +233,7 @@
 
 .product_option_fav {
   border-bottom-left-radius: var(--border-product);
+  width: 100%;
   grid-area: fav;
 }
 
@@ -254,6 +255,11 @@
   background-color: var(--color-button-product);
   color: white;
 }
+
+.fav-active {
+  color: red; 
+}
+
 
 @media (max-width:599px){
   .slider_product {
