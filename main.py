@@ -401,12 +401,18 @@ def registrate():
 ######################CARRO######################
 @app.route("/carrito") 
 def carrito():
-    productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-    print(session.get('id'))
-    productos = controlador_detalle.obtener_Detalle(session.get('id'))  
-    error_message = request.args.get("error_message")  
+    usuario_id = session.get('id')
     
-    return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
+    if usuario_id is not None:
+        productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
+        print(session.get('id'))
+        productos = controlador_detalle.obtener_Detalle(session.get('id'))  
+        error_message = request.args.get("error_message")  
+        
+        return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
+    else:
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
+        
 
 
 @app.route('/obtener_cantidad_carrito', methods=['GET'])
@@ -436,10 +442,8 @@ def obtener_resumen_carrito():
         subtotal += producto['precio'] * producto['cantidad']
     
     descuento = 0
-    descuento_aplicado = False
     if cupon in request.args: 
         descuento = subtotal * 0.20  
-        descuento_aplicado = True
     
     total = subtotal - descuento
     
@@ -447,9 +451,11 @@ def obtener_resumen_carrito():
         'carrito': carrito, 
         'subtotal': subtotal,
         'descuento': descuento,
-        'total': total,
-        'descuento_aplicado': descuento_aplicado
+        'total': total
     })
+
+
+
 
 
 @app.route("/agregar_carrito", methods=["POST"]) 
@@ -482,7 +488,6 @@ def agregar_carrito():
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
     producto_id = request.form.get("producto_id")
-    print(f"Producto ID recibido: {producto_id}") 
     usuario_id = session.get('id')
     estado = 1 
 
@@ -3703,7 +3708,6 @@ def ver_detalle_pedido(id):
 #     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
 #     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
 #     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
-# >>>>>>> aff974b0d1e528eb993fd35afa82b6edd0ed878f
 
 
 
@@ -6909,6 +6913,7 @@ def api_actualizar_informacion_domus():
 ##################APIS tipo_contenido##########3
 
 @app.route("/api_insertar_tipo_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_insertar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -6933,6 +6938,7 @@ def api_insertar_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_tipo_contenido_info", methods=["GET"])
+# @jwt_required()
 def api_obtener_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -6948,6 +6954,7 @@ def api_obtener_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_tipo_contenido_info_por_id", methods=["POST"])
+# @jwt_required()
 def api_obtener_tipo_contenido_info_por_id():
     dictRespuesta = {}
     try:
@@ -6975,6 +6982,7 @@ def api_obtener_tipo_contenido_info_por_id():
     return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_tipo_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_actualizar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -7001,6 +7009,7 @@ def api_actualizar_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_tipo_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_eliminar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -7026,6 +7035,7 @@ def api_eliminar_tipo_contenido_info():
 
 #######################APIS CONTENIDO INFO###############
 @app.route("/api_insertar_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_insertar_contenido_info():
     dictRespuesta = {}
     try:
@@ -7050,6 +7060,7 @@ def api_insertar_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_contenido_info", methods=["GET"])
+# @jwt_required()
 def api_obtener_contenido_info():
     dictRespuesta = {}
     try:
@@ -7065,6 +7076,7 @@ def api_obtener_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_contenido_info_por_id", methods=["POST"])
+# @jwt_required()
 def api_obtener_contenido_info_por_id():
     dictRespuesta = {}
     try:
@@ -7098,6 +7110,7 @@ def api_obtener_contenido_info_por_id():
     return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_actualizar_contenido_info():
     dictRespuesta = {}
     try:
@@ -7123,6 +7136,7 @@ def api_actualizar_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_eliminar_contenido_info():
     dictRespuesta = {}
     try:
@@ -7150,6 +7164,7 @@ def api_eliminar_contenido_info():
 
 #######################APIS CUPONES##############
 @app.route("/api_insertar_cupon", methods=["POST"])
+# @jwt_required()
 def api_insertar_cupon():
     dictRespuesta = {}
     try:
@@ -7178,6 +7193,7 @@ def api_insertar_cupon():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_cupones", methods=["GET"])
+# @jwt_required()
 def api_obtener_cupones():
     dictRespuesta = {}
     try:
@@ -7194,6 +7210,7 @@ def api_obtener_cupones():
 
 
 @app.route("/api_obtener_cupon_por_id", methods=["POST"])
+# @jwt_required()
 def api_obtener_cupon_por_id():
     dictRespuesta = {}
     try:
@@ -7231,6 +7248,7 @@ def api_obtener_cupon_por_id():
 
 
 @app.route("/api_actualizar_cupon", methods=["POST"])
+# @jwt_required()
 def api_actualizar_cupon():
     dictRespuesta = {}
     try:
@@ -7262,6 +7280,7 @@ def api_actualizar_cupon():
 
 
 @app.route("/api_eliminar_cupon", methods=["POST"])
+# @jwt_required()
 def api_eliminar_cupon():
     dictRespuesta = {}
     try:
@@ -7286,6 +7305,223 @@ def api_eliminar_cupon():
 
 ######################FIN APIS CUPONES############3
 
+######################APIS IMG_PRODUCTO#####################
+
+@app.route("/api_insertar_img_producto", methods=["POST"])
+# @jwt_required()
+def api_insertar_img_producto():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_nombre = data.get("img_nombre")
+        imagen = data.get("imagen")  # La imagen debe estar en Base64
+        imgPrincipal = data.get("imgPrincipal")
+        producto_id = data.get("producto_id")
+
+        if not img_nombre or not imagen or imgPrincipal is None or not producto_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (img_nombre, imagen, imgPrincipal, producto_id)"
+            return jsonify(dictRespuesta)
+
+        # Crear un objeto de la clase ImgProducto
+        img_producto = clsImgProducto(None, img_nombre, imagen, imgPrincipal, producto_id)
+
+        # Insertar la imagen de producto
+        controlador_imagenes_productos.insertar_img_producto(img_producto.img_nombre, img_producto.imagen, img_producto.imgPrincipal, img_producto.PRODUCTOid)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de producto insertada con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar imagen de producto: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_imagenes_por_producto", methods=["POST"])
+# @jwt_required()
+def api_obtener_imagenes_por_producto():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        producto_id = data.get("id")
+
+        if not producto_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del producto"
+            return jsonify(dictRespuesta)
+
+        # Obtener todas las imágenes de un producto
+        imagenes = controlador_imagenes_productos.obtener_imagenes_por_producto(producto_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imágenes obtenidas con éxito"
+        dictRespuesta["data"] = imagenes
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener imágenes de producto: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_imagen_por_id", methods=["POST"])
+# @jwt_required()
+def api_obtener_imagen_por_id():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_id = data.get("id")
+
+        if not img_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la imagen"
+            return jsonify(dictRespuesta)
+
+        # Obtener la imagen de producto por su ID
+        imagen = controlador_imagenes_productos.obtener_imagen_por_id(img_id)
+
+        if imagen:
+            # Convertir la imagen de bytes a Base64
+            imagen_base64 = base64.b64encode(imagen[1]).decode('utf-8')
+
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Imagen obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": imagen[0],
+                "imagen": imagen_base64,  # Imagen en formato Base64
+                "producto_id": imagen[2]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Imagen no encontrada"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener imagen de producto: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_img_producto", methods=["POST"])
+# @jwt_required()
+def api_actualizar_img_producto():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del request
+        data = request.get_json()
+
+        # Obtener el ID del producto y la nueva imagen en Base64
+        img_id = data.get("id")
+        imagen_base64 = data.get("imagen")  # La imagen nueva en Base64
+
+        # Validación de los campos requeridos
+        if not img_id or not imagen_base64:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (id, imagen)"
+            return jsonify(dictRespuesta)
+
+        # Decodificar la imagen de Base64 a bytes
+        imagen_bytes = base64.b64decode(imagen_base64)
+
+        # Crear un objeto de la clase ImgProducto con la imagen en bytes
+        img_producto = clsImgProducto(p_id=img_id, p_img_nombre=None, p_imagen=imagen_bytes, p_imgPrincipal=1, p_PRODUCTOid=None)
+
+        # Llamar al controlador para actualizar la imagen
+        controlador_imagenes_productos.actualizar_img_producto(img_producto.imagen, img_producto.id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de producto actualizada con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar imagen de producto: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_eliminar_img_producto", methods=["POST"])
+# @jwt_required()
+def api_eliminar_img_producto():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_id = data.get("id")
+
+        if not img_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la imagen"
+            return jsonify(dictRespuesta)
+
+        # Eliminar la imagen de producto
+        controlador_imagenes_productos.eliminar_img_producto(img_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de producto eliminada con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar imagen de producto: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+####################FIN APIS IMG_PRODUCTO#####################
+
+#######################APIS LISTA DESEOS#################
+@app.route("/api_obtener_lista_deseos", methods=["POST"])
+# @jwt_required()
+def api_obtener_lista_deseos():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del request
+        data = request.get_json()
+
+        # Obtener el ID del usuario
+        usuario_id = data.get("id")
+
+        # Validación de los campos requeridos
+        if not usuario_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del usuario"
+            return jsonify(dictRespuesta)
+
+        # Llamar a la función para obtener la lista de deseos
+        lista_deseos = controlador_lista_deseos.obtenerListaDeseos(usuario_id)
+
+        if lista_deseos:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Lista de deseos obtenida con éxito"
+            dictRespuesta["data"] = [{"id": item[0], "nombre": item[1]} for item in lista_deseos]
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "No se encontraron productos en la lista de deseos"
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la lista de deseos: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+@app.route("/api_agregar_quitar_lista_deseos", methods=["POST"])
+# @jwt_required()
+def api_agregar_quitar_lista_deseos():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+
+        usuario_id = data.get("usuarioid")
+        producto_id = data.get("productoid")
+
+        if not usuario_id or not producto_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (usuarioid, productoid)"
+            return jsonify(dictRespuesta)
+        
+        controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Producto agregado o quitado de la lista de deseos con éxito"
+        
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al agregar o quitar producto: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+################FIN APIS LISTA DESEOS################
 
 # EJECUTAR
 

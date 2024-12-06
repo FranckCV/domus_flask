@@ -232,7 +232,7 @@ def obtener_usuario_cliente_por_email(email):
                         contrasenia,
                         TIPO_USUARIOid
                     FROM usuario
-                    WHERE correo = %s and tipo_usuarioid=3
+                    WHERE correo = %s 
                 '''
                 cursor.execute(sql, (email,))
                 usuario = cursor.fetchone()
