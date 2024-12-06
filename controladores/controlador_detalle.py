@@ -240,3 +240,20 @@ def obtenerProductos():
         conexion.close()
 
     return producto
+
+def obtenerCantidadDetallePorUsuario(id):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+            SELECT SUM(cantidad) FROM `detalles_pedido` dp 
+            INNER JOIN pedido p ON p.id = dp.pedidoid
+            WHERE p.usuarioid = %s AND p.estado_pedidoid = 1
+            '''
+            cursor.execute(sql, (id,))
+            resultado = cursor.fetchone()  
+
+            return resultado[0] if resultado else 0
+    except Exception as e:
+        print(f"Error al obtener detalles: {e}")
+        return 0 

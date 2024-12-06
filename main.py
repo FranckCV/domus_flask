@@ -395,6 +395,21 @@ def carrito():
     return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
 
 
+from flask import jsonify, session
+
+@app.route("/obtener_cantidad_carrito", methods=["GET"])
+def obtener_cantidad_carrito():
+    usuario_id = session.get('id')
+    
+    if usuario_id is None:
+        return jsonify({'cantidad': 0})  # Si no hay sesión activa, devuelve 0
+
+    cantidad = controlador_detalle.obtenerCantidadDetallePorUsuario(usuario_id)
+    
+    return jsonify({'cantidad': cantidad})
+
+
+
 
 @app.route("/agregar_carrito", methods=["POST"]) 
 def agregar_carrito():
@@ -460,7 +475,7 @@ def disminuir_carro():
 @app.route("/confirmar_carrito", methods=["POST"])
 def confirmar_carrito():
     estado = 1
-    usuario_id = 1
+    usuario_id = session.get('id')
     
     valor_descuento=request.form.get('total_descuento')
     
@@ -491,7 +506,8 @@ def confirmar_carrito():
                                valor_descuento=valor_descuento,
                                metodos_pago=metodos_pago)
     else:
-        return redirect('/carrito')
+        return redirect(url_for('carrito', error_message="El carrito no puede estar vacío"))
+
 
 
 @app.route("/resumen_de_pedido")
@@ -2032,10 +2048,18 @@ def login():
     else:
         return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Usuario no registrado.")
 
+from flask import make_response
+
 @app.route("/logout")
 def logout():
-    session.clear()  
-    return redirect('/')
+    session.clear() 
+    
+    resp = make_response(redirect('/'))
+    
+    resp.delete_cookie('username') 
+
+    return resp
+
 
 
 # @app.route("/iniciar_sesion" , methods=["POST"])

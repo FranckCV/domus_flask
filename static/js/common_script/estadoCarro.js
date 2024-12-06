@@ -11,29 +11,33 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function actualizarCantidadCarrito() {
-    const carrito = obtenerCarrito();
     const contadorCarrito = document.getElementById('carrito_cant');
-    let totalCantidad = 0;
-
+    
     // Solo actualizamos si la sesión está activa
     if (isSessionActive()) {
-        for (let producto in carrito) {
-            totalCantidad += carrito[producto].cantidad;
-        }
+        fetch('/obtener_cantidad_carrito', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            let totalCantidad = data.cantidad || 0;  // Obtener la cantidad del carrito desde la base de datos
 
-        contadorCarrito.innerText = `${totalCantidad}`;
-        contadorCarrito.classList.add('animate-bounce'); 
+            contadorCarrito.innerText = `${totalCantidad}`;
+            contadorCarrito.classList.add('animate-bounce');  // Agrega la animación
 
-        setTimeout(() => {
-            contadorCarrito.classList.remove('animate-bounce'); 
-        }, 500);
+            setTimeout(() => {
+                contadorCarrito.classList.remove('animate-bounce');  // Elimina la animación después de 500ms
+            }, 500);
+        })
+        .catch(error => {
+            console.error('Error al obtener la cantidad del carrito:', error);
+        });
     } else {
-        contadorCarrito.innerText = "0";
+        contadorCarrito.innerText = "0";  // Si la sesión no está activa, muestra 0
     }
-}
-
-function obtenerCarrito() {
-    return JSON.parse(localStorage.getItem('carrito')) || {};
 }
 
 function isSessionActive() {
