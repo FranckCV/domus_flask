@@ -58,13 +58,12 @@ from clases.clsImgNovedad import ImgNovedad as clsImgNovedad
 from clases.clsEstadoPedido import EstadoPedido as clsEstadoPedido
 from clases.clsTipoUsuario import TipoUsuario as clsTipoUsuario
 from clases.clsCaracteristica import Caracteristica as clsCaracteristica
-# from clases.clsCaracteristicas_subcategoria import CaracteristicasSubcategoria as clsCaracteristicaSubcategoria
+from clases.clsCaracteristicas_subcategoria import CaracteristicasSubcategoria as clsCaracteristicasSubcategoria
 from clases.clsRedesSociales import RedesSociales as clsRedesSociales
 from clases.clsInformacionDomus import InformacionDomus as clsInformacionDomus
 # from clases.clsTipoContenidoInfo import TipoContenidoInfo as clsTipoContenidoInfo
 # from clases.clsContenidoInfo import ContenidoInfo as clsContenidoInfo
 from clases.clsCupon import Cupon as clsCupon
-from clases.clsCuponUsuario import CuponUsuario as clsCuponUsuario
 
 
 # class User(object):
@@ -577,7 +576,7 @@ def cancelar_compra():
 
 
 
-###################################### CRUDS ##################################
+####################################################### CRUDS ####################################################################
 
 @app.after_request
 def no_cache(response):
@@ -667,6 +666,10 @@ def dashboard():
     return render_template("dashboard.html")
 
 
+
+
+
+
 @app.route("/agregar_marca")
 @login_requerido 
 def formulario_agregar_marca():
@@ -688,8 +691,15 @@ def guardar_marca():
     else:
         banner_binario = banner.read()
     
-
-    controlador_marcas.insertar_marca(marca,logo_binario,banner_binario)
+    objMarca = clsMarca(
+        p_id = None,
+        p_marca = marca,
+        p_img_logo = logo_binario,
+        p_img_banner = banner_binario,
+        p_fecha_registro = None,
+        p_disponibilidad = None
+    )
+    controlador_marcas.insertar_marca(objMarca.marca,objMarca.img_logo,objMarca.img_banner)
     return redirect("/listado_marcas")
 
 
@@ -745,12 +755,28 @@ def actualizar_marca():
     else:
         banner_binario = banner.read()
 
-    controlador_marcas.actualizar_marca(marca,logo_binario,banner_binario,disponibilidad,id)
+    objMarca = clsMarca(
+        p_id = id,
+        p_marca = marca,
+        p_img_logo = logo_binario,
+        p_img_banner = banner_binario,
+        p_fecha_registro = None,
+        p_disponibilidad = disponibilidad
+    )
+
+    controlador_marcas.actualizar_marca(objMarca.marca,objMarca.img_logo,objMarca.img_banner,objMarca.disponibilidad,objMarca.id)
     return redirect("/listado_marcas")
 
 
 
     # CARACTERISTICAS
+
+
+
+
+
+
+
 
 
 @app.route("/listado_caracteristicas_buscar")
@@ -827,8 +853,21 @@ def guardar_caracteristica():
 
         campo = request.form["campo"]
         subcategoria_id = request.form["subcategorySelect"]
-        id_carac = controlador_caracteristicas.insertar_caracteristica(campo)
-        controlador_caracteristicas.insertar_caracteristica_subcategoria(id_carac, subcategoria_id)
+
+        objCar = clsCaracteristica(
+            p_id = None,
+            p_campo = campo,
+            p_disponibilidad = None
+        )
+
+        id_carac = controlador_caracteristicas.insertar_caracteristica(objCar.campo)
+
+        objCarSub = clsCaracteristicasSubcategoria(
+            p_CARACTERISTICAid = id_carac,
+            p_subcategoriaid = subcategoria_id
+        )
+
+        controlador_caracteristicas.insertar_caracteristica_subcategoria(objCarSub.CARACTERISTICAid, objCarSub.subcategoriaid)
         return redirect("/listado_caracteristicas")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
@@ -887,10 +926,34 @@ def actualizar_caracteristica():
         campo = request.form["campo"]
         disp = request.form["disponibilidad"]
         subcategoria_id = request.form["subcategorySelect"]
-        controlador_caracteristicas.actualizar_caracteristica(campo, disp, subcategoria_id, sub_id, id)
+
+        objCar = clsCaracteristica(
+            p_id = id,
+            p_campo = campo,
+            p_disponibilidad = disp
+        )
+
+        objCarSub1 = clsCaracteristicasSubcategoria(
+            p_CARACTERISTICAid = id,
+            p_subcategoriaid = sub_id
+        )
+
+        objCarSub2 = clsCaracteristicasSubcategoria(
+            p_CARACTERISTICAid = id,
+            p_subcategoriaid = subcategoria_id
+        )
+
+        controlador_caracteristicas.actualizar_caracteristica(objCar.campo, objCar.disponibilidad, objCarSub2.subcategoriaid, objCarSub1.subcategoriaid, objCar.id)
         return redirect("/listado_caracteristicas")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
+
+
 
 
 @app.route("/listado_subcategorias")
@@ -974,7 +1037,16 @@ def guardar_subcategoria():
         nombre = request.form["nombre"]
         faicon_subcat = request.form["faicon_subcat"]
         categoria_id = request.form["categoria_id"]
-        controlador_subcategorias.insertar_subcategoria(nombre, faicon_subcat, 1, categoria_id)
+
+        objSub = clsSubcategoria(
+            p_id = None,
+            p_subcategoria = nombre,
+            p_faicon_subcat = faicon_subcat,
+            p_disponibilidad = 1,
+            p_CATEGORIAid = categoria_id
+        )
+
+        controlador_subcategorias.insertar_subcategoria(objSub.subcategoria, objSub.faicon_subcat, objSub.disponibilidad, objSub.CATEGORIAid)
         return redirect("/listado_subcategorias")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
@@ -1031,10 +1103,24 @@ def actualizar_subcategoria():
         faicon_subcat = request.form["faicon_subcat"]
         disponibilidad = request.form["disponibilidad"]
         categoria_id = request.form["categoria_id"]
-        controlador_subcategorias.actualizar_subcategoria(nombre, faicon_subcat, disponibilidad, categoria_id, id)
+
+        objSub = clsSubcategoria(
+            p_id = id,
+            p_subcategoria = nombre,
+            p_faicon_subcat = faicon_subcat,
+            p_disponibilidad = disponibilidad,
+            p_CATEGORIAid = categoria_id
+        )
+        print("equideeee")
+        controlador_subcategorias.actualizar_subcategoria(objSub.subcategoria, objSub.faicon_subcat, objSub.disponibilidad, objSub.CATEGORIAid, objSub.id)
         return redirect("/listado_subcategorias")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
 
 
 @app.route("/agregar_categoria")
@@ -1066,7 +1152,15 @@ def guardar_categoria():
         
         categoria = request.form["categoria"]
         faicon_cat = request.form["faicon_cat"]
-        controlador_categorias.insertar_categoria(categoria, faicon_cat, 1)
+
+        obj = clsCategoria(
+            p_id = None,
+            p_categoria = categoria,
+            p_faicon_cat = faicon_cat,
+            p_disponibilidad = 1
+        )
+
+        controlador_categorias.insertar_categoria(obj.categoria, obj.faicon_cat, obj.disponibilidad)
         return redirect("/listado_categorias")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
@@ -1145,10 +1239,22 @@ def actualizar_categoria():
         categoria = request.form["categoria"]
         faicon_cat = request.form["faicon_cat"]
         disponibilidad = request.form["disponibilidad"]
-        controlador_categorias.actualizar_categoria(categoria, faicon_cat, disponibilidad, id)
+        obj = clsCategoria(
+            p_id = id,
+            p_categoria = categoria,
+            p_faicon_cat = faicon_cat,
+            p_disponibilidad = disponibilidad
+        )
+        controlador_categorias.actualizar_categoria(obj.categoria, obj.faicon_cat, obj.disponibilidad, obj.id)
         return redirect("/listado_categorias")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
+
 
 
 @app.route("/comentarios_listado")
@@ -1233,11 +1339,24 @@ def guardar_comentario():
         # Usuario id como null (si no está disponible)
         usuario_id = None
 
-        controlador_comentario.insertar_comentario(nombres, apellidos, email, telefono, mensaje, estado, motivo_comentario_id, usuario_id)
+        obj = clsComentario(
+            p_id = None,
+            p_nombres = nombres,
+            p_apellidos = apellidos,
+            p_email = email,
+            p_celular = telefono,
+            p_mensaje = mensaje,
+            p_fecha_registro = None,
+            p_estado = 0,
+            p_MOTIVO_COMENTARIOid = motivo_comentario_id,
+            p_USUARIOid = None
+        )
+
+        controlador_comentario.insertar_comentario(obj.nombres, obj.apellidos, obj.email, obj.celular, obj.mensaje, obj.estado, obj.MOTIVO_COMENTARIOid, obj.USUARIOid)
 
         return redirect("/")
     else:
-        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+        return redirect(url_for('/'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_comentario", methods=["POST"])
@@ -1289,6 +1408,12 @@ def estado_comentario_respondido():
         return redirect(request.referrer)
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
+
 
 
 @app.route("/motivos_comentario_listado")
@@ -1354,7 +1479,14 @@ def guardar_motivo_comentario():
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
         motivo = request.form["motivo"]
-        controlador_motivo_comentario.insertar_motivo(motivo, 1)
+
+        obj = clsMotivoComentario(
+            p_id = None,
+            p_motivo = motivo,
+            p_disponibilidad = 1
+        )
+
+        controlador_motivo_comentario.insertar_motivo(obj.motivo, obj.disponibilidad)
         return redirect("/motivos_comentario_listado")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
@@ -1408,10 +1540,23 @@ def actualizar_motivo_comentario():
         id = request.form["id"]
         motivo = request.form["motivo"]
         disponibilidad = request.form["disponibilidad"]
-        controlador_motivo_comentario.actualizar_motivo(motivo, disponibilidad, id)
+
+        obj = clsMotivoComentario(
+            p_id = id,
+            p_motivo = motivo,
+            p_disponibilidad = disponibilidad
+        )
+
+        controlador_motivo_comentario.actualizar_motivo(obj.motivo, obj.disponibilidad , obj.id)
         return redirect("/motivos_comentario_listado")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
+
 
 
 @app.route("/cambiar_contrasenia=<int:id>")
@@ -1534,19 +1679,32 @@ def guardar_empleado():
         fecha_nacimiento = request.form["fecha_nacimiento"]
         telefono = request.form["telefono"]
         correo = request.form["correo"]
-        contraseña = controlador_empleados.clave_default_empleado()  
         # contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
-        
-        disponibilidad = 1
+
+        objUsuario = Usuario(
+            p_id=id,
+            p_nombres=nombres,
+            p_apellidos=apellidos,
+            p_doc_identidad=doc_identidad,
+            p_img_usuario=img_usuario,
+            p_genero=genero,
+            p_fecha_nacimiento=fecha_nacimiento,
+            p_telefono=telefono,
+            p_correo=correo,
+            p_contrasenia = controlador_empleados.clave_default_empleado() ,
+            p_disponibilidad=1,
+            p_fecha_registro=None,
+            p_TIPO_USUARIOid=2
+        )
 
     # Verificar si el correo ya existe
-        if controlador_empleados.verificar_correo_existente(correo):
+        if controlador_empleados.verificar_correo_existente(objUsuario.correo):
             error = "El correo se encuentra registrado. Intente con otro correo."
             return render_template("agregar_empleado.html", error=error, nombres=nombres, apellidos=apellidos, doc_identidad=doc_identidad, genero=genero, fecha_nacimiento=fecha_nacimiento, telefono=telefono, correo=correo)
 
         controlador_empleados.insertar_usuario(
-            nombres, apellidos, doc_identidad, img_usuario, genero, 
-            fecha_nacimiento, telefono, correo, contraseña, disponibilidad
+            objUsuario.nombres, objUsuario.apellidos, objUsuario.doc_identidad, objUsuario.img_usuario, objUsuario.genero, 
+            objUsuario.fecha_nacimiento, objUsuario.telefono, objUsuario.correo, objUsuario.contraseña, objUsuario.disponibilidad
         )
         return redirect("/empleados_listado")
     else:
@@ -1579,9 +1737,25 @@ def actualizar_empleado():
         disponibilidad = request.form["disponibilidad"]
 
         # epassword = encstringsha256(contraseña)
+        objUsuario = Usuario(
+            p_id=id,
+            p_nombres=nombres,
+            p_apellidos=apellidos,
+            p_doc_identidad=doc_identidad,
+            p_img_usuario=img_usuario,
+            p_genero=genero,
+            p_fecha_nacimiento=fecha_nacimiento,
+            p_telefono=telefono,
+            p_correo=correo,
+            p_contrasenia = controlador_empleados.clave_default_empleado() ,
+            p_disponibilidad=disponibilidad,
+            p_fecha_registro=None,
+            p_TIPO_USUARIOid=2
+        )
+
         controlador_empleados.actualizar_usuario_empleado(
-            nombres, apellidos, doc_identidad, img_usuario, genero, 
-            fecha_nacimiento, telefono, correo, disponibilidad, id
+            objUsuario.nombres, objUsuario.apellidos, objUsuario.doc_identidad, objUsuario.img_usuario, objUsuario.genero, 
+            objUsuario.fecha_nacimiento, objUsuario.telefono, objUsuario.correo, objUsuario.disponibilidad, objUsuario.id
         )
         return redirect("/empleados_listado")
     else:
@@ -1621,6 +1795,12 @@ def eliminar_empleado():
         return redirect("/empleados_listado")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
+
 
 
 @app.route("/eliminar_img_producto", methods=["POST"])
@@ -1667,8 +1847,40 @@ def guardar_producto():
     imagen = request.files["imagenProduct"]
     imagen_bin = imagen.read()
 
-    id_pro = controlador_productos.insertar_producto(nombre,price_regular,price_online,precio_oferta,infoAdicional,stock,marca_id,subcategoria_id)
-    controlador_imagenes_productos.insertar_img_producto(nombre,imagen_bin,1,id_pro)
+    objProducto = clsProducto(
+        p_id=None,
+        p_nombre=nombre,
+        p_price_regular=price_regular,
+        p_precio_online=price_online,
+        p_precio_oferta=precio_oferta,
+        p_info_adicional=infoAdicional,
+        p_stock=stock,
+        p_fecha_registro=None,
+        p_disponibilidad=1,
+        p_MARCAid=marca_id,
+        p_SUBCATEGORIAid=subcategoria_id
+    )
+
+    id_pro = controlador_productos.insertar_producto(
+        objProducto.nombre,
+        objProducto.price_regular,
+        objProducto.precio_online,
+        objProducto.precio_oferta,
+        objProducto.info_adicional,
+        objProducto.stock,
+        objProducto.MARCAid,
+        objProducto.SUBCATEGORIAid
+        )
+
+    objImgProducto = clsImgProducto(
+        p_id=None,
+        p_img_nombre=nombre+"_"+imagen.filename,
+        p_imagen=imagen,
+        p_imgPrincipal=1,
+        p_PRODUCTOid=id_pro
+    )
+
+    controlador_imagenes_productos.insertar_img_producto(objImgProducto.img_nombre,objImgProducto.imagen,objImgProducto.imgPrincipal,id_pro)
     
     files = request.files.getlist('imgsProd')
     for file in files:
@@ -1817,10 +2029,40 @@ def actualizar_producto():
     else:
         imagen_bin = imagen.read()
 
-    controlador_productos.actualizar_producto(nombre, price_regular, price_online, precio_oferta, infoAdicional, stock, disponibilidad, marca_id, subcategoria_id, id)
-    controlador_imagenes_productos.actualizar_img_producto(imagen_bin,id)
+    objProducto = clsProducto(
+        p_id=id,
+        p_nombre=nombre,
+        p_price_regular=price_regular,
+        p_precio_online=price_online,
+        p_precio_oferta=precio_oferta,
+        p_info_adicional=infoAdicional,
+        p_stock=stock,
+        p_fecha_registro=None,
+        p_disponibilidad=disponibilidad,
+        p_MARCAid=marca_id,
+        p_SUBCATEGORIAid=subcategoria_id
+    )
+
+    objImgProducto = clsImgProducto(
+        p_id=None,
+        p_img_nombre=None,
+        p_imagen=imagen_bin,
+        p_imgPrincipal=None,
+        p_PRODUCTOid=id
+    )
+
+
+    controlador_productos.actualizar_producto(objProducto.nombre, objProducto.price_regular, objProducto.precio_online, objProducto.precio_oferta, objProducto.info_adicional, objProducto.stock, objProducto.disponibilidad, objProducto.MARCAid, objProducto.SUBCATEGORIAid, objProducto.id)
+    controlador_imagenes_productos.actualizar_img_producto(objImgProducto.imagen,objImgProducto.PRODUCTOid)
     
     return redirect("/listado_productos")
+
+
+
+
+
+
+
 
 
 @app.route("/listado_tipos_novedad")
@@ -2169,6 +2411,10 @@ def actualizar_img_novedad():
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
+
+
+
+
 @app.route("/tipos_img_novedad_listado")
 @login_requerido  
 def tipos_img_novedad_listado():
@@ -2273,6 +2519,11 @@ def eliminar_tipo_img_novedad():
         return redirect("/tipos_img_novedad_listado")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
 
 
 @app.route("/ver_tipo_contenido_info=<int:id>")
@@ -2420,6 +2671,11 @@ def eliminar_tipo_contenido_info():
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
+
+
+
+
+
 @app.route("/listado_contenido_info")
 @login_requerido  
 def listado_contenido_info():
@@ -2550,6 +2806,10 @@ def eliminar_contenido_info():
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
+
+
+
+
 @app.route("/listado_estado_pedido")
 @login_requerido  
 def listado_estado_pedido():
@@ -2652,6 +2912,10 @@ def eliminar_estado_pedido():
         return redirect("/listado_estado_pedido")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
 
 
 @app.route("/listado_metodo_pago")
@@ -2757,6 +3021,12 @@ def eliminar_metodo_pago():
         return redirect("/listado_metodo_pago")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
+
 
 
 @app.route("/listado_redes_sociales")
@@ -2867,6 +3137,12 @@ def eliminar_redes_sociales():
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
+
+
+
+
+
+
 @app.route("/listado_cupones")
 @login_requerido  
 def listado_cupones():
@@ -2916,6 +3192,13 @@ def actualizar_cupones():
     disponibilidad = request.form["disponibilidad"]
     controlador_cupon.actualizar_cupon_por_id(codigo,fecha_ini,fecha_ven,cant_dcto,disponibilidad,id)
     return redirect("/listado_cupones")
+
+
+
+
+
+
+
 
 
 @app.route("/listado_datos_principales")
@@ -2991,6 +3274,11 @@ def actualizar_datos_principales():
         return redirect("/listado_datos_principales")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
 
 
 @app.route("/listado_tipos_usuario")
@@ -3111,6 +3399,12 @@ def eliminar_tipo_usuario():
         return redirect("/listado_tipos_usuario")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+
+
+
+
 
 
 @app.route("/listado_clientes")
@@ -3377,26 +3671,6 @@ def cambiar_contrasenia_cliente():
     return render_template('cambiarContraseñaCliente.html', user_id=user_id, usuario=usuario, img=img)
 
 
-
-
-
-# @app.route("/iniciar_sesion" , methods=["POST"])
-# def iniciar_sesion():
-#     email = request.form['username']
-#     password = request.form['password']
-#     user = controlador_users.obtener_user_por_email(email)
-#     epassword=encstringsha256(password)
-
-
-#     if user and user[2] == epassword:
-#         session['username'] = email
-#         resp = make_response(redirect("/discos"))
-#         resp.set_cookie('username',email)
-#         #return redirect("/discos")
-#         return resp
-#     else:
-#         return redirect("/login")
-
 ##################################### PARA PERFIL #################################################
 
 @app.route("/perfil=<int:user_id>")
@@ -3423,6 +3697,10 @@ def pedidos(user_id):
 #     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
 #     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
 #     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6baa6c99c3b6d59fbeca66fe8fe7b6bfbc00a463
 
 
 @app.route("/lista_deseos=<int:user_id>")
@@ -3470,8 +3748,6 @@ def imagen_usuario():
     return redirect(url_for('perfil', user_id=session.get('id') ))
 
 
-###################################CONFIRMAR PEDIDO###############################
-
 @app.route("/confirmar_compra", methods=['POST'])
 def confirmar_compra():
     usuario_id = session.get('id')
@@ -3494,11 +3770,6 @@ def confirmar_compra():
 
     return redirect("/")
 
-
-
-############################CANCELAR PEDIDO#########################
-
-#####################################LISTADO PEDIDOS#######################################
 
 @app.route("/listado_pedidos")
 def pedido():
@@ -3574,22 +3845,13 @@ def actualizar_detalle_pedido():
 
 
 
+
 # TEST DE API
 @app.route("/api_obtenerdiscos")
 @jwt_required()
 def api_obtenerdiscos():
     discos = controlador_categorias.obtener_listado_categorias()
     return jsonify(discos)
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -6643,6 +6905,7 @@ def api_actualizar_informacion_domus():
 ##################APIS tipo_contenido##########3
 
 @app.route("/api_insertar_tipo_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_insertar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -6667,6 +6930,7 @@ def api_insertar_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_tipo_contenido_info", methods=["GET"])
+# @jwt_required()
 def api_obtener_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -6682,6 +6946,7 @@ def api_obtener_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_tipo_contenido_info_por_id", methods=["POST"])
+# @jwt_required()
 def api_obtener_tipo_contenido_info_por_id():
     dictRespuesta = {}
     try:
@@ -6709,6 +6974,7 @@ def api_obtener_tipo_contenido_info_por_id():
     return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_tipo_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_actualizar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -6735,6 +7001,7 @@ def api_actualizar_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_tipo_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_eliminar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -6760,6 +7027,7 @@ def api_eliminar_tipo_contenido_info():
 
 #######################APIS CONTENIDO INFO###############
 @app.route("/api_insertar_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_insertar_contenido_info():
     dictRespuesta = {}
     try:
@@ -6784,6 +7052,7 @@ def api_insertar_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_contenido_info", methods=["GET"])
+# @jwt_required()
 def api_obtener_contenido_info():
     dictRespuesta = {}
     try:
@@ -6799,6 +7068,7 @@ def api_obtener_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_contenido_info_por_id", methods=["POST"])
+# @jwt_required()
 def api_obtener_contenido_info_por_id():
     dictRespuesta = {}
     try:
@@ -6832,6 +7102,7 @@ def api_obtener_contenido_info_por_id():
     return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_actualizar_contenido_info():
     dictRespuesta = {}
     try:
@@ -6857,6 +7128,7 @@ def api_actualizar_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_contenido_info", methods=["POST"])
+# @jwt_required()
 def api_eliminar_contenido_info():
     dictRespuesta = {}
     try:
@@ -6884,6 +7156,7 @@ def api_eliminar_contenido_info():
 
 #######################APIS CUPONES##############
 @app.route("/api_insertar_cupon", methods=["POST"])
+# @jwt_required()
 def api_insertar_cupon():
     dictRespuesta = {}
     try:
@@ -6912,6 +7185,7 @@ def api_insertar_cupon():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_cupones", methods=["GET"])
+# @jwt_required()
 def api_obtener_cupones():
     dictRespuesta = {}
     try:
@@ -6928,6 +7202,7 @@ def api_obtener_cupones():
 
 
 @app.route("/api_obtener_cupon_por_id", methods=["POST"])
+# @jwt_required()
 def api_obtener_cupon_por_id():
     dictRespuesta = {}
     try:
@@ -6965,6 +7240,7 @@ def api_obtener_cupon_por_id():
 
 
 @app.route("/api_actualizar_cupon", methods=["POST"])
+# @jwt_required()
 def api_actualizar_cupon():
     dictRespuesta = {}
     try:
@@ -6996,6 +7272,7 @@ def api_actualizar_cupon():
 
 
 @app.route("/api_eliminar_cupon", methods=["POST"])
+# @jwt_required()
 def api_eliminar_cupon():
     dictRespuesta = {}
     try:
@@ -7020,6 +7297,223 @@ def api_eliminar_cupon():
 
 ######################FIN APIS CUPONES############3
 
+######################APIS IMG_PRODUCTO#####################
+
+@app.route("/api_insertar_img_producto", methods=["POST"])
+# @jwt_required()
+def api_insertar_img_producto():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_nombre = data.get("img_nombre")
+        imagen = data.get("imagen")  # La imagen debe estar en Base64
+        imgPrincipal = data.get("imgPrincipal")
+        producto_id = data.get("producto_id")
+
+        if not img_nombre or not imagen or imgPrincipal is None or not producto_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (img_nombre, imagen, imgPrincipal, producto_id)"
+            return jsonify(dictRespuesta)
+
+        # Crear un objeto de la clase ImgProducto
+        img_producto = clsImgProducto(None, img_nombre, imagen, imgPrincipal, producto_id)
+
+        # Insertar la imagen de producto
+        controlador_imagenes_productos.insertar_img_producto(img_producto.img_nombre, img_producto.imagen, img_producto.imgPrincipal, img_producto.PRODUCTOid)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de producto insertada con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar imagen de producto: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_imagenes_por_producto", methods=["POST"])
+# @jwt_required()
+def api_obtener_imagenes_por_producto():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        producto_id = data.get("id")
+
+        if not producto_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del producto"
+            return jsonify(dictRespuesta)
+
+        # Obtener todas las imágenes de un producto
+        imagenes = controlador_imagenes_productos.obtener_imagenes_por_producto(producto_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imágenes obtenidas con éxito"
+        dictRespuesta["data"] = imagenes
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener imágenes de producto: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_imagen_por_id", methods=["POST"])
+# @jwt_required()
+def api_obtener_imagen_por_id():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_id = data.get("id")
+
+        if not img_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la imagen"
+            return jsonify(dictRespuesta)
+
+        # Obtener la imagen de producto por su ID
+        imagen = controlador_imagenes_productos.obtener_imagen_por_id(img_id)
+
+        if imagen:
+            # Convertir la imagen de bytes a Base64
+            imagen_base64 = base64.b64encode(imagen[1]).decode('utf-8')
+
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Imagen obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": imagen[0],
+                "imagen": imagen_base64,  # Imagen en formato Base64
+                "producto_id": imagen[2]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Imagen no encontrada"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener imagen de producto: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_img_producto", methods=["POST"])
+# @jwt_required()
+def api_actualizar_img_producto():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del request
+        data = request.get_json()
+
+        # Obtener el ID del producto y la nueva imagen en Base64
+        img_id = data.get("id")
+        imagen_base64 = data.get("imagen")  # La imagen nueva en Base64
+
+        # Validación de los campos requeridos
+        if not img_id or not imagen_base64:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (id, imagen)"
+            return jsonify(dictRespuesta)
+
+        # Decodificar la imagen de Base64 a bytes
+        imagen_bytes = base64.b64decode(imagen_base64)
+
+        # Crear un objeto de la clase ImgProducto con la imagen en bytes
+        img_producto = clsImgProducto(p_id=img_id, p_img_nombre=None, p_imagen=imagen_bytes, p_imgPrincipal=1, p_PRODUCTOid=None)
+
+        # Llamar al controlador para actualizar la imagen
+        controlador_imagenes_productos.actualizar_img_producto(img_producto.imagen, img_producto.id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de producto actualizada con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar imagen de producto: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_eliminar_img_producto", methods=["POST"])
+# @jwt_required()
+def api_eliminar_img_producto():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_id = data.get("id")
+
+        if not img_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la imagen"
+            return jsonify(dictRespuesta)
+
+        # Eliminar la imagen de producto
+        controlador_imagenes_productos.eliminar_img_producto(img_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de producto eliminada con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar imagen de producto: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+####################FIN APIS IMG_PRODUCTO#####################
+
+#######################APIS LISTA DESEOS#################
+@app.route("/api_obtener_lista_deseos", methods=["POST"])
+# @jwt_required()
+def api_obtener_lista_deseos():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del request
+        data = request.get_json()
+
+        # Obtener el ID del usuario
+        usuario_id = data.get("id")
+
+        # Validación de los campos requeridos
+        if not usuario_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del usuario"
+            return jsonify(dictRespuesta)
+
+        # Llamar a la función para obtener la lista de deseos
+        lista_deseos = controlador_lista_deseos.obtenerListaDeseos(usuario_id)
+
+        if lista_deseos:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Lista de deseos obtenida con éxito"
+            dictRespuesta["data"] = [{"id": item[0], "nombre": item[1]} for item in lista_deseos]
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "No se encontraron productos en la lista de deseos"
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la lista de deseos: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+@app.route("/api_agregar_quitar_lista_deseos", methods=["POST"])
+# @jwt_required()
+def api_agregar_quitar_lista_deseos():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+
+        usuario_id = data.get("usuarioid")
+        producto_id = data.get("productoid")
+
+        if not usuario_id or not producto_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (usuarioid, productoid)"
+            return jsonify(dictRespuesta)
+        
+        controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Producto agregado o quitado de la lista de deseos con éxito"
+        
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al agregar o quitar producto: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+################FIN APIS LISTA DESEOS################
 
 # EJECUTAR
 
