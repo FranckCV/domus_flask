@@ -66,7 +66,7 @@ def insertar_comentario(nombres, apellidos, email, celular, mensaje, estado, MOT
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
         # Usar CURDATE() para guardar solo la fecha actual
-        cursor.execute("INSERT INTO " + tabla + "(nombres, apellidos, email, celular, mensaje, date(fecha_registro), estado, MOTIVO_COMENTARIOid, USUARIOid) VALUES (%s, %s, %s, %s, %s, CURDATE(), %s, %s, %s)", 
+        cursor.execute("INSERT INTO " + tabla + "(nombres, apellidos, email, celular, mensaje, estado, MOTIVO_COMENTARIOid, USUARIOid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
                        (nombres, apellidos, email, celular, mensaje, estado, MOTIVO_COMENTARIOid, USUARIOid))
     conexion.commit()
     conexion.close()

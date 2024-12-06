@@ -25,8 +25,33 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
         print(f"Error al insertar el usuario: {e}")
         return -1  
     finally:
-        conexion.close() 
+        conexion.close()
 
+def insertar_usuario_api(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuario):
+    conexion = obtener_conexion() 
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT correo FROM usuario WHERE correo = %s", (correo,))
+            result = cursor.fetchone()
+
+            if result is not None:
+                return 0  # retornar un 0 pa decirle que ya existe que mejor recupere su contra XD
+
+            cursor.execute(
+                "INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuario)
+            )
+
+            usuario_id = cursor.lastrowid # pa mandarle mensaje de exito por pantalla maybe
+
+            conexion.commit()  
+            return usuario_id  
+    except Exception as e:
+        print(f"Error al insertar el usuario: {e}")
+        return -1  
+    finally:
+        conexion.close() 
 
 def confirmarDatos(correo, contrasenia):
     conexion= obtener_conexion()

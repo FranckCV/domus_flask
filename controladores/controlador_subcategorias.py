@@ -92,6 +92,24 @@ def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
     conexion.commit()
     conexion.close()
 
+def insertar_subcategoria_api(nombre, faicon_subcat, disponibilidad, categoriaid):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute("INSERT INTO subcategoria(subcategoria, faicon_subcat, disponibilidad, categoriaid) VALUES (%s, %s, %s, %s)", 
+                           (nombre, faicon_subcat, disponibilidad, categoriaid))
+            
+            cursor.execute('SELECT LAST_INSERT_ID();')
+            id_subcategoria = cursor.fetchone()[0]
+        
+        conexion.commit()
+    except Exception as e:
+        conexion.rollback()
+        raise e
+    finally:
+        conexion.close()
+    return id_subcategoria
+
 
 def obtener_subcategorias():
     conexion = obtener_conexion()
