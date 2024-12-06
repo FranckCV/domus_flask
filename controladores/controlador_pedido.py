@@ -290,4 +290,22 @@ def obtener_pedidos_usuario(usuario_id):
     return pedidos
 
 
+##############agrego###########
+def obtener_pedidos_por_usuario_validacion_stock(usuario_id):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute(''' 
+                SELECT id FROM pedido WHERE estado_pedidoid = 1 AND usuarioid = %s LIMIT 1; 
+            ''', (usuario_id,))
+            resultado = cursor.fetchone()  # Obtiene el primer pedido encontrado
+
+            if resultado:
+                return resultado[0]  # Retorna solo el id del primer pedido
+            return None  # Si no hay pedidos con estado 1, retorna None
+    except Exception as e:
+        print(f"Error al obtener el pedido para el usuario {usuario_id}: {e}")
+        return None
+    finally:
+        conexion.close()
 
