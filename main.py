@@ -32,6 +32,7 @@ import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
 import controladores.controlador_empleados as controlador_empleados
+import controladores.controlador_lista_deseos as controlador_lista_deseos
 
 from datetime import datetime, date
 
@@ -170,9 +171,17 @@ def index():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasPopulares()
     novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
     novedadesRecientes = controlador_novedades.obtenerNovedadesRecientes()
-    return render_template("index.html", novedadesRecientes = novedadesRecientes , marcasBloque = marcasBloque ,
-                           productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
-
+    lista_deseos = controlador_lista_deseos.obtenerListaDeseos(session.get('id'))
+    
+    lista_deseos_ids = [producto[0] for producto in lista_deseos]
+    print(lista_deseos_ids)
+    return render_template("index.html", 
+                           novedadesRecientes=novedadesRecientes, 
+                           marcasBloque=marcasBloque,
+                           productosRecientes=productosRecientes, 
+                           productosPopulares=productosPopulares,
+                           novedadesBanner=novedadesBanner, 
+                           lista_deseos_ids=lista_deseos_ids)
 
 @app.route("/nuestras_marcas")
 def nuestras_marcas():
@@ -2182,6 +2191,41 @@ def perfil(user_id):
     else:
         return redirect('/iniciar_sesion')
     
+@app.route("/detalle_pedido_perfil=<int:user_id>")
+def detalle_pedido_perfil(user_id):
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
+    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+
+    return render_template("miDetallePedido_perfil.html", 
+                           pedidos=pedidos,  # Ahora pasamos todos los pedidos
+                           metodos=metodos, user_id=user_id,usuario=usuario,img=img )
+
+@app.route("/lista_deseos=<int:user_id>")
+def lista_deseos(user_id):
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+
+    return render_template("listaDeseos.html",user_id=user_id,usuario=usuario,img=img )   
+    
+from flask import redirect, url_for, request, session, flash
+
+@app.route('/agregar_a_lista_deseos', methods=['POST'])
+def agregar_a_lista_deseos():
+    usuario_id = session.get('id')
+    
+    if not usuario_id:
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
+
+    producto_id = request.form['producto_id']
+    
+    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id,producto_id)
+    
+    return redirect(request.referrer) 
+
+   
+    
 @app.route("/insertar_imagen_usuario", methods=['POST'])
 def imagen_usuario():
     if 'imagen' not in request.files:
@@ -2272,6 +2316,7 @@ def detalle_pedido(id):
     estados = controlador_estado_pedido.obtener_listado_estados_pedido()
     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
     return render_template("listado_detalle_pedido.html", detalles=detalles , pedido_id=id , pedido = pedido , estados = estados , metodos = metodos)
+
 
 
 @app.route("/eliminar_detalle_pedido", methods=["POST"])

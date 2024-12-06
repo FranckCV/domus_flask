@@ -1,1 +1,25 @@
-    
+{% extends 'maestra_perfil.html' %}
+
+{% block estilos_perfil %}
+<link rel="stylesheet" href="static/css/listaDeseos.css"/>
+
+{% endblock %}
+
+{% block contenido_perfil %}
+<div class="detalle">
+  <h2>Lista de deseos</h2>
+  <div class="tarjetas">
+      {% for producto in lista %}
+      <div class="tarjeta">
+          <img src="{{ producto.1 }}" alt="imagen de producto" class="imagen_producto">
+          <p class="product_name">{{ producto.2 }}</p>
+      </div>
+      {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts_perfil %}
+
+{% endblock %}

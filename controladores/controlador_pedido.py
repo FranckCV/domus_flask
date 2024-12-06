@@ -217,3 +217,46 @@ def obtener_listado_pedidos_usuario_id(id):
     conexion.close()
     return pedido
 
+
+######################################
+def obtener_pedidos_usuario(usuario_id):
+    conexion = obtener_conexion()
+    pedidos = []
+    with conexion.cursor() as cursor:
+        cursor.execute(''' 
+            SELECT 
+                P.id,
+                P.fecha_compra,
+                P.subtotal,
+                P.METODO_PAGOid,
+                CONCAT(u.nombres, ' ' , u.apellidos) as nombre,
+                P.ESTADO_PEDIDOid,
+                sum(dpe.cantidad) as total_productos,
+                met.disponibilidad,
+                P.usuarioid,
+                pr.imagen  -- Suponiendo que la imagen está en el campo `imagen` de la tabla producto
+            FROM pedido P
+            LEFT JOIN usuario U ON U.id = P.USUARIOid
+            LEFT JOIN detalles_pedido dpe ON dpe.pedidoid = P.id
+            LEFT JOIN producto pr ON pr.id = dpe.productoid
+            LEFT JOIN metodo_pago met ON p.METODO_PAGOid = met.id
+            WHERE P.usuarioid = %s
+            GROUP BY P.id
+            ORDER BY P.ESTADO_PEDIDOid, P.fecha_compra DESC
+        ''', (usuario_id,))
+        
+        pedidos = cursor.fetchall()
+
+    # Convertir las imágenes a base64
+    for pedido in pedidos:
+        for i, producto in enumerate(pedido['productos']):
+            img_binario = producto['imagen']  
+            if img_binario:
+                imagen_base64 = base64.b64encode(img_binario).decode('utf-8')
+                imagen = f"data:image/png;base64,{imagen_base64}"
+                producto['imagen_base64'] = imagen
+            else:
+                producto['imagen_base64'] = "" 
+
+    conexion.close()
+    return pedidos
