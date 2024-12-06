@@ -3345,7 +3345,7 @@ def api_actualizar_comentario():
 
 ############################FIN COMENTARIOS####################################UUUUUUUUUUU
 
-############################PEDIDO#############################
+############################APIS PEDIDO#############################
 @app.route("/api_guardar_pedido", methods=["POST"])
 # @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_guardar_pedido():
@@ -3550,8 +3550,143 @@ def api_listar_pedido():
 
         return jsonify(dictRespuesta)
 
-
 ############################FIN PEDIDOS########################
+
+##################3APIS DETALLE#############3
+@app.route("/api_obtener_detalles_por_usuario", methods=["POST"])
+# @jwt_required()
+def api_obtener_detalles_por_usuario():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del usuario desde el cuerpo de la solicitud
+        id_usuario = request.json.get("id")
+
+        if not id_usuario:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        # Obtener los detalles del pedido para el usuario
+        detalles = controlador_detalle.obtener_Detalle(id_usuario)
+
+        if detalles:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Detalles obtenidos con éxito"
+            dictRespuesta["data"] = detalles
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "No se encontraron detalles"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los detalles: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_detalles_por_pedido", methods=["POST"])
+# @jwt_required()
+def api_obtener_detalles_por_pedido():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del pedido desde el cuerpo de la solicitud
+        id_pedido = request.json.get("id")
+
+        if not id_pedido:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        # Obtener los detalles del pedido
+        detalles = controlador_detalle.obtener_Detalle_por_Id_pedido(id_pedido)
+
+        if detalles:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Detalles obtenidos con éxito"
+            dictRespuesta["data"] = detalles
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "No se encontraron detalles"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los detalles: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_detalle", methods=["POST"])
+# @jwt_required()
+def api_eliminar_detalle():
+    dictRespuesta = {}
+    try:
+        # Obtener los parámetros desde el cuerpo de la solicitud
+        producto_id = request.json.get("producto_id")
+        pedido_id = request.json.get("pedido_id")
+
+        if not producto_id or not pedido_id:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Los campos 'producto_id' y 'pedido_id' son obligatorios"
+            return jsonify(dictRespuesta)
+
+        # Eliminar el detalle del pedido
+        controlador_detalle.eliminar_detalle(producto_id, pedido_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Detalle eliminado correctamente"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar detalle: {str(e)}"
+        return jsonify(dictRespuesta)
+    
+@app.route("/api_editar_detalle", methods=["POST"])
+@jwt_required()
+def api_editar_detalle():
+    dictRespuesta = {}
+    try:
+        # Obtener los parámetros desde el cuerpo de la solicitud
+        producto_id = request.json.get("producto_id")
+        pedido_id = request.json.get("pedido_id")
+        nueva_cantidad = request.json.get("nueva_cantidad")
+
+        if not producto_id or not pedido_id or not nueva_cantidad:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Los campos 'producto_id', 'pedido_id' y 'nueva_cantidad' son obligatorios"
+            return jsonify(dictRespuesta)
+
+        # Editar la cantidad del detalle
+        controlador_detalle.editar_detalle(producto_id, pedido_id, nueva_cantidad)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Detalle actualizado correctamente"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al editar detalle: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route('/api_guardar_detalle', methods=['POST'])
+def api_guardar_detalle():
+    try:
+        # Recibimos los datos desde el JSON de la petición
+        data = request.get_json()
+        producto_id = data['producto_id']
+        pedido_id = data['pedido_id']
+        cantidad = data['cantidad']
+
+        # Llamamos a la función para guardar el detalle
+        controlador_detalle.guardar_detalle(producto_id, pedido_id, cantidad)
+
+        # Retornamos una respuesta de éxito
+        return jsonify({"message": "Detalle guardado correctamente"}), 200
+    except Exception as e:
+        # Retornamos una respuesta de error
+        return jsonify({"message": f"Error al guardar detalle: {e}"}), 400
+
 
 # EJECUTAR
 

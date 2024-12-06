@@ -257,3 +257,21 @@ def obtenerCantidadDetallePorUsuario(id):
     except Exception as e:
         print(f"Error al obtener detalles: {e}")
         return 0 
+
+def guardar_detalle(producto_id, pedido_id, cantidad):
+    conexion = obtener_conexion()
+
+    try:
+        with conexion.cursor() as cursor:
+            # Insertamos un nuevo detalle en la tabla detalles_pedido
+            sql = '''
+                INSERT INTO detalles_pedido (PRODUCTOid, PEDIDOid, cantidad)
+                VALUES (%s, %s, %s)
+            '''
+            cursor.execute(sql, (producto_id, pedido_id, cantidad))
+            conexion.commit()  # Confirmamos la transacción
+            print(f"Detalle del producto {producto_id} en el pedido {pedido_id} guardado correctamente.")
+    except Exception as e:
+        print(f"Error al guardar detalle: {e}")
+    finally:
+        conexion.close()
