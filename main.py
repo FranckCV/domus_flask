@@ -6380,6 +6380,500 @@ def api_eliminar_red_social():
     
 #######################FIN APIS REDES SOCIALES################
 
+##########################APIS INFORMACION DOMUS#################
+@app.route("/api_obtener_informacion_domus", methods=["GET"])
+# @jwt_required()
+def api_obtener_informacion_domus():
+    dictRespuesta = {}
+    try:
+        datos = controlador_informacion_domus.obtener_informacion_domus()
+        if datos:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Información obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": datos[0],
+                "correo": datos[1],
+                "numero": datos[2],
+                "imgLogo": datos[3],
+                "imgIcon": datos[4],
+                "descripcion": datos[5],
+                "historia": datos[6],
+                "vision": datos[7],
+                "valores": datos[8],
+                "mision": datos[9]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "No se encontró información"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la información: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_informacion_domus_por_id", methods=["POST"])
+# @jwt_required()
+def api_obtener_informacion_domus_por_id():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        id = data.get("id")
+
+        if not id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la información"
+            return jsonify(dictRespuesta)
+
+        datos = controlador_informacion_domus.obtener_informacion_domus_por_id(id)
+        if datos:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Información obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": datos[0],
+                "correo": datos[1],
+                "numero": datos[2],
+                "imgLogo": datos[3],
+                "imgIcon": datos[4],
+                "descripcion": datos[5],
+                "historia": datos[6],
+                "vision": datos[7],
+                "valores": datos[8],
+                "mision": datos[9]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Información no encontrada"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la información: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_actualizar_informacion_domus", methods=["POST"])
+# @jwt_required()
+def api_actualizar_informacion_domus():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+
+        # Crear un objeto InformacionDomus con los datos recibidos
+        informacion_domus = clsInformacionDomus(
+            p_id=data.get("id"),
+            p_correo=data.get("correo"),
+            p_numero=data.get("numero"),
+            p_imgLogo=data.get("imgLogo"),
+            p_imgIcon=data.get("imgIcon"),
+            p_descripcion=data.get("descripcion"),
+            p_historia=data.get("historia"),
+            p_vision=data.get("vision"),
+            p_valores=data.get("valores"),
+            p_mision=data.get("mision")
+        )
+
+        # Actualizar la información en la base de datos usando el objeto
+        controlador_informacion_domus.actualizar_informacion_domus_por_id(
+            correo=informacion_domus.correo,
+            numero=informacion_domus.numero,
+            imgLogo=None,
+            imgIcon=None,
+            descripcion=informacion_domus.descripcion,
+            historia=informacion_domus.historia,
+            vision=informacion_domus.vision,
+            valores=informacion_domus.valores,
+            mision=informacion_domus.mision,
+            id=informacion_domus.id
+        )
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Información actualizada con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la información: {str(e)}"
+    
+    return jsonify(dictRespuesta)
+
+#####################FIN APIS INFORMACION DOMUS#################
+
+##################APIS tipo_contenido##########3
+
+@app.route("/api_insertar_tipo_contenido_info", methods=["POST"])
+def api_insertar_tipo_contenido_info():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        nombre = data.get("nombre")
+        descripcion = data.get("descripcion")
+        faicon_cont = data.get("faicon_cont")
+
+        if not nombre or not descripcion or not faicon_cont:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (nombre, descripcion, faicon_cont)"
+            return jsonify(dictRespuesta)
+
+        # Llamar la función de inserción
+        controlador_contenido_info.insertar_tipo_contenido_info(nombre, descripcion, faicon_cont)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de contenido insertado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar tipo de contenido: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_tipo_contenido_info", methods=["GET"])
+def api_obtener_tipo_contenido_info():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos desde la base de datos
+        tipo_contenidos = controlador_contenido_info.obtener_datos_contenido_info()
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipos de contenido obtenidos con éxito"
+        dictRespuesta["data"] = tipo_contenidos
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los tipos de contenido: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_tipo_contenido_info_por_id", methods=["POST"])
+def api_obtener_tipo_contenido_info_por_id():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        tipo_contenido_id = data.get("id")
+
+        if not tipo_contenido_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del tipo de contenido"
+            return jsonify(dictRespuesta)
+
+        # Obtener el tipo de contenido específico
+        tipo_contenido = controlador_contenido_info.obtener_tipo_contenido_info_por_id(tipo_contenido_id)
+
+        if tipo_contenido:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Tipo de contenido obtenido con éxito"
+            dictRespuesta["data"] = tipo_contenido
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Tipo de contenido no encontrado"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener tipo de contenido por ID: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_tipo_contenido_info", methods=["POST"])
+def api_actualizar_tipo_contenido_info():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        tipo_contenido_id = data.get("id")
+        nombre = data.get("nombre")
+        descripcion = data.get("descripcion")
+        faicon_cont = data.get("faicon_cont")
+        disponibilidad = data.get("disponibilidad")
+
+        if not tipo_contenido_id or not nombre or not descripcion or not faicon_cont:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (id, nombre, descripcion, faicon_cont)"
+            return jsonify(dictRespuesta)
+
+        # Actualizar el tipo de contenido
+        controlador_contenido_info.actualizar_tipo_contenido_info_por_id(nombre, descripcion, faicon_cont, disponibilidad, tipo_contenido_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de contenido actualizado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar tipo de contenido: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_tipo_contenido_info", methods=["POST"])
+def api_eliminar_tipo_contenido_info():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        tipo_contenido_id = data.get("id")
+
+        if not tipo_contenido_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del tipo de contenido"
+            return jsonify(dictRespuesta)
+
+        # Eliminar el tipo de contenido
+        controlador_contenido_info.eliminar_tipo_contenido_info(tipo_contenido_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de contenido eliminado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar tipo de contenido: {str(e)}"
+    return jsonify(dictRespuesta)
+
+###############3FIN APIS TIPO CONTENID#####
+
+#######################APIS CONTENIDO INFO###############
+@app.route("/api_insertar_contenido_info", methods=["POST"])
+def api_insertar_contenido_info():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        titulo = data.get("titulo")
+        cuerpo = data.get("cuerpo")
+        tipo_contenido_infoid = data.get("tipo_contenido_infoid")
+
+        if not titulo or not cuerpo or not tipo_contenido_infoid:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (titulo, cuerpo, tipo_contenido_infoid)"
+            return jsonify(dictRespuesta)
+
+        # Llamar la función de inserción
+        controlador_contenido_info.insertar_contenido_info(titulo, cuerpo, tipo_contenido_infoid)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Contenido insertado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar contenido: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_contenido_info", methods=["GET"])
+def api_obtener_contenido_info():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos desde la base de datos
+        contenidos = controlador_contenido_info.obtener_datos_contenido_info()
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Contenidos obtenidos con éxito"
+        dictRespuesta["data"] = contenidos
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los contenidos: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_contenido_info_por_id", methods=["POST"])
+def api_obtener_contenido_info_por_id():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        contenido_id = data.get("id")
+
+        if not contenido_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del contenido"
+            return jsonify(dictRespuesta)
+
+        # Obtener el contenido específico
+        contenido = controlador_contenido_info.obtener_contenido_info_por_id(contenido_id)
+
+        if contenido:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Contenido obtenido con éxito"
+            dictRespuesta["data"] = {
+                "id": contenido[0],
+                "titulo": contenido[1],
+                "cuerpo": contenido[2],
+                "tipo_contenido_infoid": contenido[3]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Contenido no encontrado"
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener contenido por ID: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_contenido_info", methods=["POST"])
+def api_actualizar_contenido_info():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        contenido_id = data.get("id")
+        titulo = data.get("titulo")
+        cuerpo = data.get("cuerpo")
+        tipo_contenido_infoid = data.get("tipo_contenido_infoid")
+
+        if not contenido_id or not titulo or not cuerpo or not tipo_contenido_infoid:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (id, titulo, cuerpo, tipo_contenido_infoid)"
+            return jsonify(dictRespuesta)
+
+        # Actualizar el contenido
+        controlador_contenido_info.actualizar_contenido_info_por_id(titulo, cuerpo, tipo_contenido_infoid, contenido_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Contenido actualizado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar contenido: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_contenido_info", methods=["POST"])
+def api_eliminar_contenido_info():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        contenido_id = data.get("id")
+
+        if not contenido_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del contenido"
+            return jsonify(dictRespuesta)
+
+        # Eliminar el contenido
+        controlador_contenido_info.eliminar_contenido_info(contenido_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Contenido eliminado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar contenido: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+##############FIN APIS CONTENIDO_INFO
+
+
+#######################APIS CUPONES##############
+@app.route("/api_insertar_cupon", methods=["POST"])
+def api_insertar_cupon():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        codigo = data.get("codigo")
+        fecha_inicio = data.get("fecha_inicio")
+        fecha_vencimiento = data.get("fecha_vencimiento")
+        cant_descuento = data.get("cant_descuento")
+
+        if not codigo or not fecha_inicio or not fecha_vencimiento or not cant_descuento:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (codigo, fecha_inicio, fecha_vencimiento, cant_descuento)"
+            return jsonify(dictRespuesta)
+
+        # Crear un objeto de la clase Cupon
+        cupon = clsCupon(None, codigo, None, fecha_inicio, fecha_vencimiento, cant_descuento)
+
+        # Insertar el cupón
+        controlador_cupon.insertar_cupon(cupon.codigo, cupon.fecha_inicio, cupon.fecha_vencimiento, cupon.cant_descuento)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Cupón insertado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar cupón: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_cupones", methods=["GET"])
+def api_obtener_cupones():
+    dictRespuesta = {}
+    try:
+        # Obtener todos los cupones
+        cupones = controlador_cupon.obtener_cupones()
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Cupones obtenidos con éxito"
+        dictRespuesta["data"] = cupones
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener cupones: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_cupon_por_id", methods=["POST"])
+def api_obtener_cupon_por_id():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        cupon_id = data.get("id")
+
+        if not cupon_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del cupón"
+            return jsonify(dictRespuesta)
+
+        # Obtener el cupón específico
+        cupon = controlador_cupon.obtener_cupon_por_id(cupon_id)
+
+        if cupon:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Cupón obtenido con éxito"
+            dictRespuesta["data"] = {
+                "id": cupon[0],
+                "codigo": cupon[1],
+                "fecha_registro": cupon[2],
+                "fecha_inicio": cupon[3],
+                "fecha_vencimiento": cupon[4],
+                "cant_descuento": cupon[5],
+                "disponibilidad": cupon[6]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Cupón no encontrado"
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener cupón por ID: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_actualizar_cupon", methods=["POST"])
+def api_actualizar_cupon():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        cupon_id = data.get("id")
+        codigo = data.get("codigo")
+        fecha_inicio = data.get("fecha_inicio")
+        fecha_vencimiento = data.get("fecha_vencimiento")
+        cant_descuento = data.get("cant_descuento")
+        disponibilidad = data.get("disponibilidad")
+
+        if not cupon_id or not codigo or not fecha_inicio or not fecha_vencimiento or not cant_descuento or disponibilidad is None:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Faltan campos requeridos (id, codigo, fecha_inicio, fecha_vencimiento, cant_descuento, disponibilidad)"
+            return jsonify(dictRespuesta)
+
+        # Crear un objeto de la clase Cupon
+        cupon = clsCupon(cupon_id, codigo, None, fecha_inicio, fecha_vencimiento, cant_descuento)
+
+        # Actualizar el cupón
+        controlador_cupon.actualizar_cupon_por_id(cupon.codigo, cupon.fecha_inicio, cupon.fecha_vencimiento, cupon.cant_descuento, disponibilidad, cupon.id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Cupón actualizado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar cupón: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_eliminar_cupon", methods=["POST"])
+def api_eliminar_cupon():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        cupon_id = data.get("id")
+
+        if not cupon_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del cupón"
+            return jsonify(dictRespuesta)
+
+        # Eliminar el cupón
+        controlador_cupon.eliminar_cupon(cupon_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Cupón eliminado con éxito"
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar cupón: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+######################FIN APIS CUPONES############3
+
 
 # EJECUTAR
 
