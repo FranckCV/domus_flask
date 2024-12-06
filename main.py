@@ -33,6 +33,36 @@ import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
 
+from datetime import datetime
+
+from clases.clsMarca import Marca as clsMarca
+from clases.clsProducto import Producto as clsProducto
+from clases.clsSubcategoria import Subcategoria as clsSubcategoria
+from clases.clsCategoria import Categoria as clsCategoria
+from clases.clsPedido import Pedido as clsPedido
+from clases.clsUsuario import Usuario as clsUsuario
+from clases.clsImgProducto import ImgProducto as clsImgProducto
+from clases.clsDetallesPedido import DetallesPedido as clsDetallesPedido
+from clases.clsListaDeseos import ListaDeseos as clsListaDeseos
+from clases.clsComentario import Comentario as clsComentario
+from clases.clsMotivo_comentario import MotivoComentario as clsMotivoComentario
+from clases.clsTipo_novedad import TipoNovedad as clsTipoNovedad
+from clases.clsNovedad import Novedad as clsNovedad
+from clases.clsCaracteristicas_producto import CaracteristicasProducto as clsCaracteristicaProducto
+from clases.clsMetodoPago import MetodoPago as clsMetodoPago
+from clases.clsTipoImgNovedad import TipoImgNovedad as clsTipoImgNovedad
+from clases.clsImgNovedad import ImgNovedad as clsImgNovedad
+from clases.clsEstadoPedido import EstadoPedido as clsEstadoPedido
+from clases.clsTipoUsuario import TipoUsuario as clsTipoUsuario
+from clases.clsCaracteristica import Caracteristica as clsCaracteristica
+# from clases.clsCaracteristicas_subcategoria import CaracteristicasSubcategoria as clsCaracteristicaSubcategoria
+from clases.clsRedesSociales import RedesSociales as clsRedesSociales
+from clases.clsInformacionDomus import InformacionDomus as clsInformacionDomus
+# from clases.clsTipoContenidoInfo import TipoContenidoInfo as clsTipoContenidoInfo
+# from clases.clsContenidoInfo import ContenidoInfo as clsContenidoInfo
+from clases.clsCupon import Cupon as clsCupon
+from clases.clsCuponUsuario import CuponUsuario as clsCuponUsuario
+
 
 # class User(object):
 #     def __init__(self, id, username, password):
@@ -2082,7 +2112,7 @@ def logout():
 #####################################PARA PERFIL#################################################
 @app.route("/perfil=<int:user_id>")
 def perfil(user_id):
-    if 'id' in session and session['id'] == user_id and session['tipo'] == 3:
+    if 'id' in session:
         usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
         img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
         return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
@@ -2234,21 +2264,32 @@ def api_obtenerdiscos():
 @app.route("/api_guardar_marca", methods=["POST"])
 @jwt_required()
 def api_guardar_marca():
-    marca = request.json["marca"]
+    # Obtener los datos desde la solicitud
+    marca_nombre = request.json["marca"]
     img_logo = request.json["img_logo"]
     img_banner = request.json.get("img_banner")  # Es opcional
+
     dictRespuesta = {}
+
     try:
-        controlador_marcas.insertar_marca(marca, img_logo, img_banner)
+        # Crear una instancia de la clase Marca
+        marca = clsMarca(None, marca_nombre, img_logo, img_banner)
+
+        # Llamar al método del controlador para insertar la marca
+        controlador_marcas.insertar_marca(marca)
+        
         dictRespuesta["status"] = 1
         dictRespuesta["message"] = "Marca registrada con éxito"
-        dictRespuesta["data"] = {}
+        dictRespuesta["data"] = {"id": marca.id, "marca": marca.marca}  # Devuelvo el id y el nombre de la marca
+
         return jsonify(dictRespuesta)
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["message"] = f"Error al registrar la marca: {str(e)}"
         dictRespuesta["data"] = {}
+
         return jsonify(dictRespuesta)
+
 
 
 @app.route("/api_listado_marcas")
@@ -2284,6 +2325,56 @@ def api_listado_marcas():
         dictRespuesta["status"] = -1
         dictRespuesta["message"] = f"Error al obtener el listado de marcas: {str(e)}"
         return jsonify(dictRespuesta)
+
+import base64
+
+@app.route("/api_listar_marca", methods=["POST"])
+# @jwt_required()
+def api_marca_por_id():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del cuerpo de la solicitud JSON
+        request_data = request.get_json()
+        id = request_data.get('id')
+
+        # Verificamos si el ID fue enviado
+        if not id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["message"] = "ID no proporcionado"
+            dictRespuesta["data"] = {}
+            return jsonify(dictRespuesta)
+        
+        # Llamamos a la función para obtener la marca por ID
+        marca = controlador_marcas.obtener_marca_por_id(id)
+        
+        if marca:
+            # Convertir los campos binarios (si existen) en base64
+            logo_base64 = base64.b64encode(marca[2]).decode('utf-8') if marca[2] else None
+            banner_base64 = base64.b64encode(marca[3]).decode('utf-8') if marca[3] else None
+            
+            dictRespuesta["status"] = 1
+            dictRespuesta["message"] = "Marca obtenida correctamente"
+            dictRespuesta["data"] = {
+                "id_marca": marca[0],
+                "nombre_marca": marca[1],
+                "logo": logo_base64,
+                "banner": banner_base64,
+                "disponibilidad": marca[4],
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["message"] = "Marca no encontrada"
+            dictRespuesta["data"] = {}
+
+        return jsonify(dictRespuesta)
+    
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["message"] = f"Error al obtener la marca: {str(e)}"
+        dictRespuesta["data"] = {}
+        return jsonify(dictRespuesta)
+
+
 
 @app.route("/api_eliminar_marca", methods=["POST"])
 @jwt_required()
@@ -2378,10 +2469,11 @@ def api_listado_productos():
         return jsonify(dictRespuesta)
 
 @app.route("/api_guardar_producto", methods=["POST"])
-@jwt_required()
+# @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
 def api_guardar_producto():
     dictRespuesta = {}
     try:
+        # Recibir datos del producto
         nombre = request.json["nombre"]
         price_regular = request.json.get("price_regular", None)
         precio_online = request.json["precio_online"]
@@ -2390,15 +2482,16 @@ def api_guardar_producto():
         stock = request.json["stock"]
         marcaid = request.json["marcaid"]
         subcategoriaid = request.json["subcategoriaid"]
-        disponibilidad = request.json["disponibilidad"]
-        
-        controlador_productos.insertar_producto(
+
+        # Llamar a la función para insertar el producto y obtener su id
+        id_producto = controlador_productos.insertar_producto(
             nombre, price_regular, precio_online, precio_oferta, 
-            info_adicional, stock, marcaid, subcategoriaid, disponibilidad
+            info_adicional, stock, marcaid, subcategoriaid
         )
 
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Producto guardado con éxito"
+        dictRespuesta["id"] = id_producto
         return jsonify(dictRespuesta)
 
     except Exception as e:
@@ -2406,8 +2499,9 @@ def api_guardar_producto():
         dictRespuesta["mensaje"] = f"Error al guardar el producto: {str(e)}"
         return jsonify(dictRespuesta)
 
+
 @app.route("/api_eliminar_producto", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def api_eliminar_producto():
     dictRespuesta = {}
     try:
@@ -2424,10 +2518,11 @@ def api_eliminar_producto():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_producto", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def api_actualizar_producto():
     dictRespuesta = {}
     try:
+        # Obtener los datos del JSON
         id_producto = request.json["id"]
         nombre = request.json.get("nombre", "")
         price_regular = request.json.get("price_regular", None)
@@ -2439,20 +2534,73 @@ def api_actualizar_producto():
         subcategoriaid = request.json["subcategoriaid"]
         disponibilidad = request.json["disponibilidad"]
 
+        # Crear el objeto Pedido (aunque no es el mismo contexto, usaremos los parámetros de manera similar)
+        producto = clsPedido(
+            p_id=id_producto,
+            p_fecha_compra=None,  # No es necesario para este contexto
+            p_subtotal=None,      # No es necesario para este contexto
+            p_METODO_PAGOid=None, # No es necesario para este contexto
+            p_USUARIOid=None,     # No es necesario para este contexto
+            p_ESTADO_PEDIDOid=None  # No es necesario para este contexto
+        )
+        
+        # Pasar los datos del objeto a la función de actualización
         controlador_productos.actualizar_producto(
-            id_producto, nombre, price_regular, precio_online, 
-            precio_oferta, info_adicional, stock, marcaid, 
-            subcategoriaid, disponibilidad
+            nombre, price_regular, precio_online, precio_oferta, 
+            info_adicional, stock, disponibilidad, marcaid, 
+            subcategoriaid, producto.id  # Usar el id del objeto
         )
 
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Producto actualizado con éxito"
+        dictRespuesta["id"] = id_producto
         return jsonify(dictRespuesta)
 
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al actualizar el producto: {str(e)}"
         return jsonify(dictRespuesta)
+
+@app.route("/api_listar_producto", methods=["POST"])
+# @jwt_required()
+def api_listar_producto():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del producto desde el JSON
+        id_producto = request.json["id"]
+        
+        # Llamar al controlador para obtener los detalles del producto por ID
+        producto = controlador_productos.obtener_por_id(id_producto)
+        
+        if producto:
+            # Si el producto existe, devolver los datos en formato JSON
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Producto encontrado"
+            dictRespuesta["data"] = {
+                "id": producto[0],
+                "nombre": producto[1],
+                "price_regular": producto[2],
+                "precio_online": producto[3],
+                "precio_oferta": producto[4],
+                "info_adicional": producto[5],
+                "stock": producto[6],
+                "disponibilidad": producto[7],
+                "marcaid": producto[8],
+                "subcategoriaid": producto[9]
+            }
+        else:
+            # Si no se encuentra el producto
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Producto no encontrado"
+        
+        return jsonify(dictRespuesta)
+    
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el producto: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
 
 #############SUBCATEGORIA#############
 
@@ -2501,25 +2649,48 @@ def api_listado_subcategorias():
 
 
 @app.route("/api_guardar_subcategoria", methods=["POST"])
-# @jwt_required()
+# @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
 def api_guardar_subcategoria():
     dictRespuesta = {}
     try:
-        subcategoria = request.json["subcategoria"]
+        # Obtener los datos desde el JSON
+        subcategoria_nombre = request.json["subcategoria"]
         faicon_subcat = request.json["faicon_subcat"]
         disponibilidad = request.json["disponibilidad"]
         categoriaid = request.json["categoriaid"]
 
-        controlador_subcategorias.insertar_subcategoria(subcategoria, faicon_subcat, disponibilidad, categoriaid)
+        # Crear una instancia del objeto Subcategoria
+        subcategoria = clsSubcategoria(
+            p_id=None,  # El ID será generado automáticamente por la base de datos
+            p_subcategoria=subcategoria_nombre,
+            p_faicon_subcat=faicon_subcat,
+            p_disponibilidad=disponibilidad,
+            p_CATEGORIAid=categoriaid
+        )
+
+        id_sub = controlador_subcategorias.insertar_subcategoria_api(
+            subcategoria.subcategoria, 
+            subcategoria.faicon_subcat, 
+            subcategoria.disponibilidad, 
+            subcategoria.CATEGORIAid
+        )
 
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Subcategoría registrada con éxito"
+        dictRespuesta["data"] = {
+            "id": id_sub,
+            "subcategoria": subcategoria.subcategoria,
+            "faicon_subcat": subcategoria.faicon_subcat,
+            "disponibilidad": subcategoria.disponibilidad,
+            "categoriaid": subcategoria.CATEGORIAid
+        }
         return jsonify(dictRespuesta)
 
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al registrar la subcategoría: {str(e)}"
         return jsonify(dictRespuesta)
+
 
 
 @app.route("/api_eliminar_subcategoria", methods=["POST"])
@@ -2540,46 +2711,112 @@ def api_eliminar_subcategoria():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_subcategoria", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def api_actualizar_subcategoria():
     dictRespuesta = {}
     try:
         id_subcategoria = request.json["id"]
-        subcategoria = request.json.get("subcategoria", "")
+        subcategoria_nombre = request.json.get("subcategoria", "")
         faicon_subcat = request.json.get("faicon_subcat", "")
         disponibilidad = request.json["disponibilidad"]
         categoriaid = request.json["categoriaid"]
 
+        subcategoria = clsSubcategoria(
+            p_id=id_subcategoria,
+            p_subcategoria=subcategoria_nombre,
+            p_faicon_subcat=faicon_subcat,
+            p_disponibilidad=disponibilidad,
+            p_CATEGORIAid=categoriaid
+        )
+
         controlador_subcategorias.actualizar_subcategoria(
-            id_subcategoria, subcategoria, faicon_subcat, disponibilidad, categoriaid
+            subcategoria.subcategoria,
+            subcategoria.faicon_subcat,
+            subcategoria.disponibilidad,
+            subcategoria.CATEGORIAid,
+            subcategoria.id
         )
 
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Subcategoría actualizada con éxito"
+        dictRespuesta["id"] = id_subcategoria
         return jsonify(dictRespuesta)
 
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al actualizar la subcategoría: {str(e)}"
         return jsonify(dictRespuesta)
+    
+@app.route("/api_listar_subcategoria", methods=["POST"])
+# @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
+def api_listar_subcategoria():
+    dictRespuesta = {}
+    try:
+        id_subcategoria = request.json["id"]
+
+        subcategoria_data = controlador_subcategorias.obtener_subcategoria_por_id(id_subcategoria)
+
+        if subcategoria_data:
+            subcategoria = clsSubcategoria(
+                p_id=subcategoria_data[0],
+                p_subcategoria=subcategoria_data[1],
+                p_faicon_subcat=subcategoria_data[2],
+                p_disponibilidad=subcategoria_data[3],
+                p_CATEGORIAid=subcategoria_data[4]
+            )
+
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Subcategoría obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": subcategoria.id,
+                "subcategoria": subcategoria.subcategoria,
+                "faicon_subcat": subcategoria.faicon_subcat,
+                "disponibilidad": subcategoria.disponibilidad,
+                "categoriaid": subcategoria.CATEGORIAid
+            }
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Subcategoría no encontrada"
+            dictRespuesta["data"] = {}
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la subcategoría: {str(e)}"
+        dictRespuesta["data"] = {}
+        return jsonify(dictRespuesta)
+
 
 ###################APIs CATEGORIA###############
 @app.route("/api_guardar_categoria", methods=["POST"])
-@jwt_required()
+# @jwt_required()  # Descomentar si necesitas autenticación
 def api_guardar_categoria():
-    categoria = request.json["categoria"]
-    faicon_cat = request.json["faicon_cat"]
-    disponibilidad = request.json["disponibilidad"]
     dictRespuesta = {}
     try:
-        controlador_categorias.insertar_categoria(categoria, faicon_cat, disponibilidad)
+        categoria = request.json["categoria"]
+        faicon_cat = request.json["faicon_cat"]
+        disponibilidad = request.json["disponibilidad"]
+        
+        categoria_obj = clsCategoria(None, categoria, faicon_cat, disponibilidad)
+
+        id_categoria = controlador_categorias.insertar_categoria_api(
+            categoria_obj.categoria, categoria_obj.faicon_cat, categoria_obj.disponibilidad
+        )
+
+        categoria_obj.id = id_categoria
+
         dictRespuesta["status"] = 1
-        dictRespuesta["mensaje"] = "Categoría registrada con éxito"
+        dictRespuesta["mensaje"] = "Categoría guardada con éxito"
+        dictRespuesta["data"] = {"id": categoria_obj.id, "categoria": categoria_obj.categoria}
+
         return jsonify(dictRespuesta)
+
     except Exception as e:
         dictRespuesta["status"] = -1
-        dictRespuesta["mensaje"] = f"Error al registrar la categoría: {str(e)}"
+        dictRespuesta["mensaje"] = f"Error al guardar la categoría: {str(e)}"
         return jsonify(dictRespuesta)
+
 
 @app.route("/api_listado_categorias")
 # @jwt_required()
@@ -2629,50 +2866,130 @@ def api_eliminar_categoria():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_categoria", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def api_actualizar_categoria():
-    id_categoria = request.json["id"]
-    categoria = request.json["categoria"]
-    faicon_cat = request.json["faicon_cat"]
-    disponibilidad = request.json["disponibilidad"]
     dictRespuesta = {}
     try:
-        controlador_categorias.actualizar_categoria(categoria, faicon_cat, disponibilidad, id_categoria)
+        id_categoria = request.json["id"]
+        categoria_nombre = request.json["categoria"]
+        faicon_cat = request.json["faicon_cat"]
+        disponibilidad = request.json["disponibilidad"]
+
+        categoria = clsCategoria(
+            p_id=id_categoria,
+            p_categoria=categoria_nombre,
+            p_faicon_cat=faicon_cat,
+            p_disponibilidad=disponibilidad
+        )
+
+        controlador_categorias.actualizar_categoria(
+            categoria.categoria,
+            categoria.faicon_cat,
+            categoria.disponibilidad,
+            categoria.id
+        )
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Categoría actualizada con éxito"
+        dictRespuesta["id"] = categoria.id
         return jsonify(dictRespuesta)
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al actualizar la categoría: {str(e)}"
         return jsonify(dictRespuesta)
+
+@app.route("/api_listar_categoria", methods=["POST"])
+# @jwt_required()  # Si es necesario autenticación, puedes dejarlo habilitado
+def api_listar_categoria():
+    dictRespuesta = {}
+    try:
+        # Obtener el id de la categoría desde el cuerpo del JSON
+        id_categoria = request.json["id"]
+        
+        # Llamar a la función para obtener la categoría desde la base de datos
+        categoria_data = controlador_categorias.obtener_categoria_por_id(id_categoria)
+        
+        if categoria_data:
+            # Crear una instancia de la clase Categoria usando los datos obtenidos
+            categoria = clsCategoria(
+                p_id=categoria_data[0],
+                p_categoria=categoria_data[1],
+                p_faicon_cat=categoria_data[2],
+                p_disponibilidad=categoria_data[3]
+            )
+            
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Categoría encontrada"
+            dictRespuesta["data"] = {
+                "id": categoria.id,
+                "categoria": categoria.categoria,
+                "faicon_cat": categoria.faicon_cat,
+                "disponibilidad": categoria.disponibilidad
+            }
+        
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Categoría no encontrada"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la categoría: {str(e)}"
+        return jsonify(dictRespuesta)
+
     
 ################APIs USUARIOS###########
 @app.route("/api_guardar_usuario_cliente", methods=["POST"])
-@jwt_required()
+# @jwt_required()  # Descomentar si necesitas autenticación
 def api_guardar_usuario():
-    usuario = request.json["usuario"]
-    doc_identidad = request.json["doc_identidad"]
-    img_usuario = request.json.get("img_usuario")
-    genero = request.json["genero"]
-    fecha_nacimiento = request.json["fecha_nacimiento"]
-    telefono = request.json["telefono"]
-    correo = request.json["correo"]
-    contrasenia = request.json["contrasenia"]
-    disponibilidad = request.json["disponibilidad"]
-    tipo_usuarioid = request.json["tipo_usuarioid"]
-    
     dictRespuesta = {}
     try:
-        controlador_usuario_cliente.insertar_usuario(usuario, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuarioid)
-        dictRespuesta["status"] = 1
-        dictRespuesta["mensaje"] = "Usuario registrado con éxito"
+        # Obtener los datos del JSON recibido
+        usuario = request.json["usuario"]
+        doc_identidad = request.json["doc_identidad"]
+        img_usuario = request.json.get("img_usuario")
+        genero = request.json["genero"]
+        fecha_nacimiento = request.json["fecha_nacimiento"]
+        telefono = request.json["telefono"]
+        correo = request.json["correo"]
+        contrasenia = request.json["contrasenia"]
+        disponibilidad = request.json["disponibilidad"]
+        tipo_usuarioid = request.json["tipo_usuarioid"]
+
+        # Crear el objeto Usuario
+        usuario_obj = clsUsuario(None, usuario, None, doc_identidad, img_usuario, genero,
+                              fecha_nacimiento, telefono, correo, contrasenia, disponibilidad,
+                              None, tipo_usuarioid)
+
+        # Llamar al controlador para insertar el usuario
+        id_usuario = controlador_usuario_cliente.insertar_usuario_api(
+            usuario_obj.nombres, usuario_obj.doc_identidad, usuario_obj.img_usuario,
+            usuario_obj.genero, usuario_obj.fecha_nacimiento, usuario_obj.telefono,
+            usuario_obj.correo, usuario_obj.contrasenia, usuario_obj.disponibilidad,
+            usuario_obj.TIPO_USUARIOid
+        )
+
+        # Asignar el id generado al objeto
+        usuario_obj.id = id_usuario
+
+        # Devolver respuesta con el ID del usuario insertado
+        if usuario_obj.id == 0:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Correo ya registrado, mejor recupera contraseña"
+            dictRespuesta["data"] = {}
+        else:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Usuario registrado con éxito"
+            dictRespuesta["data"] = {"id": usuario_obj.id, "usuario": usuario_obj.nombres}
         return jsonify(dictRespuesta)
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al registrar el usuario: {str(e)}"
         return jsonify(dictRespuesta)
 
-from datetime import datetime
 
 @app.route("/api_listado_usuarios_clientes")
 # @jwt_required()
@@ -2745,7 +3062,7 @@ def api_listado_usuarios_clientes():
 
 
 @app.route("/api_eliminar_usuario", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def api_eliminar_usuario():
     id_usuario = request.json["id"]
     dictRespuesta = {}
@@ -2760,34 +3077,99 @@ def api_eliminar_usuario():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_usuario", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def api_actualizar_usuario():
-    id_usuario = request.json["id"]
-    usuario = request.json["usuario"]
-    doc_identidad = request.json["doc_identidad"]
-    img_usuario = request.json.get("img_usuario")  # Es opcional
-    genero = request.json["genero"]
-    fecha_nacimiento = request.json["fecha_nacimiento"]
-    telefono = request.json["telefono"]
-    correo = request.json["correo"]
-    contrasenia = request.json["contrasenia"]
-    disponibilidad = request.json["disponibilidad"]
-    tipo_usuarioid = request.json["tipo_usuarioid"]
-    
     dictRespuesta = {}
     try:
-        controlador_usuario_cliente.actualizar_usuario_cliente(id_usuario, usuario, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuarioid)
-        dictRespuesta["status"] = 1
-        dictRespuesta["mensaje"] = "Usuario actualizado con éxito"
+        # Obtener los datos del JSON recibido
+        id_usuario = request.json["id"]
+        nombres = request.json["usuario"]  # El campo "usuario" corresponde a los nombres
+        apellidos = request.json.get("apellidos", "")  # Apellidos es opcional
+        doc_identidad = request.json["doc_identidad"]
+        img_usuario = request.json.get("img_usuario")  # Es opcional
+        genero = request.json["genero"]
+        fecha_nacimiento = request.json["fecha_nacimiento"]
+        telefono = request.json["telefono"]
+        correo = request.json["correo"]
+        disponibilidad = request.json["disponibilidad"]
+
+        # Crear el objeto Usuario
+        usuario_obj = clsUsuario(id_usuario, nombres, apellidos, doc_identidad, img_usuario, genero,
+                              fecha_nacimiento, telefono, correo, None, disponibilidad,
+                              None, 3)  # TIPO_USUARIOid está fijo en 3 para clientes
+
+        # Llamar al controlador para actualizar el usuario cliente
+        if controlador_usuario_cliente.actualizar_usuario_cliente(
+            usuario_obj.id, usuario_obj.nombres, usuario_obj.apellidos, usuario_obj.doc_identidad,
+            usuario_obj.genero, usuario_obj.fecha_nacimiento, usuario_obj.telefono, usuario_obj.correo,
+            usuario_obj.disponibilidad, usuario_obj.img_usuario
+        ):
+            # Devolver respuesta con mensaje de éxito
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Usuario actualizado con éxito"
+            dictRespuesta["data"] = {"id": usuario_obj.id, "usuario": usuario_obj.nombres}
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Error al actualizar el usuario"
+
         return jsonify(dictRespuesta)
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al actualizar el usuario: {str(e)}"
         return jsonify(dictRespuesta)
 
+@app.route("/api_obtener_usuario_cliente", methods=["POST"])
+# @jwt_required()
+def api_obtener_usuario_cliente():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del usuario desde el cuerpo de la solicitud
+        id_usuario = request.json.get("id")
+
+        # Verificar que se haya proporcionado el ID
+        if not id_usuario:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        # Llamar al controlador para obtener los datos del usuario
+        usuario_data = controlador_usuario_cliente.obtener_usuario_cliente_por_id(id_usuario)
+
+        if usuario_data:
+            # Crear un objeto de usuario sin la imagen
+            usuario_obj = {
+                "id": usuario_data[0],
+                "nombres": usuario_data[1],
+                "apellidos": usuario_data[2],
+                "doc_identidad": usuario_data[3],
+                "genero": usuario_data[5],
+                "fecha_nacimiento": usuario_data[6],
+                "telefono": usuario_data[7],
+                "correo": usuario_data[8],
+                "disponibilidad": usuario_data[10],
+                "tipo_usuarioid": usuario_data[11]
+
+            }
+
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Usuario obtenido con éxito"
+            dictRespuesta["data"] = usuario_obj
+
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Usuario no encontrado"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el usuario: {str(e)}"
+        return jsonify(dictRespuesta)
+
 ###########################COMENTARIOS###############################
 @app.route("/api_guardar_comentario", methods=["POST"])
-@jwt_required()
+# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_guardar_comentario():
     nombres = request.json["nombres"]
     apellidos = request.json["apellidos"]
@@ -2799,8 +3181,34 @@ def api_guardar_comentario():
     usuarioid = request.json.get("usuarioid")  # Opcional
     
     dictRespuesta = {}
+    
+    # Crear objeto Comentario
+    comentario = clsComentario(
+        p_id=None,  # El ID es auto-incremental, no lo pasamos
+        p_nombres=nombres,
+        p_apellidos=apellidos,
+        p_email=email,
+        p_celular=celular,
+        p_mensaje=mensaje,
+        p_fecha_registro=None,  # Lo establecerá la base de datos (timestamp)
+        p_estado=estado,
+        p_MOTIVO_COMENTARIOid=motivo_comentarioid,
+        p_USUARIOid=usuarioid
+    )
+    
     try:
-        controlador_comentario.insertar_comentario(nombres, apellidos, email, celular, mensaje, estado, motivo_comentarioid, usuarioid)
+        # Extraer los atributos directamente del objeto Comentario y pasarlos a la función de inserción
+        controlador_comentario.insertar_comentario(
+            comentario.nombres,
+            comentario.apellidos,
+            comentario.email,
+            comentario.celular,
+            comentario.mensaje,
+            comentario.estado,
+            comentario.MOTIVO_COMENTARIOid,
+            comentario.USUARIOid
+        )
+        
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Comentario registrado con éxito"
         return jsonify(dictRespuesta)
@@ -2809,8 +3217,340 @@ def api_guardar_comentario():
         dictRespuesta["mensaje"] = f"Error al registrar el comentario: {str(e)}"
         return jsonify(dictRespuesta)
 
+    
+
+@app.route("/api_listado_comentarios")
+# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+def api_listado_comentarios():
+    dictRespuesta = {}
+    
+    try:
+        comentarios = controlador_comentario.obtener_listado_comentarios()  
+        comentarios_procesados = []
+        
+        for comentario in comentarios:
+            id_comentario = comentario[0]
+            nombres = comentario[1]
+            apellidos = comentario[2]
+            email = comentario[3]
+            celular = comentario[4]
+            mensaje = comentario[5]
+            fecha_registro = comentario[6]
+            estado = comentario[7]
+            motivo = comentario[8]
+            motivo_id = comentario[9]
+            disponibilidad = comentario[10]
+            usuarioid = comentario[11]
+
+            # Formatear la fecha si es un objeto datetime
+            if isinstance(fecha_registro, datetime):
+                fecha_registro_formateada = fecha_registro.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                fecha_registro_formateada = None  # O manejar el caso si no es datetime
+
+            comentarios_procesados.append({
+                "id": id_comentario,
+                "nombres": nombres,
+                "apellidos": apellidos,
+                "email": email,
+                "celular": celular,
+                "mensaje": mensaje,
+                "fecha_registro": fecha_registro,  # Usamos la fecha formateada
+                "estado": estado,
+                "motivo": motivo,
+                "motivo_id": motivo_id,
+                "disponibilidad": disponibilidad,
+                "usuarioid": usuarioid
+            })
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["data"] = comentarios_procesados
+        return jsonify(dictRespuesta)
+    
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el listado de comentarios: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_eliminar_comentario", methods=["POST"])
+# @jwt_required()
+def api_eliminar_comentario():
+    id_comentario = request.json["id"]
+    dictRespuesta = {}
+    try:
+        controlador_comentario.eliminar_comentario(id_comentario)
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Comentario eliminado con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el comentario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_comentario", methods=["POST"])
+# @jwt_required()
+def api_actualizar_comentario():
+    id_comentario = request.json["id"]
+    nombres = request.json["nombres"]
+    apellidos = request.json["apellidos"]
+    email = request.json["email"]
+    celular = request.json["celular"]
+    mensaje = request.json["mensaje"]
+    estado = request.json["estado"]
+    motivo_comentarioid = request.json["motivo_comentarioid"]
+    usuarioid = request.json.get("usuarioid")  # Opcional
+    
+    dictRespuesta = {}
+    
+    # Crear objeto Comentario con los nuevos datos
+    comentario = clsComentario(
+        p_id=id_comentario,
+        p_nombres=nombres,
+        p_apellidos=apellidos,
+        p_email=email,
+        p_celular=celular,
+        p_mensaje=mensaje,
+        p_fecha_registro=None,  # No necesitamos pasar la fecha aquí, la base de datos lo hace automáticamente
+        p_estado=estado,
+        p_MOTIVO_COMENTARIOid=motivo_comentarioid,
+        p_USUARIOid=usuarioid
+    )
+    
+    try:
+        # Extraer los atributos directamente del objeto Comentario y pasarlos a la función de actualización
+        controlador_comentario.actualizar_comentario(
+            comentario.id,            # Usamos el id del comentario para actualizar
+            comentario.nombres,
+            comentario.apellidos,
+            comentario.email,
+            comentario.celular,
+            comentario.mensaje,
+            comentario.estado,
+            comentario.MOTIVO_COMENTARIOid,
+            comentario.USUARIOid
+        )
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Comentario actualizado con éxito"
+        return jsonify(dictRespuesta)
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el comentario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+
+
 ############################FIN COMENTARIOS####################################UUUUUUUUUUU
 
+############################PEDIDO#############################
+@app.route("/api_guardar_pedido", methods=["POST"])
+# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+def api_guardar_pedido():
+    # Obtener los datos desde la solicitud
+    fecha_compra = request.json["fecha_compra"]
+    subtotal = request.json["subtotal"]
+    metodo_pagoid = request.json["metodo_pagoid"]
+    usuarioid = request.json["usuarioid"]
+    estado_pedidoid = request.json["estado_pedidoid"]
+    
+    dictRespuesta = {}
+
+    try:
+        # Crear objeto Pedido
+        pedido = clsPedido(
+            p_id=None,  # El ID es auto-incremental, no lo pasamos
+            p_fecha_compra=fecha_compra,
+            p_subtotal=subtotal,
+            p_METODO_PAGOid=metodo_pagoid,
+            p_USUARIOid=usuarioid,
+            p_ESTADO_PEDIDOid=estado_pedidoid
+        )
+        
+        # Llamar al método del controlador para insertar el pedido
+        pedido_id = controlador_carrito.insertar_pedido(
+            pedido.USUARIOid,
+            pedido.ESTADO_PEDIDOid
+        )
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Pedido registrado con éxito"
+        dictRespuesta["data"] = {"id": pedido_id, "fecha_compra": pedido.fecha_compra}
+
+        return jsonify(dictRespuesta)
+    
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al registrar el pedido: {str(e)}"
+        dictRespuesta["data"] = {}
+
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_pedido", methods=["POST"])
+# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+def api_actualizar_pedido():
+    # Obtener los datos desde la solicitud
+    id_pedido = request.json["id"]
+    fecha_compra = request.json["fecha_compra"]
+    subtotal = request.json["subtotal"]
+    metodo_pagoid = request.json["metodo_pagoid"]
+    usuarioid = request.json["usuarioid"]
+    estado_pedidoid = request.json["estado_pedidoid"]
+    
+    dictRespuesta = {}
+
+    try:
+        # Crear objeto Pedido con los nuevos valores
+        pedido = clsPedido(
+            p_id=id_pedido,
+            p_fecha_compra=fecha_compra,
+            p_subtotal=subtotal,
+            p_METODO_PAGOid=metodo_pagoid,
+            p_USUARIOid=usuarioid,
+            p_ESTADO_PEDIDOid=estado_pedidoid
+        )
+        
+        # Llamar al método del controlador para actualizar el pedido
+        controlador_pedido.actualizarPedido(
+            pedido.id,
+            pedido.fecha_compra,
+            pedido.subtotal,
+            pedido.METODO_PAGOid,
+            pedido.USUARIOid,
+            pedido.ESTADO_PEDIDOid
+        )
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Pedido actualizado con éxito"
+        dictRespuesta["data"] = {"id": pedido.id, "fecha_compra": pedido.fecha_compra}
+
+        return jsonify(dictRespuesta)
+    
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el pedido: {str(e)}"
+        dictRespuesta["data"] = {}
+
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_eliminar_pedido", methods=["POST"])
+# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+def api_eliminar_pedido():
+    # Obtener el id del pedido desde la solicitud
+    id_pedido = request.json["id"]
+    
+    dictRespuesta = {}
+
+    try:
+        # Llamar al método del controlador para eliminar el pedido
+        controlador_pedido.eliminar_pedido(id_pedido)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Pedido eliminado con éxito"
+        dictRespuesta["data"] = {"id": id_pedido}
+
+        return jsonify(dictRespuesta)
+    
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el pedido: {str(e)}"
+        dictRespuesta["data"] = {}
+
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listar_pedidos", methods=["GET"])
+# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+def api_listar_pedidos():
+    dictRespuesta = {}
+
+    try:
+        # Obtener los pedidos desde el controlador
+        pedidos = controlador_pedido.obtener_listado_pedidos()
+
+        # Convertir los pedidos a una lista de diccionarios (si es necesario)
+        pedidos_data = [
+            {
+                "id": pedido[0],
+                "fecha_compra": pedido[1],
+                "subtotal": pedido[2],
+                "METODO_PAGOid": pedido[3],
+                "nombre_usuario": pedido[4],
+                "ESTADO_PEDIDOid": pedido[5],
+                "cantidad_productos": pedido[6],
+                "metodo_pago_disponibilidad": pedido[7],
+                "usuarioid": pedido[8]
+            }
+            for pedido in pedidos
+        ]
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Pedidos obtenidos con éxito"
+        dictRespuesta["data"] = pedidos_data
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los pedidos: {str(e)}"
+        dictRespuesta["data"] = []
+
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listar_pedido", methods=["POST"])
+# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+def api_listar_pedido():
+    dictRespuesta = {}
+
+    try:
+        # Obtener el ID del pedido desde el JSON
+        pedido_id = request.json.get("id")
+
+        if not pedido_id:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "ID de pedido no proporcionado"
+            dictRespuesta["data"] = {}
+            return jsonify(dictRespuesta)
+
+        # Obtener el pedido desde el controlador por ID
+        pedido = controlador_pedido.obtener_pedido_id(pedido_id)
+
+        # Si no se encuentra el pedido, devolver mensaje de error
+        if not pedido:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Pedido no encontrado"
+            dictRespuesta["data"] = {}
+            return jsonify(dictRespuesta)
+
+        # Convertir el pedido a un diccionario
+        pedido_data = {
+            "id": pedido[0],
+            "fecha_compra": pedido[1],
+            "subtotal": pedido[2],
+            "METODO_PAGOid": pedido[3],
+            "nombre_usuario": pedido[4],
+            "ESTADO_PEDIDOid": pedido[5],
+            "cantidad_productos": pedido[6],
+            "metodo_pago_disponibilidad": pedido[7],
+            "usuarioid": pedido[8]
+        }
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Pedido obtenido con éxito"
+        dictRespuesta["data"] = pedido_data
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el pedido: {str(e)}"
+        dictRespuesta["data"] = {}
+
+        return jsonify(dictRespuesta)
+
+
+############################FIN PEDIDOS########################
 
 # EJECUTAR
 
