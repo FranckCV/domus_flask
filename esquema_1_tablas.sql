@@ -241,15 +241,16 @@ create table cupon (
   disponibilidad tinyint(1) not null,
   registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
+<<<<<<< HEAD
 create table cupon_usuario (
   cuponid   int(11) not null, 
   usuarioid int(10) not null, 
   registro_auditoria timestamp not null default current_timestamp(),
   primary key (cuponid, 
   usuarioid));
+=======
+>>>>>>> ea17342fce6f413210fffa7f65ec6ea264be594a
 
-alter table cupon_usuario add constraint fkcupon_usua433993 foreign key (cuponid) references cupon (id);
-alter table cupon_usuario add constraint fkcupon_usua70914 foreign key (usuarioid) references usuario (id);
 alter table producto add constraint fkproducto990798 foreign key (marcaid) references marca (id);
 alter table producto add constraint fkproducto953045 foreign key (subcategoriaid) references subcategoria (id);
 alter table subcategoria add constraint fksubcategor822804 foreign key (categoriaid) references categoria (id);
