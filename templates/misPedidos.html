@@ -2,13 +2,14 @@
 
 {% block estilos_perfil %}
 <link rel="stylesheet" href="static/css/misPedidos_perfil.css" />
+<link rel="stylesheet" href="/static/css/misPedidos_v9999.css">
 {% endblock %}
 
 {% block contenido_perfil %}
 <div class="pedidos">
   <h2>Mis Pedidos</h2>
   
-  {% for pedido in detalles_pedido %}
+  <!-- {% for pedido in detalles_pedido %}
     <div class="pedido">
       <h3>Pedido ID: {{ pedido.pedido_id }} (Fecha: {{ pedido.fecha_compra }})</h3>
       <p><strong>Método de Pago:</strong> {{ pedido.metodo }}</p>
@@ -27,7 +28,96 @@
         </ul>
       </div>
     </div>
-  {% endfor %}
+  {% endfor %} -->
+  <div class="table-container">
+    <table cellspacing="0" class="table_listado product_if">
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th>Fecha de compra</th>
+            <th>Método de pago</th>
+            <th># Productos</th>
+            <th>Precio Total</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody">
+            {% if pedidos %}
+                {% for pedido in pedidos %}
+                  <tr>
+                    <td class="celda_id">
+                      {{ pedido.0  }}
+                    </td>
+                    
+                    <td>
+                    {% if pedido[1] == 0 or pedido[1] is none %}
+                    <div class="espacio_vacio">
+                        <p>
+                        No registrado
+                        </p>
+                    </div> 
+                    {% else %}
+                        {{ pedido.1 }}
+                    {% endif %}
+                    </td> 
+    
+                    <td>
+                    {% if pedido.3 %}
+                        {% for metodo in metodos %}
+                        {% if metodo.0 == pedido.3 %}
+                            <div class="celda_texto_bloque" data-metodo-pago="{{ metodo.0 }}">
+                            <span>{{ metodo.1 }}</span>
+                            {% if metodo.2 == 0 %}
+                                <p class="disponibilidad disp_no">No Disponible</p>
+                            {% endif %}
+                            </div>
+                        {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="espacio_vacio">
+                        <p>
+                            No registrado
+                        </p>
+                        </div>
+                    {% endif %}
+                    </td> 
+    
+                    <td class="celda_numero">
+                      <p >
+                        {{ pedido[6] }}
+                      </p>
+                    </td>
+    
+                    <td class="">
+                      {% if pedido[2] == 0 or pedido[2] is none %}
+                        <div class="espacio_vacio">
+                            <p>
+                            No registrado
+                            </p>
+                        </div> 
+                      {% else %}
+                          <div class="celda_precio">
+                          S/. {{ pedido.2}}
+                          </div>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+            {% else %}
+                <!-- <tr> -->
+                    <td colspan="7">
+                        <div class="espacio_vacio">
+                            <p>
+                                Sin pedidos realizados
+                            </p>
+                        </div> 
+                    </td>
+                <!-- </tr> -->
+            {% endif %}
+
+        </tbody>
+    </table>
+</div>
+
 </div>
 {% endblock %}
 

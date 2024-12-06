@@ -600,9 +600,12 @@ def confirmar_carrito():
     productos_carrito = controlador_detalle.obtener_Detalle_por_Id_pedido(pedido_id)
     
     for producto in productos_carrito:
-        cantidad = producto[3]  
+        cantidad = producto[3] 
         precio_unitario = producto[2]  
+        producto_id = producto[4] 
         total_producto = cantidad * precio_unitario
+
+        
         subtotal += total_producto
     
     # print(f"Total del pedido: {subtotal}")
@@ -3756,9 +3759,20 @@ def perfil(user_id):
 def pedidos(user_id):
     usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
     img = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+    pedidos = controlador_pedido.obtener_listado_pedidos_usuario_fecha_id(user_id)
+    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
     
-    
-    return render_template("misPedidos.html", user_id=user_id, usuario=usuario, img=img)
+    return render_template("misPedidos.html", user_id=user_id, usuario=usuario, img=img , pedidos = pedidos , metodos = metodos)
+
+
+@app.route("/ver_detalle_pedido=<int:id>")
+def ver_detalle_pedido(id):
+    detalles = controlador_detalle.obtener_listado_detalle_por_id_pedido(id)
+    pedido = controlador_pedido.obtener_pedido_id(id)
+    estados = controlador_estado_pedido.obtener_listado_estados_pedido()
+    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
+    return render_template("listado_detalle_pedido.html", detalles=detalles , pedido_id=id , pedido = pedido , estados = estados , metodos = metodos)
+
 
 
 # @app.route("/detalle_pedido_perfil=<int:user_id>")
@@ -3767,7 +3781,6 @@ def pedidos(user_id):
 #     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
 #     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
 #     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
-
 
 
 @app.route("/lista_deseos=<int:user_id>")
@@ -3829,8 +3842,10 @@ def confirmar_compra():
     
     for producto in productos_carrito:
         cantidad = producto[3]  
-        precio_unitario = producto[2]  
+        precio_unitario = producto[2]
+        producto_id = producto[4]  
         total_producto = cantidad * precio_unitario
+        controlador_detalle.reducir_detalle(producto_id, cantidad)
         subtotal += total_producto
 
     controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuario_id)

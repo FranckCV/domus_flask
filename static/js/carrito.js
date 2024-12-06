@@ -10,10 +10,8 @@ function aplicarDescuento() {
 
     // Verificar si el descuento ya ha sido aplicado
     if (descuento) {
-        // Si el descuento ya ha sido aplicado, mostrar un modal
-        mostrarModalError('El descuento ya ha sido aplicado.');
-        botonAplicar.disabled = true;  // Bloquear el botón de aplicar descuento
-        return; // No continuar con el proceso de aplicar el descuento
+        mostrarModalError('El descuento aplicado con éxito.');
+        botonAplicar.disabled = true; 
     }
 
     const subtotal = parseFloat(subtotalElemento.innerText.replace('S/. ', '').replace(',', '').trim());  // Obtener el subtotal
@@ -86,3 +84,4 @@ function reiniciarDescuento() {
 document.getElementById('aplicar').addEventListener('click', () => {
     aplicarDescuento();
 });
+

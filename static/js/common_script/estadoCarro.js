@@ -43,6 +43,13 @@ function actualizarCantidadCarrito() {
         .then(data => {
             let totalCantidad = data.cantidad || 0;  
             contadorCarrito.innerText = `${totalCantidad}`;
+            
+            const unidadesElemento = document.getElementById('unidades');
+
+            if (unidadesElemento) {
+                unidadesElemento.innerText = `${totalCantidad}`;
+            }
+
             contadorCarrito.classList.add('animate-bounce'); 
 
             setTimeout(() => {
