@@ -56,3 +56,25 @@ def cambiarContraseniaT(id, contrasenia):
         cursor.execute(sql, (contrasenia, id))
     conexion.commit()
     conexion.close()
+
+def obtenerContrasenia(username):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT contrasenia FROM usuario WHERE correo = %s", (username,))  # Asegúrate de usar una tupla (username,)
+        result = cursor.fetchone()
+        if result:
+            return result[0]  # Retorna solo el valor del tipo de usuario
+        return None  # Si no se encuentra el usuario, devuelve None
+    conexion.close()
+
+def obtenerID(username):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT id FROM usuario WHERE correo = %s", (username,))  # Asegúrate de usar una tupla (username,)
+        result = cursor.fetchone()
+        if result:
+            return result[0]  # Retorna solo el valor del tipo de usuario
+        return None  # Si no se encuentra el usuario, devuelve None
+    conexion.close()
+
+

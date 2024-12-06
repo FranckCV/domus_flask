@@ -601,7 +601,10 @@ def login_admin():
         # Obtener los datos del formulario
         username = request.form.get('username')
         password = request.form.get('password')
-        epassword = encstringsha256(password)
+        epassword = password
+
+        if password != controlador_empleados.clave_default_empleado():
+            epassword = encstringsha256(password)
 
         # Llamar al controlador para validar las credenciales
         if controlador_usuario_admin.confirmarDatosAdm(username, epassword):
@@ -609,7 +612,13 @@ def login_admin():
             session['usuario'] = username
             session['tipo_usuarioid'] = controlador_usuario_admin.obtenerTipoU(username)
             session['nombre_c'] = controlador_usuario_admin.obtenerNombresC(username)
-            return redirect(url_for('dashboard'))  # Redirigir al dashboard
+            contrase = controlador_usuario_admin.obtenerContrasenia(username)
+            user_id = controlador_usuario_admin.obtenerID(username)
+
+            if contrase == controlador_empleados.clave_default_empleado():
+                return redirect('/cambiar_contrasenia='+str(user_id))
+            else:
+                return redirect(url_for('dashboard'))  # Redirigir al dashboard
 
         # Mostrar un mensaje de alerta si las credenciales son inválidas
         flash("Credenciales incorrectas. Inténtalo de nuevo.", "danger")
@@ -1403,46 +1412,26 @@ def actualizar_motivo_comentario():
 @app.route("/cambiar_contrasenia=<int:id>")
 @login_requerido  
 def cambiar_contrasenia(id):
-    if 'usuario' in session:
-        username = session['usuario']
-        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
-
-        # Verificar si el tipo de usuario es 2
-        if tipo_id == 2:
-            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-
-        usuario = controlador_empleados.obtener_usuario_por_id(id)
-        clave_default = controlador_empleados.clave_default_empleado()
-        clave_actual = None
-        if usuario[9] == controlador_empleados.clave_default_empleado():
-            clave_actual = clave_default
-        return render_template("nueva_contrasenia_admin.html", usuario=usuario , clave_actual = clave_actual)
-    else:
-        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
-
+    usuario = controlador_empleados.obtener_usuario_por_id(id)
+    clave_default = controlador_empleados.clave_default_empleado()
+    clave_actual = None
+    if usuario[9] == controlador_empleados.clave_default_empleado():
+        clave_actual = clave_default
+    return render_template("nueva_contrasenia_admin.html", usuario=usuario , clave_actual = clave_actual)
+    
 
 @app.route("/guardar_contrasenia_empleado", methods=["POST"])
 @login_requerido  
 def guardar_contrasenia_empleado():
-    if 'usuario' in session:
-        username = session['usuario']
-        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
-
-        # Verificar si el tipo de usuario es 2
-        if tipo_id == 2:
-            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-
-        id = request.form["id"]
-        contrasenia = request.form["contrasenia"]
-        confcontrasenia = request.form["confcontrasenia"]
-        password = encstringsha256(contrasenia)
-        if contrasenia == confcontrasenia:
-            controlador_empleados.cambiar_contrasenia_usuario(password,id)
-            return redirect("/dashboard")
-        else:
-            return redirect("/cambiar_contrasenia="+id)
+    id = request.form["id"]
+    contrasenia = request.form["contrasenia"]
+    confcontrasenia = request.form["confcontrasenia"]
+    password = encstringsha256(contrasenia)
+    if contrasenia == confcontrasenia:
+        controlador_empleados.cambiar_contrasenia_usuario(password,id)
+        return redirect("/dashboard")
     else:
-        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+        return redirect("/cambiar_contrasenia="+id)
 
     
 @app.route("/empleados_listado")
@@ -2874,23 +2863,27 @@ def eliminar_redes_sociales():
 
 
 @app.route("/listado_cupones")
+@login_requerido  
 def listado_cupones():
     cupones = controlador_cupon.obtener_cupones()
     return render_template("listado_cupones.html", cupones = cupones)
 
 
 @app.route("/formulario_agregar_cupones")
+@login_requerido  
 def formulario_agregar_cupones():
     return render_template("agregar_cupon.html")
 
 
 @app.route("/eliminar_cupones", methods=["POST"])
+@login_requerido  
 def eliminar_cupones():
     controlador_cupon.eliminar_cupon(request.form["id"])
     return redirect("/listado_cupones")
 
 
 @app.route("/guardar_cupones", methods=["POST"])
+@login_requerido  
 def guardar_cupones():
     codigo = request.form["codigo"]
     fecha_ini = request.form["fecha_inicio"]
@@ -2901,12 +2894,14 @@ def guardar_cupones():
 
 
 @app.route("/formulario_editar_cupones=<int:id>")
+@login_requerido  
 def editar_cupones(id):
     cupon = controlador_cupon.obtener_cupon_por_id(id)
     return render_template("editar_cupones.html", cupon=cupon)
 
 
 @app.route("/actualizar_cupones", methods=["POST"])
+@login_requerido  
 def actualizar_cupones():
     id = request.form["id"]
     codigo = request.form["codigo"]
@@ -3114,71 +3109,135 @@ def eliminar_tipo_usuario():
 
 
 @app.route("/listado_clientes")
+@login_requerido  
 def listado_clientes():
-    usuarios_clientes = controlador_usuario_cliente.obtener_listado_usuarios_clientes()
-    imagenes = controlador_usuario_cliente.obtener_listado_imagenes_usuario_cliente()
-    return render_template("listado_clientes.html", usuarios_clientes=usuarios_clientes , imagenes = imagenes)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        usuarios_clientes = controlador_usuario_cliente.obtener_listado_usuarios_clientes()
+        imagenes = controlador_usuario_cliente.obtener_listado_imagenes_usuario_cliente()
+        return render_template("listado_clientes.html", usuarios_clientes=usuarios_clientes , imagenes = imagenes)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_clientes_buscar")
+@login_requerido  
 def listado_clientes_buscar():
-    nombreBusqueda = request.args.get("buscarElemento")
-    usuarios_clientes = controlador_usuario_cliente.buscar_listado_usuarios_clientes_nombre(nombreBusqueda)
-    imagenes = controlador_usuario_cliente.obtener_listado_imagenes_usuario_cliente()
-    return render_template("listado_clientes.html", usuarios_clientes=usuarios_clientes , nombreBusqueda = nombreBusqueda , imagenes = imagenes)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombreBusqueda = request.args.get("buscarElemento")
+        usuarios_clientes = controlador_usuario_cliente.buscar_listado_usuarios_clientes_nombre(nombreBusqueda)
+        imagenes = controlador_usuario_cliente.obtener_listado_imagenes_usuario_cliente()
+        return render_template("listado_clientes.html", usuarios_clientes=usuarios_clientes , nombreBusqueda = nombreBusqueda , imagenes = imagenes)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/ver_cliente=<int:id>")
+@login_requerido  
 def ver_cliente(id):
-    usuario = controlador_usuario_cliente.ver_info_usuario_cliente(id)
-    imagen = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(id)
-    pedidos = controlador_pedido.obtener_listado_pedidos_usuario_id(id)
-    estados = controlador_estado_pedido.obtener_listado_estados_pedido()
-    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
-    return render_template("ver_usuario_cliente.html", usuario = usuario , pedidos = pedidos , estados = estados , metodos = metodos , imagen = imagen)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-@app.route("/agregar_usuario_cliente")
-def formulario_agregar_usuario_cliente():
-    return render_template("iniciar_sesion.html") ##falta miau
+        usuario = controlador_usuario_cliente.ver_info_usuario_cliente(id)
+        imagen = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(id)
+        pedidos = controlador_pedido.obtener_listado_pedidos_usuario_id(id)
+        estados = controlador_estado_pedido.obtener_listado_estados_pedido()
+        metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
+        return render_template("ver_usuario_cliente.html", usuario = usuario , pedidos = pedidos , estados = estados , metodos = metodos , imagen = imagen)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_cliente=<int:id>")
+@login_requerido  
 def editar_cliente(id):
-    usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(id)
-    imagen = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(id)
-    return render_template("editar_cliente.html", usuario=usuario , imagen = imagen)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(id)
+        imagen = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(id)
+        return render_template("editar_cliente.html", usuario=usuario , imagen = imagen)
+
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_cliente", methods=["POST"])
+@login_requerido  
 def actualizar_cliente():
-    id = request.form["id"]
-    img_usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(id)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    nombres = request.form["nombres"]
-    apellidos = request.form["apellidos"]
-    doc_identidad = request.form["doc_identidad"]
-    genero = request.form["genero"]
-    fecha_nacimiento = request.form["fecha_nacimiento"]
-    telefono = request.form["telefono"]
-    correo = request.form["correo"]
-    disponibilidad = request.form["disponibilidad"]
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-    imagen = request.files["img_usuario"]
-    if imagen.filename == '':
-        img_bin = img_usuario[4]
+        id = request.form["id"]
+        img_usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(id)
+
+        nombres = request.form["nombres"]
+        apellidos = request.form["apellidos"]
+        doc_identidad = request.form["doc_identidad"]
+        genero = request.form["genero"]
+        fecha_nacimiento = request.form["fecha_nacimiento"]
+        telefono = request.form["telefono"]
+        correo = request.form["correo"]
+        disponibilidad = request.form["disponibilidad"]
+
+        imagen = request.files["img_usuario"]
+        if imagen.filename == '':
+            img_bin = img_usuario[4]
+        else:
+            img_bin = imagen.read()
+
+        controlador_usuario_cliente.actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad,img_bin)
+        return redirect("/listado_clientes")
     else:
-        img_bin = imagen.read()
-
-    controlador_usuario_cliente.actualizar_usuario_cliente(id, nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad,img_bin)
-    return redirect("/listado_clientes")
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_cliente", methods=["POST"])
+@login_requerido  
 def eliminar_cliente():
-    id = request.form["id"]
-    controlador_usuario_cliente.eliminar_usuario_cliente(id)
-    return redirect("/listado_clientes")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        controlador_usuario_cliente.eliminar_usuario_cliente(id)
+        return redirect("/listado_clientes")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
 
 
 
@@ -3343,6 +3402,7 @@ def perfil(user_id):
         return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
     else:
         return redirect('/iniciar_sesion')
+<<<<<<< HEAD
     
 @app.route("/pedidos=<int:user_id>")
 def pedidos(user_id):
@@ -3351,6 +3411,17 @@ def pedidos(user_id):
     
     
     return render_template("misPedidos.html", user_id=user_id, usuario=usuario, img=img)
+=======
+
+
+@app.route("/detalle_pedido_perfil=<int:user_id>")
+def detalle_pedido_perfil(user_id):
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
+    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+>>>>>>> aff974b0d1e528eb993fd35afa82b6edd0ed878f
+
 
 
 @app.route("/lista_deseos=<int:user_id>")
@@ -3373,8 +3444,6 @@ def agregar_a_lista_deseos():
     controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
     
     return '', 204
-
-
    
     
 @app.route("/insertar_imagen_usuario", methods=['POST'])
@@ -3466,7 +3535,6 @@ def detalle_pedido(id):
     estados = controlador_estado_pedido.obtener_listado_estados_pedido()
     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
     return render_template("listado_detalle_pedido.html", detalles=detalles , pedido_id=id , pedido = pedido , estados = estados , metodos = metodos)
-
 
 
 @app.route("/eliminar_detalle_pedido", methods=["POST"])
