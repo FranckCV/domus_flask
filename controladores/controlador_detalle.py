@@ -329,3 +329,33 @@ def guardar_detalle(producto_id, pedido_id, cantidad):
         print(f"Error al guardar detalle: {e}")
     finally:
         conexion.close()
+        
+
+def reducir_detalle(producto_id, pedido_id, cantidad):
+    conexion = obtener_conexion()
+
+    try:
+        with conexion.cursor() as cursor:
+            sql_detalle = '''
+                INSERT INTO detalles_pedido (PRODUCTOid, PEDIDOid, cantidad)
+                VALUES (%s, %s, %s)
+            '''
+            cursor.execute(sql_detalle, (producto_id, pedido_id, cantidad))
+
+            sql_producto = '''
+                UPDATE producto
+                SET stock = stock - %s
+                WHERE id = %s
+            '''
+            cursor.execute(sql_producto, (cantidad, producto_id))
+
+            conexion.commit()
+
+    except Exception as e:
+        print(f"Error al guardar detalle o actualizar stock: {e}")
+        conexion.rollback()  # Si hay error, revertimos la transacción
+
+    finally:
+        conexion.close()
+
+

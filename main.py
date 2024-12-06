@@ -530,9 +530,12 @@ def confirmar_carrito():
     productos_carrito = controlador_detalle.obtener_Detalle_por_Id_pedido(pedido_id)
     
     for producto in productos_carrito:
-        cantidad = producto[3]  
+        cantidad = producto[3] 
         precio_unitario = producto[2]  
+        producto_id = producto[4] 
         total_producto = cantidad * precio_unitario
+
+        
         subtotal += total_producto
     
     # print(f"Total del pedido: {subtotal}")
@@ -3697,10 +3700,6 @@ def pedidos(user_id):
 #     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
 #     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
 #     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
-<<<<<<< HEAD
-=======
-
->>>>>>> 6baa6c99c3b6d59fbeca66fe8fe7b6bfbc00a463
 
 
 @app.route("/lista_deseos=<int:user_id>")
@@ -3762,8 +3761,10 @@ def confirmar_compra():
     
     for producto in productos_carrito:
         cantidad = producto[3]  
-        precio_unitario = producto[2]  
+        precio_unitario = producto[2]
+        producto_id = producto[4]  
         total_producto = cantidad * precio_unitario
+        controlador_detalle.reducir_detalle(producto_id, pedido_id, cantidad)
         subtotal += total_producto
 
     controlador_pedido.actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuario_id)
