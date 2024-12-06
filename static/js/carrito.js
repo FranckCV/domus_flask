@@ -1,4 +1,3 @@
-let descuento=false
 function obtenerCarrito() {
     return fetch('/obtener_carrito')
         .then(response => response.json())
