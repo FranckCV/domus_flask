@@ -3,12 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     agregarDivs.forEach(div => {
         div.addEventListener('click', (event) => {
+            actualizarCantidadLocalCarrito();
             actualizarCantidadCarrito();
         });
     });
 
     actualizarCantidadCarrito();
 });
+
+function actualizarCantidadLocalCarrito() {
+    const contadorCarrito = document.getElementById('carrito_cant');
+    let totalCantidad = parseInt(contadorCarrito.innerText) || 0;
+    totalCantidad++;
+
+    contadorCarrito.innerText = `${totalCantidad}`;
+    contadorCarrito.classList.add('animate-bounce'); 
+
+    setTimeout(() => {
+        contadorCarrito.classList.remove('animate-bounce'); 
+    }, 500);
+}
 
 function actualizarCantidadCarrito() {
     const contadorCarrito = document.getElementById('carrito_cant');
@@ -28,7 +42,6 @@ function actualizarCantidadCarrito() {
         })
         .then(data => {
             let totalCantidad = data.cantidad || 0;  
-
             contadorCarrito.innerText = `${totalCantidad}`;
             contadorCarrito.classList.add('animate-bounce'); 
 
