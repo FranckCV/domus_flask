@@ -3697,10 +3697,7 @@ def pedidos(user_id):
 #     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
 #     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
 #     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
-<<<<<<< HEAD
-=======
 
->>>>>>> 6baa6c99c3b6d59fbeca66fe8fe7b6bfbc00a463
 
 
 @app.route("/lista_deseos=<int:user_id>")
