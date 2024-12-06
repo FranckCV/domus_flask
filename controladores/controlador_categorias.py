@@ -69,6 +69,21 @@ def insertar_categoria(categoria,faicon_cat,disponibilidad):
     conexion.commit()
     conexion.close()
 
+def insertar_categoria_api(categoria, faicon_cat, disponibilidad):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("INSERT INTO categoria(categoria, faicon_cat, disponibilidad) VALUES (%s, %s, %s)", 
+                       (categoria, faicon_cat, disponibilidad))
+
+        cursor.execute("SELECT LAST_INSERT_ID();")
+        id_categoria = cursor.fetchone()[0]
+
+    conexion.commit()
+    conexion.close()
+
+    return id_categoria
+
+
 
 def obtener_categorias():
     conexion = obtener_conexion()

@@ -1,5 +1,4 @@
 from controladores.bd import obtener_conexion
-import pymysql
 
 #PARA INSERTAR EN PEDIDO
 def insertar_pedido(usuario, estado):
@@ -20,22 +19,18 @@ def insertar_pedido(usuario, estado):
     return pedido_id
 
 #PARA INSERTAR EN DETALLE
-import pymysql
 
 def insertar_detalle(producto_id, pedido_id):
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
-            # Verifica si el producto ya está en el pedido
             query = "SELECT * FROM detalles_pedido WHERE PRODUCTOid = %s AND PEDIDOid = %s"
             cursor.execute(query, (producto_id, pedido_id))
-            result = cursor.fetchone()  # Obtener el resultado de la consulta
+            result = cursor.fetchone() 
             
             if result:
-                # Actualiza la cantidad si el producto ya está en el pedido
                 sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
             else:
-                # Inserta un nuevo registro si el producto no está en el pedido
                 sql = '''
                     INSERT INTO detalles_pedido (PRODUCTOid, PEDIDOid, cantidad)
                     VALUES (%s, %s, 1)
@@ -43,12 +38,15 @@ def insertar_detalle(producto_id, pedido_id):
             
             cursor.execute(sql, (producto_id, pedido_id))
             conexion.commit()
-            return None
-    except pymysql.MySQLError as e:
-        return e 
+            
+            return True
+    except Exception as e:
+        print(f"Error en la base de datos: {e}") 
+        return False
     finally:
         if conexion:
             conexion.close()
+
 
 
  #PARA CAMBIAR DE ESTADO 1 A 2   

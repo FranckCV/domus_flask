@@ -1,7 +1,7 @@
 from controladores.bd import obtener_conexion
 import base64
 
-def obtener_Detalle():
+def obtener_Detalle(id):
     conexion = obtener_conexion()
     productos = []
     productos_lista = []
@@ -14,8 +14,9 @@ def obtener_Detalle():
             inner join pedido Pe on Pe.id=DP.PEDIDOid
             INNER JOIN img_producto IMP ON P.id = IMP.PRODUCTOid
             WHERE IMP.imgPrincipal = 1 and Pe.ESTADO_PEDIDOid=1
+            and pe.usuarioid = %s
         '''
-        cursor.execute(sql)
+        cursor.execute(sql,(id,))
         productos = cursor.fetchall()
         
         for producto in productos:
@@ -44,7 +45,6 @@ def obtener_Detalle():
             producto_id = producto[3]  
 
             productos_lista.append((imagen, nombre, precio_final, cantidad, producto_id))
-            # print(productos_lista)
     
     conexion.close()
     return productos_lista
@@ -239,3 +239,93 @@ def obtenerProductos():
         conexion.close()
 
     return producto
+
+def obtenerCantidadDetallePorUsuario(id):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+            SELECT SUM(cantidad) FROM `detalles_pedido` dp 
+            INNER JOIN pedido p ON p.id = dp.pedidoid
+            WHERE p.usuarioid = %s AND p.estado_pedidoid = 1
+            '''
+            cursor.execute(sql, (id,))
+            resultado = cursor.fetchone()  
+
+            return resultado[0] if resultado else 0
+    except Exception as e:
+        print(f"Error al obtener detalles: {e}")
+        return 0 
+
+
+###########################################################
+
+def obtener_DetalleConDic(id):
+    conexion = obtener_conexion()
+    productos = []
+    productos_lista = []
+
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT IMP.imagen, P.nombre, DP.cantidad, DP.PRODUCTOid 
+            FROM detalles_pedido DP
+            INNER JOIN producto P ON P.id = DP.PRODUCTOid
+            INNER JOIN pedido Pe ON Pe.id = DP.PEDIDOid
+            INNER JOIN img_producto IMP ON P.id = IMP.PRODUCTOid
+            WHERE IMP.imgPrincipal = 1 and Pe.ESTADO_PEDIDOid = 1
+            and Pe.usuarioid = %s
+        '''
+        cursor.execute(sql, (id,))
+        productos = cursor.fetchall()
+        
+        for producto in productos:
+            sql_precios = "SELECT price_regular, precio_online, precio_oferta FROM producto WHERE id = %s"
+            cursor.execute(sql_precios, (producto[3],))  
+            precios = cursor.fetchone()
+
+            if precios[2] is not None and precios[2] != 0:  # precio_oferta
+                precio_final = precios[2]
+            elif precios[1] is not None and precios[1] != 0:  # precio_online
+                precio_final = precios[1]
+            else:  # precio_regular
+                precio_final = precios[0]
+
+            img_binario = producto[0] 
+            if img_binario:
+                imagen_base64 = base64.b64encode(img_binario).decode('utf-8')
+                imagen = f"data:image/png;base64,{imagen_base64}"
+            else:
+                imagen = "" 
+
+            nombre = producto[1]  
+            cantidad = producto[2]  
+            producto_id = producto[3]  
+
+            productos_lista.append({
+                'imagen': imagen,
+                'nombre': nombre,
+                'precio': precio_final,
+                'cantidad': cantidad,
+                'producto_id': producto_id
+            })
+
+    conexion.close()
+    return productos_lista
+
+def guardar_detalle(producto_id, pedido_id, cantidad):
+    conexion = obtener_conexion()
+
+    try:
+        with conexion.cursor() as cursor:
+            # Insertamos un nuevo detalle en la tabla detalles_pedido
+            sql = '''
+                INSERT INTO detalles_pedido (PRODUCTOid, PEDIDOid, cantidad)
+                VALUES (%s, %s, %s)
+            '''
+            cursor.execute(sql, (producto_id, pedido_id, cantidad))
+            conexion.commit()  # Confirmamos la transacción
+            print(f"Detalle del producto {producto_id} en el pedido {pedido_id} guardado correctamente.")
+    except Exception as e:
+        print(f"Error al guardar detalle: {e}")
+    finally:
+        conexion.close()

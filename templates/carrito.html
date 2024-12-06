@@ -209,9 +209,6 @@
   <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalConfirmarCompraLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalConfirmarCompraLabel">Mensaje de error</h5>
-        </div>
         <div class="modal-body">
           <p>{{error_message}}</p>
         </div>
@@ -239,30 +236,7 @@
   });
 </script>
 
-<script>
-  //Para que lo qu está en la bd se guarde en el json
-  document.addEventListener("DOMContentLoaded", () => {
-    // Inicializamos el carrito en `localStorage` con los datos del servidor
-    const productosServidor = {{ productos | tojson }};
-    let carrito = {};
 
-    // Iteramos sobre los productos del servidor y los añadimos al carrito
-    productosServidor.forEach(producto => {
-      const [img, nombre, precio, cantidad, id] = producto;
-      carrito[nombre] = {
-        img: img,
-        precio: precio,
-        cantidad: cantidad,
-        id: id
-      };
-    });
-
-    // Guardamos el carrito inicializado en `localStorage`
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    actualizarCarrito(); // Actualizamos la vista del carrito con estos datos
-    actualizarCantidadCarrito(); // Actualizamos el contador en el header
-  });
-</script>
 
   <script src="static/js/carrito.js"></script>
   <script src="static/js/scriptListProduct.js"></script>
