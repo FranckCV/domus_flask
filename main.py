@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response,  redirect, url_for
 from flask_jwt import JWT, jwt_required, current_identity
-import uuid
+# import uuid
+from functools import wraps
 from clase_user_v1.usuario import Usuario
 import hashlib
 import base64
@@ -32,6 +33,7 @@ import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
 import controladores.controlador_empleados as controlador_empleados
+import controladores.controlador_usuario_admin as controlador_usuario_admin
 
 from datetime import datetime, date
 
@@ -73,28 +75,7 @@ from clases.clsCuponUsuario import CuponUsuario as clsCuponUsuario
 #     def __str__(self):
 #         return "User(id='%s')" % self.id
 
-# def authenticate(username, password):
-#     data = controlador_users.obtener_user_por_email(username)
-#     user = User(data[0],data[1],data[2])
-#     if user and user.password.encode('utf-8') == password.encode('utf-8'):
-#         return user
 
-# def identity(payload):
-#     user_id = payload['identity']
-#     data = controlador_users.obtener_user_por_id(user_id)
-#     user = User(data[0],data[1],data[2])
-#     return user
-
-
-
-# class User(object):
-#     def __init__(self, id, username, password):
-#         self.id = id
-#         self.username = username
-#         self.password = password
-
-#     def __str__(self):
-#         return "User(id='%s')" % self.id
 
 # users = [
 #     User(1, 'user1', 'abcxyz'),
@@ -373,13 +354,13 @@ def anuncio(id):
     #     return redirect("/error")
 
 
-
 # PAGINAS INFORMATIVAS
 
 @app.route("/servicio_cliente") #falta
 def servicio_cliente():
     tipos = controlador_contenido_info.obtener_tipos_contenido()
     return render_template("servicioCliente.html" , tipos = tipos)
+
 
 @app.route("/selectedContenidoInformativo=<int:id>") #falta
 def selectedContenidoInformativo(id):
@@ -392,8 +373,6 @@ def nosotros():
     info_domus = controlador_informacion_domus.obtener_informacion_domus()
     return render_template("nosotros.html" , info_domus = info_domus)
 
-
-# PAGINAS FORMULARIOS
 
 @app.route("/contactanos")
 def contactanos():
@@ -411,10 +390,6 @@ def registrate():
 
     return render_template("registrate.html")
 
-# PAGINAS USUARIO CLIENTE
-
-
-
 
 ######################CARRO######################
 @app.route("/carrito") 
@@ -427,7 +402,6 @@ def carrito():
     return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
 
 
-
 @app.route("/obtener_cantidad_carrito", methods=["GET"])
 def obtener_cantidad_carrito():
     usuario_id = session.get('id')
@@ -438,6 +412,7 @@ def obtener_cantidad_carrito():
     cantidad = controlador_detalle.obtenerCantidadDetallePorUsuario(usuario_id)
     
     return jsonify({'cantidad': cantidad})
+
 
 @app.route("/obtener_resumen_carrito", methods=["GET"])
 def obtener_resumen_carrito():
@@ -494,7 +469,6 @@ def agregar_carrito():
     
     else:
         return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
-
 
 
 @app.route("/aumentar_carro", methods=["POST"])
@@ -567,7 +541,6 @@ def confirmar_carrito():
         return redirect(url_for('carrito', error_message="El carrito no puede estar vacío"))
 
 
-
 @app.route("/resumen_de_pedido")
 def resumen_de_pedido():
     usuario=1
@@ -590,35 +563,95 @@ def cancelar_compra():
 
 
 
+###################################### CRUDS ##################################
 
-# PAGINAS USUARIO ADMINISTRADOR
+@app.after_request
+def no_cache(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "-1"
+    return response
 
-@app.route("/error_adm") 
+
+def login_requerido(func):
+    @wraps(func)  # Conserva el nombre y docstring de la función decorada
+    def envoltura(*args, **kwargs):
+        if 'usuario' not in session:  # Si no hay sesión activa
+            return redirect(url_for('login_admin'))  # Redirigir al login
+        return func(*args, **kwargs)  # Ejecutar la función original si está autenticado
+    return envoltura
+
+
+@app.route('/login_admin', methods=['GET', 'POST'])
+def login_admin():
+    # Si el usuario ya tiene sesión, redirigir al dashboard
+    if 'usuario' in session:
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        username = request.form.get('username')
+        password = request.form.get('password')
+        epassword = encstringsha256(password)
+
+        # Llamar al controlador para validar las credenciales
+        if controlador_usuario_admin.confirmarDatosAdm(username, epassword):
+            # Crear sesión
+            session['usuario'] = username
+            session['tipo_usuarioid'] = controlador_usuario_admin.obtenerTipoU(username)
+            session['nombre_c'] = controlador_usuario_admin.obtenerNombresC(username)
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard
+
+        # Mostrar un mensaje de alerta si las credenciales son inválidas
+        flash("Credenciales incorrectas. Inténtalo de nuevo.", "danger")
+
+    return render_template('login-admin.html')  # Renderizar formulario de login
+
+
+@app.route('/api/session-data', methods=['GET'])
+def get_session_data():
+    if 'usuario' in session:
+        return jsonify({
+            'usuario': session.get('usuario', ''),
+            'tipoid': session.get('tipo_usuarioid', ''),
+            'nombres': session.get('nombre_c', '')
+        })
+    return jsonify({'error': 'No session data'}), 401
+
+
+@app.route('/logout_admin')
+def logout_admin():
+    session.pop('usuario', None)  # Eliminar la sesión
+    return redirect(url_for('login_admin'))  # Redirigir al login
+
+
+@app.route("/error_adm")
 def error_adm():
     return render_template("error_admin.html")
 
 
 @app.route('/cuenta_administrativa')
+@login_requerido #Decorador
 def cuenta_administrativa():
     return render_template('cuenta_administrativa.html')
 
 
 @app.route("/dashboard")
+@login_requerido #Decorador
 def dashboard():
-    # if session['tipo'] == 2:
+    if 'usuario' not in session:
+        return redirect(url_for('login_admin'))
     return render_template("dashboard.html")
-    # else:
-        # return redirect('/')
-
-
 
 
 @app.route("/agregar_marca")
+@login_requerido 
 def formulario_agregar_marca():
     return render_template("agregar_marca.html")
 
 
 @app.route("/guardar_marca", methods=["POST"])
+@login_requerido 
 def guardar_marca():
     marca = request.form["marca"]
 
@@ -638,12 +671,14 @@ def guardar_marca():
 
 
 @app.route("/listado_marcas")
+@login_requerido 
 def marcas():
     marcas = controlador_marcas.obtener_listado_marcas()
     return render_template("listado_marcas.html", marcas=marcas, active='marcas')
 
 
 @app.route("/listado_marcas_buscar")
+@login_requerido 
 def marcas_buscar():
     nombreBusqueda = request.args.get("buscarElemento")
     marcas = controlador_marcas.buscar_listado_marcas_nombre(nombreBusqueda)
@@ -652,18 +687,21 @@ def marcas_buscar():
 
 
 @app.route("/eliminar_marca", methods=["POST"])
+@login_requerido 
 def eliminar_marca():
     controlador_marcas.eliminar_marca(request.form["id"])
     return redirect("/listado_marcas")
 
 
 @app.route("/formulario_editar_marca=<int:id>")
+@login_requerido 
 def editar_marca(id):
     marca = controlador_marcas.obtener_listado_marca_por_id(id)
     return render_template("editar_marca.html", marca=marca)
 
 
 @app.route("/actualizar_marca", methods=["POST"])
+@login_requerido 
 def actualizar_marca():
     id = request.form["id"]
 
@@ -691,461 +729,928 @@ def actualizar_marca():
 
     # CARACTERISTICAS
 
+
 @app.route("/listado_caracteristicas_buscar")
+@login_requerido  
 def caracteristicas_buscar():
-    nombreBusqueda = request.args.get("buscarElemento")
-    subcategoriasFiltro = controlador_subcategorias.obtener_subcategoriasXnombre()
-    categoriasFiltro = controlador_categorias.obtener_categoriasXnombre()
-    caracteristicas = controlador_caracteristicas.buscar_listado_Caracteristicas_nombre(nombreBusqueda)    
-    categorias = controlador_categorias.obtener_categorias()
-    subcategorias =controlador_subcategorias.obtener_subcategorias()
-    return render_template("listado_caracteristicas.html", caracteristicas = caracteristicas, categoriasFiltro=categoriasFiltro, subcategoriasFiltro=subcategoriasFiltro , subcategorias=subcategorias , categorias = categorias , nombreBusqueda = nombreBusqueda)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombreBusqueda = request.args.get("buscarElemento")
+        subcategoriasFiltro = controlador_subcategorias.obtener_subcategoriasXnombre()
+        categoriasFiltro = controlador_categorias.obtener_categoriasXnombre()
+        caracteristicas = controlador_caracteristicas.buscar_listado_Caracteristicas_nombre(nombreBusqueda)    
+        categorias = controlador_categorias.obtener_categorias()
+        subcategorias =controlador_subcategorias.obtener_subcategorias()
+        return render_template("listado_caracteristicas.html", caracteristicas = caracteristicas, categoriasFiltro=categoriasFiltro, subcategoriasFiltro=subcategoriasFiltro , subcategorias=subcategorias , categorias = categorias , nombreBusqueda = nombreBusqueda)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_caracteristicas")
+@login_requerido  
 def caracteristicas():
-    subcategoriasFiltro = controlador_subcategorias.obtener_subcategoriasXnombre()
-    categoriasFiltro = controlador_categorias.obtener_categoriasXnombre()
-    caracteristicas = controlador_caracteristicas.obtener_listado_Caracteristicas()    
-    categorias = controlador_categorias.obtener_categorias()
-    subcategorias =controlador_subcategorias.obtener_subcategorias()
-    return render_template("listado_caracteristicas.html", caracteristicas = caracteristicas, categoriasFiltro=categoriasFiltro, subcategoriasFiltro=subcategoriasFiltro , subcategorias=subcategorias , categorias = categorias)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        subcategoriasFiltro = controlador_subcategorias.obtener_subcategoriasXnombre()
+        categoriasFiltro = controlador_categorias.obtener_categoriasXnombre()
+        caracteristicas = controlador_caracteristicas.obtener_listado_Caracteristicas()
+        categorias = controlador_categorias.obtener_categorias()
+        subcategorias = controlador_subcategorias.obtener_subcategorias()
+        return render_template("listado_caracteristicas.html", caracteristicas=caracteristicas, categoriasFiltro=categoriasFiltro, subcategoriasFiltro=subcategoriasFiltro, subcategorias=subcategorias, categorias=categorias)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_caracteristica")
+@login_requerido  
 def formulario_agregar_caracteristica():
-    categorias = controlador_categorias.obtener_categoriasXnombre()
-    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
-    return render_template("agregar_caracteristica.html" , subcategorias = subcategorias,categorias = categorias)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        categorias = controlador_categorias.obtener_categoriasXnombre()
+        subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+        return render_template("agregar_caracteristica.html", subcategorias=subcategorias, categorias=categorias)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_caracteristica", methods=["POST"])
+@login_requerido  
 def guardar_caracteristica():
-    campo = request.form["campo"]
-    subcategoria_id = request.form["subcategorySelect"]
-    id_carac = controlador_caracteristicas.insertar_caracteristica(campo)
-    controlador_caracteristicas.insertar_caracteristica_subcategoria(id_carac,subcategoria_id)
-    return redirect("/listado_caracteristicas")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        campo = request.form["campo"]
+        subcategoria_id = request.form["subcategorySelect"]
+        id_carac = controlador_caracteristicas.insertar_caracteristica(campo)
+        controlador_caracteristicas.insertar_caracteristica_subcategoria(id_carac, subcategoria_id)
+        return redirect("/listado_caracteristicas")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_caracteristica", methods=["POST"])
+@login_requerido  
 def eliminar_caracteristica():
-    controlador_caracteristicas.eliminar_caracteristica(request.form["id"])
-    return redirect("/listado_caracteristicas")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-# @app.route("/eliminar_caracteristica", methods=["POST"])
-# def eliminar_caracteristica():
-#     id = request.form["id"]
-    
-#     # Verificamos si la característica está asociada a subcategorías o productos
-#     tiene_subcategorias = controlador_caracteristicas.buscar_en_caracteristica_subcategoria(id)
-#     tiene_productos = controlador_caracteristicas.buscar_en_caracteristica_producto(id)
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-#     if tiene_subcategorias or tiene_productos:
-#         # Si está asociada, mostramos el error
-#         return render_template("listado_caracteristicas.html", error="La característica está asociada a subcategorías o productos y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
-#     else:
-#         # Si no está asociada, procedemos a eliminar
-#         controlador_caracteristicas.eliminar_caracteristica(id)
-#         return redirect("/listado_caracteristicas")
-
+        controlador_caracteristicas.eliminar_caracteristica(request.form["id"])
+        return redirect("/listado_caracteristicas")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_caracteristica=<int:id>")
+@login_requerido  
 def editar_caracteristica(id):
-    carac = controlador_caracteristicas.obtener_caracteristica_por_id(id)
-    sub_id = controlador_caracteristicas.obtener_carac_subcat_por_carac_id(id)
-    categorias = controlador_categorias.obtener_categoriasXnombre()
-    subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
-    return render_template("editar_caracteristica.html", caracteristica=carac , categorias = categorias , subcategorias = subcategorias,sub_id = sub_id)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        carac = controlador_caracteristicas.obtener_caracteristica_por_id(id)
+        sub_id = controlador_caracteristicas.obtener_carac_subcat_por_carac_id(id)
+        categorias = controlador_categorias.obtener_categoriasXnombre()
+        subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
+        return render_template("editar_caracteristica.html", caracteristica=carac, categorias=categorias, subcategorias=subcategorias, sub_id=sub_id)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_caracteristica", methods=["POST"])
+@login_requerido  
 def actualizar_caracteristica():
-    id = request.form["id"]
-    sub_id = request.form["sub_id"] 
-    campo = request.form["campo"]
-    disp = request.form["disponibilidad"]
-    subcategoria_id = request.form["subcategorySelect"]
-    controlador_caracteristicas.actualizar_caracteristica(campo, disp, subcategoria_id, sub_id ,id)
-    return redirect("/listado_caracteristicas")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
+        id = request.form["id"]
+        sub_id = request.form["sub_id"]
+        campo = request.form["campo"]
+        disp = request.form["disponibilidad"]
+        subcategoria_id = request.form["subcategorySelect"]
+        controlador_caracteristicas.actualizar_caracteristica(campo, disp, subcategoria_id, sub_id, id)
+        return redirect("/listado_caracteristicas")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-
-
-
-########################     SUBCATEGORIA      #########################
 
 @app.route("/listado_subcategorias")
+@login_requerido
 def subcategorias():
-    categorias = controlador_categorias.obtener_listado_categorias()
-    subcategorias =controlador_subcategorias.obtener_listado_subcategorias()
-    return render_template("listado_subcategorias.html", categorias=categorias,subcategorias = subcategorias)
+    if 'usuario' in session:
+        username = session['usuario']  # Recuperar el usuario desde la sesión
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener el tipo de usuario
+
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        # Si el tipo de usuario no es 2, continuar con el resto del flujo
+        categorias = controlador_categorias.obtener_listado_categorias()
+        subcategorias = controlador_subcategorias.obtener_listado_subcategorias()
+
+        # Renderizar la plantilla con los datos
+        return render_template(
+            "listado_subcategorias.html",
+            categorias=categorias,
+            subcategorias=subcategorias
+        )
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_subcategorias_buscar")
+@login_requerido  
 def subcategorias_buscar():
-    nombreBusqueda = request.args.get("buscarElemento")
-    categorias = controlador_categorias.obtener_listado_categorias()
-    subcategorias =controlador_subcategorias.buscar_listado_subcategorias_nombre(nombreBusqueda)
-    return render_template("listado_subcategorias.html", categorias=categorias,subcategorias = subcategorias , nombreBusqueda = nombreBusqueda)
+    if 'usuario' in session:
+        username = session['usuario']  # Recuperar el usuario desde la sesión
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener el tipo de usuario
+
+        # Verificar si el tipo de usuario es 2 y redirigir al dashboard si es así
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        # Si el tipo de usuario no es 2, continuar con la búsqueda
+        nombreBusqueda = request.args.get("buscarElemento")
+        categorias = controlador_categorias.obtener_listado_categorias()
+        subcategorias = controlador_subcategorias.buscar_listado_subcategorias_nombre(nombreBusqueda)
+
+        return render_template(
+            "listado_subcategorias.html",
+            categorias=categorias,
+            subcategorias=subcategorias,
+            nombreBusqueda=nombreBusqueda
+        )
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_subcategoria")
+@login_requerido  
 def formulario_agregar_subcategoria():
-    categorias = controlador_categorias.obtener_categorias()
-    return render_template("agregar_subcategoria.html",categorias=categorias,active='categorias')
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        categorias = controlador_categorias.obtener_categorias()
+        return render_template("agregar_subcategoria.html", categorias=categorias, active='categorias')
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_subcategoria", methods=["POST"])
+@login_requerido  
 def guardar_subcategoria():
-    nombre = request.form["nombre"] 
-    faicon_subcat = request.form["faicon_subcat"] 
-    categoria_id = request.form["categoria_id"] 
-    controlador_subcategorias.insertar_subcategoria(nombre,faicon_subcat,1,categoria_id)
-    return redirect("/listado_subcategorias")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombre = request.form["nombre"]
+        faicon_subcat = request.form["faicon_subcat"]
+        categoria_id = request.form["categoria_id"]
+        controlador_subcategorias.insertar_subcategoria(nombre, faicon_subcat, 1, categoria_id)
+        return redirect("/listado_subcategorias")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_subcategoria", methods=["POST"])
+@login_requerido  
 def eliminar_subcategoria():
-    controlador_subcategorias.eliminar_subcategoria(request.form["id"])
-    return redirect("/listado_subcategorias")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        controlador_subcategorias.eliminar_subcategoria(request.form["id"])
+        return redirect("/listado_subcategorias")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_subcategoria=<int:id>")
+@login_requerido  
 def editar_subcategoria(id):
-    subcategoria = controlador_subcategorias.obtener_subcategoria_por_id(id)
-    categorias = controlador_categorias.obtener_categorias()
-    return render_template("editar_subcategoria.html", subcategoria=subcategoria, categorias=categorias)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        subcategoria = controlador_subcategorias.obtener_subcategoria_por_id(id)
+        categorias = controlador_categorias.obtener_categorias()
+        return render_template("editar_subcategoria.html", subcategoria=subcategoria, categorias=categorias)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_subcategoria", methods=["POST"])
+@login_requerido  
 def actualizar_subcategoria():
-    id = request.form["id"]
-    nombre = request.form["nombre"] 
-    faicon_subcat = request.form["faicon_subcat"] 
-    disponibilidad = request.form["disponibilidad"] 
-    categoria_id = request.form["categoria_id"] 
-    controlador_subcategorias.actualizar_subcategoria(nombre,faicon_subcat,disponibilidad,categoria_id,id)
-    return redirect("/listado_subcategorias")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        id = request.form["id"]
+        nombre = request.form["nombre"]
+        faicon_subcat = request.form["faicon_subcat"]
+        disponibilidad = request.form["disponibilidad"]
+        categoria_id = request.form["categoria_id"]
+        controlador_subcategorias.actualizar_subcategoria(nombre, faicon_subcat, disponibilidad, categoria_id, id)
+        return redirect("/listado_subcategorias")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-########################     CATEGORIA      #########################
 
 @app.route("/agregar_categoria")
+@login_requerido  
 def formulario_agregar_categoria():
-    return render_template("agregar_categoria.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        return render_template("agregar_categoria.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_categoria", methods=["POST"])
+@login_requerido  
 def guardar_categoria():
-    categoria = request.form["categoria"] 
-    faicon_cat = request.form["faicon_cat"] 
-    controlador_categorias.insertar_categoria(categoria,faicon_cat,1)
-    return redirect("/listado_categorias")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        categoria = request.form["categoria"]
+        faicon_cat = request.form["faicon_cat"]
+        controlador_categorias.insertar_categoria(categoria, faicon_cat, 1)
+        return redirect("/listado_categorias")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_categorias")
+@login_requerido  
 def categorias():
-    categorias = controlador_categorias.obtener_listado_categorias()
-    subcategorias =controlador_subcategorias.obtener_subcategorias()
-    return render_template("listado_categorias.html", categorias=categorias,subcategorias = subcategorias)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        categorias = controlador_categorias.obtener_listado_categorias()
+        subcategorias = controlador_subcategorias.obtener_subcategorias()
+        return render_template("listado_categorias.html", categorias=categorias, subcategorias=subcategorias)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_categoria", methods=["POST"])
+@login_requerido  
 def eliminar_categoria():
-    id = request.form["id"]
-    categoria = controlador_categorias.obtener_categoria_id_relacion(id)
-    result = categoria[4]
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    if result != 0:
-        return render_template("listado_categorias.html", error="La categoría tiene elementos asociados y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        id = request.form["id"]
+        categoria = controlador_categorias.obtener_categoria_id_relacion(id)
+        result = categoria[4]
+
+        if result != 0:
+            return render_template("listado_categorias.html", error="La categoría tiene elementos asociados y no se puede eliminar. Redirigiendo en 3 segundos...", show_modal=True)
+        else:
+            controlador_categorias.eliminar_categoria(id)
+            return redirect("/listado_categorias")
     else:
-        controlador_categorias.eliminar_categoria(id)
-        return redirect("/listado_categorias")
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_categoria=<int:id>")
+@login_requerido  
 def editar_categoria(id):
-    categoria = controlador_categorias.obtener_categoria_por_id(id)
-    return render_template("editar_categoria.html", categoria=categoria)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        categoria = controlador_categorias.obtener_categoria_por_id(id)
+        return render_template("editar_categoria.html", categoria=categoria)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_categoria", methods=["POST"])
+@login_requerido  
 def actualizar_categoria():
-    id = request.form["id"]
-    categoria = request.form["categoria"] 
-    faicon_cat = request.form["faicon_cat"] 
-    disponibilidad = request.form["disponibilidad"] 
-    controlador_categorias.actualizar_categoria(categoria,faicon_cat,disponibilidad,id)
-    return redirect("/listado_categorias")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+        
+        id = request.form["id"]
+        categoria = request.form["categoria"]
+        faicon_cat = request.form["faicon_cat"]
+        disponibilidad = request.form["disponibilidad"]
+        controlador_categorias.actualizar_categoria(categoria, faicon_cat, disponibilidad, id)
+        return redirect("/listado_categorias")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-######################### PARA COMENTARIO ##############################
 
 @app.route("/comentarios_listado")
+@login_requerido  
 def comentarios_listado():
-    comentarios = controlador_comentario.obtener_listado_comentarios()
-    motivos = controlador_motivo_comentario.obtener_motivos_disponibles()
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    return render_template("listado_comentarios.html", comentarios=comentarios, motivos=motivos)
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        comentarios = controlador_comentario.obtener_listado_comentarios()
+        motivos = controlador_motivo_comentario.obtener_motivos_disponibles()
+
+        return render_template("listado_comentarios.html", comentarios=comentarios, motivos=motivos)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/ver_comentario=<int:id>")
+@login_requerido  
 def ver_comentario(id):
-    comentario = controlador_comentario.ver_comentario_por_id(id)
-    motivos = controlador_motivo_comentario.obtener_listado_motivos()
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    return render_template("ver_comentario.html", comentario=comentario, motivos=motivos , id = id)
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        comentario = controlador_comentario.ver_comentario_por_id(id)
+        motivos = controlador_motivo_comentario.obtener_listado_motivos()
+
+        return render_template("ver_comentario.html", comentario=comentario, motivos=motivos, id=id)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/comentarios_listado_buscar")
+@login_requerido  
 def comentarios_listado_buscar():
-    nombreBusqueda = request.args.get("buscarElemento")
-    comentarios = controlador_comentario.buscar_listado_comentarios_palabra(nombreBusqueda)
-    motivos = controlador_motivo_comentario.obtener_motivos_disponibles()
-    
-    return render_template("listado_comentarios.html", comentarios=comentarios, motivos=motivos , nombreBusqueda = nombreBusqueda)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombreBusqueda = request.args.get("buscarElemento")
+        comentarios = controlador_comentario.buscar_listado_comentarios_palabra(nombreBusqueda)
+        motivos = controlador_motivo_comentario.obtener_motivos_disponibles()
+
+        return render_template("listado_comentarios.html", comentarios=comentarios, motivos=motivos, nombreBusqueda=nombreBusqueda)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_comentario", methods=["POST"])
+@login_requerido  
 def guardar_comentario():
-    nombres = request.form["nombres"]
-    apellidos = request.form["apellidos"]
-    email = request.form["email"]
-    telefono = request.form["telefono"]
-    motivo_comentario_id = request.form["motivo_comentario_id"]
-    mensaje = request.form["mensaje"]
-    
-    # Estado por defecto: pendiente (1)
-    estado = 0
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    # Usuario id como null (si no está disponible)
-    usuario_id = None
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-    controlador_comentario.insertar_comentario(nombres, apellidos, email, telefono, mensaje, estado, motivo_comentario_id, usuario_id)
-    
-    return redirect("/")
+        nombres = request.form["nombres"]
+        apellidos = request.form["apellidos"]
+        email = request.form["email"]
+        telefono = request.form["telefono"]
+        motivo_comentario_id = request.form["motivo_comentario_id"]
+        mensaje = request.form["mensaje"]
+
+        # Estado por defecto: pendiente (1)
+        estado = 0
+
+        # Usuario id como null (si no está disponible)
+        usuario_id = None
+
+        controlador_comentario.insertar_comentario(nombres, apellidos, email, telefono, mensaje, estado, motivo_comentario_id, usuario_id)
+
+        return redirect("/")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_comentario", methods=["POST"])
+@login_requerido  
 def eliminar_comentario():
-    controlador_comentario.eliminar_comentario(request.form["id"])
-    return redirect("/comentarios_listado")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        controlador_comentario.eliminar_comentario(request.form["id"])
+        return redirect("/comentarios_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/estado_comentario", methods=["POST"])
+@login_requerido  
 def estado_comentario():
-    controlador_comentario.estado_comentario(request.form["id"])
-    # return redirect("/comentarios_listado")
-    return redirect(request.referrer)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        controlador_comentario.estado_comentario(request.form["id"])
+        return redirect(request.referrer)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/estado_comentario_respondido", methods=["POST"])
+@login_requerido  
 def estado_comentario_respondido():
-    controlador_comentario.estado_comentario_respondido(request.form["id"])
-    return redirect(request.referrer)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-######################### FIN COMENTARIO ##############################
+        controlador_comentario.estado_comentario_respondido(request.form["id"])
+        return redirect(request.referrer)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/motivos_comentario_listado")
+@login_requerido  
 def motivos_comentario_listado():
-    motivos = controlador_motivo_comentario.obtener_listado_motivos()
-    return render_template("listado_motivos_comentarios.html", motivos=motivos)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        motivos = controlador_motivo_comentario.obtener_listado_motivos()
+        return render_template("listado_motivos_comentarios.html", motivos=motivos)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/motivos_comentario_buscar")
+@login_requerido  
 def motivos_comentario_buscar():
-    nombreBusqueda = request.args.get("buscarElemento")
-    motivos = controlador_motivo_comentario.buscar_listado_motivos_nombre(nombreBusqueda)
-    return render_template("listado_motivos_comentarios.html", motivos=motivos , nombreBusqueda = nombreBusqueda)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombreBusqueda = request.args.get("buscarElemento")
+        motivos = controlador_motivo_comentario.buscar_listado_motivos_nombre(nombreBusqueda)
+        return render_template("listado_motivos_comentarios.html", motivos=motivos, nombreBusqueda=nombreBusqueda)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_motivo_comentario")
+@login_requerido  
 def formulario_agregar_motivo_comentario():
-    return render_template("agregar_motivo_comentario.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_motivo_comentario.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_motivo_comentario", methods=["POST"])
+@login_requerido  
 def guardar_motivo_comentario():
-    motivo = request.form["motivo"]
-    controlador_motivo_comentario.insertar_motivo(motivo, 1)
-    return redirect("/motivos_comentario_listado")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        motivo = request.form["motivo"]
+        controlador_motivo_comentario.insertar_motivo(motivo, 1)
+        return redirect("/motivos_comentario_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_motivo_comentario", methods=["POST"])
+@login_requerido  
 def eliminar_motivo_comentario():
-    controlador_motivo_comentario.eliminar_motivo(request.form["id"])
-    return redirect("/motivos_comentario_listado")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        controlador_motivo_comentario.eliminar_motivo(request.form["id"])
+        return redirect("/motivos_comentario_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_motivo_comentario=<int:id>")
+@login_requerido  
 def editar_motivo_comentario(id):
-    motivo_comentario = controlador_motivo_comentario.obtener_motivo_por_id(id)
-    return render_template("editar_motivo_comentario.html", motivo_comentario=motivo_comentario)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        motivo_comentario = controlador_motivo_comentario.obtener_motivo_por_id(id)
+        return render_template("editar_motivo_comentario.html", motivo_comentario=motivo_comentario)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_motivo_comentario", methods=["POST"])
-def actualizar_motivo_comentario(): 
-    id = request.form["id"]
-    motivo = request.form["motivo"]
-    disponibilidad = request.form["disponibilidad"]
-    controlador_motivo_comentario.actualizar_motivo(motivo, disponibilidad, id)
-    return redirect("/motivos_comentario_listado")
+@login_requerido  
+def actualizar_motivo_comentario():
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-######################### FIN MOTIVO COMENTARIO ##############################
+        id = request.form["id"]
+        motivo = request.form["motivo"]
+        disponibilidad = request.form["disponibilidad"]
+        controlador_motivo_comentario.actualizar_motivo(motivo, disponibilidad, id)
+        return redirect("/motivos_comentario_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-
-
-
-######################### PARA USUARIO EMPLEADO ##############################
 
 @app.route("/cambiar_contrasenia=<int:id>")
+@login_requerido  
 def cambiar_contrasenia(id):
-    usuario = controlador_empleados.obtener_usuario_por_id(id)
-    clave_default = controlador_empleados.clave_default_empleado()
-    clave_actual = None
-    if usuario[9] == controlador_empleados.clave_default_empleado():
-        clave_actual = clave_default
-    return render_template("nueva_contrasenia_admin.html", usuario=usuario , clave_actual = clave_actual)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        usuario = controlador_empleados.obtener_usuario_por_id(id)
+        clave_default = controlador_empleados.clave_default_empleado()
+        clave_actual = None
+        if usuario[9] == controlador_empleados.clave_default_empleado():
+            clave_actual = clave_default
+        return render_template("nueva_contrasenia_admin.html", usuario=usuario , clave_actual = clave_actual)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_contrasenia_empleado", methods=["POST"])
+@login_requerido  
 def guardar_contrasenia_empleado():
-    id = request.form["id"]
-    contrasenia = request.form["contrasenia"]
-    confcontrasenia = request.form["confcontrasenia"]
-    password = encstringsha256(contrasenia)
-    if contrasenia == confcontrasenia:
-        controlador_empleados.cambiar_contrasenia_usuario(password,id)
-        return redirect("/dashboard")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        contrasenia = request.form["contrasenia"]
+        confcontrasenia = request.form["confcontrasenia"]
+        password = encstringsha256(contrasenia)
+        if contrasenia == confcontrasenia:
+            controlador_empleados.cambiar_contrasenia_usuario(password,id)
+            return redirect("/dashboard")
+        else:
+            return redirect("/cambiar_contrasenia="+id)
     else:
-        return redirect("/cambiar_contrasenia="+id)
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-
+    
 @app.route("/empleados_listado")
+@login_requerido  
 def empleados_listado():
-    usuarios = controlador_empleados.obtener_listado_usuarios_empleados()
-    tipos_usuarios = controlador_tipos_usuario.obtener_tipos_usuario()
-    imagenes = controlador_empleados.obtener_listado_imagenes_usuario_empleado()
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    return render_template("listado_empleados.html", usuarios=usuarios, tipos_usuarios=tipos_usuarios , imagenes = imagenes)
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        usuarios = controlador_empleados.obtener_listado_usuarios_empleados()
+        tipos_usuarios = controlador_tipos_usuario.obtener_tipos_usuario()
+        imagenes = controlador_empleados.obtener_listado_imagenes_usuario_empleado()
+        return render_template("listado_empleados.html", usuarios=usuarios, tipos_usuarios=tipos_usuarios, imagenes=imagenes)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/empleados_listado_buscar")
+@login_requerido  
 def empleados_listado_buscar():
-    nombreBusqueda = request.args.get("buscarElemento")
-    usuarios = controlador_empleados.buscar_listado_usuarios_empleados_nombre(nombreBusqueda)
-    tipos_usuarios = controlador_tipos_usuario.obtener_tipos_usuario()
-    imagenes = controlador_empleados.obtener_listado_imagenes_usuario_empleado()
-    return render_template("listado_empleados.html", usuarios=usuarios, tipos_usuarios=tipos_usuarios , nombreBusqueda = nombreBusqueda , imagenes = imagenes)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombreBusqueda = request.args.get("buscarElemento")
+        usuarios = controlador_empleados.buscar_listado_usuarios_empleados_nombre(nombreBusqueda)
+        tipos_usuarios = controlador_tipos_usuario.obtener_tipos_usuario()
+        imagenes = controlador_empleados.obtener_listado_imagenes_usuario_empleado()
+        return render_template("listado_empleados.html", usuarios=usuarios, tipos_usuarios=tipos_usuarios, nombreBusqueda=nombreBusqueda, imagenes=imagenes)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/ver_empleado=<int:id>")
+@login_requerido  
 def ver_empleado(id):
-    usuario = controlador_empleados.ver_info_usuario_empleado(id)
-    imagen = controlador_empleados.obtener_imagen_usuario_empleado_id(id)
-    return render_template("ver_usuario_empleado.html", usuario = usuario , imagen = imagen)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        usuario = controlador_empleados.ver_info_usuario_empleado(id)
+        imagen = controlador_empleados.obtener_imagen_usuario_empleado_id(id)
+        return render_template("ver_usuario_empleado.html", usuario=usuario, imagen=imagen)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_empleado")
+@login_requerido  
 def formulario_agregar_empleado():
-    return render_template("agregar_empleado.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_empleado.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_empleado", methods=["POST"])
+@login_requerido  
 def guardar_empleado():
-    nombres = request.form["nombres"]
-    apellidos = request.form["apellidos"]
-    doc_identidad = request.form["doc_identidad"]
-    
-    # Verificar si se subió una imagen
-    img_usuario = request.files["img_usuario"].read() if "img_usuario" in request.files and request.files["img_usuario"].filename != '' else None
-    
-    genero = request.form["genero"]
-    fecha_nacimiento = request.form["fecha_nacimiento"]
-    telefono = request.form["telefono"]
-    correo = request.form["correo"]
-    contraseña = controlador_empleados.clave_default_empleado()  
-    # contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
-    
-    disponibilidad = 1
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombres = request.form["nombres"]
+        apellidos = request.form["apellidos"]
+        doc_identidad = request.form["doc_identidad"]
+        
+        # Verificar si se subió una imagen
+        img_usuario = request.files["img_usuario"].read() if "img_usuario" in request.files and request.files["img_usuario"].filename != '' else None
+        
+        genero = request.form["genero"]
+        fecha_nacimiento = request.form["fecha_nacimiento"]
+        telefono = request.form["telefono"]
+        correo = request.form["correo"]
+        contraseña = controlador_empleados.clave_default_empleado()  
+        # contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
+        
+        disponibilidad = 1
 
     # Verificar si el correo ya existe
-    if controlador_empleados.verificar_correo_existente(correo):
-        error = "El correo se encuentra registrado. Intente con otro correo."
-        return render_template("agregar_empleado.html", error=error, nombres=nombres, apellidos=apellidos, doc_identidad=doc_identidad, genero=genero, fecha_nacimiento=fecha_nacimiento, telefono=telefono, correo=correo)
+        if controlador_empleados.verificar_correo_existente(correo):
+            error = "El correo se encuentra registrado. Intente con otro correo."
+            return render_template("agregar_empleado.html", error=error, nombres=nombres, apellidos=apellidos, doc_identidad=doc_identidad, genero=genero, fecha_nacimiento=fecha_nacimiento, telefono=telefono, correo=correo)
 
-    controlador_empleados.insertar_usuario(
-        nombres, apellidos, doc_identidad, img_usuario, genero, 
-        fecha_nacimiento, telefono, correo, contraseña, disponibilidad
-    )
-    return redirect("/empleados_listado")
+        controlador_empleados.insertar_usuario(
+            nombres, apellidos, doc_identidad, img_usuario, genero, 
+            fecha_nacimiento, telefono, correo, contraseña, disponibilidad
+        )
+        return redirect("/empleados_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_empleado", methods=["POST"])
+@login_requerido  
 def actualizar_empleado():
-    id = request.form["id"]
-    nombres = request.form["nombres"]
-    apellidos = request.form["apellidos"]
-    doc_identidad = request.form["doc_identidad"]
-    
-    img_usuario = request.files["img_usuario"].read() if "img_usuario" in request.files and request.files["img_usuario"].filename != '' else None
-    
-    genero = request.form["genero"]
-    fecha_nacimiento = request.form["fecha_nacimiento"]
-    telefono = request.form["telefono"]
-    correo = request.form["correo"]
-    # contraseña = request.form["contraseña"]  # Aquí también se mantiene la contraseña sin cifrado
-    disponibilidad = request.form["disponibilidad"]
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    # epassword = encstringsha256(contraseña)
-    controlador_empleados.actualizar_usuario_empleado(
-        nombres, apellidos, doc_identidad, img_usuario, genero, 
-        fecha_nacimiento, telefono, correo, disponibilidad, id
-    )
-    return redirect("/empleados_listado")
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        nombres = request.form["nombres"]
+        apellidos = request.form["apellidos"]
+        doc_identidad = request.form["doc_identidad"]
+        
+        img_usuario = request.files["img_usuario"].read() if "img_usuario" in request.files and request.files["img_usuario"].filename != '' else None
+        
+        genero = request.form["genero"]
+        fecha_nacimiento = request.form["fecha_nacimiento"]
+        telefono = request.form["telefono"]
+        correo = request.form["correo"]
+        # contraseña = request.form["contraseña"]  # Aquí también se mantiene la contraseña sin cifrado
+        disponibilidad = request.form["disponibilidad"]
+
+        # epassword = encstringsha256(contraseña)
+        controlador_empleados.actualizar_usuario_empleado(
+            nombres, apellidos, doc_identidad, img_usuario, genero, 
+            fecha_nacimiento, telefono, correo, disponibilidad, id
+        )
+        return redirect("/empleados_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_empleado=<int:id>")
+@login_requerido  
 def editar_empleado(id):
-    usuario = controlador_empleados.obtener_usuario_por_id(id) 
-    imagen = controlador_empleados.obtener_imagen_usuario_empleado_id(id)  
-    return render_template("editar_empleado.html", usuario=usuario , imagen = imagen)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        usuario = controlador_empleados.obtener_usuario_por_id(id)
+        imagen = controlador_empleados.obtener_imagen_usuario_empleado_id(id)
+        return render_template("editar_empleado.html", usuario=usuario, imagen=imagen)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_empleado", methods=["POST"])
+@login_requerido  
 def eliminar_empleado():
-    controlador_empleados.eliminar_usuario(request.form["id"])
-    return redirect("/empleados_listado")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-######################### FIN USUARIO EMPLEADO ##############################
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
+        controlador_empleados.eliminar_usuario(request.form["id"])
+        return redirect("/empleados_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-
-
-########## INICIO PRODUCTOS ##########
 
 @app.route("/eliminar_img_producto", methods=["POST"])
+@login_requerido
 def eliminar_img_producto():
-    id = request.form["img_id"]
-    imagen = controlador_imagenes_productos.obtener_imagen_por_id(id)
-    idpro = imagen[2]
-    controlador_imagenes_productos.eliminar_img_producto_x_id(id)
-    return redirect("/formulario_editar_producto="+str(idpro))
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["img_id"]
+        imagen = controlador_imagenes_productos.obtener_imagen_por_id(id)
+        idpro = imagen[2]
+        controlador_imagenes_productos.eliminar_img_producto_x_id(id)
+        return redirect("/formulario_editar_producto="+str(idpro))
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_producto")
+@login_requerido #Decorador
 def formulario_agregar_producto():
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
     categorias = controlador_categorias.obtener_categoriasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
     return render_template("agregar_producto.html", marcas = marcas, subcategorias = subcategorias , categorias = categorias)
 
+
 @app.route("/guardar_producto", methods=["POST"])
+@login_requerido
 def guardar_producto():
     nombre = request.form["nombre"] 
     price_regular= request.form["price_regular"] 
@@ -1170,7 +1675,9 @@ def guardar_producto():
 
     return redirect("/listado_productos")
 
+
 @app.route("/listado_productos")
+@login_requerido
 def productos():
     productos = controlador_productos.obtener_listado_productos()
     marcas = controlador_marcas.obtener_marcasXnombre()
@@ -1180,6 +1687,7 @@ def productos():
 
 
 @app.route("/listado_productos_buscar")
+@login_requerido
 def productos_buscar():
     nombreBusqueda = request.args.get("buscarElemento")
     marcas = controlador_marcas.obtener_marcasXnombre()
@@ -1190,6 +1698,7 @@ def productos_buscar():
 
 
 @app.route("/eliminar_producto", methods=["POST"])
+@login_requerido
 def eliminar_producto():
     id_producto = request.form["id"]
 
@@ -1220,6 +1729,7 @@ def eliminar_producto():
 
 
 @app.route("/eliminar_producto2", methods=["POST"])
+@login_requerido
 def eliminar_producto2():
     id_producto = request.form["id"]
 
@@ -1255,6 +1765,7 @@ def eliminar_producto2():
 
 
 @app.route("/ver_producto=<int:id>")
+@login_requerido 
 def ver_producto(id):
     producto = controlador_productos.ver_info_por_id(id)
     imagenes = controlador_imagenes_productos.obtener_imagenes_por_producto(id)
@@ -1267,6 +1778,7 @@ def ver_producto(id):
 
 
 @app.route("/formulario_editar_producto=<int:id>")
+@login_requerido 
 def editar_producto(id):
     imagenes = controlador_imagenes_productos.obtener_listado_imagenes_sec_por_producto(id)
     caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
@@ -1279,6 +1791,7 @@ def editar_producto(id):
 
 
 @app.route("/actualizar_producto", methods=["POST"])
+@login_requerido 
 def actualizar_producto():
     id = request.form["id"]
 
@@ -1306,57 +1819,115 @@ def actualizar_producto():
     
     return redirect("/listado_productos")
 
-########## FIN PRODUCTOS ##########
-
-#########################PARA TIPO NOVEDAD##############################
-
 
 @app.route("/listado_tipos_novedad")
-# @jwt_required()
+@login_requerido  
 def listado_tipos_novedad():
-    tipos_novedad = controlador_tipos_novedad.obtener_listado_tipos_novedad()
-    return render_template("listado_tipos_novedad.html", tipos_novedad=tipos_novedad)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipos_novedad = controlador_tipos_novedad.obtener_listado_tipos_novedad()
+        return render_template("listado_tipos_novedad.html", tipos_novedad=tipos_novedad)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_tipo_novedad")
+@login_requerido  
 def formulario_agregar_tipo_novedad():
-    return render_template("agregar_tipo_novedad.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_tipo_novedad.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_tipo_novedad", methods=["POST"])
+@login_requerido  
 def guardar_tipo_novedad():
-    nombre_tipo = request.form["nombre_tipo"]
-    controlador_tipos_novedad.insertar_tipo_novedad(nombre_tipo)
-    return redirect("/listado_tipos_novedad") #aqui debo mostrar todo el listado de novedades y tipos
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombre_tipo = request.form["nombre_tipo"]
+        controlador_tipos_novedad.insertar_tipo_novedad(nombre_tipo)
+        return redirect("/listado_tipos_novedad")  # Aquí se muestra el listado de tipos de novedades
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_tipo_novedad", methods=["POST"])
+@login_requerido  
 def eliminar_tipo_novedad():
-    controlador_tipos_novedad.eliminar_tipo_novedad(request.form["id"])
-    return redirect("/listado_tipos_novedad")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        controlador_tipos_novedad.eliminar_tipo_novedad(request.form["id"])
+        return redirect("/listado_tipos_novedad")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_tipo_novedad=<int:id>")
+@login_requerido  
 def editar_tipo_novedad(id):
-    tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
-    id_tipo = id
-    return render_template("editar_tipo_novedad.html", tipo_novedad=tipo_novedad, id_tipo = id_tipo)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipo_novedad = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id)
+        id_tipo = id
+        return render_template("editar_tipo_novedad.html", tipo_novedad=tipo_novedad, id_tipo=id_tipo)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
-def actualizar_tipo_novedad(): 
-    id = request.form["id"]
-    nombre_tipo = request.form["nombre_tipo"]
-    disponibilidad = request.form["disponibilidad"]
-    controlador_tipos_novedad.actualizar_tipo_novedad(nombre_tipo, disponibilidad , id )
-    return redirect("/listado_tipos_novedad")
+@login_requerido  
+def actualizar_tipo_novedad():
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-#########################FIN TIPONOVEDAD##############################
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
+        id = request.form["id"]
+        nombre_tipo = request.form["nombre_tipo"]
+        disponibilidad = request.form["disponibilidad"]
+        controlador_tipos_novedad.actualizar_tipo_novedad(nombre_tipo, disponibilidad, id)
+        return redirect("/listado_tipos_novedad")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-#########################PARA NOVEDAD##############################
 
 @app.route("/agregar_novedad")
+@login_requerido 
 def formulario_agregar_novedad():
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
     categorias = controlador_categorias.obtener_categoriasXnombre()
@@ -1365,7 +1936,9 @@ def formulario_agregar_novedad():
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
     return render_template("agregar_novedad.html", marcas=marcas, subcategorias=subcategorias, categorias = categorias, tipos_novedad=tipos_novedad, tipos_img_novedad = tipos_img_novedad)
 
+
 @app.route("/guardar_novedad", methods=["POST"])
+@login_requerido 
 def guardar_novedad():
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
     
@@ -1398,7 +1971,9 @@ def guardar_novedad():
     # return render_template('agregar_img_novedad.html', novedad_id=idNovedad, tipos_img_novedad = tipos_img_novedad)
     return redirect("/listado_novedades")
 
+
 @app.route("/listado_novedades")
+@login_requerido 
 def novedades_listado():
     novedades = controlador_novedades.obtener_listado_novedades()
     imgs_nov = controlador_imagenes_novedades.obtener_todas_imagenes_novedad()
@@ -1410,6 +1985,7 @@ def novedades_listado():
 
 
 @app.route("/listado_novedades_buscar")
+@login_requerido 
 def novedades_listado_buscar():
     nombreBusqueda = request.args.get("buscarElemento")
     novedades = controlador_novedades.buscar_listado_novedades_nombre_titulo(nombreBusqueda)
@@ -1420,6 +1996,7 @@ def novedades_listado_buscar():
 
 
 @app.route("/ver_novedad=<int:id>")
+@login_requerido 
 def ver_novedad(id):
     novedad = controlador_novedades.obtener_novedad_id(id)
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
@@ -1431,12 +2008,14 @@ def ver_novedad(id):
 
 
 @app.route("/eliminar_novedad", methods=["POST"])
+@login_requerido 
 def eliminar_novedad():
     controlador_novedades.eliminarNovedad(request.form["id"])
     return redirect("/listado_novedades")
 
 
 @app.route("/formulario_editar_novedad=<int:id>")
+@login_requerido 
 def editar_novedad(id):
     novedad = controlador_novedades.obtenerNovedadPorId(id)
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
@@ -1445,7 +2024,9 @@ def editar_novedad(id):
     tiposNovedad = controlador_tipos_novedad.obtener_tipos_novedad()
     return render_template("editar_novedad.html", novedad=novedad, marcas=marcas, subcategorias=subcategorias, tipos_novedad=tiposNovedad, novedad_id = id , categorias = categorias)
 
+
 @app.route("/actualizar_novedad", methods=["POST"])
+@login_requerido 
 def actualizar_novedad():
     id = request.form["id"]
     nombre = request.form["nombre"]
@@ -1467,346 +2048,822 @@ def actualizar_novedad():
 
 
 @app.route("/guardar_img_novedad", methods=["POST"])
+@login_requerido  
 def guardar_img_novedad():
-    novedad_id = request.form["novedad_id"]
-    nomImagen = request.form["nomImagen"]
-    tipo_img_novedad_id = request.form["tipo_img_novedad"]
-    img = request.files["imagen"]
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    if img:
-        imagen = img.read()
-        controlador_imagenes_novedades.insertar_imagen_novedad(nomImagen, imagen, tipo_img_novedad_id, novedad_id)
-    
-    return redirect(f"/img_novedades_listado={novedad_id}")
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        novedad_id = request.form["novedad_id"]
+        nomImagen = request.form["nomImagen"]
+        tipo_img_novedad_id = request.form["tipo_img_novedad"]
+        img = request.files["imagen"]
+
+        if img:
+            imagen = img.read()
+            controlador_imagenes_novedades.insertar_imagen_novedad(nomImagen, imagen, tipo_img_novedad_id, novedad_id)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_img_novedad=<int:novedad_id>")
+@login_requerido  
 def formulario_agregar_img_novedad(novedad_id):
-    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
-    return render_template("agregar_img_novedad.html", novedad_id=novedad_id, tipos_img_novedad=tipos_img_novedad)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
+        return render_template("agregar_img_novedad.html", novedad_id=novedad_id, tipos_img_novedad=tipos_img_novedad)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/img_novedades_listado=<int:novedad_id>")
+@login_requerido  
 def img_novedades_listado(novedad_id):
-    novedad = controlador_novedades.obtenerNovedadPorId(novedad_id)
-    img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)
-    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
-    return render_template("listado_img_novedades.html", img_novedades=img_novedades, novedad_id=novedad_id, novedad = novedad , tipos_img_novedad = tipos_img_novedad)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        novedad = controlador_novedades.obtenerNovedadPorId(novedad_id)
+        img_novedades = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(novedad_id=novedad_id)
+        tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
+        return render_template("listado_img_novedades.html", img_novedades=img_novedades, novedad_id=novedad_id, novedad = novedad , tipos_img_novedad = tipos_img_novedad)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_img_novedad", methods=["POST"])
+@login_requerido  
 def eliminar_img_novedad():
-    controlador_imagenes_novedades.eliminar_imagen_novedad(request.form["id"])
-    novedad_id = request.form["novedad_id"]
-    return redirect(f"/img_novedades_listado={novedad_id}")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        controlador_imagenes_novedades.eliminar_imagen_novedad(request.form["id"])
+        novedad_id = request.form["novedad_id"]
+        return redirect(f"/img_novedades_listado={novedad_id}")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_img_novedad=<int:id>")
+@login_requerido  
 def editar_img_novedad(id):
-    img_nov = controlador_imagenes_novedades.obtener_imagen_novedad_por_img_id(id)
-    img_novedad = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(id)
-    novedad_id = controlador_imagenes_novedades.obtener_novedad_id_por_imagen_id(id)
-    tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
-    return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad, novedad_id = novedad_id,id = id , img_nov = img_nov)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        img_nov = controlador_imagenes_novedades.obtener_imagen_novedad_por_img_id(id)
+        img_novedad = controlador_imagenes_novedades.obtener_imagenes_novedad_por_id(id)
+        novedad_id = controlador_imagenes_novedades.obtener_novedad_id_por_imagen_id(id)
+        tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
+        return render_template("editar_img_novedad.html", img_novedad=img_novedad, tipos_img_novedad=tipos_img_novedad, novedad_id = novedad_id,id = id , img_nov = img_nov)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_img_novedad", methods=["POST"])
+@login_requerido  
 def actualizar_img_novedad():
-    id = request.form["id"]
-    nom_imagen = request.form["nomImagen"]
-    tipo_img_novedad_id = request.form["tipo_img_novedad"]
-    novedad_id = request.form["novedad_id"]
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-    controlador_imagenes_novedades.actualizar_imagen_novedad(id, nom_imagen, tipo_img_novedad_id, novedad_id)
-    return redirect(f"/img_novedades_listado={novedad_id}")
-
-
-#######################################para tipo IMG NOVEDAD##################
+        
+        id = request.form["id"]
+        nom_imagen = request.form["nomImagen"]
+        tipo_img_novedad_id = request.form["tipo_img_novedad"]
+        novedad_id = request.form["novedad_id"]
+        controlador_imagenes_novedades.actualizar_imagen_novedad(id, nom_imagen, tipo_img_novedad_id, novedad_id)
+        return redirect(f"/img_novedades_listado={novedad_id}")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/tipos_img_novedad_listado")
+@login_requerido  
 def tipos_img_novedad_listado():
-    tipos_img_novedad = controlador_tipos_img_novedad.obtener_listado_tipos_img_novedad()
-    return render_template("listado_tipos_img_novedad.html", tipos_img_novedad=tipos_img_novedad)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipos_img_novedad = controlador_tipos_img_novedad.obtener_listado_tipos_img_novedad()
+        return render_template("listado_tipos_img_novedad.html", tipos_img_novedad=tipos_img_novedad)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/agregar_tipo_img_novedad")
+@login_requerido  
 def formulario_agregar_tipo_img_novedad():
-    return render_template("agregar_tipo_img_novedad.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_tipo_img_novedad.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/guardar_tipo_img_novedad", methods=["POST"])
+@login_requerido  
 def guardar_tipo_img_novedad():
-    tipo = request.form["tipo"]
-    controlador_tipos_img_novedad.insertar_tipo_img_novedad(tipo, 1)
-    return redirect("/tipos_img_novedad_listado")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipo = request.form["tipo"]
+        controlador_tipos_img_novedad.insertar_tipo_img_novedad(tipo, 1)
+        return redirect("/tipos_img_novedad_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/formulario_editar_tipo_img_novedad=<int:id>")
+@login_requerido  
 def editar_tipo_img_novedad(id):
-    tipo_img_novedad = controlador_tipos_img_novedad.obtener_tipo_img_novedad_por_id(id)
-    return render_template("editar_tipo_img_novedad.html", tipo_img_novedad=tipo_img_novedad)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipo_img_novedad = controlador_tipos_img_novedad.obtener_tipo_img_novedad_por_id(id)
+        return render_template("editar_tipo_img_novedad.html", tipo_img_novedad=tipo_img_novedad)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/actualizar_tipo_img_novedad", methods=["POST"])
+@login_requerido  
 def actualizar_tipo_img_novedad():
-    id = request.form["id"]
-    tipo = request.form["tipo"]
-    disponibilidad = request.form["disponibilidad"]
-    controlador_tipos_img_novedad.actualizar_tipo_img_novedad(id, tipo, disponibilidad)
-    return redirect("/tipos_img_novedad_listado")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        tipo = request.form["tipo"]
+        disponibilidad = request.form["disponibilidad"]
+        controlador_tipos_img_novedad.actualizar_tipo_img_novedad(id, tipo, disponibilidad)
+        return redirect("/tipos_img_novedad_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/eliminar_tipo_img_novedad", methods=["POST"])
+@login_requerido  
 def eliminar_tipo_img_novedad():
-    id = request.form["id"]
-    controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
-    return redirect("/tipos_img_novedad_listado")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-#################  TIPO CONTENIDO INFO  ####################### 
+        id = request.form["id"]
+        controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
+        return redirect("/tipos_img_novedad_listado")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/ver_tipo_contenido_info=<int:id>")
+@login_requerido  
 def ver_tipo_contenido_info(id):
-    contenido = controlador_contenido_info.obtener_tipo_contenido_info_por_id(id)
-    articulos = controlador_contenido_info.obtener_datos_contenido_por_tipo(id)
-    return render_template("ver_contenido_info.html", articulos = articulos , contenido = contenido)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        contenido = controlador_contenido_info.obtener_tipo_contenido_info_por_id(id)
+        articulos = controlador_contenido_info.obtener_datos_contenido_por_tipo(id)
+        return render_template("ver_contenido_info.html", articulos=articulos, contenido=contenido)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_tipo_contenido_info")
+@login_requerido  
 def listado_tipo_contenido_info():
-    tipos = controlador_contenido_info.obtener_listado_tipos_contenido()
-    return render_template("listado_tipo_contenido_info.html", tipos = tipos)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipos = controlador_contenido_info.obtener_listado_tipos_contenido()
+        return render_template("listado_tipo_contenido_info.html", tipos=tipos)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_tipo_contenido_info_buscar")
+@login_requerido  
 def listado_tipo_contenido_info_buscar():
-    nombreBusqueda = request.args.get("buscarElemento")
-    tipos = controlador_contenido_info.buscar_listado_tipos_contenido_nombre(nombreBusqueda)
-    return render_template("listado_tipo_contenido_info.html", tipos = tipos , nombreBusqueda = nombreBusqueda)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombreBusqueda = request.args.get("buscarElemento")
+        tipos = controlador_contenido_info.buscar_listado_tipos_contenido_nombre(nombreBusqueda)
+        return render_template("listado_tipo_contenido_info.html", tipos=tipos, nombreBusqueda=nombreBusqueda)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_tipo_contenido_info")
+@login_requerido  
 def formulario_agregar_tipo_contenido_info():
-    return render_template("agregar_tipo_contenido_info.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_tipo_contenido_info.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_tipo_contenido_info", methods=["POST"])
+@login_requerido  
 def guardar_tipo_contenido_info():
-    nombre = request.form["nombre"] 
-    descripcion = request.form["descripcion"] 
-    faicon_cont = request.form["icono"]
-    controlador_contenido_info.insertar_tipo_contenido_info(nombre , descripcion , faicon_cont)
-    return redirect("/listado_tipo_contenido_info")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombre = request.form["nombre"]
+        descripcion = request.form["descripcion"]
+        faicon_cont = request.form["icono"]
+        controlador_contenido_info.insertar_tipo_contenido_info(nombre, descripcion, faicon_cont)
+        return redirect("/listado_tipo_contenido_info")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_tipo_contenido_info", methods=["POST"])
+@login_requerido  
 def actualizar_tipo_contenido_info():
-    id = request.form["id"]
-    nombre = request.form["nombre"]
-    faicon_cont = request.form["icono"] 
-    descripcion = request.form["descripcion"]
-    disponibilidad = request.form["disponibilidad"]
-    controlador_contenido_info.actualizar_tipo_contenido_info_por_id(nombre,descripcion,faicon_cont,disponibilidad,id)
-    return redirect("/listado_tipo_contenido_info")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        nombre = request.form["nombre"]
+        faicon_cont = request.form["icono"]
+        descripcion = request.form["descripcion"]
+        disponibilidad = request.form["disponibilidad"]
+        controlador_contenido_info.actualizar_tipo_contenido_info_por_id(nombre, descripcion, faicon_cont, disponibilidad, id)
+        return redirect("/listado_tipo_contenido_info")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_tipo_contenido_info=<int:id>")
+@login_requerido  
 def editar_tipo_contenido_info(id):
-    tipo = controlador_contenido_info.obtener_tipo_contenido_info_por_id(id)
-    return render_template("editar_tipo_contenido_info.html", tipo=tipo)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipo = controlador_contenido_info.obtener_tipo_contenido_info_por_id(id)
+        return render_template("editar_tipo_contenido_info.html", tipo=tipo)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_tipo_contenido_info", methods=["POST"])
+@login_requerido  
 def eliminar_tipo_contenido_info():
-    controlador_contenido_info.eliminar_tipo_contenido_info(request.form["id"])
-    return redirect("/listado_tipo_contenido_info")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
+        controlador_contenido_info.eliminar_tipo_contenido_info(request.form["id"])
+        return redirect("/listado_tipo_contenido_info")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-#################  CONTENIDO INFO  ####################### 
 
 @app.route("/listado_contenido_info")
+@login_requerido  
 def listado_contenido_info():
-    datos = controlador_contenido_info.obtener_datos_contenido()
-    secciones = controlador_contenido_info.obtener_listado_tipos_contenido()
-    return render_template("listado_contenido_info.html", datos = datos , secciones = secciones)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        datos = controlador_contenido_info.obtener_datos_contenido()
+        secciones = controlador_contenido_info.obtener_listado_tipos_contenido()
+        return render_template("listado_contenido_info.html", datos=datos, secciones=secciones)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_contenido_info_buscar")
+@login_requerido  
 def listado_contenido_info_buscar():
-    nombreBusqueda = request.args.get("buscarElemento")
-    datos = controlador_contenido_info.buscar_datos_contenido_info_titulo(nombreBusqueda)
-    secciones = controlador_contenido_info.obtener_listado_tipos_contenido()
-    return render_template("listado_contenido_info.html", datos = datos , secciones = secciones , nombreBusqueda = nombreBusqueda)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombreBusqueda = request.args.get("buscarElemento")
+        datos = controlador_contenido_info.buscar_datos_contenido_info_titulo(nombreBusqueda)
+        secciones = controlador_contenido_info.obtener_listado_tipos_contenido()
+        return render_template("listado_contenido_info.html", datos=datos, secciones=secciones, nombreBusqueda=nombreBusqueda)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/agregar_contenido_info")
+@login_requerido  
 def formulario_agregar_contenido_info():
-    secciones = controlador_contenido_info.obtener_tipos_contenido()
-    return render_template("agregar_contenido_info.html" , secciones = secciones)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        secciones = controlador_contenido_info.obtener_tipos_contenido()
+        return render_template("agregar_contenido_info.html", secciones=secciones)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_contenido_info", methods=["POST"])
+@login_requerido  
 def guardar_contenido_info():
-    titulo = request.form["titulo"] 
-    cuerpo = request.form["cuerpo"] 
-    tipo = request.form["tipo"]
-    controlador_contenido_info.insertar_contenido_info(titulo , cuerpo , tipo)
-    return redirect("/listado_contenido_info")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        titulo = request.form["titulo"]
+        cuerpo = request.form["cuerpo"]
+        tipo = request.form["tipo"]
+        controlador_contenido_info.insertar_contenido_info(titulo, cuerpo, tipo)
+        return redirect("/listado_contenido_info")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_contenido_info", methods=["POST"])
+@login_requerido  
 def actualizar_contenido_info():
-    id = request.form["id"]
-    cuerpo = request.form["cuerpo"]
-    titulo = request.form["titulo"] 
-    tipo = request.form["tipo"]
-    controlador_contenido_info.actualizar_contenido_info_por_id(titulo , cuerpo , tipo,id)
-    return redirect("/listado_contenido_info")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        cuerpo = request.form["cuerpo"]
+        titulo = request.form["titulo"]
+        tipo = request.form["tipo"]
+        controlador_contenido_info.actualizar_contenido_info_por_id(titulo, cuerpo, tipo, id)
+        return redirect("/listado_contenido_info")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_contenido_info=<int:id>")
+@login_requerido  
 def editar_contenido_info(id):
-    secciones = controlador_contenido_info.obtener_tipos_contenido()
-    tipo = controlador_contenido_info.obtener_contenido_info_por_id(id)
-    return render_template("editar_contenido_info.html", tipo=tipo , secciones = secciones)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        secciones = controlador_contenido_info.obtener_tipos_contenido()
+        tipo = controlador_contenido_info.obtener_contenido_info_por_id(id)
+        return render_template("editar_contenido_info.html", tipo=tipo, secciones=secciones)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_contenido_info", methods=["POST"])
+@login_requerido  
 def eliminar_contenido_info():
-    controlador_contenido_info.eliminar_contenido_info(request.form["id"])
-    return redirect("/listado_contenido_info")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
+        controlador_contenido_info.eliminar_contenido_info(request.form["id"])
+        return redirect("/listado_contenido_info")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-################### ESTADOS DE PEDIDO ####################
 
 @app.route("/listado_estado_pedido")
+@login_requerido  
 def listado_estado_pedido():
-    estados = controlador_estado_pedido.obtener_listado_estados_pedido()
-    return render_template("listado_estados_pedidos.html", estados = estados)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        estados = controlador_estado_pedido.obtener_listado_estados_pedido()
+        return render_template("listado_estados_pedidos.html", estados=estados)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_agregar_estado_pedido")
+@login_requerido  
 def formulario_agregar_estado_pedido():
-    return render_template("agregar_estado_pedido.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_estado_pedido.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_estado_pedido", methods=["POST"])
+@login_requerido  
 def guardar_estado_pedido():
-    nombre = request.form["nombre"]
-    controlador_estado_pedido.insertar_estado_pedido(nombre)
-    return redirect("/listado_estado_pedido")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombre = request.form["nombre"]
+        controlador_estado_pedido.insertar_estado_pedido(nombre)
+        return redirect("/listado_estado_pedido")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_estado_pedido", methods=["POST"])
+@login_requerido  
 def actualizar_estado_pedido():
-    id = request.form["id"]
-    nombre = request.form["nombre"]
-    controlador_estado_pedido.actualizar_estado_pedido_por_id(nombre,id)
-    return redirect("/listado_estado_pedido")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        nombre = request.form["nombre"]
+        controlador_estado_pedido.actualizar_estado_pedido_por_id(nombre, id)
+        return redirect("/listado_estado_pedido")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_estado_pedido=<int:id>")
+@login_requerido  
 def editar_estado_pedido(id):
-    estado = controlador_estado_pedido.obtener_estado_pedido_por_id(id)
-    return render_template("editar_estado_pedido.html", estado=estado)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        estado = controlador_estado_pedido.obtener_estado_pedido_por_id(id)
+        return render_template("editar_estado_pedido.html", estado=estado)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_estado_pedido", methods=["POST"])
+@login_requerido  
 def eliminar_estado_pedido():
-    controlador_estado_pedido.eliminar_estado_pedido(request.form["id"])
-    return redirect("/listado_estado_pedido")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-
-################### METODOS PAGO ####################
+        controlador_estado_pedido.eliminar_estado_pedido(request.form["id"])
+        return redirect("/listado_estado_pedido")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_metodo_pago")
+@login_requerido  
 def listado_metodo_pago():
-    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
-    return render_template("listado_metodo_pago.html", metodos = metodos)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
+        return render_template("listado_metodo_pago.html", metodos=metodos)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_agregar_metodo_pago")
+@login_requerido  
 def formulario_agregar_metodo_pago():
-    return render_template("agregar_metodo_pago.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_metodo_pago.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_metodo_pago", methods=["POST"])
+@login_requerido  
 def guardar_metodo_pago():
-    nombre = request.form["nombre"]
-    controlador_metodo_pago.insertar_metodo_pago(nombre)
-    return redirect("/listado_metodo_pago")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombre = request.form["nombre"]
+        controlador_metodo_pago.insertar_metodo_pago(nombre)
+        return redirect("/listado_metodo_pago")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_metodo_pago", methods=["POST"])
+@login_requerido  
 def actualizar_metodo_pago():
-    id = request.form["id"]
-    nombre = request.form["nombre"]
-    disponibilidad = request.form["disponibilidad"]
-    controlador_metodo_pago.actualizar_metodo_pago_por_id(nombre,disponibilidad,id)
-    return redirect("/listado_metodo_pago")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        nombre = request.form["nombre"]
+        disponibilidad = request.form["disponibilidad"]
+        controlador_metodo_pago.actualizar_metodo_pago_por_id(nombre, disponibilidad, id)
+        return redirect("/listado_metodo_pago")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_metodo_pago=<int:id>")
+@login_requerido  
 def editar_metodo_pago(id):
-    metodo = controlador_metodo_pago.obtener_metodo_pago_por_id(id)
-    return render_template("editar_metodo_pago.html", metodo=metodo)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        metodo = controlador_metodo_pago.obtener_metodo_pago_por_id(id)
+        return render_template("editar_metodo_pago.html", metodo=metodo)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_metodo_pago", methods=["POST"])
+@login_requerido  
 def eliminar_metodo_pago():
-    controlador_metodo_pago.eliminar_metodo_pago(request.form["id"])
-    return redirect("/listado_metodo_pago")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-
-################### REDES SOCIALES ####################
+        controlador_metodo_pago.eliminar_metodo_pago(request.form["id"])
+        return redirect("/listado_metodo_pago")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/listado_redes_sociales")
+@login_requerido  
 def listado_redes_sociales():
-    redes = controlador_redes_sociales.obtener_redes_sociales()
-    return render_template("listado_redes_sociales.html", redes = redes)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        redes = controlador_redes_sociales.obtener_redes_sociales()
+        return render_template("listado_redes_sociales.html", redes=redes)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_agregar_redes_sociales")
+@login_requerido  # Decorador
 def formulario_agregar_redes_sociales():
-    return render_template("agregar_redes_sociales.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_redes_sociales.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_redes_sociales", methods=["POST"])
+@login_requerido  # Decorador
 def guardar_redes_sociales():
-    nombre = request.form["nombre"]
-    enlace = request.form["enlace"]
-    icono = request.form["icono"]
-    controlador_redes_sociales.insertar_redes_sociales(nombre,icono,enlace)
-    return redirect("/listado_redes_sociales")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        nombre = request.form["nombre"]
+        enlace = request.form["enlace"]
+        icono = request.form["icono"]
+        controlador_redes_sociales.insertar_redes_sociales(nombre, icono, enlace)
+        return redirect("/listado_redes_sociales")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_redes_sociales", methods=["POST"])
+@login_requerido  # Decorador
 def actualizar_redes_sociales():
-    id = request.form["id"]
-    nombre = request.form["nombre"]
-    enlace = request.form["enlace"]
-    icono = request.form["icono"]
-    controlador_redes_sociales.actualizar_redes_sociales_por_id(nombre,icono,enlace,id)
-    return redirect("/listado_redes_sociales")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        nombre = request.form["nombre"]
+        enlace = request.form["enlace"]
+        icono = request.form["icono"]
+        controlador_redes_sociales.actualizar_redes_sociales_por_id(nombre, icono, enlace, id)
+        return redirect("/listado_redes_sociales")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_redes_sociales=<int:id>")
+@login_requerido  # Decorador
 def editar_redes_sociales(id):
-    red = controlador_redes_sociales.obtener_redes_sociales_por_id(id)
-    return render_template("editar_redes_sociales.html", red=red)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        red = controlador_redes_sociales.obtener_redes_sociales_por_id(id)
+        return render_template("editar_redes_sociales.html", red=red)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/eliminar_redes_sociales", methods=["POST"])
+@login_requerido  # Decorador
 def eliminar_redes_sociales():
-    controlador_redes_sociales.eliminar_redes_sociales(request.form["id"])
-    return redirect("/listado_redes_sociales")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        controlador_redes_sociales.eliminar_redes_sociales(request.form["id"])
+        return redirect("/listado_redes_sociales")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
-######################## CUPONES #######################
 @app.route("/listado_cupones")
 def listado_cupones():
     cupones = controlador_cupon.obtener_cupones()
@@ -1852,124 +2909,200 @@ def actualizar_cupones():
     return redirect("/listado_cupones")
 
 
-
-
-
-
-############### DATOS PRINCIPALES ############################
-
 @app.route("/listado_datos_principales")
+@login_requerido  # Decorador
 def listado_datos_principales():
-    info = controlador_informacion_domus.obtener_informacion_domus()
-    return render_template("ver_datos_principales.html", info = info)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        info = controlador_informacion_domus.obtener_informacion_domus()
+        return render_template("ver_datos_principales.html", info=info)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/formulario_editar_datos_principales=<int:id>")
+@login_requerido  # Decorador
 def editar_datos_principales(id):
-    info = controlador_informacion_domus.obtener_informacion_domus_por_id(id)
-    return render_template("editar_datos_principales.html", info = info)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        info = controlador_informacion_domus.obtener_informacion_domus_por_id(id)
+        return render_template("editar_datos_principales.html", info=info)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/actualizar_datos_principales", methods=["POST"])
+@login_requerido  # Decorador
 def actualizar_datos_principales():
-    id = request.form["id"]
-    
-    info = controlador_informacion_domus.obtener_imgs_informacion_domus_por_id(id)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    correo = request.form["correo"]
-    numero = request.form["numero"]
-    descripcion = request.form["descripcion"]
-    historia = request.form["historia"]
-    vision = request.form["vision"]
-    valores = request.form["valores"]
-    mision = request.form["mision"]
-    
-    imgLogo = request.files["imglogo"]    
-    imgIcon = request.files["imgicon"]
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-    if imgLogo.filename == '':
-        logo = info[1]
+        id = request.form["id"]
+        info = controlador_informacion_domus.obtener_imgs_informacion_domus_por_id(id)
+
+        correo = request.form["correo"]
+        numero = request.form["numero"]
+        descripcion = request.form["descripcion"]
+        historia = request.form["historia"]
+        vision = request.form["vision"]
+        valores = request.form["valores"]
+        mision = request.form["mision"]
+
+        imgLogo = request.files["imglogo"]
+        imgIcon = request.files["imgicon"]
+
+        if imgLogo.filename == '':
+            logo = info[1]
+        else:
+            logo = imgLogo.read()
+
+        if imgIcon.filename == '':
+            icon = info[2]
+        else:
+            icon = imgIcon.read()
+
+        controlador_informacion_domus.actualizar_informacion_domus_por_id(correo, numero, logo, icon, descripcion, historia, vision, valores, mision, id)
+        return redirect("/listado_datos_principales")
     else:
-        logo = imgLogo.read()
-    
-    if imgIcon.filename == '':
-        icon = info[2]
-    else:
-        icon = imgIcon.read()
-
-    controlador_informacion_domus.actualizar_informacion_domus_por_id(correo,numero,logo,icon,descripcion,historia,vision,valores,mision,id)
-    return redirect("/listado_datos_principales")
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
-
-
-
-
-##########################PARA TIPOS USUARIO################
 @app.route("/listado_tipos_usuario")
+@login_requerido  
 def listado_tipos_usuario():
-    tipos_usuario = controlador_tipos_usuario.obtener_listado_tipos_usuario()
-    # if tipos_usuario:
-    #     print(f"id: {tipos_usuario[0][0]}")
-    #     print(f"nombre: {tipos_usuario[0][1]}")
-    #     print(f"descripción: {tipos_usuario[0][2]}")
-    # else:
-    #     print("No se encontraron registros en la tabla TIPO_USUARIO")
-    return render_template("listado_tipos_usuario.html", tipos_usuario=tipos_usuario)
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipos_usuario = controlador_tipos_usuario.obtener_listado_tipos_usuario()
+        return render_template("listado_tipos_usuario.html", tipos_usuario=tipos_usuario)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/agregar_tipo_usuario")
+@login_requerido  
 def formulario_agregar_tipo_usuario():
-    return render_template("agregar_tipo_usuario.html")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        return render_template("agregar_tipo_usuario.html")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/guardar_tipo_usuario", methods=["POST"])
+@login_requerido  
 def guardar_tipo_usuario():
-    tipo = request.form["tipo"]
-    descripcion = request.form["descripcion"]
-    imagen= request.files["img_user"]
-    img_binario = imagen.read()
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-    controlador_tipos_usuario.insertar_tipo_usuario(tipo, descripcion,img_binario)
-    return redirect("/listado_tipos_usuario")
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-@app.route("/formulario_editar_tipo_usuario=<int:id>")
-def editar_tipo_usuario(id):
-    tipo_usuario = controlador_tipos_usuario.obtener_tipo_usuario_por_id(id)
-    return render_template("editar_tipo_usuario.html", tipo_usuario=tipo_usuario)
-
-@app.route("/actualizar_tipo_usuario", methods=["POST"])
-def actualizar_tipo_usuario():
-    id = request.form["id"]
-    imagen_user = controlador_tipos_usuario.obtener_img_tipo_usuario_por_id(id)
-    tipo = request.form["tipo"]
-    descripcion = request.form["descripcion"]
-    imagen = request.files["img_user"]
-
-    if imagen.filename == '':
-        img_binario = imagen_user[0]
-    else:
+        tipo = request.form["tipo"]
+        descripcion = request.form["descripcion"]
+        imagen = request.files["img_user"]
         img_binario = imagen.read()
 
-    disp = request.form.get("disponibilidad")
-    # disponibilidad = request.form.get("disponibilidad")
-    # disp = 0
+        controlador_tipos_usuario.insertar_tipo_usuario(tipo, descripcion, img_binario)
+        return redirect("/listado_tipos_usuario")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
-    # if disponibilidad:
-    #     disp = 1
-    # else: 
-    #     disp = 0
 
-    controlador_tipos_usuario.actualizar_tipo_usuario(id, tipo, descripcion , img_binario , disp)
-    return redirect("/listado_tipos_usuario")
+@app.route("/formulario_editar_tipo_usuario=<int:id>")
+@login_requerido 
+def editar_tipo_usuario(id):
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        tipo_usuario = controlador_tipos_usuario.obtener_tipo_usuario_por_id(id)
+        return render_template("editar_tipo_usuario.html", tipo_usuario=tipo_usuario)
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
+
+@app.route("/actualizar_tipo_usuario", methods=["POST"])
+@login_requerido  
+def actualizar_tipo_usuario():
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
+
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
+
+        id = request.form["id"]
+        imagen_user = controlador_tipos_usuario.obtener_img_tipo_usuario_por_id(id)
+        tipo = request.form["tipo"]
+        descripcion = request.form["descripcion"]
+        imagen = request.files["img_user"]
+
+        if imagen.filename == '':
+            img_binario = imagen_user[0]
+        else:
+            img_binario = imagen.read()
+
+        disp = request.form.get("disponibilidad")
+
+        controlador_tipos_usuario.actualizar_tipo_usuario(id, tipo, descripcion, img_binario, disp)
+        return redirect("/listado_tipos_usuario")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/eliminar_tipo_usuario", methods=["POST"])
+@login_requerido  
 def eliminar_tipo_usuario():
-    id = request.form["id"]
-    controlador_tipos_usuario.eliminar_tipo_usuario(id)
-    return redirect("/listado_tipos_usuario")
+    if 'usuario' in session:
+        username = session['usuario']
+        tipo_id = controlador_usuario_admin.obtenerTipoU(username)  # Obtener tipo de usuario
 
-####################FIN TIPOS USUARIO########################
+        # Verificar si el tipo de usuario es 2
+        if tipo_id == 2:
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-####################PARA CLIENTES#######################
+        id = request.form["id"]
+        controlador_tipos_usuario.eliminar_tipo_usuario(id)
+        return redirect("/listado_tipos_usuario")
+    else:
+        return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
+
 
 @app.route("/listado_clientes")
 def listado_clientes():
@@ -2041,18 +3174,6 @@ def eliminar_cliente():
 
 
 
-####################FIN CLIENTES########################
-
-
-
-
-
-
-
-
-#########################INICIO DE SESIÓN####################################
-#PARA GUARDAR
-
 # def registrar_usuario():
 #     email = request.form['username']
 #     password = request.form['password']
@@ -2114,7 +3235,6 @@ def registrar_cliente():
         )
 
 
-
 @app.route("/login", methods=['POST'])
 def login():
     email = request.form.get('email-login')
@@ -2140,7 +3260,6 @@ def login():
     else:
         return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Usuario no registrado.")
 
-from flask import make_response
 
 @app.route("/logout")
 def logout():
@@ -2264,7 +3383,6 @@ def eliminar_pedido():
         return redirect("/listado_pedidos")
 
 
-################################################################
 @app.route("/detalle_pedido=<int:id>")
 def detalle_pedido(id):
     detalles = controlador_detalle.obtener_listado_detalle_por_id_pedido(id)
@@ -2316,6 +3434,18 @@ def actualizar_detalle_pedido():
 def api_obtenerdiscos():
     discos = controlador_categorias.obtener_listado_categorias()
     return jsonify(discos)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ############################################  APIs  ###############################################
