@@ -554,7 +554,7 @@ def resumen_de_pedido():
 
 @app.route('/cancelar_compra')
 def cancelar_compra():
-    usuario_id = 1  
+    usuario_id = session.get('id')
     estado_cancelado = 1    
     pedido_id=controlador_carrito.ultimoPedido(usuario_id)    
     controlador_carrito.cancelar_pedido(usuario_id, estado_cancelado,pedido_id)
@@ -2147,7 +2147,7 @@ def imagen_usuario():
 
 @app.route("/confirmar_compra", methods=['POST'])
 def confirmar_compra():
-    usuario_id = 1
+    usuario_id = session.get('id')
     fecha_compra = datetime.date.today()
     metodo_pago = request.form.get('metodo_pago')
     estado = 2
