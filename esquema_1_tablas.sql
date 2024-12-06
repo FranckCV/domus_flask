@@ -5,7 +5,7 @@ create table marca (
   img_banner     longblob, 
   fecha_registro timestamp not null default current_timestamp(), 
   disponibilidad tinyint(1) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table producto (
@@ -20,7 +20,7 @@ create table producto (
   disponibilidad tinyint(1) not null, 
   marcaid        int(10) not null, 
   subcategoriaid int(10) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table subcategoria (
@@ -29,7 +29,7 @@ create table subcategoria (
   faicon_subcat  varchar(50) not null, 
   disponibilidad tinyint(1) not null, 
   categoriaid    int(10) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table categoria (
@@ -37,7 +37,7 @@ create table categoria (
   categoria      varchar(50) not null, 
   faicon_cat     varchar(50) not null, 
   disponibilidad tinyint(1) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table pedido (
@@ -47,7 +47,7 @@ create table pedido (
   metodo_pagoid   int(11), 
   usuarioid       int(10) not null, 
   estado_pedidoid int(11) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table usuario (
@@ -64,7 +64,7 @@ create table usuario (
   disponibilidad   tinyint(1) not null,
   fecha_registro timestamp not null default current_timestamp(), 
   tipo_usuarioid   int(11) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table img_producto (
@@ -73,21 +73,21 @@ create table img_producto (
   imagen       longblob not null, 
   imgprincipal tinyint(1) not null, 
   productoid   int(10) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table detalles_pedido (
   productoid int(10) not null, 
   pedidoid   int(10) not null, 
   cantidad   int(2) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (productoid, 
   pedidoid));
 
 create table lista_deseos (
   productoid int(10) not null, 
   usuarioid  int(10) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (productoid, 
   usuarioid));
 
@@ -102,21 +102,21 @@ create table comentario (
   estado              tinyint(1) not null, 
   motivo_comentarioid int(11) not null, 
   usuarioid           int(10),
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table motivo_comentario (
   id             int(11) not null auto_increment, 
   motivo         varchar(50) not null, 
   disponibilidad tinyint(1) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table tipo_novedad (
   id      int(10) not null auto_increment, 
   nomtipo varchar(55) not null,  
   disponibilidad tinyint(1) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table novedad (
@@ -131,7 +131,7 @@ create table novedad (
   marcaid           int(10), 
   subcategoriaid    int(10), 
   tipo_novedadid    int(10) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table caracteristica_producto (
@@ -139,7 +139,7 @@ create table caracteristica_producto (
   productoid       int(10) not null, 
   valor            varchar(50) not null, 
   principal        tinyint(1) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (caracteristicaid, 
   productoid));
 
@@ -147,14 +147,14 @@ create table metodo_pago (
   id             int(11) not null auto_increment, 
   metodo         varchar(50) not null, 
   disponibilidad tinyint(1) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table tipo_img_novedad (
   id             int(11) not null auto_increment, 
   tipo           varchar(50) not null, 
   disponibilidad tinyint(1) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table img_novedad (
@@ -163,13 +163,13 @@ create table img_novedad (
   imagen             longblob not null, 
   tipo_img_novedadid int(11) not null, 
   novedadid          int(10) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table estado_pedido (
   id        int(11) not null auto_increment, 
   nomestado varchar(55) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table tipo_usuario (
@@ -178,20 +178,20 @@ create table tipo_usuario (
   imagen      longblob not null,
   descripcion varchar(300) not null,
   disponibilidad tinyint(1) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table caracteristica (
   id             int(11) not null auto_increment, 
   campo          varchar(100) not null, 
   disponibilidad tinyint(1) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table caracteristica_subcategoria (
   caracteristicaid int(11) not null, 
   subcategoriaid   int(10) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (caracteristicaid, 
   subcategoriaid));
 
@@ -200,7 +200,7 @@ create table redes_sociales (
   nomred     varchar(150) not null, 
   faicon_red varchar(30) not null, 
   enlace     varchar(200) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 
 create table informacion_domus (
@@ -214,7 +214,7 @@ create table informacion_domus (
   vision      text not null, 
   valores     text not null, 
   mision      text not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 create table tipo_contenido_info (
   id          int(11) not null auto_increment, 
@@ -222,14 +222,14 @@ create table tipo_contenido_info (
   descripcion text not null, 
   faicon_cont varchar(50) not null,
   disponibilidad tinyint(1) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 create table contenido_info (
   id                    int(11) not null auto_increment, 
   titulo                text not null, 
   cuerpo                text not null, 
   tipo_contenido_infoid int(11) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 create table cupon (
   id                int(11) not null auto_increment, 
@@ -239,12 +239,12 @@ create table cupon (
   cant_descuento    numeric(6, 2) not null,
   fecha_registro timestamp not null default current_timestamp(),  
   disponibilidad tinyint(1) not null,
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (id));
 create table cupon_usuario (
   cuponid   int(11) not null, 
   usuarioid int(10) not null, 
-  registro_auditoria timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  registro_auditoria timestamp not null default current_timestamp(),
   primary key (cuponid, 
   usuarioid));
 
