@@ -187,6 +187,34 @@ def buscar_pedido_por_id(id_pedido):
     else:
         return False 
 
+def obtener_listado_pedidos_usuario_fecha_id(id):
+    conexion = obtener_conexion()
+    pedido=[]
+    with conexion.cursor() as cursor:
+        cursor.execute('''
+                        SELECT 
+                            P.id,
+                            P.fecha_compra,
+                            P.subtotal,
+                            P.METODO_PAGOid,
+                            CONCAT(u.nombres, ' ' , u.apellidos) as nombre_completo,
+                            P.ESTADO_PEDIDOid,
+                            sum(dpe.cantidad),
+                            met.disponibilidad,
+                            P.usuarioid
+                        FROM pedido P
+                        left join usuario U on U.id = P.USUARIOid
+                        left join detalles_pedido dpe on dpe.pedidoid = P.id
+                        left join producto pr on pr.id = dpe.productoid
+                        left join metodo_pago met on p.METODO_PAGOid = met.id
+                        where P.USUARIOid = '''+str(id)+'''
+                        group by p.id , dpe.pedidoid
+                        order by P.fecha_compra, p.id desc
+        ''')
+        pedido = cursor.fetchall()
+    
+    conexion.close()
+    return pedido
 
 def obtener_listado_pedidos_usuario_id(id):
     conexion = obtener_conexion()

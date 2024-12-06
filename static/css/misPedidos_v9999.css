@@ -20,10 +20,10 @@
     border-bottom: 2px solid #ccc;
     padding-bottom: 10px;
 }
-
+/* 
 a {
     display: block;
-}
+} */
 
 .table-container {
     background-color: #ffffff;
@@ -148,6 +148,7 @@ a {
 .celda_precio {
     font-weight: bold;
     font-size: 110%;
+    text-align: right;
 }
 
 /* CELDAS VACIO */
@@ -294,13 +295,13 @@ button:hover img {
 
 .celda_numero {
     display: flex;
-    justify-content: center;
+    justify-content: right;
     align-items: center;
 }
 
 .celda_numero p {
     /* font-size: 140%; */
-    /* height: 30px; */
+    height: 30px;
     /* min-width: 30px; */
     padding-inline: 5px;
     text-align: center;

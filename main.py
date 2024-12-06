@@ -3686,7 +3686,7 @@ def perfil(user_id):
 def pedidos(user_id):
     usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
     img = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
-    pedidos = controlador_pedido.obtener_listado_pedidos_usuario_id(user_id)
+    pedidos = controlador_pedido.obtener_listado_pedidos_usuario_fecha_id(user_id)
     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
     
     return render_template("misPedidos.html", user_id=user_id, usuario=usuario, img=img , pedidos = pedidos , metodos = metodos)
