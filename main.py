@@ -3280,6 +3280,34 @@ def logout():
     return resp
 
 
+@app.route('/cambiar_contrasenia_cliente', methods=['GET', 'POST'])
+def cambiar_contrasenia_cliente():
+    user_id=session.get('id')
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+    
+    if request.method == 'POST':
+        current_password = request.form['current-password']
+        new_password = request.form['new-password']
+        confirm_password = request.form['confirm-password']
+        
+        if new_password != confirm_password:
+            error_message = "Las contraseñas no coinciden."
+            return render_template('cambiarContraseñaCliente.html', error_message=error_message,user_id=user_id,usuario=usuario,img=img)
+
+        usuario_id = session.get('id')
+        usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(usuario_id)
+        
+        if usuario and usuario[9] == encstringsha256(current_password): 
+            controlador_usuario_cliente.cambiar_contrasenia(usuario_id, encstringsha256(new_password))
+            return redirect(url_for('perfil'))  
+        else:
+            error_message = "La contraseña actual es incorrecta."
+            return render_template('cambiarContraseñaCliente.html', error_message=error_message,user_id=user_id,usuario=usuario,img=img)
+
+    return render_template('cambiarContraseñaCliente.html',user_id=user_id,usuario=usuario,img=img)
+
+
 
 # @app.route("/iniciar_sesion" , methods=["POST"])
 # def iniciar_sesion():
@@ -3327,20 +3355,20 @@ def lista_deseos(user_id):
 
     return render_template("listaDeseos.html",user_id=user_id,usuario=usuario,img=img )   
     
-from flask import redirect, url_for, request, session, flash
 
 @app.route('/agregar_a_lista_deseos', methods=['POST'])
 def agregar_a_lista_deseos():
     usuario_id = session.get('id')
     
     if not usuario_id:
-        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar a la lista de deseos")
 
     producto_id = request.form['producto_id']
     
-    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id,producto_id)
+    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
     
-    return redirect(request.referrer) 
+    return '', 204
+
 
    
     
