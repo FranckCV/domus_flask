@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response
+from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response,  redirect, url_for
 from flask_jwt import JWT, jwt_required, current_identity
 import uuid
 from clase_user_v1.usuario import Usuario
@@ -395,57 +395,32 @@ def carrito():
     return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
 
 
-from flask import request, redirect, url_for
 
-@app.route("/agregar_carrito", methods=["POST"])
+@app.route("/agregar_carrito", methods=["POST"]) 
 def agregar_carrito():
-    # Obtener el ID del producto desde el formulario
     producto_id = request.form["producto_id"]
-    estado = 1  # Estado de activo (puedes ajustarlo si es necesario)
-    
-    # Obtener el ID del usuario desde la sesión, si existe
+    estado = 1
     usuario_id = session.get('id')
-
-    # Si el usuario está autenticado, usar su usuario_id
+    
     if usuario_id is not None:
         pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
         
         if pedido_id is None:
             pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
         
-        # Intentar agregar el producto al detalle del pedido
         result = controlador_carrito.insertar_detalle(producto_id, pedido_id)
+        referrer = request.referrer
         
-        # Si la inserción fue exitosa
         if result is not None:
-            return '', 204
+            if referrer and "carrito" in referrer:
+                return redirect(url_for('carrito'))
+            else:
+                return '', 204
         else:
             return redirect(url_for('carrito', error_message="No se pudo agregar el producto al carrito."))
     
-    # Si el usuario no está autenticado, usar session_id para el carrito
     else:
-        # Crear un session_id único si no existe en la sesión
-        session_id = session.get('session_id')
-        if not session_id:
-            session_id = str(uuid.uuid4())  # Generar un ID de sesión único
-            session['session_id'] = session_id  # Guardarlo en las cookies del navegador
-        
-        # Verificar si ya existe un pedido para este session_id
-        pedido_id = controlador_carrito.verificarIdPedido(session_id, estado)
-        
-        if pedido_id is None:
-            # Si no existe un pedido, creamos uno nuevo
-            pedido_id = controlador_carrito.insertar_pedido(session_id, estado)
-        
-        # Intentar agregar el producto al detalle del pedido
-        result = controlador_carrito.insertar_detalle(producto_id, pedido_id)
-        
-        # Si la inserción fue exitosa
-        if result is not None:
-            return '', 204
-        else:
-            return redirect(url_for('carrito', error_message="No se pudo agregar el producto al carrito."))
-
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
 
 
 

@@ -27,7 +27,7 @@ def insertar_detalle(producto_id, pedido_id):
         with conexion.cursor() as cursor:
             query = "SELECT * FROM detalles_pedido WHERE PRODUCTOid = %s AND PEDIDOid = %s"
             cursor.execute(query, (producto_id, pedido_id))
-            result = cursor.fetchone()  # Obtener el resultado de la consulta
+            result = cursor.fetchone() 
             
             if result:
                 sql = "UPDATE detalles_pedido SET cantidad = cantidad + 1 WHERE PRODUCTOid = %s AND PEDIDOid = %s"
@@ -39,12 +39,15 @@ def insertar_detalle(producto_id, pedido_id):
             
             cursor.execute(sql, (producto_id, pedido_id))
             conexion.commit()
-            return result
-    except pymysql.MySQLError as e:
-        return e 
+            
+            return True
+    except Exception as e:
+        print(f"Error en la base de datos: {e}") 
+        return False
     finally:
         if conexion:
             conexion.close()
+
 
 
  #PARA CAMBIAR DE ESTADO 1 A 2   
