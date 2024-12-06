@@ -101,6 +101,8 @@ header {
     cursor: pointer;
 }
 
+/* form.header_item */
+
 .header_option {
     transition: color 0.1s ease;
     font-size: 3.5vw;

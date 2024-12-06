@@ -401,9 +401,8 @@ main {
 }
 
 
-
+/* 
 aside a[href="/listado_caracteristicas"],
-aside a[href="/listado_marcas"] ,
 aside a[href="/listado_tipo_contenido_info"] ,
 aside a[href="/listado_contenido_info"] ,
 aside a[href="/listado_clientes"]  ,
@@ -422,18 +421,19 @@ aside a[href="/listado_estado_pedido"] ,
 aside a[href="/listado_metodo_pago"]
 {
     display: none;
-}
+} */
 
 
 
-
+/* aside a[href="/listado_cupones"],
 aside a[href="/listado_novedades"]  ,
+aside a[href="/listado_marcas"] ,
 aside a[href="/dashboard"]  ,
 aside a[href="/listado_productos"] 
 {
     background-color: #be5c00;
     color: #fff;
-}
+} */
 
 
 

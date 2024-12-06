@@ -50,6 +50,25 @@ def obtener_img_principal_por_producto(id):
     return imagenes
 
 
+def obtener_imagen_por_id(id):
+    conexion = obtener_conexion()
+    imagenes = None
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT 
+                ipr.id ,
+                ipr.imagen ,
+                ipr.productoid
+            FROM img_producto ipr
+            where ipr.id = '''+str(id)+''' 
+            '''
+        cursor.execute(sql)
+        imagenes = cursor.fetchone()
+    conexion.close()
+    return imagenes
+
+
+
 def insertar_img_producto(nombre, imagen, principal, producto_id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
@@ -86,6 +105,16 @@ def eliminar_img_producto(id):
     conexion.commit()
     conexion.close()
 
+def eliminar_img_producto_x_id(id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = '''
+            DELETE FROM img_producto 
+            WHERE id = %s 
+        '''
+        cursor.execute(sql, (id))
+    conexion.commit()
+    conexion.close()
 
 def validar_img_principal_por_producto(id):
     conexion = obtener_conexion()
@@ -131,4 +160,39 @@ def obtener_listado_imagenes_por_producto(id):
 
     conexion.close()
     return imagenes_lista
+
+
+def obtener_listado_imagenes_sec_por_producto(id):
+    conexion = obtener_conexion()
+    imagenes = None
+    with conexion.cursor() as cursor:
+        sql = '''
+            SELECT
+                ipr.id ,
+                ipr.img_nombre,
+                ipr.imagen,
+                ipr.imgPrincipal,
+                ipr.productoid
+            FROM img_producto ipr
+            where ipr.productoid = '''+str(id)+''' and ipr.imgPrincipal = 0
+            order by ipr.imgPrincipal desc
+            '''
+        cursor.execute(sql)
+        imagenes = cursor.fetchall()
+
+    imagenes_lista = []
+    for imagen in imagenes:
+        id, nom,img , prin , pro = imagen
+        if imagen:
+            img_base64 = base64.b64encode(img).decode('utf-8')
+            img_url = f"data:image/png;base64,{img_base64}"
+        else:
+            img_url = ""  # Placeholder en caso de que no haya logo
+        imagenes_lista.append((id, nom, img_url , prin , pro))
+
+    conexion.close()
+    return imagenes_lista
+
+
+
 

@@ -1,13 +1,29 @@
 from controladores.bd import obtener_conexion
 import base64
 tabla = 'usuario'
+cadena_clave = '_SOMOS_DOMUS_2024_EMP_'
+
+def clave_default_empleado():
+    return cadena_clave
 
 def obtener_usuario_por_id(id):
     conexion = obtener_conexion()
     usuario = None
     with conexion.cursor() as cursor:
         sql = """
-        SELECT id, nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid
+        SELECT 
+            id, 
+            nombres, 
+            apellidos, 
+            doc_identidad, 
+            img_usuario,
+            genero, 
+            fecha_nacimiento, 
+            telefono, 
+            correo,
+            contrasenia, 
+            disponibilidad, 
+            TIPO_USUARIOid
         FROM """ + tabla + """ WHERE id = %s
         """
         cursor.execute(sql, (id,))
@@ -39,6 +55,27 @@ def actualizar_usuario(nombres, apellidos, doc_identidad, img_usuario, genero, f
         else:
             cursor.execute("UPDATE " + tabla + " SET nombres = %s, apellidos = %s, doc_identidad = %s, genero = %s, fecha_nacimiento = %s, telefono = %s, correo = %s, contrasenia = %s, disponibilidad = %s WHERE id = %s", 
                            (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contraseña, disponibilidad, id))
+    conexion.commit()
+    conexion.close()
+
+def actualizar_usuario_empleado(nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, disponibilidad, id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        if img_usuario is not None:
+            cursor.execute("UPDATE " + tabla + " SET nombres = %s, apellidos = %s, doc_identidad = %s, img_usuario = %s, genero = %s, fecha_nacimiento = %s, telefono = %s, correo = %s, disponibilidad = %s WHERE id = %s", 
+                           (nombres, apellidos, doc_identidad, img_usuario, genero, fecha_nacimiento, telefono, correo, disponibilidad, id))
+        else:
+            cursor.execute("UPDATE " + tabla + " SET nombres = %s, apellidos = %s, doc_identidad = %s, genero = %s, fecha_nacimiento = %s, telefono = %s, correo = %s, disponibilidad = %s WHERE id = %s", 
+                           (nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, disponibilidad, id))
+    conexion.commit()
+    conexion.close()
+
+
+
+def cambiar_contrasenia_usuario( contraseña, id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("UPDATE " + tabla + " SET contrasenia = %s WHERE id = %s", (contraseña, id))
     conexion.commit()
     conexion.close()
 

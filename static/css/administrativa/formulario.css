@@ -366,6 +366,16 @@ select:focus {
     padding-block: 5px;
 }
 
+.cont_img {
+    display: flex;
+    align-items: center;
+}
+
+.cont_img form{
+    position: relative;
+    top: -20px;
+    right: 20px;
+}
 
 /* option[value="1"]{
     background-color: green;
