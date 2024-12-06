@@ -33,7 +33,11 @@ import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
 import controladores.controlador_empleados as controlador_empleados
+<<<<<<< HEAD
+import controladores.controlador_lista_deseos as controlador_lista_deseos
+=======
 import controladores.controlador_usuario_admin as controlador_usuario_admin
+>>>>>>> a0fba1ccc8eb59a31e909e2e531ccf50e560238e
 
 from datetime import datetime, date
 
@@ -151,9 +155,17 @@ def index():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasPopulares()
     novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
     novedadesRecientes = controlador_novedades.obtenerNovedadesRecientes()
-    return render_template("index.html", novedadesRecientes = novedadesRecientes , marcasBloque = marcasBloque ,
-                           productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
-
+    lista_deseos = controlador_lista_deseos.obtenerListaDeseos(session.get('id'))
+    
+    lista_deseos_ids = [producto[0] for producto in lista_deseos]
+    print(lista_deseos_ids)
+    return render_template("index.html", 
+                           novedadesRecientes=novedadesRecientes, 
+                           marcasBloque=marcasBloque,
+                           productosRecientes=productosRecientes, 
+                           productosPopulares=productosPopulares,
+                           novedadesBanner=novedadesBanner, 
+                           lista_deseos_ids=lista_deseos_ids)
 
 @app.route("/nuestras_marcas")
 def nuestras_marcas():
@@ -3301,6 +3313,41 @@ def perfil(user_id):
     else:
         return redirect('/iniciar_sesion')
     
+@app.route("/detalle_pedido_perfil=<int:user_id>")
+def detalle_pedido_perfil(user_id):
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
+    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+
+    return render_template("miDetallePedido_perfil.html", 
+                           pedidos=pedidos,  # Ahora pasamos todos los pedidos
+                           metodos=metodos, user_id=user_id,usuario=usuario,img=img )
+
+@app.route("/lista_deseos=<int:user_id>")
+def lista_deseos(user_id):
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+
+    return render_template("listaDeseos.html",user_id=user_id,usuario=usuario,img=img )   
+    
+from flask import redirect, url_for, request, session, flash
+
+@app.route('/agregar_a_lista_deseos', methods=['POST'])
+def agregar_a_lista_deseos():
+    usuario_id = session.get('id')
+    
+    if not usuario_id:
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
+
+    producto_id = request.form['producto_id']
+    
+    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id,producto_id)
+    
+    return redirect(request.referrer) 
+
+   
+    
 @app.route("/insertar_imagen_usuario", methods=['POST'])
 def imagen_usuario():
     if 'imagen' not in request.files:
@@ -3390,6 +3437,7 @@ def detalle_pedido(id):
     estados = controlador_estado_pedido.obtener_listado_estados_pedido()
     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
     return render_template("listado_detalle_pedido.html", detalles=detalles , pedido_id=id , pedido = pedido , estados = estados , metodos = metodos)
+
 
 
 @app.route("/eliminar_detalle_pedido", methods=["POST"])
@@ -5981,8 +6029,404 @@ def api_eliminar_estado_pedido():
         dictRespuesta["mensaje"] = f"Error al eliminar el estado del pedido: {str(e)}"
         return jsonify(dictRespuesta)
 
-
 ########################FIN APIS ESTADO PEDIDO#########
+
+##################APIS TIPO_USUARIO#############
+@app.route("/api_obtener_tipos_usuario", methods=["GET"])
+# @jwt_required()
+def api_obtener_tipos_usuario():
+    dictRespuesta = {}
+    try:
+        tipos_usuario = controlador_tipos_usuario.obtener_tipos_usuario()
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipos de usuario obtenidos con éxito"
+        dictRespuesta["data"] = tipos_usuario
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los tipos de usuario: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_tipo_usuario", methods=["POST"])
+# @jwt_required()
+def api_obtener_tipo_usuario():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        tipo_usuario_id = data.get("id")
+
+        if not tipo_usuario_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del tipo de usuario"
+            return jsonify(dictRespuesta)
+
+        tipo_usuario = controlador_tipos_usuario.obtener_tipo_usuario_por_id(tipo_usuario_id)
+
+        if tipo_usuario:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Tipo de usuario obtenido con éxito"
+            dictRespuesta["data"] = {
+                "id": tipo_usuario[0],
+                "tipo": tipo_usuario[1],
+                "descripcion": tipo_usuario[2],
+                "imagen": tipo_usuario[3],
+                "disponibilidad": tipo_usuario[4]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Tipo de usuario no encontrado"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el tipo de usuario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_insertar_tipo_usuario", methods=["POST"])
+# @jwt_required()
+def api_insertar_tipo_usuario():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        tipo = data.get("tipo")
+        descripcion = data.get("descripcion")
+        imagen = data.get("imagen")  # Base64
+
+        if not tipo or not descripcion or not imagen:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requieren tipo, descripcion e imagen"
+            return jsonify(dictRespuesta)
+
+        controlador_tipos_usuario.insertar_tipo_usuario(tipo, descripcion, imagen)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de usuario insertado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar el tipo de usuario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_tipo_usuario", methods=["POST"])
+# @jwt_required()
+def api_actualizar_tipo_usuario():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        tipo_usuario_id = data.get("id")
+        tipo = data.get("tipo")
+        descripcion = data.get("descripcion")
+        imagen = data.get("imagen")  # Base64
+        disponibilidad = data.get("disponibilidad")
+
+        if not tipo_usuario_id or not tipo or not descripcion or not imagen or disponibilidad is None:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requieren id, tipo, descripcion, imagen y disponibilidad"
+            return jsonify(dictRespuesta)
+
+        controlador_tipos_usuario.actualizar_tipo_usuario(tipo_usuario_id, tipo, descripcion, imagen, disponibilidad)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de usuario actualizado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el tipo de usuario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_tipo_usuario", methods=["POST"])
+# @jwt_required()
+def api_eliminar_tipo_usuario():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        tipo_usuario_id = data.get("id")
+
+        if not tipo_usuario_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del tipo de usuario"
+            return jsonify(dictRespuesta)
+
+        controlador_tipos_usuario.eliminar_tipo_usuario(tipo_usuario_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de usuario eliminado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el tipo de usuario: {str(e)}"
+        return jsonify(dictRespuesta)
+
+##############FIN APIS TIPO_USUARIO################
+
+########################APIS CARACTERISTICA##############
+@app.route("/api_obtener_caracteristicas", methods=["GET"])
+# @jwt_required()
+def api_obtener_caracteristicas():
+    dictRespuesta = {}
+    try:
+        caracteristicas = controlador_caracteristicas.obtener_Caracteristicas()
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Características obtenidas con éxito"
+        dictRespuesta["data"] = caracteristicas
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener las características: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_caracteristica", methods=["POST"])
+# @jwt_required()
+def api_obtener_caracteristica():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        caracteristica_id = data.get("id")
+
+        if not caracteristica_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la característica"
+            return jsonify(dictRespuesta)
+
+        caracteristica = controlador_caracteristicas.obtener_caracteristica_por_id(caracteristica_id)
+
+        if caracteristica:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Característica obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": caracteristica[0],
+                "campo": caracteristica[1],
+                "disponibilidad": caracteristica[2]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Característica no encontrada"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la característica: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_insertar_caracteristica", methods=["POST"])
+# @jwt_required()
+def api_insertar_caracteristica():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        campo = data.get("campo")
+
+        if not campo:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere campo"
+            return jsonify(dictRespuesta)
+
+        id_caracteristica = controlador_caracteristicas.insertar_caracteristica(campo)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Característica insertada con éxito"
+        dictRespuesta["data"] = {"id": id_caracteristica}
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar la característica: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_caracteristica", methods=["POST"])
+# @jwt_required()
+def api_actualizar_caracteristica():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        caracteristica_id = data.get("id")
+        campo = data.get("campo")
+        disponibilidad = data.get("disponibilidad")
+
+        if not caracteristica_id or not campo or disponibilidad is None:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requieren id, campo y disponibilidad"
+            return jsonify(dictRespuesta)
+
+        controlador_caracteristicas.actualizar_caracteristica(campo, disponibilidad, None, None, caracteristica_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Característica actualizada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la característica: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_caracteristica", methods=["POST"])
+# @jwt_required()
+def api_eliminar_caracteristica():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        caracteristica_id = data.get("id")
+
+        if not caracteristica_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la característica"
+            return jsonify(dictRespuesta)
+
+        controlador_caracteristicas.eliminar_caracteristica(caracteristica_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Característica eliminada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar la característica: {str(e)}"
+        return jsonify(dictRespuesta)
+
+#####################FIN APIS CARACTERISTICAS#################
+
+
+###########################APIS REDES SOCIALES###############33
+@app.route("/api_obtener_redes_sociales", methods=["GET"])
+# @jwt_required()
+def api_obtener_redes_sociales():
+    dictRespuesta = {}
+    try:
+        redes_sociales = controlador_redes_sociales.obtener_redes_sociales()
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Redes sociales obtenidas con éxito"
+        dictRespuesta["data"] = redes_sociales
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener las redes sociales: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_red_social", methods=["POST"])
+# @jwt_required()
+def api_obtener_red_social():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        red_id = data.get("id")
+
+        if not red_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la red social"
+            return jsonify(dictRespuesta)
+
+        red_social = controlador_redes_sociales.obtener_redes_sociales_por_id(red_id)
+
+        if red_social:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Red social obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": red_social[0],
+                "nomRed": red_social[1],
+                "faicon_red": red_social[2],
+                "enlace": red_social[3]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Red social no encontrada"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la red social: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_insertar_red_social", methods=["POST"])
+# @jwt_required()
+def api_insertar_red_social():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        nomRed = data.get("nomRed")
+        faiconRed = data.get("faiconRed")
+        enlace = data.get("enlace")
+
+        if not nomRed or not faiconRed or not enlace:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requieren nomRed, faiconRed y enlace"
+            return jsonify(dictRespuesta)
+
+        red_id = controlador_redes_sociales.insertar_redes_sociales_api(nomRed, faiconRed, enlace)
+        red = clsRedesSociales(red_id, nomRed, faiconRed, enlace)
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Red social insertada con éxito"
+        dictRespuesta["data"] = red.__dict__
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar la red social: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_actualizar_red_social", methods=["POST"])
+# @jwt_required()
+def api_actualizar_red_social():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        red_id = data.get("id")
+        nomRed = data.get("nomRed")
+        faiconRed = data.get("faiconRed")
+        enlace = data.get("enlace")
+
+        if not red_id or not nomRed or not faiconRed or not enlace:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requieren id, nomRed, faiconRed y enlace"
+            return jsonify(dictRespuesta)
+
+        controlador_redes_sociales.actualizar_redes_sociales_por_id(nomRed, faiconRed, enlace, red_id)
+        red = clsRedesSociales(red_id, nomRed, faiconRed, enlace)
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Red social actualizada con éxito"
+        dictRespuesta["data"] = red.__dict__
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la red social: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_eliminar_red_social", methods=["POST"])
+# @jwt_required()
+def api_eliminar_red_social():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        red_id = data.get("id")
+
+        if not red_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la red social"
+            return jsonify(dictRespuesta)
+
+        controlador_redes_sociales.eliminar_redes_sociales(red_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Red social eliminada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar la red social: {str(e)}"
+        return jsonify(dictRespuesta)
+    
+#######################FIN APIS REDES SOCIALES################
 
 
 # EJECUTAR

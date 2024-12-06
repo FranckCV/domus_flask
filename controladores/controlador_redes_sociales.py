@@ -25,6 +25,23 @@ def insertar_redes_sociales(nomred,faicon_red,enlace):
     conexion.commit()
     conexion.close()
 
+def insertar_redes_sociales_api(nomred, faicon_red, enlace):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        # Ejecutar la inserción de la red social
+        cursor.execute("INSERT INTO redes_sociales (nomred, faicon_red, enlace) VALUES (%s, %s, %s)", 
+                       (nomred, faicon_red, enlace))
+        
+        # Obtener el último id insertado
+        cursor.execute('SELECT LAST_INSERT_ID();')
+        id_red_social = cursor.fetchone()[0]
+    
+    conexion.commit()
+    conexion.close()
+    
+    return id_red_social
+
+
 
 def eliminar_redes_sociales(id):
     conexion = obtener_conexion()
