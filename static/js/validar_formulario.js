@@ -85,8 +85,8 @@ const checkPassword = (input) => {
 
     if (!isRequired(password)) {
         showError(input, 'La contraseña no puede estar vacía.');
-    } else if (!/^\S{6,10}$/.test(password)) {
-        showError(input, 'La contraseña debe tener entre 6 y 10 caracteres.');
+    } else if (!/^\S{6,15}$/.test(password)) {
+        showError(input, 'La contraseña debe tener entre 6 y 15 caracteres.');
     } else {
         showSuccess(input);
         valid = true;

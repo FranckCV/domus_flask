@@ -1,14 +1,15 @@
 {% extends 'maestra_perfil.html' %}
 
 {% block estilos_perfil %}
-<link rel="stylesheet" href="static/css/listaDeseos.css"/>
+<link rel="stylesheet" href="/static/css/stylesCatalogue.css"/>
+<link rel="stylesheet" href="/static/css/listaDeseos.css"/>
 {% endblock %}
 
 {% block contenido_perfil %}
 <div class="deseos">
 
   <h2>Lista de deseos</h2>
-  <div class="tarjetas">
+  <div class="tarjetas" id="tarjetas">
       {% for producto in lista %}
       <div class="tarjeta">
           <img src="data:image/jpeg;base64,{{ producto.imagen }}" alt="imagen de producto" class="imagen_producto">
@@ -16,8 +17,22 @@
       </div>
       {% endfor %}
   </div>
+  <div class="ctlg_pagination">
+    <p class="page-item previous-page disable">
+        <a class="page-link" href="javascript:void(0)">
+            <i class="fa-solid fa-caret-left"></i>
+        </a>
+    </p>
+    
+    <p class="page-item next-page">
+        <a class="page-link" href="javascript:void(0)">
+            <i class="fa-solid fa-caret-right"></i>
+        </a>
+    </p>
+</div>
 </div>
 {% endblock %}
 
 {% block scripts_perfil %}
+  <script src="/static/js/scriptListaDeseos.js"></script>
 {% endblock %}
