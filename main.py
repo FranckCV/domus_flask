@@ -33,6 +33,7 @@ import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
 import controladores.controlador_empleados as controlador_empleados
+import controladores.controlador_lista_deseos as controlador_lista_deseos
 import controladores.controlador_usuario_admin as controlador_usuario_admin
 
 from datetime import datetime, date
@@ -127,7 +128,9 @@ def inject_globals():
     conts_info_footer = controlador_contenido_info.obtener_tipos_contenido()
     datos_domus_main = controlador_informacion_domus.obtener_informacion_domus()
     logueado_dato = session.get('id') is not None
-    user_id = session.get('id') if logueado_dato else None  
+    user_id = session.get('id') if logueado_dato else None 
+    lista_deseos = controlador_lista_deseos.obtenerListaDeseos(session.get('id'))
+    lista_deseos_ids = [producto[0] for producto in lista_deseos] 
     return dict(
         marcasMenu=marcasMenu,
         logo_foto=logo_foto,
@@ -136,7 +139,8 @@ def inject_globals():
         conts_info_footer=conts_info_footer,
         datos_domus_main=datos_domus_main,
         logueado=logueado_dato,
-        user_id=user_id 
+        user_id=user_id , 
+        lista_deseos_ids=lista_deseos_ids
     )
 
 
@@ -151,9 +155,13 @@ def index():
     productosPopulares = controlador_productos.obtenerEnTarjetasMasPopulares()
     novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
     novedadesRecientes = controlador_novedades.obtenerNovedadesRecientes()
-    return render_template("index.html", novedadesRecientes = novedadesRecientes , marcasBloque = marcasBloque ,
-                           productosRecientes = productosRecientes , productosPopulares = productosPopulares , novedadesBanner = novedadesBanner )
-
+    # print(lista_deseos_ids)
+    return render_template("index.html", 
+                           novedadesRecientes=novedadesRecientes, 
+                           marcasBloque=marcasBloque,
+                           productosRecientes=productosRecientes, 
+                           productosPopulares=productosPopulares,
+                           novedadesBanner=novedadesBanner)
 
 @app.route("/nuestras_marcas")
 def nuestras_marcas():
@@ -3272,6 +3280,34 @@ def logout():
     return resp
 
 
+@app.route('/cambiar_contrasenia_cliente', methods=['GET', 'POST'])
+def cambiar_contrasenia_cliente():
+    user_id=session.get('id')
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+    
+    if request.method == 'POST':
+        current_password = request.form['current-password']
+        new_password = request.form['new-password']
+        confirm_password = request.form['confirm-password']
+        
+        if new_password != confirm_password:
+            error_message = "Las contraseñas no coinciden."
+            return render_template('cambiarContraseñaCliente.html', error_message=error_message,user_id=user_id,usuario=usuario,img=img)
+
+        usuario_id = session.get('id')
+        usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(usuario_id)
+        
+        if usuario and usuario[9] == encstringsha256(current_password): 
+            controlador_usuario_cliente.cambiar_contrasenia(usuario_id, encstringsha256(new_password))
+            return redirect(url_for('perfil'))  
+        else:
+            error_message = "La contraseña actual es incorrecta."
+            return render_template('cambiarContraseñaCliente.html', error_message=error_message,user_id=user_id,usuario=usuario,img=img)
+
+    return render_template('cambiarContraseñaCliente.html',user_id=user_id,usuario=usuario,img=img)
+
+
 
 # @app.route("/iniciar_sesion" , methods=["POST"])
 # def iniciar_sesion():
@@ -3300,6 +3336,41 @@ def perfil(user_id):
         return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
     else:
         return redirect('/iniciar_sesion')
+    
+@app.route("/detalle_pedido_perfil=<int:user_id>")
+def detalle_pedido_perfil(user_id):
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
+    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+
+    return render_template("miDetallePedido_perfil.html", 
+                           pedidos=pedidos,  # Ahora pasamos todos los pedidos
+                           metodos=metodos, user_id=user_id,usuario=usuario,img=img )
+
+@app.route("/lista_deseos=<int:user_id>")
+def lista_deseos(user_id):
+    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
+
+    return render_template("listaDeseos.html",user_id=user_id,usuario=usuario,img=img )   
+    
+
+@app.route('/agregar_a_lista_deseos', methods=['POST'])
+def agregar_a_lista_deseos():
+    usuario_id = session.get('id')
+    
+    if not usuario_id:
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar a la lista de deseos")
+
+    producto_id = request.form['producto_id']
+    
+    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
+    
+    return '', 204
+
+
+   
     
 @app.route("/insertar_imagen_usuario", methods=['POST'])
 def imagen_usuario():
@@ -3390,6 +3461,7 @@ def detalle_pedido(id):
     estados = controlador_estado_pedido.obtener_listado_estados_pedido()
     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
     return render_template("listado_detalle_pedido.html", detalles=detalles , pedido_id=id , pedido = pedido , estados = estados , metodos = metodos)
+
 
 
 @app.route("/eliminar_detalle_pedido", methods=["POST"])

@@ -133,7 +133,7 @@ def aumentar_producto(pedido_id, producto_id):
         
         conexion.commit()
         return None 
-    except pymysql.MySQLError as e:
+    except Exception as e:
         return e 
     finally:
         if conexion:

@@ -1,0 +1,42 @@
+{% extends 'maestra_perfil.html' %}
+
+{% block titulo %}
+  Cambiar Contraseña
+{% endblock %}
+
+{% block estilos_perfil %}
+  <link rel="stylesheet" href="static/css/cambiarContrasenia.css" />
+{% endblock %}
+
+{% block contenido_perfil %}
+  <div class="form-cambiar-contraseña">
+    <h2>Cambiar Contraseña</h2>
+    <form action="{{ url_for('cambiar_contraseña') }}" method="POST">
+      <div class="form-group">
+        <label for="current-password">Contraseña Actual:</label>
+        <input type="password" id="current-password" name="current-password" class="input" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="new-password">Nueva Contraseña:</label>
+        <input type="password" id="new-password" name="new-password" class="input" required>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirmar Nueva Contraseña:</label>
+        <input type="password" id="confirm-password" name="confirm-password" class="input" required>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn">Cambiar Contraseña</button>
+      </div>
+
+      {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+      {% endif %}
+    </form>
+  </div>
+{% endblock %}
+
+{% block scripts_perfil %}
+{% endblock %}

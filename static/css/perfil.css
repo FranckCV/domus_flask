@@ -34,6 +34,9 @@
 }
 .main_perfil{
     padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .profile-details {
     display: grid;
@@ -166,6 +169,7 @@
     background: white;
     border-radius: 10px;
     box-shadow: 2px 2px 2px 4px rgba(0, 0, 0, 0.5);
+    width: 60%;
 }
 
 .contenedor_perfil .aside_perfil {
