@@ -3366,9 +3366,10 @@ def agregar_a_lista_deseos():
 
     producto_id = request.form['producto_id']
     
-    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id,producto_id)
+    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
     
-    return redirect(request.referrer) 
+    return '', 204
+
 
    
     
