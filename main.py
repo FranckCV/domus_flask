@@ -466,6 +466,25 @@ def agregar_carrito():
     
     if usuario_id is not None:
         pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+
+        pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
+        stock = controlador_carrito.validar_stock(producto_id)
+        cantidad_en_detalle = controlador_carrito.obtener_cantidad_en_carrito_v2(pedido_id, producto_id)
+        
+        # Validar que los datos sean correctos y no funciones
+        productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
+        productos = controlador_detalle.obtener_Detalle(session.get('id'))
+
+        if not isinstance(productosPopulares, list):
+            productosPopulares = []
+        if not isinstance(productos, list):
+            productos = []
+
+        print(f"pedido: {pedido_id} stock: {stock} cantidad: {cantidad_en_detalle}")
+
+        if (cantidad_en_detalle + 1) > stock:
+            errorcito = "Sin stock suficiente, no se aumentó el producto en el carrito."
+            return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=errorcito or "")
         
         if pedido_id is None:
             pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
