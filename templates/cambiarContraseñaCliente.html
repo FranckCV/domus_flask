@@ -10,8 +10,8 @@
 
 {% block contenido_perfil %}
   <div class="form-cambiar-contraseña">
-    <h2>Cambiar Contraseña</h2>
-    <form action="{{ url_for('cambiar_contraseña') }}" method="POST">
+    <h2 >Cambiar Contraseña</h2>
+    <form action="{{ url_for('cambiar_contrasenia_cliente') }}" method="POST">
       <div class="form-group">
         <label for="current-password">Contraseña Actual:</label>
         <input type="password" id="current-password" name="current-password" class="input" required>

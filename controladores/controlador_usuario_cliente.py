@@ -388,8 +388,8 @@ def cambiar_contrasenia(usuario_id, nueva_contraseña):
     try:
         with conexion.cursor() as cursor:
             cursor.execute('''
-                UPDATE usuario_cliente
-                SET password = %s
+                UPDATE usuario
+                SET contrasenia = %s
                 WHERE id = %s
             ''', (nueva_contraseña, usuario_id))
             conexion.commit()
