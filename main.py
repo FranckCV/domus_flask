@@ -3326,7 +3326,7 @@ def login():
         else:
             return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Contraseña incorrecta.")
     else:
-        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Usuario no registrado.")
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Usuario no válido. Si es cliente, regístrese.")
 
 
 @app.route("/logout")
