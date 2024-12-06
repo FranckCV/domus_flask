@@ -169,5 +169,39 @@ def cancelar_pedido(usuario_id, estado_pedido_id,pedido_id):
     conexion.commit()
     conexion.close()
 
+#####################
+def validar_stock(producto_id):
+    try:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            sql = "SELECT stock FROM producto WHERE id = %s"
+            cursor.execute(sql, (producto_id,))
+            result = cursor.fetchone()
+            if result:
+                return result[0] 
+            return 0  
+    except Exception as e:
+        return e
+    finally:
+        if conexion:
+            conexion.close()
 
-    
+def obtener_cantidad_en_carrito(pedido_id, producto_id):
+    try:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            sql = '''
+                SELECT cantidad
+                FROM detalle_pedido
+                WHERE pedidoid = %s AND productoid = %s
+            '''
+            cursor.execute(sql, (pedido_id, producto_id))
+            result = cursor.fetchone()  # Esto devuelve la cantidad actual del producto en el carrito
+            if result:
+                return result[0]  # Retorna la cantidad
+            return 0  # Si no hay cantidad, retorna 0
+    except Exception as e:
+        return e
+    finally:
+        if conexion:
+            conexion.close()

@@ -119,8 +119,7 @@
                 <label for="coupon">¿Tienes algún cupón de descuento?</label>
                 <div class="d-flex">
                   <input type="text" id="coupon" value="DOMUSESMICASA50" readonly />
-
-                  <button id="aplicar" type="button" onclick="aplicarDescuento()">Aplicar</button>
+                  <button id="aplicar" type="button" onclick="aplicarDescuento()" data-aplicado="false">Aplicar</button>
                 </div>
                 <p>Si no ves el descuento, lo verás al momento de realizar el pago, recuerda que los cupones son de uso único, no son reutilizables.</p>
               </div>
@@ -213,7 +212,7 @@
           <p>{{error_message}}</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
       </div>
     </div>

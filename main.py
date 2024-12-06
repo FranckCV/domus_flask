@@ -402,12 +402,18 @@ def registrate():
 ######################CARRO######################
 @app.route("/carrito") 
 def carrito():
-    productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-    print(session.get('id'))
-    productos = controlador_detalle.obtener_Detalle(session.get('id'))  
-    error_message = request.args.get("error_message")  
+    usuario_id = session.get('id')
     
-    return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
+    if usuario_id is not None:
+        productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
+        print(session.get('id'))
+        productos = controlador_detalle.obtener_Detalle(session.get('id'))  
+        error_message = request.args.get("error_message")  
+        
+        return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
+    else:
+        return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
+        
 
 
 @app.route('/obtener_cantidad_carrito', methods=['GET'])
@@ -437,10 +443,8 @@ def obtener_resumen_carrito():
         subtotal += producto['precio'] * producto['cantidad']
     
     descuento = 0
-    descuento_aplicado = False
     if cupon in request.args: 
         descuento = subtotal * 0.20  
-        descuento_aplicado = True
     
     total = subtotal - descuento
     
@@ -448,9 +452,11 @@ def obtener_resumen_carrito():
         'carrito': carrito, 
         'subtotal': subtotal,
         'descuento': descuento,
-        'total': total,
-        'descuento_aplicado': descuento_aplicado
+        'total': total
     })
+
+
+
 
 
 @app.route("/agregar_carrito", methods=["POST"]) 
@@ -483,7 +489,6 @@ def agregar_carrito():
 @app.route("/aumentar_carro", methods=["POST"])
 def aumentar_carro():
     producto_id = request.form.get("producto_id")
-    print(f"Producto ID recibido: {producto_id}") 
     usuario_id = session.get('id')
     estado = 1 
 
@@ -3402,7 +3407,6 @@ def perfil(user_id):
         return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
     else:
         return redirect('/iniciar_sesion')
-<<<<<<< HEAD
     
 @app.route("/pedidos=<int:user_id>")
 def pedidos(user_id):
@@ -3411,17 +3415,14 @@ def pedidos(user_id):
     
     
     return render_template("misPedidos.html", user_id=user_id, usuario=usuario, img=img)
-=======
 
 
-@app.route("/detalle_pedido_perfil=<int:user_id>")
-def detalle_pedido_perfil(user_id):
-    usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
-    pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
-    metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
-    img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
->>>>>>> aff974b0d1e528eb993fd35afa82b6edd0ed878f
-
+# @app.route("/detalle_pedido_perfil=<int:user_id>")
+# def detalle_pedido_perfil(user_id):
+#     usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
+#     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
+#     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
+#     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
 
 
 @app.route("/lista_deseos=<int:user_id>")
