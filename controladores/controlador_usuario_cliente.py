@@ -232,7 +232,7 @@ def obtener_usuario_cliente_por_email(email):
                         contrasenia,
                         TIPO_USUARIOid
                     FROM usuario
-                    WHERE correo = %s
+                    WHERE correo = %s and tipo_usuarioid=3
                 '''
                 cursor.execute(sql, (email,))
                 usuario = cursor.fetchone()
@@ -388,8 +388,8 @@ def cambiar_contrasenia(usuario_id, nueva_contraseña):
     try:
         with conexion.cursor() as cursor:
             cursor.execute('''
-                UPDATE usuario_cliente
-                SET password = %s
+                UPDATE usuario
+                SET contrasenia = %s
                 WHERE id = %s
             ''', (nueva_contraseña, usuario_id))
             conexion.commit()

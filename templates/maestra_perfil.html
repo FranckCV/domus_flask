@@ -6,103 +6,122 @@
 
 {% block estilos %}
   <link rel="stylesheet" href="static/css/perfil.css" />
-{% endblock %}
+  {% block estilos_perfil %}
 
-{% block estilos_perfil %}
+  {% endblock %}
 {% endblock %}
 
 {% block contenido %}
-<section class="body_page">
+  <section class="body_page">
     <div class="contenedor_perfil">
-        <aside class="aside_perfil">
+      <aside class="aside_perfil">
+        <div class="profile">
+          <div class="content_img">
+            {% if usuario.4 is not none %}
+              <img src="{{ img.1 }}" alt="Foto de perfil del usuario" id="foto_perfil" />
+            {% else %}
+              <img src="{{ url_for('static', filename='img/iconos/usuario.png') }}" alt="Foto de perfil del usuario" id="foto_perfil" />
+            {% endif %}
+          </div>
 
-            <div class="profile">
-                <div class="content_img">
-                    {% if usuario.4 is not none %}
-                    <img src="{{ img.1 }}" alt="Foto de perfil del usuario" id="foto_perfil">
-                    {% else %}
-                    <img src="{{ url_for('static', filename='img/iconos/usuario.png') }}" alt="Foto de perfil del usuario" id="foto_perfil">
-                    {% endif %}
+          <h2>¡Hola, {{ usuario.1 }}!</h2>
+          <form action="{{ url_for('imagen_usuario') }}" method="POST" enctype="multipart/form-data">
+            <input type="file" id="inputImagen" name="imagen" accept="image/*" style="display: none;" required />
+            <button type="button" class="btn btn-primary" id="btnSubirImagen">Subir Imagen</button>
+          </form>
+        </div>
+
+        <div id="opciones_perfil">
+          <a href="{{ url_for('perfil', user_id=user_id) }}" class="opcion_perfil">
+            <i class="fa-solid fa-user"></i>
+            <p>Mi perfil</p>
+            <i class="fa-solid fa-angle-right"></i>
+          </a>
+
+          <a href="{{ url_for('lista_deseos', user_id=user_id) }}" class="opcion_perfil">
+            <i class="fa-solid fa-heart"></i>
+            <p>Mi lista de deseos</p>
+            <i class="fa-solid fa-angle-right"></i>
+          </a>
+
+          <a href="{{ url_for('pedidos', user_id=user_id) }}" class="opcion_perfil">
+            <i class="fa-solid fa-list"></i>
+            <p>Pedidos</p>
+            <i class="fa-solid fa-angle-right"></i>
+          </a>
+
+          <a href="{{ url_for('cambiar_contrasenia_cliente', user_id=user_id) }}" class="opcion_perfil">
+            <i class="fa-solid fa-lock"></i> <p>Cambiar contraseña</p>
+            <i class="fa-solid fa-angle-right"></i>
+          </a>
+
+          <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#modalCerrarSesion">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <p>Cerrar sesión</p>
+            <!--    <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
+                       -->
+            <i class="fa-solid fa-angle-right"></i>
+          </div>
+
+          <!-- Modal -->
+          <div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="modalCerrarSesionLabel">Confirmación de cierre</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
-                <h2>¡Hola, {{ usuario.1 }}!</h2>
-                <form action="{{ url_for('imagen_usuario') }}" method="POST" enctype="multipart/form-data">
-                    <input type="file" id="inputImagen" name="imagen" accept="image/*" style="display: none;" required>
-                    <button type="button" class="btn btn-primary" id="btnSubirImagen">Subir Imagen</button>
-                </form>
+                <div class="modal-body">
+                  <p>¿Estás seguro de que quieres cerrar sesión?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" id="confirmarCierreSesion" onclick="location.href='{{ url_for('logout') }}';">Confirmar</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+              </div>
             </div>
-            
-            <div id="opciones_perfil">
+          </div>
 
-                <a href="{{ url_for('perfil', user_id=user_id) }}" class="opcion_perfil">
-                    <i class="fa-solid fa-user"></i>
-                    <p>Mi perfil</p>
-                    <i class="fa-solid fa-angle-right"></i>
-                </a>
-
-
-                <a href="{{ url_for('lista_deseos', user_id=user_id) }}" class="opcion_perfil">
-                    <i class="fa-solid fa-heart"></i>
-                    <p>Mi lista de deseos</p>
-                    <i class="fa-solid fa-angle-right"></i>
-                </a>
-
-                <a href="{{ url_for('detalle_pedido_perfil', user_id=user_id) }}" class="opcion_perfil">
-                    <i class="fa-solid fa-list"></i>
-                    <p>Pedidos</p>
-                    <i class="fa-solid fa-angle-right"></i>
-                </a>
-
-                <a href="{{ url_for('cambiar_contrasenia_cliente', user_id=user_id) }}" class="opcion_perfil">
-                    <i class="fa-solid fa-lock"></i>                    <p>Cambiar contraseña</p>
-                    <i class="fa-solid fa-angle-right"></i>
-                </a>
-
-                <div class="opcion_perfil" data-bs-toggle="modal" data-bs-target="#modalCerrarSesion">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <p>Cerrar sesión</p>
-                    <!--   <img src="{{ url_for('static', filename='img/iconos/flecha.png') }}" alt="Flecha de navegación" class="flecha">
-                      -->
-                    <i class="fa-solid fa-angle-right"></i>
+          <!-- Modal de Confirmación -->
+          <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="modalConfirmacionLabel">Confirmación</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <!-- Modal -->
-                <div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="modalCerrarSesionLabel">Confirmación de cierre</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>¿Estás seguro de que quieres cerrar sesión?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="confirmarCierreSesion" onclick="location.href='{{ url_for('logout') }}';">Confirmar</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="modal-body">
+                  <p>{{ message }}</p>
                 </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
             </div>
-        </aside>
+          </div>
+        </div>
+      </aside>
 
-        <main class="main_perfil">
-            {% block contenido_perfil %}
-            {% endblock  %}
-        </main>
+      <main class="main_perfil">
+        {% block contenido_perfil %}
+
+        {% endblock %}
+      </main>
     </div>
-</section>
+  </section>
 {% endblock %}
 
 {% block scripts %}
-
-<script src="static/js/subir_imagen.js"></script>
+  <script src="static/js/subir_imagen.js"></script>
+  <script>
+    {% if modal %}
+      var myModal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+      myModal.show();
+    {% endif %}
+  </script>
+  {% block scripts_perfil %}
 
 {% endblock %}
-
-{% block scripts_perfil %}
-
-
 {% endblock %}
+
+
