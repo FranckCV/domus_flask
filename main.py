@@ -410,16 +410,17 @@ def carrito():
     return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
 
 
-@app.route("/obtener_cantidad_carrito", methods=["GET"])
+@app.route('/obtener_cantidad_carrito', methods=['GET'])
 def obtener_cantidad_carrito():
     usuario_id = session.get('id')
     
-    if usuario_id is None:
-        return jsonify({'cantidad': 0})  # Si no hay sesión activa, devuelve 0
-
-    cantidad = controlador_detalle.obtenerCantidadDetallePorUsuario(usuario_id)
+    if not usuario_id:
+        return jsonify({"cantidad": 0}), 200
     
-    return jsonify({'cantidad': cantidad})
+    cantidad_carrito = controlador_detalle.obtenerCantidadDetallePorUsuario(usuario_id)
+    
+    return jsonify({"cantidad": cantidad_carrito}), 200
+
 
 
 @app.route("/obtener_resumen_carrito", methods=["GET"])
@@ -3358,8 +3359,8 @@ def detalle_pedido_perfil(user_id):
 def lista_deseos(user_id):
     usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
-
-    return render_template("listaDeseos.html",user_id=user_id,usuario=usuario,img=img )   
+    lista=controlador_lista_deseos.obtenerListaDeseosConImagen(user_id)
+    return render_template("listaDeseos.html",user_id=user_id,usuario=usuario,img=img, lista=lista )   
     
 
 @app.route('/agregar_a_lista_deseos', methods=['POST'])
