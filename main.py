@@ -4,7 +4,6 @@ import uuid
 from clase_user_v1.usuario import Usuario
 import hashlib
 import base64
-import datetime
 
 import controladores.controlador_caracteristicas_productos as controlador_caracteristicas_productos
 import controladores.controlador_caracteristicas_subcategorias as controlador_caracteristicas_subcategorias
@@ -33,7 +32,7 @@ import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
 
-from datetime import datetime
+from datetime import datetime, date
 
 from clases.clsMarca import Marca as clsMarca
 from clases.clsProducto import Producto as clsProducto
@@ -160,6 +159,8 @@ def inject_globals():
 
 
 # PAGINAS GENERALES
+
+cupon= 'DOMUSESMICASA50'
 
 @app.route("/") #falta
 def index():
@@ -425,7 +426,6 @@ def carrito():
     return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
 
 
-from flask import jsonify, session
 
 @app.route("/obtener_cantidad_carrito", methods=["GET"])
 def obtener_cantidad_carrito():
@@ -438,7 +438,34 @@ def obtener_cantidad_carrito():
     
     return jsonify({'cantidad': cantidad})
 
+@app.route("/obtener_resumen_carrito", methods=["GET"])
+def obtener_resumen_carrito():
+    usuario_id = session.get('id')
+    
+    if usuario_id is None:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
 
+    carrito = controlador_detalle.obtener_DetalleConDic(usuario_id)
+    
+    subtotal = 0
+    for producto in carrito:
+        subtotal += producto['precio'] * producto['cantidad']
+    
+    descuento = 0
+    descuento_aplicado = False
+    if cupon in request.args: 
+        descuento = subtotal * 0.20  
+        descuento_aplicado = True
+    
+    total = subtotal - descuento
+    
+    return jsonify({
+        'carrito': carrito, 
+        'subtotal': subtotal,
+        'descuento': descuento,
+        'total': total,
+        'descuento_aplicado': descuento_aplicado
+    })
 
 
 @app.route("/agregar_carrito", methods=["POST"]) 
@@ -2148,7 +2175,7 @@ def imagen_usuario():
 @app.route("/confirmar_compra", methods=['POST'])
 def confirmar_compra():
     usuario_id = session.get('id')
-    fecha_compra = datetime.date.today()
+    fecha_compra = date.today()
     metodo_pago = request.form.get('metodo_pago')
     estado = 2
 
