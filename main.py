@@ -3714,6 +3714,1111 @@ def api_guardar_detalle():
         # Retornamos una respuesta de error
         return jsonify({"message": f"Error al guardar detalle: {e}"}), 400
 
+##################APIS MOTIVO_COMENTARIO###############33
+@app.route("/api_guardar_motivo", methods=["POST"])
+# @jwt_required()
+def api_guardar_motivo():
+    dictRespuesta = {}
+    try:
+        motivo = request.json["motivo"]
+        disponibilidad = request.json["disponibilidad"]
+
+        motivo_obj = clsMotivoComentario(None, motivo, disponibilidad)
+
+        controlador_motivo_comentario.insertar_motivo(motivo_obj.motivo, motivo_obj.disponibilidad)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Motivo guardado con éxito"
+        dictRespuesta["data"] = {"motivo": motivo_obj.motivo, "disponibilidad": motivo_obj.disponibilidad}
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al guardar el motivo: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_motivo", methods=["POST"])
+# @jwt_required()
+def api_eliminar_motivo():
+    dictRespuesta = {}
+    try:
+        id_motivo = request.json["id"]
+
+        if not id_motivo:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        controlador_motivo_comentario.eliminar_motivo(id_motivo)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Motivo eliminado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el motivo: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listar_motivos", methods=["GET"])
+# @jwt_required()
+def api_listar_motivos():
+    dictRespuesta = {}
+    try:
+        motivos = controlador_motivo_comentario.obtener_listado_motivos()
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Motivos obtenidos con éxito"
+        dictRespuesta["data"] = []
+
+        for motivo in motivos:
+            motivo_data = {
+                "id": motivo[0],
+                "motivo": motivo[1],
+                "disponibilidad": motivo[2],
+                "comentarios_count": motivo[3]
+            }
+            dictRespuesta["data"].append(motivo_data)
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los motivos: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listar_motivo_por_id", methods=["POST"])
+# @jwt_required()
+def api_listar_motivo_por_id():
+    dictRespuesta = {}
+    try:
+        id_motivo = request.json["id"]
+
+        if not id_motivo:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        motivo_data = controlador_motivo_comentario.obtener_motivo_por_id(id_motivo)
+
+        if motivo_data:
+            motivo_obj = clsMotivoComentario(motivo_data[0], motivo_data[1], motivo_data[2])
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Motivo obtenido con éxito"
+            dictRespuesta["data"] = {
+                "id": motivo_obj.id,
+                "motivo": motivo_obj.motivo,
+                "disponibilidad": motivo_obj.disponibilidad
+            }
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Motivo no encontrado"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el motivo: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_motivo", methods=["POST"])
+# @jwt_required()
+def api_actualizar_motivo():
+    dictRespuesta = {}
+    try:
+        id_motivo = request.json["id"]
+        motivo = request.json["motivo"]
+        disponibilidad = request.json["disponibilidad"]
+
+        motivo_obj = clsMotivoComentario(id_motivo, motivo, disponibilidad)
+
+        controlador_motivo_comentario.actualizar_motivo(motivo_obj.motivo, motivo_obj.disponibilidad, motivo_obj.id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Motivo actualizado con éxito"
+        dictRespuesta["data"] = {"id": motivo_obj.id, "motivo": motivo_obj.motivo, "disponibilidad": motivo_obj.disponibilidad}
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el motivo: {str(e)}"
+        return jsonify(dictRespuesta)
+##############3FIN APIS TIPO MOTIVO COMENTARIO#############
+
+###############APIS TIPO NOVEDAD############
+@app.route("/api_guardar_tipo_novedad", methods=["POST"])
+# @jwt_required()
+def api_guardar_tipo_novedad():
+    dictRespuesta = {}
+    try:
+        # Recibir datos del tipo de novedad desde el JSON de la petición
+        nombre_tipo = request.json["nomTipo"]
+
+        # Crear una instancia de TipoNovedad
+        tipo_novedad_obj = clsTipoNovedad(None, nombre_tipo, 1)
+
+        controlador_tipos_novedad.insertar_tipo_novedad(tipo_novedad_obj.nomTipo)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de novedad guardado con éxito"
+        dictRespuesta["data"] = {"nomTipo": tipo_novedad_obj.nomTipo}
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al guardar el tipo de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_tipo_novedad", methods=["POST"])
+# @jwt_required()
+def api_eliminar_tipo_novedad():
+    dictRespuesta = {}
+    try:
+        # Recibir el ID del tipo de novedad desde el JSON de la petición
+        id_tipo_novedad = request.json["id"]
+
+        if not id_tipo_novedad:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        # Eliminar el tipo de novedad
+        controlador_tipos_novedad.eliminar_tipo_novedad(id_tipo_novedad)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de novedad eliminado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el tipo de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listar_tipos_novedad", methods=["GET"])
+# @jwt_required()
+def api_listar_tipos_novedad():
+    dictRespuesta = {}
+    try:
+        # Obtener todos los tipos de novedad
+        tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
+        
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipos de novedad obtenidos con éxito"
+        dictRespuesta["data"] = []
+
+        for tipo in tipos_novedad:
+            tipo_data = {
+                "id": tipo[0],
+                "nomTipo": tipo[1],
+                "disponibilidad": tipo[2]
+            }
+            dictRespuesta["data"].append(tipo_data)
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los tipos de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listar_tipo_novedad_por_id", methods=["POST"])
+# @jwt_required()
+def api_listar_tipo_novedad_por_id():
+    dictRespuesta = {}
+    try:
+        # Recibir el ID del tipo de novedad desde el JSON de la petición
+        id_tipo_novedad = request.json["id"]
+
+        if not id_tipo_novedad:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        # Obtener el tipo de novedad por ID
+        tipo_novedad_data = controlador_tipos_novedad.obtener_tipo_novedad_por_id(id_tipo_novedad)
+
+        if tipo_novedad_data:
+            tipo_novedad_obj = clsTipoNovedad(tipo_novedad_data[0], tipo_novedad_data[1], tipo_novedad_data[2])
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Tipo de novedad obtenido con éxito"
+            dictRespuesta["data"] = {
+                "id": tipo_novedad_obj.id,
+                "nomTipo": tipo_novedad_obj.nomTipo,
+                "disponibilidad": tipo_novedad_obj.disponibilidad
+            }
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Tipo de novedad no encontrado"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el tipo de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_actualizar_tipo_novedad", methods=["POST"])
+# @jwt_required()
+def api_actualizar_tipo_novedad():
+    dictRespuesta = {}
+    try:
+        # Recibir datos del tipo de novedad desde el JSON de la petición
+        id_tipo_novedad = request.json["id"]
+        nombre_tipo = request.json["nomTipo"]
+        disponibilidad = request.json["disponibilidad"]
+
+        # Crear una instancia de TipoNovedad
+        tipo_novedad_obj = clsTipoNovedad(id_tipo_novedad, nombre_tipo, disponibilidad)
+
+        # Actualizar el tipo de novedad en la base de datos
+        controlador_tipos_novedad.actualizar_tipo_novedad(tipo_novedad_obj.nomTipo, tipo_novedad_obj.disponibilidad, tipo_novedad_obj.id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de novedad actualizado con éxito"
+        dictRespuesta["data"] = {"id": tipo_novedad_obj.id, "nomTipo": tipo_novedad_obj.nomTipo, "disponibilidad": tipo_novedad_obj.disponibilidad}
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el tipo de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+##############################################################################
+
+#######################APIS NOVEDAD################
+@app.route("/api_guardar_novedad", methods=["POST"])
+# @jwt_required()
+def api_guardar_novedad():
+    dictRespuesta = {}
+    try:
+        # Recibir datos de la novedad desde el JSON de la petición
+        nombre = request.json["nombre"]
+        titulo = request.json["titulo"]
+        fecha_inicio = request.json["fecha_inicio"]
+        fecha_vencimiento = request.json["fecha_vencimiento"]
+        terminos = request.json["terminos"]
+        marca_id = request.json["marcaId"]
+        subcategoria_id = request.json["subcategoriaId"]
+        tipo_novedad_id = request.json["tipoNovedadId"]
+
+        # Crear una instancia de Novedad
+        novedad_obj = clsNovedad(None, nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, None, 1, marca_id, subcategoria_id, tipo_novedad_id)
+
+        # Insertar la novedad en la base de datos
+        novedad_id = controlador_novedades.insertarNovedad(novedad_obj.nombre, novedad_obj.titulo, novedad_obj.fecha_inicio,
+                                                        novedad_obj.fecha_vencimiento, novedad_obj.terminos, novedad_obj.MARCAid,
+                                                        novedad_obj.SUBCATEGORIAid, novedad_obj.TIPO_NOVEDADid)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Novedad guardada con éxito"
+        dictRespuesta["data"] = {"id": novedad_id, "nombre": novedad_obj.nombre, "titulo": novedad_obj.titulo}
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al guardar la novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+    
+@app.route("/api_eliminar_novedad", methods=["POST"])
+# @jwt_required()
+def api_eliminar_novedad():
+    dictRespuesta = {}
+    try:
+        # Recibir el ID de la novedad desde el JSON de la petición
+        novedad_id = request.json["id"]
+
+        if not novedad_id:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        # Eliminar la novedad
+        controlador_novedades.eliminarNovedad(novedad_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Novedad eliminada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar la novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listar_novedades", methods=["GET"])
+# @jwt_required()
+def api_listar_novedades():
+    dictRespuesta = {}
+    try:
+        # Obtener todas las novedades
+        novedades = controlador_novedades.obtener_listado_novedades()
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Novedades obtenidas con éxito"
+        dictRespuesta["data"] = []
+
+        for novedad in novedades:
+            novedad_data = {
+                "id": novedad[0],
+                "nombre": novedad[1],
+                "titulo": novedad[2],
+                "fecha_inicio": novedad[3],
+                "fecha_vencimiento": novedad[4],
+                "terminos": novedad[5],
+                "fecha_registro": novedad[6],
+                "disponibilidad": novedad[7],
+                "marcaId": novedad[8],
+                "subcategoriaId": novedad[9],
+                "tipoNovedadId": novedad[10]
+            }
+            dictRespuesta["data"].append(novedad_data)
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener las novedades: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_listar_novedad_por_id", methods=["POST"])
+# @jwt_required()
+def api_listar_novedad_por_id():
+    dictRespuesta = {}
+    try:
+        # Recibir el ID de la novedad desde el JSON de la petición
+        novedad_id = request.json["id"]
+
+        if not novedad_id:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "El campo 'id' es obligatorio"
+            return jsonify(dictRespuesta)
+
+        novedad_data = controlador_novedades.obtenerNovedadPorId(novedad_id)
+
+        if novedad_data:
+            novedad_obj = clsNovedad(novedad_data[0], novedad_data[1], novedad_data[2], novedad_data[3],
+                                  novedad_data[4], novedad_data[5], None, novedad_data[6], novedad_data[7], novedad_data[8],
+                                  novedad_data[9])
+            
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Novedad obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": novedad_obj.id,
+                "nombre": novedad_obj.nombre,
+                "titulo": novedad_obj.titulo,
+                "fecha_inicio": novedad_obj.fecha_inicio,
+                "fecha_vencimiento": novedad_obj.fecha_vencimiento,
+                "terminos": novedad_obj.terminos,
+                "fecha_registro": novedad_obj.fecha_registro,
+                "disponibilidad": novedad_obj.disponibilidad,
+                "marcaId": novedad_obj.MARCAid,
+                "subcategoriaId": novedad_obj.SUBCATEGORIAid,
+                "tipoNovedadId": novedad_obj.TIPO_NOVEDADid
+            }
+        else:
+            dictRespuesta["status"] = -1
+            dictRespuesta["mensaje"] = "Novedad no encontrada"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_novedad", methods=["POST"])
+# @jwt_required()
+def api_actualizar_novedad():
+    dictRespuesta = {}
+    try:
+        # Recibir datos de la novedad desde el JSON de la petición
+        novedad_id = request.json["id"]
+        nombre = request.json["nombre"]
+        titulo = request.json["titulo"]
+        fecha_inicio = request.json["fecha_inicio"]
+        fecha_vencimiento = request.json["fecha_vencimiento"]
+        terminos = request.json["terminos"]
+        disponibilidad = request.json["disponibilidad"]
+        marca_id = request.json["marcaId"]
+        subcategoria_id = request.json["subcategoriaId"]
+        tipo_novedad_id = request.json["tipoNovedadId"]
+
+        # Crear una instancia de Novedad
+        novedad_obj = clsNovedad(novedad_id, nombre, titulo, fecha_inicio, fecha_vencimiento, terminos, None, disponibilidad, marca_id, subcategoria_id, tipo_novedad_id)
+
+        # Actualizar la novedad en la base de datos
+        controlador_novedades.actualizarNovedad(novedad_obj.nombre, novedad_obj.titulo, novedad_obj.fecha_inicio,
+                                              novedad_obj.fecha_vencimiento, novedad_obj.terminos, novedad_obj.disponibilidad,
+                                              novedad_obj.MARCAid, novedad_obj.SUBCATEGORIAid, novedad_obj.TIPO_NOVEDADid, None, novedad_obj.id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Novedad actualizada con éxito"
+        dictRespuesta["data"] = {"id": novedad_obj.id, "nombre": novedad_obj.nombre, "titulo": novedad_obj.titulo}
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+###################FIN APIS NOVEDAD#####################
+
+########################APIS CARACTERISTICA PRODUCTOS#############
+@app.route("/api_insertar_caracteristica_producto", methods=["POST"])
+# @jwt_required()
+def api_insertar_caracteristica_producto():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del JSON de la petición
+        caracteristica_id = request.json["caracteristicaId"]
+        producto_id = request.json["productoId"]
+        valor = request.json["valor"]
+        principal = request.json["principal"]
+
+        # Crear objeto CaracteristicasProducto
+        caracteristica_producto = clsCaracteristicaProducto(caracteristica_id, producto_id, valor, principal)
+
+        # Llamar a la función para insertar la característica en la base de datos
+        controlador_caracteristicas_productos.insertar_caracteristica_producto(caracteristica_producto)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Característica de producto insertada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar la característica: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_caracteristicas_producto", methods=["POST"])
+# @jwt_required()
+def api_obtener_caracteristicas_producto():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del producto desde la petición
+        producto_id = request.json["id"]
+
+        # Obtener las características del producto desde la base de datos
+        caracteristicas = controlador_caracteristicas_productos.obtener_caracteristicas_producto(producto_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Características obtenidas con éxito"
+        dictRespuesta["data"] = caracteristicas
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener las características: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_actualizar_caracteristica_producto", methods=["POST"])
+# @jwt_required()
+def api_actualizar_caracteristica_producto():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del JSON de la petición
+        caracteristica_id = request.json["caracteristicaId"]
+        producto_id = request.json["productoId"]
+        valor = request.json["valor"]
+        principal = request.json["principal"]
+
+        # Crear objeto CaracteristicasProducto
+        caracteristica_producto = clsCaracteristicaProducto(caracteristica_id, producto_id, valor, principal)
+
+        # Llamar a la función para actualizar la característica en la base de datos
+        controlador_caracteristicas_productos.actualizar_caracteristica_producto(caracteristica_producto)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Característica de producto actualizada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la característica: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_caracteristica_producto", methods=["POST"])
+# @jwt_required()
+def api_eliminar_caracteristica_producto():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del JSON de la petición
+        caracteristica_id = request.json["caracteristicaId"]
+        producto_id = request.json["productoId"]
+
+        # Llamar a la función para eliminar la característica en la base de datos
+        controlador_caracteristicas_productos.eliminar_caracteristica_producto(caracteristica_id, producto_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Característica de producto eliminada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar la característica: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_caracteristica_producto", methods=["POST"])
+# @jwt_required()
+def api_obtener_caracteristica_producto():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del JSON de la petición
+        caracteristica_id = request.json["caracteristicaId"]
+        producto_id = request.json["productoId"]
+
+        # Obtener la característica del producto por ID
+        caracteristica = controlador_caracteristicas_productos.obtener_caracteristica_producto(caracteristica_id, producto_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Característica obtenida con éxito"
+        dictRespuesta["data"] = caracteristica
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la característica: {str(e)}"
+        return jsonify(dictRespuesta)
+
+#######################APIS METODO PAGO###################
+@app.route("/api_insertar_metodo_pago", methods=["POST"])
+# @jwt_required()
+def api_insertar_metodo_pago():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del JSON de la petición
+        nombre = request.json["nombre"]
+
+        # Crear objeto MetodoPago
+        metodo_pago = clsMetodoPago(None, nombre, 1)
+
+        # Llamar a la función para insertar el método de pago en la base de datos
+        controlador_metodo_pago.insertar_metodo_pago(metodo_pago.metodo)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Método de pago insertado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar el método de pago: {str(e)}"
+        return jsonify(dictRespuesta)
+    
+@app.route("/api_obtener_metodos_pago", methods=["GET"])
+# @jwt_required()
+def api_obtener_metodos_pago():
+    dictRespuesta = {}
+    try:
+        # Obtener los métodos de pago desde la base de datos
+        metodos_pago = controlador_metodo_pago.obtener_metodo_pago()
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Métodos de pago obtenidos con éxito"
+        dictRespuesta["data"] = metodos_pago
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los métodos de pago: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_listado_metodos_pago", methods=["GET"])
+# @jwt_required()
+def api_obtener_listado_metodos_pago():
+    dictRespuesta = {}
+    try:
+        # Obtener el listado de métodos de pago con pedidos asociados
+        listado_metodos_pago = controlador_metodo_pago.obtener_listado_metodo_pago()
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Listado de métodos de pago obtenido con éxito"
+        dictRespuesta["data"] = listado_metodos_pago
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el listado de métodos de pago: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_actualizar_metodo_pago", methods=["POST"])
+# @jwt_required()
+def api_actualizar_metodo_pago():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del JSON de la petición
+        metodo_id = request.json["id"]
+        nombre = request.json["nombre"]
+        disponibilidad = request.json["disponibilidad"]
+
+        # Llamar a la función para actualizar el método de pago en la base de datos
+        controlador_metodo_pago.actualizar_metodo_pago_por_id(nombre, disponibilidad, metodo_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Método de pago actualizado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el método de pago: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_eliminar_metodo_pago", methods=["POST"])
+# @jwt_required()
+def api_eliminar_metodo_pago():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del método de pago desde la petición
+        metodo_id = request.json["id"]
+
+        # Llamar a la función para eliminar el método de pago de la base de datos
+        controlador_metodo_pago.eliminar_metodo_pago(metodo_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Método de pago eliminado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el método de pago: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_metodo_pago", methods=["POST"])
+# @jwt_required()
+def api_obtener_metodo_pago():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del cuerpo de la solicitud
+        data = request.get_json()
+        id = data.get("id")
+
+        if not id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del método de pago"
+            return jsonify(dictRespuesta)
+        
+        # Llamar a la función para obtener el método de pago por ID
+        metodo_pago = controlador_metodo_pago.obtener_metodo_pago_por_id(id)
+
+        if metodo_pago:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Método de pago obtenido con éxito"
+            dictRespuesta["data"] = metodo_pago
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Método de pago no encontrado"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el método de pago: {str(e)}"
+        return jsonify(dictRespuesta)
+
+###############FIN APIS METODO PAGO##################
+
+####################APIS TIPO IMG  NOVEDAD#######################3
+@app.route("/api_obtener_tipos_img_novedad", methods=["GET"])
+# @jwt_required()
+def api_obtener_tipos_img_novedad():
+    dictRespuesta = {}
+    try:
+        tipos_img = controlador_tipos_img_novedad.obtener_tipos_img_novedad()
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipos de imagen obtenidos con éxito"
+        dictRespuesta["data"] = tipos_img
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los tipos de imagen de novedad: {str(e)}"
+    return jsonify(dictRespuesta)
+
+@app.route("/api_obtener_tipo_img_novedad", methods=["POST"])
+# @jwt_required()
+def api_obtener_tipo_img_novedad():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del cuerpo de la solicitud
+        data = request.get_json()
+        id = data.get("id")
+
+        if not id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del tipo de imagen"
+            return jsonify(dictRespuesta)
+
+        # Llamar a la función para obtener el tipo de imagen de novedad por ID
+        tipo_img = controlador_tipos_img_novedad.obtener_tipo_img_novedad_por_id(id)
+
+        if tipo_img:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Tipo de imagen de novedad obtenido con éxito"
+            dictRespuesta["data"] = tipo_img
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Tipo de imagen de novedad no encontrado"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el tipo de imagen de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_insertar_tipo_img_novedad", methods=["POST"])
+# @jwt_required()
+def api_insertar_tipo_img_novedad():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del cuerpo de la solicitud
+        data = request.get_json()
+        tipo = data.get("tipo")
+        disponibilidad = data.get("disponibilidad")
+
+        if not tipo or disponibilidad is None:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere tipo y disponibilidad"
+            return jsonify(dictRespuesta)
+
+        # Llamar a la función para insertar el tipo de imagen de novedad
+        controlador_tipos_img_novedad.insertar_tipo_img_novedad(tipo, disponibilidad)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de imagen de novedad insertado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar el tipo de imagen de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+    
+
+@app.route("/api_actualizar_tipo_img_novedad", methods=["POST"])
+# @jwt_required()
+def api_actualizar_tipo_img_novedad():
+    dictRespuesta = {}
+    try:
+        # Obtener los datos del cuerpo de la solicitud
+        data = request.get_json()
+        id = data.get("id")
+        tipo = data.get("tipo")
+        disponibilidad = data.get("disponibilidad")
+
+        if not id or not tipo or disponibilidad is None:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere id, tipo y disponibilidad"
+            return jsonify(dictRespuesta)
+
+        # Llamar a la función para actualizar el tipo de imagen de novedad
+        controlador_tipos_img_novedad.actualizar_tipo_img_novedad(id, tipo, disponibilidad)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de imagen de novedad actualizado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el tipo de imagen de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_tipo_img_novedad", methods=["POST"])
+# @jwt_required()
+def api_eliminar_tipo_img_novedad():
+    dictRespuesta = {}
+    try:
+        # Obtener el ID del cuerpo de la solicitud
+        data = request.get_json()
+        id = data.get("id")
+
+        if not id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del tipo de imagen"
+            return jsonify(dictRespuesta)
+
+        # Llamar a la función para eliminar el tipo de imagen de novedad
+        controlador_tipos_img_novedad.eliminar_tipo_img_novedad(id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Tipo de imagen de novedad eliminado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el tipo de imagen de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+#################FIN APIS TIPO IMG NOVEDAD################3
+
+#####################APIS IMG NOVEDAD#################33
+@app.route("/api_obtener_todas_imagenes_novedad", methods=["GET"])
+# @jwt_required()
+def api_obtener_todas_imagenes_novedad():
+    dictRespuesta = {}
+    try:
+        imagenes = controlador_imagenes_novedades.obtener_todas_imagenes_novedad()
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imágenes de novedades obtenidas con éxito"
+        dictRespuesta["data"] = imagenes
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener las imágenes de novedades: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_imagen_novedad", methods=["POST"])
+# @jwt_required()
+def api_obtener_imagen_novedad():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_id = data.get("id")
+
+        if not img_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la imagen"
+            return jsonify(dictRespuesta)
+
+        imagen = controlador_imagenes_novedades.obtener_imagen_novedad_por_img_id(img_id)
+
+        if imagen:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Imagen de novedad obtenida con éxito"
+            dictRespuesta["data"] = {
+                "id": imagen[0],
+                "nomImagen": imagen[1],
+                "imagen": imagen[2],
+                "tipo": imagen[3],
+                "novedad_id": imagen[4],
+                "tipo_id": imagen[5]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Imagen de novedad no encontrada"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener la imagen de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_insertar_imagen_novedad", methods=["POST"])
+# @jwt_required()
+def api_insertar_imagen_novedad():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        nomImagen = data.get("nomImagen")
+        imagen = data.get("imagen")  # Imagen en base64
+        tipo_img_id = data.get("tipo_img_id")
+        novedad_id = data.get("novedad_id")
+
+        if not nomImagen or not imagen or not tipo_img_id or not novedad_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere nomImagen, imagen, tipo_img_id y novedad_id"
+            return jsonify(dictRespuesta)
+
+        # Decodificar la imagen desde base64
+        imagen_binaria = base64.b64decode(imagen)
+
+        controlador_imagenes_novedades.insertar_imagen_novedad(nomImagen, imagen_binaria, tipo_img_id, novedad_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de novedad insertada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar la imagen de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_actualizar_imagen_novedad", methods=["POST"])
+# @jwt_required()
+def api_actualizar_imagen_novedad():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_id = data.get("id")
+        nomImagen = data.get("nomImagen")
+        tipo_img_id = data.get("tipo_img_id")
+        novedad_id = data.get("novedad_id")
+
+        if not img_id or not nomImagen or not tipo_img_id or not novedad_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere id, nomImagen, tipo_img_id y novedad_id"
+            return jsonify(dictRespuesta)
+
+        controlador_imagenes_novedades.actualizar_imagen_novedad(img_id, nomImagen, tipo_img_id, novedad_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de novedad actualizada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar la imagen de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_imagen_novedad", methods=["POST"])
+# @jwt_required()
+def api_eliminar_imagen_novedad():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        img_id = data.get("id")
+
+        if not img_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID de la imagen"
+            return jsonify(dictRespuesta)
+
+        controlador_imagenes_novedades.eliminar_imagen_novedad(img_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Imagen de novedad eliminada con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar la imagen de novedad: {str(e)}"
+        return jsonify(dictRespuesta)
+
+##################FIN APIS IMG NOVEDAD###############
+
+##########################APIS ESTADO PEDIDO#########
+@app.route("/api_obtener_estados_pedido", methods=["GET"])
+# @jwt_required()
+def api_obtener_estados_pedido():
+    dictRespuesta = {}
+    try:
+        estados = controlador_estado_pedido.obtener_estados_pedido()
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Estados de pedidos obtenidos con éxito"
+        dictRespuesta["data"] = estados
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener los estados de pedidos: {str(e)}"
+    return jsonify(dictRespuesta)
+
+
+@app.route("/api_obtener_estado_pedido", methods=["POST"])
+# @jwt_required()
+def api_obtener_estado_pedido():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        estado_id = data.get("id")
+
+        if not estado_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del estado del pedido"
+            return jsonify(dictRespuesta)
+
+        estado = controlador_estado_pedido.obtener_estado_pedido_por_id(estado_id)
+
+        if estado:
+            dictRespuesta["status"] = 1
+            dictRespuesta["mensaje"] = "Estado del pedido obtenido con éxito"
+            dictRespuesta["data"] = {
+                "id": estado[0],
+                "nomEstado": estado[1]
+            }
+        else:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Estado del pedido no encontrado"
+
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al obtener el estado del pedido: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_insertar_estado_pedido", methods=["POST"])
+# @jwt_required()
+def api_insertar_estado_pedido():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        nomEstado = data.get("nomEstado")
+
+        if not nomEstado:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere nomEstado"
+            return jsonify(dictRespuesta)
+
+        controlador_estado_pedido.insertar_estado_pedido(nomEstado)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Estado del pedido insertado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al insertar el estado del pedido: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+@app.route("/api_actualizar_estado_pedido", methods=["POST"])
+# @jwt_required()
+def api_actualizar_estado_pedido():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        estado_id = data.get("id")
+        nomEstado = data.get("nomEstado")
+
+        if not estado_id or not nomEstado:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere id y nomEstado"
+            return jsonify(dictRespuesta)
+
+        controlador_estado_pedido.actualizar_estado_pedido_por_id(nomEstado, estado_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Estado del pedido actualizado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al actualizar el estado del pedido: {str(e)}"
+        return jsonify(dictRespuesta)
+
+@app.route("/api_eliminar_estado_pedido", methods=["POST"])
+# @jwt_required()
+def api_eliminar_estado_pedido():
+    dictRespuesta = {}
+    try:
+        data = request.get_json()
+        estado_id = data.get("id")
+
+        if not estado_id:
+            dictRespuesta["status"] = 0
+            dictRespuesta["mensaje"] = "Se requiere el ID del estado del pedido"
+            return jsonify(dictRespuesta)
+
+        controlador_estado_pedido.eliminar_estado_pedido(estado_id)
+
+        dictRespuesta["status"] = 1
+        dictRespuesta["mensaje"] = "Estado del pedido eliminado con éxito"
+        return jsonify(dictRespuesta)
+
+    except Exception as e:
+        dictRespuesta["status"] = -1
+        dictRespuesta["mensaje"] = f"Error al eliminar el estado del pedido: {str(e)}"
+        return jsonify(dictRespuesta)
+
+
+########################FIN APIS ESTADO PEDIDO#########
+
 
 # EJECUTAR
 
