@@ -31,6 +31,7 @@ import controladores.controlador_usuario_cliente as controlador_usuario_cliente
 import controladores.controlador_novedades as controlador_novedades
 import controladores.controlador_tipos_img_novedad as controlador_tipos_img_novedad
 import controladores.controlador_detalle as controlador_detalle
+import controladores.controlador_empleados as controlador_empleados
 
 from datetime import datetime, date
 
@@ -202,9 +203,9 @@ def catalogo():
         elif valor == "2":  # Más Populares
             productos = controlador_productos.obtenerEnTarjetasMasPopulares_catalogo()
         elif valor == "3":  # Menor Precio
-            productos = controlador_productos.obtenerEnTarjetasxPrecio(1)
-        elif valor == "4":  # Mayor Precio
             productos = controlador_productos.obtenerEnTarjetasxPrecio(0)
+        elif valor == "4":  # Mayor Precio
+            productos = controlador_productos.obtenerEnTarjetasxPrecio(1)
         elif valor == "5":  # A - Z
             productos = controlador_productos.obtenerEnTarjetasAlfabetico(0)
         elif valor == "6":  # Z - A
@@ -998,10 +999,32 @@ def actualizar_motivo_comentario():
 ######################### FIN MOTIVO COMENTARIO ##############################
 
 
-import controladores.controlador_empleados as controlador_empleados
 
 
 ######################### PARA USUARIO EMPLEADO ##############################
+
+@app.route("/cambiar_contrasenia=<int:id>")
+def cambiar_contrasenia(id):
+    usuario = controlador_empleados.obtener_usuario_por_id(id)
+    clave_default = controlador_empleados.clave_default_empleado()
+    clave_actual = None
+    if usuario[9] == controlador_empleados.clave_default_empleado():
+        clave_actual = clave_default
+    return render_template("nueva_contrasenia_admin.html", usuario=usuario , clave_actual = clave_actual)
+
+
+@app.route("/guardar_contrasenia_empleado", methods=["POST"])
+def guardar_contrasenia_empleado():
+    id = request.form["id"]
+    contrasenia = request.form["contrasenia"]
+    confcontrasenia = request.form["confcontrasenia"]
+    password = encstringsha256(contrasenia)
+    if contrasenia == confcontrasenia:
+        controlador_empleados.cambiar_contrasenia_usuario(password,id)
+        return redirect("/dashboard")
+    else:
+        return redirect("/cambiar_contrasenia="+id)
+
 
 @app.route("/empleados_listado")
 def empleados_listado():
@@ -1046,7 +1069,8 @@ def guardar_empleado():
     fecha_nacimiento = request.form["fecha_nacimiento"]
     telefono = request.form["telefono"]
     correo = request.form["correo"]
-    contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
+    contraseña = controlador_empleados.clave_default_empleado()  
+    # contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
     
     disponibilidad = 1
 
@@ -1075,12 +1099,13 @@ def actualizar_empleado():
     fecha_nacimiento = request.form["fecha_nacimiento"]
     telefono = request.form["telefono"]
     correo = request.form["correo"]
-    contraseña = request.form["contraseña"]  # Aquí también se mantiene la contraseña sin cifrado
+    # contraseña = request.form["contraseña"]  # Aquí también se mantiene la contraseña sin cifrado
     disponibilidad = request.form["disponibilidad"]
 
-    controlador_empleados.actualizar_usuario(
+    # epassword = encstringsha256(contraseña)
+    controlador_empleados.actualizar_usuario_empleado(
         nombres, apellidos, doc_identidad, img_usuario, genero, 
-        fecha_nacimiento, telefono, correo, contraseña, disponibilidad, id
+        fecha_nacimiento, telefono, correo, disponibilidad, id
     )
     return redirect("/empleados_listado")
 
@@ -1103,6 +1128,15 @@ def eliminar_empleado():
 
 
 ########## INICIO PRODUCTOS ##########
+
+@app.route("/eliminar_img_producto", methods=["POST"])
+def eliminar_img_producto():
+    id = request.form["img_id"]
+    imagen = controlador_imagenes_productos.obtener_imagen_por_id(id)
+    idpro = imagen[2]
+    controlador_imagenes_productos.eliminar_img_producto_x_id(id)
+    return redirect("/formulario_editar_producto="+str(idpro))
+
 
 @app.route("/agregar_producto")
 def formulario_agregar_producto():
@@ -1234,7 +1268,7 @@ def ver_producto(id):
 
 @app.route("/formulario_editar_producto=<int:id>")
 def editar_producto(id):
-    imagenes = controlador_imagenes_productos.obtener_listado_imagenes_por_producto(id)
+    imagenes = controlador_imagenes_productos.obtener_listado_imagenes_sec_por_producto(id)
     caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
     caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,0)
     producto = controlador_productos.obtener_info_por_id(id)
@@ -1242,6 +1276,7 @@ def editar_producto(id):
     categorias = controlador_categorias.obtener_categoriasXnombre()
     subcategorias = controlador_subcategorias.obtener_subcategoriasXnombre()
     return render_template("editar_producto.html", producto=producto,marcas=marcas, subcategorias=subcategorias,categorias = categorias , imagenes = imagenes , caracteristicasPrincipales = caracteristicasPrincipales , caracteristicasSecundarias = caracteristicasSecundarias)
+
 
 @app.route("/actualizar_producto", methods=["POST"])
 def actualizar_producto():
@@ -2136,8 +2171,8 @@ def logout():
 #     else:
 #         return redirect("/login")
 
+##################################### PARA PERFIL #################################################
 
-#####################################PARA PERFIL#################################################
 @app.route("/perfil=<int:user_id>")
 def perfil(user_id):
     if 'id' in session and session['id'] == user_id:

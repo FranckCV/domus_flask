@@ -42,7 +42,7 @@
             </button>
         </div>
         {% endif %}
-        
+        {% if novedadesRecientes %}
         <article class="article_for_sale">
             <h1 class="title1_1">
                 ¡NUEVAS OFERTAS Y ÚLTIMOS DESCUENTOS!
@@ -67,7 +67,7 @@
                 {% endfor %}
             </div> 
         </article>
-        
+        {% endif %}
         {% if productosRecientes | length > 8 %}
             <article class="article_products article_product_new">
                 <h1 class="title1_2">

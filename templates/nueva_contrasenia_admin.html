@@ -1,0 +1,111 @@
+{% extends "maestra_administrador.html" %}
+
+{% block titulo %}
+    Cambiar Contraseña
+{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="static/css/administrativa/formulario.css" />
+  <link rel="stylesheet" href="static/css/administrativa/password.css" />
+{% endblock %}
+
+{% block contenido %}
+<section class="h_section section_password" id="mainSection">
+    <div class="container_pass">
+        {% if clave_actual %}
+            <h2 class="fw-bolder">Bienvenido Usuario {{ usuario[1] }} {{ usuario[2] }}</h2>
+            <h5>Es la primera vez que inicias sesión. Por favor cambie su contraseña:</h5>
+        {% else %}
+            <h2 class="fw-bolder">Cambio de contraseña</h2>
+        {% endif %}
+        <form action="{{ url_for('guardar_contrasenia_empleado') }}" method="post" enctype="multipart/form-data" onsubmit="return validarContrasenia()">
+            <input type="hidden" name="id" value="{{ usuario[0] }}"> 
+                    
+            <div class="form-grid" id="col_add">
+                <div class="row">
+                    <div class="col">
+                        <label for="contrasenia">Nueva Contraseña:</label>
+                        <div class="input-group">
+                            <input type="password" class="input form-control" placeholder="Nueva Contraseña" name="contrasenia" id="contrasenia">
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                            <i id="toggleIcon" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="confcontrasenia">Confirmar Contraseña:</label>
+                        <div class="input-group">
+                            <input type="password" class="input form-control" placeholder="Confirmar Contraseña" name="confcontrasenia" id="confcontrasenia">
+                            <button class="btn btn-outline-secondary" type="button" onclick="toggleConfPassword()">
+                            <i id="toggleIcon" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <button type="submit" class="button is-primary">Confirmar</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %} 
+<script>
+
+    // Deshabilitar retroceso
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+        window.history.pushState(null, "", window.location.href);
+    };
+
+    function validarContrasenia() {
+        const passwordField = document.getElementById("contrasenia");
+        const confPasswordField = document.getElementById("confcontrasenia");
+
+        if (passwordField.value !== confPasswordField.value) {
+            alert("Las contraseñas no coinciden.");
+            return false; // Evitar el envío del formulario
+        }
+
+        return true; // Permitir el envío del formulario
+    }
+    function togglePassword() {
+        const passwordField = document.getElementById("contrasenia");
+        const toggleIcon = document.getElementById("toggleIcon");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        }
+    }
+    function toggleConfPassword() {
+        const passwordField = document.getElementById("confcontrasenia");
+        const toggleIcon = document.getElementById("toggleIcon");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        }
+    }
+    // togglePassword("contrasenia");
+    // togglePassword("confcontrasenia");
+</script>
+{% endblock %}
+
+

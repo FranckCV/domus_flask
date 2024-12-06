@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block estilos %} 
-    <link rel="stylesheet" href="static/css/registrate.css">
-    <link rel="stylesheet" href="static/css/contactanos.css">
+    <link rel="stylesheet" href="/static/css/registrate.css">
+    <link rel="stylesheet" href="/static/css/contactanos.css">
 {% endblock %}
 
 {% block contenido %}
-    <section class="body_page">
-        <form action="{{ url_for('guardar_comentario') }}" method="post">
+    <section class="body_page section_coment">
+        <form class="form_coment" action="{{ url_for('guardar_comentario') }}" method="post">
             <div id="form_logo">
                 <img src="static/img/elementos/iconDomus.png" alt="logo" id="logo_form">
             </div>
