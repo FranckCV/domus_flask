@@ -3728,11 +3728,14 @@ def agregar_a_lista_deseos():
     if not usuario_id:
         return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar a la lista de deseos")
 
-    producto_id = request.form['producto_id']
-    
-    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
-    
-    return '', 204
+    producto_id = request.form.get('producto_id')
+
+    if producto_id:
+        controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
+        return '', 204  
+    return '', 400 
+
+
    
     
 @app.route("/insertar_imagen_usuario", methods=['POST'])
