@@ -1714,7 +1714,7 @@ def guardar_empleado():
             return render_template("agregar_empleado.html", error=error, nombres=nombres, apellidos=apellidos, doc_identidad=doc_identidad, genero=genero, fecha_nacimiento=fecha_nacimiento, telefono=telefono, correo=correo)
 
         controlador_empleados.insertar_usuario(
-            objEmp.nombres, objEmp.apellidos, objEmp.doc_identidad, objEmp.img_usuario, objEmp.genero,
+            objEmp.nombres, objEmp.apellidos, objEmp.doc_identidad, objEmp.img_usuario, objEmp.genero, 
             objEmp.fecha_nacimiento, objEmp.telefono, objEmp.correo, objEmp.contrasenia, objEmp.disponibilidad
         )
         return redirect("/empleados_listado")
@@ -3769,13 +3769,16 @@ def agregar_a_lista_deseos():
     if not usuario_id:
         return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar a la lista de deseos")
 
-    producto_id = request.form['producto_id']
+    producto_id = request.form.get('producto_id')
 
-    controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
+    if producto_id:
+        controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
+        return '', 204  
+    return '', 400 
 
-    return '', 204
 
-
+   
+    
 @app.route("/insertar_imagen_usuario", methods=['POST'])
 def imagen_usuario():
     if 'imagen' not in request.files:

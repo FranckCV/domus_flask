@@ -147,7 +147,7 @@
     grid-area: pr_cart;
     font-size: 120%;
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 2fr 2fr;
     grid-template-rows: auto auto;
     grid-template-areas: "prc_ctnt prc_ctnt"
                          "prc_ba prc_bf";
@@ -224,16 +224,20 @@
     transition: 0.07s ease;
     cursor: pointer;
     padding-block: 1vw;
+    width: 100%;
+    border: 0;
 }
 
 .product_cart_add {
-    border-bottom-left-radius: var(--border-product-square);
     grid-area: prc_ba;
+    border-bottom-right-radius: var(--border-product-square);
+
 }
 
 .product_cart_fav {
     grid-area: prc_bf;
-    border-bottom-right-radius: var(--border-product-square);
+    border-bottom-left-radius: var(--border-product-square);
+
 }
 
 .product_cart_option:hover {

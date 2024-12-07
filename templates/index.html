@@ -305,14 +305,15 @@
 
 
                                     </a>
-                                    <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST">
-                                        <div class="" id="heart">
+                                    <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST" id="form_{{ producto.0 }}" class="wishlist-form">
+                                        <div id="heart">
                                             <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
-                                            <button type="submit" class="product_option product_option_fav">
-                                                <i class="{% if producto.0 in lista_deseos_ids %} fa-solid fa-heart fav-active {% else %} fa-regular fa-heart {% endif %}"></i>
+                                            <button type="button" class="product_option product_option_fav" onclick="agregarQuitarListaDeseos({{ producto.0 }})">
+                                                <i id="heart-icon-{{ producto.0 }}" class="{% if producto.0 in lista_deseos_ids %} fa-solid fa-heart fav-active {% else %} fa-regular fa-heart {% endif %}"></i>
                                             </button>
                                         </div>
                                     </form>
+                                    
                                     
                                     <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
                                         <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
@@ -340,5 +341,34 @@
     <script src="static/js/scriptIndexAnimExclusividad.js"></script>
     <script src="static/js/scriptListProduct.js"></script>
     <script src="static/js/listaDeseos.js"></script> 
+    <script>
+        fetch("{{ url_for('agregar_a_lista_deseos') }}", {
+            method: "POST",
+            body: new URLSearchParams({
+                'producto_id': producto_id_input
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => response.text())  // Leer la respuesta como texto
+        .then(text => {
+            console.log("Respuesta recibida:", text);  // Ver el contenido real de la respuesta
+            if (response.status === 204) {
+                // Cambiar el estado del ícono
+                if (heartIcon.classList.contains('fav-active')) {
+                    heartIcon.classList.remove('fav-active');
+                    heartIcon.classList.add('fa-regular');
+                } else {
+                    heartIcon.classList.add('fav-active');
+                    heartIcon.classList.remove('fa-regular');
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Error al enviar la solicitud AJAX:", error);
+        });
+        
+        </script>
 {% endblock %}
 

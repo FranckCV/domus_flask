@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     agregarDivs.forEach(div => {
         div.addEventListener('click', (event) => {
             actualizarCantidadLocalCarrito();
-            actualizarCantidadCarrito();
+            // actualizarCantidadCarrito();
         });
     });
 
