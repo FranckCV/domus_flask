@@ -88,11 +88,11 @@ def authenticate(username, password):
     if not data:
         return None
     user = Usuario(id=data[0], correo=data[1], contrasenia=data[2], tipo_usuario_id=data[3])
-    
+
     if user and user.contrasenia == hashlib.sha256(password.encode('utf-8')).hexdigest():
         if user.tipo_usuario_id in [1, 2, 3]:
             return user
-    
+
     return None
 
 def identity(payload):
@@ -121,15 +121,15 @@ logo_domus = 'img/elementos/logoDomus.png'
 @app.context_processor
 def inject_globals():
     categoriasMenu = controlador_categorias.obtener_categorias_disponibles()
-    marcasMenu = controlador_marcas.obtener_marcas_menu(10) 
+    marcasMenu = controlador_marcas.obtener_marcas_menu(10)
     logo_foto = logo_domus
     redes_footer = controlador_redes_sociales.obtener_redes_sociales()
     conts_info_footer = controlador_contenido_info.obtener_tipos_contenido()
     datos_domus_main = controlador_informacion_domus.obtener_informacion_domus()
     logueado_dato = session.get('id') is not None
-    user_id = session.get('id') if logueado_dato else None 
+    user_id = session.get('id') if logueado_dato else None
     lista_deseos = controlador_lista_deseos.obtenerListaDeseos(session.get('id'))
-    lista_deseos_ids = [producto[0] for producto in lista_deseos] 
+    lista_deseos_ids = [producto[0] for producto in lista_deseos]
     return dict(
         marcasMenu=marcasMenu,
         logo_foto=logo_foto,
@@ -138,7 +138,7 @@ def inject_globals():
         conts_info_footer=conts_info_footer,
         datos_domus_main=datos_domus_main,
         logueado=logueado_dato,
-        user_id=user_id , 
+        user_id=user_id ,
         lista_deseos_ids=lista_deseos_ids
     )
 
@@ -155,10 +155,10 @@ def index():
     novedadesBanner = controlador_novedades.obtenerBannersNovedadesRecientes()
     novedadesRecientes = controlador_novedades.obtenerNovedadesRecientes()
     # print(lista_deseos_ids)
-    return render_template("index.html", 
-                           novedadesRecientes=novedadesRecientes, 
+    return render_template("index.html",
+                           novedadesRecientes=novedadesRecientes,
                            marcasBloque=marcasBloque,
-                           productosRecientes=productosRecientes, 
+                           productosRecientes=productosRecientes,
                            productosPopulares=productosPopulares,
                            novedadesBanner=novedadesBanner)
 
@@ -168,14 +168,14 @@ def nuestras_marcas():
     valor = request.args.get("ctlg_products_order")  # Obtener el valor del orden
 
     if valor:
-        if valor == "1": 
+        if valor == "1":
             marcas = controlador_marcas.obtener_todas_marcas_recientes()
-        elif valor == "2": 
+        elif valor == "2":
             marcas = controlador_marcas.obtener_todas_marcas_alfabetico(0)
-        elif valor == "3": 
+        elif valor == "3":
             marcas = controlador_marcas.obtener_todas_marcas_alfabetico(1)
     else:
-        marcas = controlador_marcas.obtener_todas_marcas_recientes() 
+        marcas = controlador_marcas.obtener_todas_marcas_recientes()
 
     return render_template("nuestras_marcas.html", marcas = marcas)
 
@@ -209,11 +209,11 @@ def catalogo():
 def buscar_elementos():
     nombreBusqueda = request.args.get("buscarElemento")
     productos = controlador_productos.buscarEnTarjetasMasRecientes(nombreBusqueda)
-    categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()   
+    categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()
     return render_template("catalogo.html", productos = productos, categoriasFiltro = categoriasFiltro , nombreBusqueda = nombreBusqueda)
 
 
-@app.route("/novedades") 
+@app.route("/novedades")
 def novedades():
     novedades_promo = controlador_novedades.mostrarNovedadesxTipo(3,5)
     novedades_anun = controlador_novedades.mostrarNovedadesxTipo(1,5)
@@ -222,7 +222,7 @@ def novedades():
     return render_template("novedades.html" , productosOfertas = productosOfertas , novedades_promo = novedades_promo , novedades_anun = novedades_anun , novedades_avis = novedades_avis)
 
 
-@app.route("/promociones") 
+@app.route("/promociones")
 def promociones():
     promociones = controlador_novedades.mostrarNovedadesPromociones()
     if promociones:
@@ -238,7 +238,7 @@ def anuncios():
         return render_template('anuncios.html', anuncios=anuncios)
     else:
         return redirect("/error")
-    
+
 
 @app.route('/avisos')
 def avisos():
@@ -249,7 +249,7 @@ def avisos():
         return redirect("/error")
 
 
-@app.route("/error") 
+@app.route("/error")
 def error():
     return render_template("error.html")
 
@@ -260,11 +260,11 @@ def error():
 def categoria(id):
     try:
         categoria = controlador_categorias.obtener_categoria_por_id(id)
-        if categoria and categoria[3] == 1:        
+        if categoria and categoria[3] == 1:
             subcategorias = controlador_subcategorias.obtenerSubcategoriasXCategoria(id)
             novedadesCategoria = controlador_novedades.obtenerNovedadesCategoria(id)
             productosCategoria = controlador_productos.obtener_en_tarjetas_categoria(0,id,0)
-            categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()   
+            categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()
             return render_template("selectedCategoria.html", productosCategoria = productosCategoria , categoria = categoria, subcategorias = subcategorias , novedadesCategoria = novedadesCategoria , categoriasFiltro = categoriasFiltro)
         else:
             return redirect("/error")
@@ -285,9 +285,9 @@ def marca(id):
             productosMarca = controlador_productos.obtener_en_tarjetas_marca(0,id,0)
             novedadesMarca = controlador_novedades.obtenerNovedadesMarca(id)
             subcategoriasMarca = controlador_subcategorias.obtenerSubcategoriasXMarca(id)
-            categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()  
+            categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()
             return render_template("selectedMarca.html", marca = marca , novedadesMarca = novedadesMarca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca , categoriasFiltro = categoriasFiltro)
-            
+
         else:
             return redirect("/error")
     except:
@@ -318,12 +318,12 @@ def selectedNovedad(id):
     novedad = controlador_novedades.obtener_info_novedad_id(id)
     categoria = None
     marca = None
-    if novedad[9]: 
+    if novedad[9]:
         categoria = controlador_subcategorias.obtenerCategoriasXSubcategoria(novedad[9])
-    
+
     if novedad[8]:
         marca = controlador_marcas.obtener_marca_disponible_por_id(novedad[8])
-    
+
     imagenes = controlador_imagenes_novedades.obtener_imagenes_disponibles_por_novedad(id)
     tipo = controlador_tipos_novedad.obtener_tipo_novedad_por_id(novedad[10])
     return render_template("selectedNovedad.html" , novedad = novedad , tipo = tipo , imagenes = imagenes , categoria = categoria , marca = marca)
@@ -339,7 +339,7 @@ def tipo_novedad(id):
 def promocion(id):
     try:
         promo = controlador_novedades.promoselect(id)
-        if promo:            
+        if promo:
             return render_template("selectedPromocion.html" , promo = promo)
         else:
             return redirect("/error")
@@ -399,31 +399,31 @@ def registrate():
 
 
 ######################CARRO######################
-@app.route("/carrito") 
+@app.route("/carrito")
 def carrito():
     usuario_id = session.get('id')
-    
+
     if usuario_id is not None:
         productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
         print(session.get('id'))
-        productos = controlador_detalle.obtener_Detalle(session.get('id'))  
-        error_message = request.args.get("error_message")  
-        
+        productos = controlador_detalle.obtener_Detalle(session.get('id'))
+        error_message = request.args.get("error_message")
+
         return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=error_message or "")
     else:
         return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
-        
+
 
 
 @app.route('/obtener_cantidad_carrito', methods=['GET'])
 def obtener_cantidad_carrito():
     usuario_id = session.get('id')
-    
+
     if not usuario_id:
         return jsonify({"cantidad": 0}), 200
-    
+
     cantidad_carrito = controlador_detalle.obtenerCantidadDetallePorUsuario(usuario_id)
-    
+
     return jsonify({"cantidad": cantidad_carrito}), 200
 
 
@@ -431,24 +431,24 @@ def obtener_cantidad_carrito():
 @app.route("/obtener_resumen_carrito", methods=["GET"])
 def obtener_resumen_carrito():
     usuario_id = session.get('id')
-    
+
     if usuario_id is None:
         return jsonify({'error': 'Usuario no autenticado'}), 401
 
     carrito = controlador_detalle.obtener_DetalleConDic(usuario_id)
-    
+
     subtotal = 0
     for producto in carrito:
         subtotal += producto['precio'] * producto['cantidad']
-    
+
     descuento = 0
-    if cupon in request.args: 
-        descuento = subtotal * 0.20  
-    
+    if cupon in request.args:
+        descuento = subtotal * 0.20
+
     total = subtotal - descuento
-    
+
     return jsonify({
-        'carrito': carrito, 
+        'carrito': carrito,
         'subtotal': subtotal,
         'descuento': descuento,
         'total': total
@@ -458,40 +458,21 @@ def obtener_resumen_carrito():
 
 
 
-@app.route("/agregar_carrito", methods=["POST"]) 
+@app.route("/agregar_carrito", methods=["POST"])
 def agregar_carrito():
     producto_id = request.form["producto_id"]
     estado = 1
     usuario_id = session.get('id')
-    
+
     if usuario_id is not None:
         pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
 
-        pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-        stock = controlador_carrito.validar_stock(producto_id)
-        cantidad_en_detalle = controlador_carrito.obtener_cantidad_en_carrito_v2(pedido_id, producto_id)
-        
-        # Validar que los datos sean correctos y no funciones
-        productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-        productos = controlador_detalle.obtener_Detalle(session.get('id'))
-
-        if not isinstance(productosPopulares, list):
-            productosPopulares = []
-        if not isinstance(productos, list):
-            productos = []
-
-        print(f"pedido: {pedido_id} stock: {stock} cantidad: {cantidad_en_detalle}")
-
-        if (cantidad_en_detalle + 1) > stock:
-            errorcito = "Sin stock suficiente, no se aumentó el producto en el carrito."
-            return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=errorcito or "")
-        
         if pedido_id is None:
             pedido_id = controlador_carrito.insertar_pedido(usuario_id, estado)
-        
+
         result = controlador_carrito.insertar_detalle(producto_id, pedido_id)
         referrer = request.referrer
-        
+
         if result is not None:
             if referrer and "carrito" in referrer:
                 return redirect(url_for('carrito'))
@@ -499,19 +480,18 @@ def agregar_carrito():
                 return '', 204
         else:
             return redirect(url_for('carrito', error_message="No se pudo agregar el producto al carrito."))
-    
+
     else:
         return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar al carrito")
 
 
-@app.route("/aumentar_carro_2", methods=["POST"])
-def aumentar_carro_2():
+@app.route("/aumentar_carro", methods=["POST"])
+def aumentar_carro():
     producto_id = request.form.get("producto_id")
     usuario_id = session.get('id')
-    estado = 1 
+    estado = 1
 
     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-
 
     if pedido_id:
         result=controlador_carrito.aumentar_producto(pedido_id,producto_id)
@@ -521,75 +501,6 @@ def aumentar_carro_2():
            return redirect(url_for('carrito', error_message=str(result)))
     else:
         print("No se encontró un pedido activo.")
-
-# @app.route("/aumentar_carro", methods=["POST"])
-# def aumentar_carro():
-#     producto_id = request.form.get("producto_id")
-#     usuario_id = session.get('id')
-#     estado = 1 
-
-#     if not producto_id or not usuario_id:
-#         return redirect(url_for('carrito', error_message="Error: Datos de producto o usuario no válidos."))
-    
-#     pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-#     stock = controlador_carrito.validar_stock(producto_id)
-#     cantidad_en_detalle = controlador_carrito.obtener_cantidad_en_carrito_v2(pedido_id, producto_id)
-#     productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-#     productos = controlador_detalle.obtener_Detalle(session.get('id'))
-
-#     print(f"pedido: {pedido_id} stock: {stock} cantidad: {cantidad_en_detalle}")
-
-#     if (cantidad_en_detalle + 1) > stock:
-#         errorcito = "Sin stock suficiente, no se aumentó el producto en el carrito."
-#         return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=errorcito or "")
-
-#     if pedido_id:
-#         result = controlador_carrito.aumentar_producto(pedido_id, producto_id)
-#         if result is None:
-#             return redirect('/carrito')
-#         else:
-#             return redirect(url_for('carrito', error_message=str(result)))
-#     else:
-#         print("No se encontró un pedido activo.")
-#         return redirect('/carrito')
-
-@app.route("/aumentar_carro", methods=["POST"])
-def aumentar_carro():
-    producto_id = request.form.get("producto_id")
-    usuario_id = session.get('id')
-    estado = 1 
-
-    if not producto_id or not usuario_id:
-        return redirect(url_for('carrito', error_message="Error: Datos de producto o usuario no válidos."))
-    
-    pedido_id = controlador_carrito.verificarIdPedido(usuario_id, estado)
-    stock = controlador_carrito.validar_stock(producto_id)
-    cantidad_en_detalle = controlador_carrito.obtener_cantidad_en_carrito_v2(pedido_id, producto_id)
-    
-    # Validar que los datos sean correctos y no funciones
-    productosPopulares = controlador_productos.obtenerEnTarjetasMasRecientes()
-    productos = controlador_detalle.obtener_Detalle(session.get('id'))
-
-    if not isinstance(productosPopulares, list):
-        productosPopulares = []
-    if not isinstance(productos, list):
-        productos = []
-
-    print(f"pedido: {pedido_id} stock: {stock} cantidad: {cantidad_en_detalle}")
-
-    if (cantidad_en_detalle + 1) > stock:
-        errorcito = "Sin stock suficiente, no se aumentó el producto en el carrito."
-        return render_template("carrito.html", productosPopulares=productosPopulares, productos=productos, error_message=errorcito or "")
-
-    if pedido_id:
-        result = controlador_carrito.aumentar_producto(pedido_id, producto_id)
-        if result is None:
-            return redirect('/carrito')
-        else:
-            return redirect(url_for('carrito', error_message=str(result)))
-    else:
-        print("No se encontró un pedido activo.")
-        return redirect('/carrito')
 
 
 @app.route("/disminuir_carro", methods=["POST"])
@@ -602,7 +513,7 @@ def disminuir_carro():
 
     if pedido_id:
         controlador_carrito.eliminar_producto(pedido_id,producto_id)
-    
+
     return redirect('/carrito')
 
 
@@ -610,23 +521,23 @@ def disminuir_carro():
 def confirmar_carrito():
     estado = 1
     usuario_id = session.get('id')
-    
+
     valor_descuento=request.form.get('total_descuento')
-    
-    pedido_id=controlador_carrito.verificarIdPedido(usuario_id,estado)        
+
+    pedido_id=controlador_carrito.verificarIdPedido(usuario_id,estado)
 
     subtotal=0
     productos_carrito = controlador_detalle.obtener_Detalle_por_Id_pedido(pedido_id)
-    
+
     for producto in productos_carrito:
-        cantidad = producto[3] 
-        precio_unitario = producto[2]  
-        producto_id = producto[4] 
+        cantidad = producto[3]
+        precio_unitario = producto[2]
+        producto_id = producto[4]
         total_producto = cantidad * precio_unitario
 
-        
+
         subtotal += total_producto
-    
+
     # print(f"Total del pedido: {subtotal}")
     # print(f"Descuento aplicado: {valor_descuento}")
     #Obtengo el pedido_id del usuario
@@ -635,11 +546,11 @@ def confirmar_carrito():
     existencias = controlador_detalle.obtener_Detalle_por_Id_pedido(pedido_id)
 
     metodos_pago = controlador_metodo_pago.obtener_metodo_pago()
-    
-    if existencias and len(existencias) > 0:        
-        return render_template("resumen_de_pedido.html", 
-                               existencias=existencias, 
-                               total_pagar=subtotal, 
+
+    if existencias and len(existencias) > 0:
+        return render_template("resumen_de_Pedido.html",
+                               existencias=existencias,
+                               total_pagar=subtotal,
                                valor_descuento=valor_descuento,
                                metodos_pago=metodos_pago)
     else:
@@ -649,20 +560,20 @@ def confirmar_carrito():
 @app.route("/resumen_de_pedido")
 def resumen_de_pedido():
     usuario=1
-    pedido_id=controlador_carrito.ultimoPedido(usuario)    
+    pedido_id=controlador_carrito.ultimoPedido(usuario)
     metodos_pago =controlador_metodo_pago.obtener_metodo_pago()
     print("los metodos son:",metodos_pago)
     existencias = controlador_detalle.obtener_Detalle_por_Id_pedido(pedido_id)
     # metodoID = request.form["metodo_pago"]
-    # controlador_pedido.actualizar_MetPago_Pedido(pedido_id,metodoID)    
-    return render_template("resumen_de_pedido.html", metodos_pago=metodos_pago, existencias=existencias)
+    # controlador_pedido.actualizar_MetPago_Pedido(pedido_id,metodoID)
+    return render_template("resumen_de_Pedido.html", metodos_pago=metodos_pago, existencias=existencias)
 
 
 @app.route('/cancelar_compra')
 def cancelar_compra():
     usuario_id = session.get('id')
-    estado_cancelado = 1    
-    pedido_id=controlador_carrito.ultimoPedido(usuario_id)    
+    estado_cancelado = 1
+    pedido_id=controlador_carrito.ultimoPedido(usuario_id)
     controlador_carrito.cancelar_pedido(usuario_id, estado_cancelado,pedido_id)
     return redirect('/carrito')
 
@@ -689,7 +600,6 @@ def login_requerido(func):
 
 @app.route('/login_admin', methods=['GET', 'POST'])
 def login_admin():
-    # Si el usuario ya tiene sesión, redirigir al dashboard
     if 'usuario' in session:
         return redirect(url_for('dashboard'))
 
@@ -708,9 +618,13 @@ def login_admin():
             session['usuario'] = username
             session['tipo_usuarioid'] = controlador_usuario_admin.obtenerTipoU(username)
             session['nombre_c'] = controlador_usuario_admin.obtenerNombresC(username)
+            session['doc_identidad'] =controlador_usuario_admin.obtenerdoc(username)
+            session['genero'] =controlador_usuario_admin.obtenergenero(username)
+            session['fecha_nacimiento'] =controlador_usuario_admin.obtenerfecha_nacimiento(username)
+            session['telefono'] =controlador_usuario_admin.obtenertelefono(username)
+            resultados = controlador_usuario_admin.obtenerDataU(username)
             contrase = controlador_usuario_admin.obtenerContrasenia(username)
             user_id = controlador_usuario_admin.obtenerID(username)
-
             if contrase == controlador_empleados.clave_default_empleado():
                 return redirect('/cambiar_contrasenia='+str(user_id))
             else:
@@ -728,7 +642,12 @@ def get_session_data():
         return jsonify({
             'usuario': session.get('usuario', ''),
             'tipoid': session.get('tipo_usuarioid', ''),
-            'nombres': session.get('nombre_c', '')
+            'nombres': session.get('nombre_c', ''),
+            'doc_identidad': session.get('doc_identidad', ''),
+            'genero': session.get('genero', ''),
+            'fecha_nacimiento': session.get('fecha_nacimiento', ''),
+            'telefono': session.get('telefono', ''),
+            'correo': session.get('username', '')
         })
     return jsonify({'error': 'No session data'}), 401
 
@@ -745,7 +664,7 @@ def error_adm():
 
 
 @app.route('/cuenta_administrativa')
-@login_requerido #Decorador
+@login_requerido # Decorador
 def cuenta_administrativa():
     return render_template('cuenta_administrativa.html')
 
@@ -763,13 +682,13 @@ def dashboard():
 
 
 @app.route("/agregar_marca")
-@login_requerido 
+@login_requerido
 def formulario_agregar_marca():
     return render_template("agregar_marca.html")
 
 
 @app.route("/guardar_marca", methods=["POST"])
-@login_requerido 
+@login_requerido
 def guardar_marca():
     marca = request.form["marca"]
 
@@ -782,7 +701,7 @@ def guardar_marca():
         banner_binario = ''
     else:
         banner_binario = banner.read()
-    
+
     objMarca = clsMarca(
         p_id = None,
         p_marca = marca,
@@ -796,14 +715,14 @@ def guardar_marca():
 
 
 @app.route("/listado_marcas")
-@login_requerido 
+@login_requerido
 def marcas():
     marcas = controlador_marcas.obtener_listado_marcas()
     return render_template("listado_marcas.html", marcas=marcas, active='marcas')
 
 
 @app.route("/listado_marcas_buscar")
-@login_requerido 
+@login_requerido
 def marcas_buscar():
     nombreBusqueda = request.args.get("buscarElemento")
     marcas = controlador_marcas.buscar_listado_marcas_nombre(nombreBusqueda)
@@ -812,26 +731,26 @@ def marcas_buscar():
 
 
 @app.route("/eliminar_marca", methods=["POST"])
-@login_requerido 
+@login_requerido
 def eliminar_marca():
     controlador_marcas.eliminar_marca(request.form["id"])
     return redirect("/listado_marcas")
 
 
 @app.route("/formulario_editar_marca=<int:id>")
-@login_requerido 
+@login_requerido
 def editar_marca(id):
     marca = controlador_marcas.obtener_listado_marca_por_id(id)
     return render_template("editar_marca.html", marca=marca)
 
 
 @app.route("/actualizar_marca", methods=["POST"])
-@login_requerido 
+@login_requerido
 def actualizar_marca():
     id = request.form["id"]
 
     marca_element = controlador_marcas.obtener_imgs_marca_disponible_por_id(id)
-    
+
     marca = request.form["marca"]
     disponibilidad = request.form["disponibilidad"]
     logo= request.files["logo"]
@@ -872,7 +791,7 @@ def actualizar_marca():
 
 
 @app.route("/listado_caracteristicas_buscar")
-@login_requerido  
+@login_requerido
 def caracteristicas_buscar():
     if 'usuario' in session:
         username = session['usuario']
@@ -885,7 +804,7 @@ def caracteristicas_buscar():
         nombreBusqueda = request.args.get("buscarElemento")
         subcategoriasFiltro = controlador_subcategorias.obtener_subcategoriasXnombre()
         categoriasFiltro = controlador_categorias.obtener_categoriasXnombre()
-        caracteristicas = controlador_caracteristicas.buscar_listado_Caracteristicas_nombre(nombreBusqueda)    
+        caracteristicas = controlador_caracteristicas.buscar_listado_Caracteristicas_nombre(nombreBusqueda)
         categorias = controlador_categorias.obtener_categorias()
         subcategorias =controlador_subcategorias.obtener_subcategorias()
         return render_template("listado_caracteristicas.html", caracteristicas = caracteristicas, categoriasFiltro=categoriasFiltro, subcategoriasFiltro=subcategoriasFiltro , subcategorias=subcategorias , categorias = categorias , nombreBusqueda = nombreBusqueda)
@@ -894,7 +813,7 @@ def caracteristicas_buscar():
 
 
 @app.route("/listado_caracteristicas")
-@login_requerido  
+@login_requerido
 def caracteristicas():
     if 'usuario' in session:
         username = session['usuario']
@@ -915,7 +834,7 @@ def caracteristicas():
 
 
 @app.route("/agregar_caracteristica")
-@login_requerido  
+@login_requerido
 def formulario_agregar_caracteristica():
     if 'usuario' in session:
         username = session['usuario']
@@ -933,7 +852,7 @@ def formulario_agregar_caracteristica():
 
 
 @app.route("/guardar_caracteristica", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_caracteristica():
     if 'usuario' in session:
         username = session['usuario']
@@ -966,7 +885,7 @@ def guardar_caracteristica():
 
 
 @app.route("/eliminar_caracteristica", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_caracteristica():
     if 'usuario' in session:
         username = session['usuario']
@@ -983,7 +902,7 @@ def eliminar_caracteristica():
 
 
 @app.route("/formulario_editar_caracteristica=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_caracteristica(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -1003,7 +922,7 @@ def editar_caracteristica(id):
 
 
 @app.route("/actualizar_caracteristica", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_caracteristica():
     if 'usuario' in session:
         username = session['usuario']
@@ -1073,7 +992,7 @@ def subcategorias():
 
 
 @app.route("/listado_subcategorias_buscar")
-@login_requerido  
+@login_requerido
 def subcategorias_buscar():
     if 'usuario' in session:
         username = session['usuario']  # Recuperar el usuario desde la sesión
@@ -1082,7 +1001,7 @@ def subcategorias_buscar():
         # Verificar si el tipo de usuario es 2 y redirigir al dashboard si es así
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         # Si el tipo de usuario no es 2, continuar con la búsqueda
         nombreBusqueda = request.args.get("buscarElemento")
         categorias = controlador_categorias.obtener_listado_categorias()
@@ -1099,7 +1018,7 @@ def subcategorias_buscar():
 
 
 @app.route("/agregar_subcategoria")
-@login_requerido  
+@login_requerido
 def formulario_agregar_subcategoria():
     if 'usuario' in session:
         username = session['usuario']
@@ -1108,7 +1027,7 @@ def formulario_agregar_subcategoria():
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         categorias = controlador_categorias.obtener_categorias()
         return render_template("agregar_subcategoria.html", categorias=categorias, active='categorias')
     else:
@@ -1116,7 +1035,7 @@ def formulario_agregar_subcategoria():
 
 
 @app.route("/guardar_subcategoria", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_subcategoria():
     if 'usuario' in session:
         username = session['usuario']
@@ -1145,7 +1064,7 @@ def guardar_subcategoria():
 
 
 @app.route("/eliminar_subcategoria", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_subcategoria():
     if 'usuario' in session:
         username = session['usuario']
@@ -1154,7 +1073,7 @@ def eliminar_subcategoria():
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         controlador_subcategorias.eliminar_subcategoria(request.form["id"])
         return redirect("/listado_subcategorias")
     else:
@@ -1162,7 +1081,7 @@ def eliminar_subcategoria():
 
 
 @app.route("/formulario_editar_subcategoria=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_subcategoria(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -1171,7 +1090,7 @@ def editar_subcategoria(id):
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         subcategoria = controlador_subcategorias.obtener_subcategoria_por_id(id)
         categorias = controlador_categorias.obtener_categorias()
         return render_template("editar_subcategoria.html", subcategoria=subcategoria, categorias=categorias)
@@ -1180,7 +1099,7 @@ def editar_subcategoria(id):
 
 
 @app.route("/actualizar_subcategoria", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_subcategoria():
     if 'usuario' in session:
         username = session['usuario']
@@ -1189,7 +1108,7 @@ def actualizar_subcategoria():
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         id = request.form["id"]
         nombre = request.form["nombre"]
         faicon_subcat = request.form["faicon_subcat"]
@@ -1216,7 +1135,7 @@ def actualizar_subcategoria():
 
 
 @app.route("/agregar_categoria")
-@login_requerido  
+@login_requerido
 def formulario_agregar_categoria():
     if 'usuario' in session:
         username = session['usuario']
@@ -1225,14 +1144,14 @@ def formulario_agregar_categoria():
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         return render_template("agregar_categoria.html")
     else:
         return redirect(url_for('login_admin'))  # Redirigir al login si no hay sesión activa
 
 
 @app.route("/guardar_categoria", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_categoria():
     if 'usuario' in session:
         username = session['usuario']
@@ -1241,7 +1160,7 @@ def guardar_categoria():
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         categoria = request.form["categoria"]
         faicon_cat = request.form["faicon_cat"]
 
@@ -1259,7 +1178,7 @@ def guardar_categoria():
 
 
 @app.route("/listado_categorias")
-@login_requerido  
+@login_requerido
 def categorias():
     if 'usuario' in session:
         username = session['usuario']
@@ -1268,7 +1187,7 @@ def categorias():
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         categorias = controlador_categorias.obtener_listado_categorias()
         subcategorias = controlador_subcategorias.obtener_subcategorias()
         return render_template("listado_categorias.html", categorias=categorias, subcategorias=subcategorias)
@@ -1277,7 +1196,7 @@ def categorias():
 
 
 @app.route("/eliminar_categoria", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_categoria():
     if 'usuario' in session:
         username = session['usuario']
@@ -1286,7 +1205,7 @@ def eliminar_categoria():
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         id = request.form["id"]
         categoria = controlador_categorias.obtener_categoria_id_relacion(id)
         result = categoria[4]
@@ -1301,7 +1220,7 @@ def eliminar_categoria():
 
 
 @app.route("/formulario_editar_categoria=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_categoria(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -1309,7 +1228,7 @@ def editar_categoria(id):
 
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         categoria = controlador_categorias.obtener_categoria_por_id(id)
         return render_template("editar_categoria.html", categoria=categoria)
     else:
@@ -1317,7 +1236,7 @@ def editar_categoria(id):
 
 
 @app.route("/actualizar_categoria", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_categoria():
     if 'usuario' in session:
         username = session['usuario']
@@ -1326,7 +1245,7 @@ def actualizar_categoria():
         # Verificar si el tipo de usuario es 2
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
-        
+
         id = request.form["id"]
         categoria = request.form["categoria"]
         faicon_cat = request.form["faicon_cat"]
@@ -1350,7 +1269,7 @@ def actualizar_categoria():
 
 
 @app.route("/comentarios_listado")
-@login_requerido  
+@login_requerido
 def comentarios_listado():
     if 'usuario' in session:
         username = session['usuario']
@@ -1369,7 +1288,7 @@ def comentarios_listado():
 
 
 @app.route("/ver_comentario=<int:id>")
-@login_requerido  
+@login_requerido
 def ver_comentario(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -1388,7 +1307,7 @@ def ver_comentario(id):
 
 
 @app.route("/comentarios_listado_buscar")
-@login_requerido  
+@login_requerido
 def comentarios_listado_buscar():
     if 'usuario' in session:
         username = session['usuario']
@@ -1408,7 +1327,7 @@ def comentarios_listado_buscar():
 
 
 @app.route("/guardar_comentario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_comentario():
     if 'usuario' in session:
         username = session['usuario']
@@ -1452,7 +1371,7 @@ def guardar_comentario():
 
 
 @app.route("/eliminar_comentario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_comentario():
     if 'usuario' in session:
         username = session['usuario']
@@ -1469,7 +1388,7 @@ def eliminar_comentario():
 
 
 @app.route("/estado_comentario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def estado_comentario():
     if 'usuario' in session:
         username = session['usuario']
@@ -1486,7 +1405,7 @@ def estado_comentario():
 
 
 @app.route("/estado_comentario_respondido", methods=["POST"])
-@login_requerido  
+@login_requerido
 def estado_comentario_respondido():
     if 'usuario' in session:
         username = session['usuario']
@@ -1509,7 +1428,7 @@ def estado_comentario_respondido():
 
 
 @app.route("/motivos_comentario_listado")
-@login_requerido  
+@login_requerido
 def motivos_comentario_listado():
     if 'usuario' in session:
         username = session['usuario']
@@ -1526,7 +1445,7 @@ def motivos_comentario_listado():
 
 
 @app.route("/motivos_comentario_buscar")
-@login_requerido  
+@login_requerido
 def motivos_comentario_buscar():
     if 'usuario' in session:
         username = session['usuario']
@@ -1544,7 +1463,7 @@ def motivos_comentario_buscar():
 
 
 @app.route("/agregar_motivo_comentario")
-@login_requerido  
+@login_requerido
 def formulario_agregar_motivo_comentario():
     if 'usuario' in session:
         username = session['usuario']
@@ -1560,7 +1479,7 @@ def formulario_agregar_motivo_comentario():
 
 
 @app.route("/guardar_motivo_comentario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_motivo_comentario():
     if 'usuario' in session:
         username = session['usuario']
@@ -1585,7 +1504,7 @@ def guardar_motivo_comentario():
 
 
 @app.route("/eliminar_motivo_comentario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_motivo_comentario():
     if 'usuario' in session:
         username = session['usuario']
@@ -1602,7 +1521,7 @@ def eliminar_motivo_comentario():
 
 
 @app.route("/formulario_editar_motivo_comentario=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_motivo_comentario(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -1619,7 +1538,7 @@ def editar_motivo_comentario(id):
 
 
 @app.route("/actualizar_motivo_comentario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_motivo_comentario():
     if 'usuario' in session:
         username = session['usuario']
@@ -1652,7 +1571,7 @@ def actualizar_motivo_comentario():
 
 
 @app.route("/cambiar_contrasenia=<int:id>")
-@login_requerido  
+@login_requerido
 def cambiar_contrasenia(id):
     usuario = controlador_empleados.obtener_usuario_por_id(id)
     clave_default = controlador_empleados.clave_default_empleado()
@@ -1660,10 +1579,10 @@ def cambiar_contrasenia(id):
     if usuario[9] == controlador_empleados.clave_default_empleado():
         clave_actual = clave_default
     return render_template("nueva_contrasenia_admin.html", usuario=usuario , clave_actual = clave_actual)
-    
+
 
 @app.route("/guardar_contrasenia_empleado", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_contrasenia_empleado():
     id = request.form["id"]
     contrasenia = request.form["contrasenia"]
@@ -1675,9 +1594,9 @@ def guardar_contrasenia_empleado():
     else:
         return redirect("/cambiar_contrasenia="+id)
 
-    
+
 @app.route("/empleados_listado")
-@login_requerido  
+@login_requerido
 def empleados_listado():
     if 'usuario' in session:
         username = session['usuario']
@@ -1696,7 +1615,7 @@ def empleados_listado():
 
 
 @app.route("/empleados_listado_buscar")
-@login_requerido  
+@login_requerido
 def empleados_listado_buscar():
     if 'usuario' in session:
         username = session['usuario']
@@ -1716,7 +1635,7 @@ def empleados_listado_buscar():
 
 
 @app.route("/ver_empleado=<int:id>")
-@login_requerido  
+@login_requerido
 def ver_empleado(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -1734,7 +1653,7 @@ def ver_empleado(id):
 
 
 @app.route("/agregar_empleado")
-@login_requerido  
+@login_requerido
 def formulario_agregar_empleado():
     if 'usuario' in session:
         username = session['usuario']
@@ -1750,7 +1669,7 @@ def formulario_agregar_empleado():
 
 
 @app.route("/guardar_empleado", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_empleado():
     if 'usuario' in session:
         username = session['usuario']
@@ -1763,18 +1682,18 @@ def guardar_empleado():
         nombres = request.form["nombres"]
         apellidos = request.form["apellidos"]
         doc_identidad = request.form["doc_identidad"]
-        
+
         # Verificar si se subió una imagen
         img_usuario = request.files["img_usuario"].read() if "img_usuario" in request.files and request.files["img_usuario"].filename != '' else None
-        
+
         genero = request.form["genero"]
         fecha_nacimiento = request.form["fecha_nacimiento"]
         telefono = request.form["telefono"]
         correo = request.form["correo"]
         # contraseña = request.form["contraseña"]  # Aquí se mantiene la contraseña sin cifrado
 
-        objUsuario = Usuario(
-            p_id=id,
+        objEmp = clsUsuario(
+            p_id = None,
             p_nombres=nombres,
             p_apellidos=apellidos,
             p_doc_identidad=doc_identidad,
@@ -1790,13 +1709,13 @@ def guardar_empleado():
         )
 
     # Verificar si el correo ya existe
-        if controlador_empleados.verificar_correo_existente(objUsuario.correo):
+        if controlador_empleados.verificar_correo_existente(objEmp.correo):
             error = "El correo se encuentra registrado. Intente con otro correo."
             return render_template("agregar_empleado.html", error=error, nombres=nombres, apellidos=apellidos, doc_identidad=doc_identidad, genero=genero, fecha_nacimiento=fecha_nacimiento, telefono=telefono, correo=correo)
 
         controlador_empleados.insertar_usuario(
-            objUsuario.nombres, objUsuario.apellidos, objUsuario.doc_identidad, objUsuario.img_usuario, objUsuario.genero, 
-            objUsuario.fecha_nacimiento, objUsuario.telefono, objUsuario.correo, objUsuario.contraseña, objUsuario.disponibilidad
+            objEmp.nombres, objEmp.apellidos, objEmp.doc_identidad, objEmp.img_usuario, objEmp.genero,
+            objEmp.fecha_nacimiento, objEmp.telefono, objEmp.correo, objEmp.contrasenia, objEmp.disponibilidad
         )
         return redirect("/empleados_listado")
     else:
@@ -1804,7 +1723,7 @@ def guardar_empleado():
 
 
 @app.route("/actualizar_empleado", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_empleado():
     if 'usuario' in session:
         username = session['usuario']
@@ -1818,9 +1737,9 @@ def actualizar_empleado():
         nombres = request.form["nombres"]
         apellidos = request.form["apellidos"]
         doc_identidad = request.form["doc_identidad"]
-        
+
         img_usuario = request.files["img_usuario"].read() if "img_usuario" in request.files and request.files["img_usuario"].filename != '' else None
-        
+
         genero = request.form["genero"]
         fecha_nacimiento = request.form["fecha_nacimiento"]
         telefono = request.form["telefono"]
@@ -1829,7 +1748,7 @@ def actualizar_empleado():
         disponibilidad = request.form["disponibilidad"]
 
         # epassword = encstringsha256(contraseña)
-        objUsuario = Usuario(
+        objUsuario = clsUsuario(
             p_id=id,
             p_nombres=nombres,
             p_apellidos=apellidos,
@@ -1846,7 +1765,7 @@ def actualizar_empleado():
         )
 
         controlador_empleados.actualizar_usuario_empleado(
-            objUsuario.nombres, objUsuario.apellidos, objUsuario.doc_identidad, objUsuario.img_usuario, objUsuario.genero, 
+            objUsuario.nombres, objUsuario.apellidos, objUsuario.doc_identidad, objUsuario.img_usuario, objUsuario.genero,
             objUsuario.fecha_nacimiento, objUsuario.telefono, objUsuario.correo, objUsuario.disponibilidad, objUsuario.id
         )
         return redirect("/empleados_listado")
@@ -1855,7 +1774,7 @@ def actualizar_empleado():
 
 
 @app.route("/formulario_editar_empleado=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_empleado(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -1873,7 +1792,7 @@ def editar_empleado(id):
 
 
 @app.route("/eliminar_empleado", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_empleado():
     if 'usuario' in session:
         username = session['usuario']
@@ -1927,13 +1846,13 @@ def formulario_agregar_producto():
 @app.route("/guardar_producto", methods=["POST"])
 @login_requerido
 def guardar_producto():
-    nombre = request.form["nombre"] 
-    price_regular= request.form["price_regular"] 
-    price_online= request.form["price_online"] 
-    precio_oferta= request.form["precio_oferta"] 
-    infoAdicional= request.form["infoAdicional"] 
-    stock= request.form["stock"] 
-    marca_id= request.form["marca_id"] 
+    nombre = request.form["nombre"]
+    price_regular= request.form["price_regular"]
+    price_online= request.form["price_online"]
+    precio_oferta= request.form["precio_oferta"]
+    infoAdicional= request.form["infoAdicional"]
+    stock= request.form["stock"]
+    marca_id= request.form["marca_id"]
     subcategoria_id= request.form["subcategorySelect"]
 
     imagen = request.files["imagenProduct"]
@@ -1973,7 +1892,7 @@ def guardar_producto():
     )
 
     controlador_imagenes_productos.insertar_img_producto(objImgProducto.img_nombre,objImgProducto.imagen,objImgProducto.imgPrincipal,id_pro)
-    
+
     files = request.files.getlist('imgsProd')
     for file in files:
         nom_file = nombre+'_'+file.filename
@@ -2045,7 +1964,7 @@ def eliminar_producto2():
     tiene_img = controlador_productos.buscar_en_img_producto(id_producto)
     tiene_lista_deseo = controlador_productos.buscar_en_lista_deseos(id_producto)
     tiene_detalle = controlador_productos.buscar_en_detalles_pedido(id_producto)
-    
+
     tiene_img_princ = controlador_imagenes_productos.validar_img_principal_por_producto(id_producto) != 1
 
     error_message = None
@@ -2072,7 +1991,7 @@ def eliminar_producto2():
 
 
 @app.route("/ver_producto=<int:id>")
-@login_requerido 
+@login_requerido
 def ver_producto(id):
     producto = controlador_productos.ver_info_por_id(id)
     imagenes = controlador_imagenes_productos.obtener_imagenes_por_producto(id)
@@ -2085,7 +2004,7 @@ def ver_producto(id):
 
 
 @app.route("/formulario_editar_producto=<int:id>")
-@login_requerido 
+@login_requerido
 def editar_producto(id):
     imagenes = controlador_imagenes_productos.obtener_listado_imagenes_sec_por_producto(id)
     caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasxProducto(id,1)
@@ -2098,21 +2017,21 @@ def editar_producto(id):
 
 
 @app.route("/actualizar_producto", methods=["POST"])
-@login_requerido 
+@login_requerido
 def actualizar_producto():
     id = request.form["id"]
 
     producto = controlador_imagenes_productos.obtener_img_principal_por_producto(id)
-    
-    nombre = request.form["nombre"] 
-    price_online= request.form["price_online"] 
-    price_regular= request.form["price_regular"] 
-    precio_oferta= request.form["precio_oferta"] 
-    infoAdicional= request.form["infoAdicional"] 
-    stock= request.form["stock"] 
-    disponibilidad= request.form["disponibilidad"] 
-    marca_id= request.form["marca_id"] 
-    subcategoria_id= request.form["subcategorySelect"]  
+
+    nombre = request.form["nombre"]
+    price_online= request.form["price_online"]
+    price_regular= request.form["price_regular"]
+    precio_oferta= request.form["precio_oferta"]
+    infoAdicional= request.form["infoAdicional"]
+    stock= request.form["stock"]
+    disponibilidad= request.form["disponibilidad"]
+    marca_id= request.form["marca_id"]
+    subcategoria_id= request.form["subcategorySelect"]
 
     imagen = request.files["imagenProduct"]
 
@@ -2146,7 +2065,7 @@ def actualizar_producto():
 
     controlador_productos.actualizar_producto(objProducto.nombre, objProducto.price_regular, objProducto.precio_online, objProducto.precio_oferta, objProducto.info_adicional, objProducto.stock, objProducto.disponibilidad, objProducto.MARCAid, objProducto.SUBCATEGORIAid, objProducto.id)
     controlador_imagenes_productos.actualizar_img_producto(objImgProducto.imagen,objImgProducto.PRODUCTOid)
-    
+
     return redirect("/listado_productos")
 
 
@@ -2158,7 +2077,7 @@ def actualizar_producto():
 
 
 @app.route("/listado_tipos_novedad")
-@login_requerido  
+@login_requerido
 def listado_tipos_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2175,7 +2094,7 @@ def listado_tipos_novedad():
 
 
 @app.route("/agregar_tipo_novedad")
-@login_requerido  
+@login_requerido
 def formulario_agregar_tipo_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2191,7 +2110,7 @@ def formulario_agregar_tipo_novedad():
 
 
 @app.route("/guardar_tipo_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_tipo_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2209,7 +2128,7 @@ def guardar_tipo_novedad():
 
 
 @app.route("/eliminar_tipo_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_tipo_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2226,7 +2145,7 @@ def eliminar_tipo_novedad():
 
 
 @app.route("/formulario_editar_tipo_novedad=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_tipo_novedad(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2244,7 +2163,7 @@ def editar_tipo_novedad(id):
 
 
 @app.route("/actualizar_tipo_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_tipo_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2264,7 +2183,7 @@ def actualizar_tipo_novedad():
 
 
 @app.route("/agregar_novedad")
-@login_requerido 
+@login_requerido
 def formulario_agregar_novedad():
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
     categorias = controlador_categorias.obtener_categoriasXnombre()
@@ -2275,10 +2194,10 @@ def formulario_agregar_novedad():
 
 
 @app.route("/guardar_novedad", methods=["POST"])
-@login_requerido 
+@login_requerido
 def guardar_novedad():
     tipos_img_novedad = controlador_tipos_img_novedad.obtener_tipos_img_novedad_disponibles()
-    
+
     nombre = request.form["nombre"]
     titulo = request.form["titulo"]
     fecha_inicio = request.form["fecha_inicio"]
@@ -2289,16 +2208,16 @@ def guardar_novedad():
     tipo_novedad_id = request.form["tipo_novedad"]
 
     idNovedad = controlador_novedades.insertarNovedad(
-        nombre, 
-        titulo, 
-        fecha_inicio, 
-        fecha_vencimiento, 
-        terminos, 
-        marca_id, 
-        subcategoria_id, 
+        nombre,
+        titulo,
+        fecha_inicio,
+        fecha_vencimiento,
+        terminos,
+        marca_id,
+        subcategoria_id,
         tipo_novedad_id
     )
-    
+
     files = request.files.getlist('imgNovedad')
     for file in files:
         nom_file = nombre+'_'+file.filename
@@ -2310,7 +2229,7 @@ def guardar_novedad():
 
 
 @app.route("/listado_novedades")
-@login_requerido 
+@login_requerido
 def novedades_listado():
     novedades = controlador_novedades.obtener_listado_novedades()
     imgs_nov = controlador_imagenes_novedades.obtener_todas_imagenes_novedad()
@@ -2322,7 +2241,7 @@ def novedades_listado():
 
 
 @app.route("/listado_novedades_buscar")
-@login_requerido 
+@login_requerido
 def novedades_listado_buscar():
     nombreBusqueda = request.args.get("buscarElemento")
     novedades = controlador_novedades.buscar_listado_novedades_nombre_titulo(nombreBusqueda)
@@ -2333,7 +2252,7 @@ def novedades_listado_buscar():
 
 
 @app.route("/ver_novedad=<int:id>")
-@login_requerido 
+@login_requerido
 def ver_novedad(id):
     novedad = controlador_novedades.obtener_novedad_id(id)
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
@@ -2345,14 +2264,14 @@ def ver_novedad(id):
 
 
 @app.route("/eliminar_novedad", methods=["POST"])
-@login_requerido 
+@login_requerido
 def eliminar_novedad():
     controlador_novedades.eliminarNovedad(request.form["id"])
     return redirect("/listado_novedades")
 
 
 @app.route("/formulario_editar_novedad=<int:id>")
-@login_requerido 
+@login_requerido
 def editar_novedad(id):
     novedad = controlador_novedades.obtenerNovedadPorId(id)
     marcas = controlador_marcas.obtener_listado_marcas_nombre()
@@ -2363,7 +2282,7 @@ def editar_novedad(id):
 
 
 @app.route("/actualizar_novedad", methods=["POST"])
-@login_requerido 
+@login_requerido
 def actualizar_novedad():
     id = request.form["id"]
     nombre = request.form["nombre"]
@@ -2385,7 +2304,7 @@ def actualizar_novedad():
 
 
 @app.route("/guardar_img_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_img_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2408,7 +2327,7 @@ def guardar_img_novedad():
 
 
 @app.route("/agregar_img_novedad=<int:novedad_id>")
-@login_requerido  
+@login_requerido
 def formulario_agregar_img_novedad(novedad_id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2425,7 +2344,7 @@ def formulario_agregar_img_novedad(novedad_id):
 
 
 @app.route("/img_novedades_listado=<int:novedad_id>")
-@login_requerido  
+@login_requerido
 def img_novedades_listado(novedad_id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2444,7 +2363,7 @@ def img_novedades_listado(novedad_id):
 
 
 @app.route("/eliminar_img_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_img_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2462,7 +2381,7 @@ def eliminar_img_novedad():
 
 
 @app.route("/formulario_editar_img_novedad=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_img_novedad(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2482,7 +2401,7 @@ def editar_img_novedad(id):
 
 
 @app.route("/actualizar_img_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_img_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2492,7 +2411,7 @@ def actualizar_img_novedad():
         if tipo_id == 2:
             return redirect(url_for('dashboard'))  # Redirigir al dashboard si el tipo de usuario es 2
 
-        
+
         id = request.form["id"]
         nom_imagen = request.form["nomImagen"]
         tipo_img_novedad_id = request.form["tipo_img_novedad"]
@@ -2508,7 +2427,7 @@ def actualizar_img_novedad():
 
 
 @app.route("/tipos_img_novedad_listado")
-@login_requerido  
+@login_requerido
 def tipos_img_novedad_listado():
     if 'usuario' in session:
         username = session['usuario']
@@ -2525,7 +2444,7 @@ def tipos_img_novedad_listado():
 
 
 @app.route("/agregar_tipo_img_novedad")
-@login_requerido  
+@login_requerido
 def formulario_agregar_tipo_img_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2541,7 +2460,7 @@ def formulario_agregar_tipo_img_novedad():
 
 
 @app.route("/guardar_tipo_img_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_tipo_img_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2559,7 +2478,7 @@ def guardar_tipo_img_novedad():
 
 
 @app.route("/formulario_editar_tipo_img_novedad=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_tipo_img_novedad(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2576,7 +2495,7 @@ def editar_tipo_img_novedad(id):
 
 
 @app.route("/actualizar_tipo_img_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_tipo_img_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2596,7 +2515,7 @@ def actualizar_tipo_img_novedad():
 
 
 @app.route("/eliminar_tipo_img_novedad", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_tipo_img_novedad():
     if 'usuario' in session:
         username = session['usuario']
@@ -2619,7 +2538,7 @@ def eliminar_tipo_img_novedad():
 
 
 @app.route("/ver_tipo_contenido_info=<int:id>")
-@login_requerido  
+@login_requerido
 def ver_tipo_contenido_info(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2637,7 +2556,7 @@ def ver_tipo_contenido_info(id):
 
 
 @app.route("/listado_tipo_contenido_info")
-@login_requerido  
+@login_requerido
 def listado_tipo_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2654,7 +2573,7 @@ def listado_tipo_contenido_info():
 
 
 @app.route("/listado_tipo_contenido_info_buscar")
-@login_requerido  
+@login_requerido
 def listado_tipo_contenido_info_buscar():
     if 'usuario' in session:
         username = session['usuario']
@@ -2672,7 +2591,7 @@ def listado_tipo_contenido_info_buscar():
 
 
 @app.route("/agregar_tipo_contenido_info")
-@login_requerido  
+@login_requerido
 def formulario_agregar_tipo_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2688,7 +2607,7 @@ def formulario_agregar_tipo_contenido_info():
 
 
 @app.route("/guardar_tipo_contenido_info", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_tipo_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2708,7 +2627,7 @@ def guardar_tipo_contenido_info():
 
 
 @app.route("/actualizar_tipo_contenido_info", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_tipo_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2730,7 +2649,7 @@ def actualizar_tipo_contenido_info():
 
 
 @app.route("/formulario_editar_tipo_contenido_info=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_tipo_contenido_info(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2747,7 +2666,7 @@ def editar_tipo_contenido_info(id):
 
 
 @app.route("/eliminar_tipo_contenido_info", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_tipo_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2769,7 +2688,7 @@ def eliminar_tipo_contenido_info():
 
 
 @app.route("/listado_contenido_info")
-@login_requerido  
+@login_requerido
 def listado_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2787,7 +2706,7 @@ def listado_contenido_info():
 
 
 @app.route("/listado_contenido_info_buscar")
-@login_requerido  
+@login_requerido
 def listado_contenido_info_buscar():
     if 'usuario' in session:
         username = session['usuario']
@@ -2806,7 +2725,7 @@ def listado_contenido_info_buscar():
 
 
 @app.route("/agregar_contenido_info")
-@login_requerido  
+@login_requerido
 def formulario_agregar_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2823,7 +2742,7 @@ def formulario_agregar_contenido_info():
 
 
 @app.route("/guardar_contenido_info", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2843,7 +2762,7 @@ def guardar_contenido_info():
 
 
 @app.route("/actualizar_contenido_info", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2864,7 +2783,7 @@ def actualizar_contenido_info():
 
 
 @app.route("/formulario_editar_contenido_info=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_contenido_info(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2882,7 +2801,7 @@ def editar_contenido_info(id):
 
 
 @app.route("/eliminar_contenido_info", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_contenido_info():
     if 'usuario' in session:
         username = session['usuario']
@@ -2903,7 +2822,7 @@ def eliminar_contenido_info():
 
 
 @app.route("/listado_estado_pedido")
-@login_requerido  
+@login_requerido
 def listado_estado_pedido():
     if 'usuario' in session:
         username = session['usuario']
@@ -2920,7 +2839,7 @@ def listado_estado_pedido():
 
 
 @app.route("/formulario_agregar_estado_pedido")
-@login_requerido  
+@login_requerido
 def formulario_agregar_estado_pedido():
     if 'usuario' in session:
         username = session['usuario']
@@ -2936,7 +2855,7 @@ def formulario_agregar_estado_pedido():
 
 
 @app.route("/guardar_estado_pedido", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_estado_pedido():
     if 'usuario' in session:
         username = session['usuario']
@@ -2954,7 +2873,7 @@ def guardar_estado_pedido():
 
 
 @app.route("/actualizar_estado_pedido", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_estado_pedido():
     if 'usuario' in session:
         username = session['usuario']
@@ -2973,7 +2892,7 @@ def actualizar_estado_pedido():
 
 
 @app.route("/formulario_editar_estado_pedido=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_estado_pedido(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -2990,7 +2909,7 @@ def editar_estado_pedido(id):
 
 
 @app.route("/eliminar_estado_pedido", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_estado_pedido():
     if 'usuario' in session:
         username = session['usuario']
@@ -3011,7 +2930,7 @@ def eliminar_estado_pedido():
 
 
 @app.route("/listado_metodo_pago")
-@login_requerido  
+@login_requerido
 def listado_metodo_pago():
     if 'usuario' in session:
         username = session['usuario']
@@ -3028,7 +2947,7 @@ def listado_metodo_pago():
 
 
 @app.route("/formulario_agregar_metodo_pago")
-@login_requerido  
+@login_requerido
 def formulario_agregar_metodo_pago():
     if 'usuario' in session:
         username = session['usuario']
@@ -3044,7 +2963,7 @@ def formulario_agregar_metodo_pago():
 
 
 @app.route("/guardar_metodo_pago", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_metodo_pago():
     if 'usuario' in session:
         username = session['usuario']
@@ -3062,7 +2981,7 @@ def guardar_metodo_pago():
 
 
 @app.route("/actualizar_metodo_pago", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_metodo_pago():
     if 'usuario' in session:
         username = session['usuario']
@@ -3082,7 +3001,7 @@ def actualizar_metodo_pago():
 
 
 @app.route("/formulario_editar_metodo_pago=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_metodo_pago(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -3099,7 +3018,7 @@ def editar_metodo_pago(id):
 
 
 @app.route("/eliminar_metodo_pago", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_metodo_pago():
     if 'usuario' in session:
         username = session['usuario']
@@ -3122,7 +3041,7 @@ def eliminar_metodo_pago():
 
 
 @app.route("/listado_redes_sociales")
-@login_requerido  
+@login_requerido
 def listado_redes_sociales():
     if 'usuario' in session:
         username = session['usuario']
@@ -3236,27 +3155,27 @@ def eliminar_redes_sociales():
 
 
 @app.route("/listado_cupones")
-@login_requerido  
+@login_requerido
 def listado_cupones():
     cupones = controlador_cupon.obtener_cupones()
     return render_template("listado_cupones.html", cupones = cupones)
 
 
 @app.route("/formulario_agregar_cupones")
-@login_requerido  
+@login_requerido
 def formulario_agregar_cupones():
     return render_template("agregar_cupon.html")
 
 
 @app.route("/eliminar_cupones", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_cupones():
     controlador_cupon.eliminar_cupon(request.form["id"])
     return redirect("/listado_cupones")
 
 
 @app.route("/guardar_cupones", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_cupones():
     codigo = request.form["codigo"]
     fecha_ini = request.form["fecha_inicio"]
@@ -3267,14 +3186,14 @@ def guardar_cupones():
 
 
 @app.route("/formulario_editar_cupones=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_cupones(id):
     cupon = controlador_cupon.obtener_cupon_por_id(id)
     return render_template("editar_cupones.html", cupon=cupon)
 
 
 @app.route("/actualizar_cupones", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_cupones():
     id = request.form["id"]
     codigo = request.form["codigo"]
@@ -3374,7 +3293,7 @@ def actualizar_datos_principales():
 
 
 @app.route("/listado_tipos_usuario")
-@login_requerido  
+@login_requerido
 def listado_tipos_usuario():
     if 'usuario' in session:
         username = session['usuario']
@@ -3391,7 +3310,7 @@ def listado_tipos_usuario():
 
 
 @app.route("/agregar_tipo_usuario")
-@login_requerido  
+@login_requerido
 def formulario_agregar_tipo_usuario():
     if 'usuario' in session:
         username = session['usuario']
@@ -3407,7 +3326,7 @@ def formulario_agregar_tipo_usuario():
 
 
 @app.route("/guardar_tipo_usuario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def guardar_tipo_usuario():
     if 'usuario' in session:
         username = session['usuario']
@@ -3429,7 +3348,7 @@ def guardar_tipo_usuario():
 
 
 @app.route("/formulario_editar_tipo_usuario=<int:id>")
-@login_requerido 
+@login_requerido
 def editar_tipo_usuario(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -3446,7 +3365,7 @@ def editar_tipo_usuario(id):
 
 
 @app.route("/actualizar_tipo_usuario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_tipo_usuario():
     if 'usuario' in session:
         username = session['usuario']
@@ -3476,7 +3395,7 @@ def actualizar_tipo_usuario():
 
 
 @app.route("/eliminar_tipo_usuario", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_tipo_usuario():
     if 'usuario' in session:
         username = session['usuario']
@@ -3500,7 +3419,7 @@ def eliminar_tipo_usuario():
 
 
 @app.route("/listado_clientes")
-@login_requerido  
+@login_requerido
 def listado_clientes():
     if 'usuario' in session:
         username = session['usuario']
@@ -3518,7 +3437,7 @@ def listado_clientes():
 
 
 @app.route("/listado_clientes_buscar")
-@login_requerido  
+@login_requerido
 def listado_clientes_buscar():
     if 'usuario' in session:
         username = session['usuario']
@@ -3537,7 +3456,7 @@ def listado_clientes_buscar():
 
 
 @app.route("/ver_cliente=<int:id>")
-@login_requerido  
+@login_requerido
 def ver_cliente(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -3558,7 +3477,7 @@ def ver_cliente(id):
 
 
 @app.route("/formulario_editar_cliente=<int:id>")
-@login_requerido  
+@login_requerido
 def editar_cliente(id):
     if 'usuario' in session:
         username = session['usuario']
@@ -3577,7 +3496,7 @@ def editar_cliente(id):
 
 
 @app.route("/actualizar_cliente", methods=["POST"])
-@login_requerido  
+@login_requerido
 def actualizar_cliente():
     if 'usuario' in session:
         username = session['usuario']
@@ -3612,7 +3531,7 @@ def actualizar_cliente():
 
 
 @app.route("/eliminar_cliente", methods=["POST"])
-@login_requerido  
+@login_requerido
 def eliminar_cliente():
     if 'usuario' in session:
         username = session['usuario']
@@ -3668,10 +3587,10 @@ def registrar_cliente():
         )
 
         if result == 1:
-            
+
             usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_email(correo)
-            user_id = usuario[0] 
-            
+            user_id = usuario[0]
+
             session['username'] = correo
             session['id'] = user_id
             resp = make_response(redirect(f"/perfil={user_id}"))
@@ -3699,7 +3618,7 @@ def login():
     email = request.form.get('email-login')
     password = request.form.get('password-login')
     user = controlador_usuario_cliente.obtener_usuario_cliente_por_email(email)
-    
+
     # if user and user[2]==epassword:
     #     session['username']=email
     #     resp=make_response(redirect("/"))
@@ -3710,7 +3629,7 @@ def login():
         if user[2] == epassword:
             session['id'] = user[0]
             session['username'] = email
-
+            session['tipo_usuarioid'] = controlador_usuario_admin.obtenerTipoU(email)
             resp = make_response(redirect("/"))
             resp.set_cookie('username', email)
             return resp
@@ -3722,11 +3641,11 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.clear() 
-    
+    session.clear()
+
     resp = make_response(redirect('/'))
-    
-    resp.delete_cookie('username') 
+
+    resp.delete_cookie('username')
 
     return resp
 
@@ -3737,30 +3656,63 @@ def cambiar_contrasenia_cliente():
     user_id = session.get('id')
     usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
     img = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
-    
+
     if request.method == 'POST':
         current_password = request.form['current-password']
         new_password = request.form['new-password']
         confirm_password = request.form['confirm-password']
-        
+
         if new_password != confirm_password:
             error_message = "Las contraseñas no coinciden."
             return render_template('cambiarContraseñaCliente.html', error_message=error_message, user_id=user_id, usuario=usuario, img=img)
 
-        if usuario and usuario[9] == encstringsha256(current_password): 
+        if usuario and usuario[9] == encstringsha256(current_password):
             controlador_usuario_cliente.cambiar_contrasenia(user_id, encstringsha256(new_password))
-            
+
             session.clear()
-            
-            resp = make_response(redirect('/iniciar_sesion'))  
-            resp.delete_cookie('username') 
-            return resp  
+
+            resp = make_response(redirect('/iniciar_sesion'))
+            resp.delete_cookie('username')
+            return resp
 
         else:
             error_message = "La contraseña actual es incorrecta."
             return render_template('cambiarContraseñaCliente.html', error_message=error_message, user_id=user_id, usuario=usuario, img=img)
 
     return render_template('cambiarContraseñaCliente.html', user_id=user_id, usuario=usuario, img=img)
+
+### Para admin
+
+@app.route('/cambiar_contrasenia_administrador', methods=['GET', 'POST'])
+def cambiar_contrasenia_administrador():
+    user_id = session.get('id')  # ID del administrador desde la sesión
+    usuario = controlador_usuario_admin.obtener_usuario_por_id(user_id)  # Obtener datos del administrador
+
+    if request.method == 'POST':
+        current_password = request.form['current_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+
+        if new_password != confirm_password:
+            error_message = "Las contraseñas no coinciden."
+            return render_template('cuenta_administrativa.html', error_message=error_message, usuario=usuario)
+
+        # Validar contraseña actual
+        if usuario and usuario[9] == encstringsha256(current_password):
+            # Cambiar contraseña
+            controlador_usuario_admin.cambiar_contrasenia(user_id, encstringsha256(new_password))
+            session.clear()  # Limpiar sesión después del cambio de contraseña
+            resp = make_response(redirect('/cuenta_administrativa'))
+            resp.delete_cookie('username')
+            return resp
+        else:
+            error_message = "La contraseña actual es incorrecta."
+            return render_template('cuenta_administrativa.html', error_message=error_message, usuario=usuario)
+
+    return render_template('cuenta_administrativa.html', usuario=usuario)
+
+
+
 
 
 ##################################### PARA PERFIL #################################################
@@ -3773,14 +3725,14 @@ def perfil(user_id):
         return render_template('perfil.html', user_id=user_id,usuario=usuario,img=img )
     else:
         return redirect('/iniciar_sesion')
-    
+
 @app.route("/pedidos=<int:user_id>")
 def pedidos(user_id):
     usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
     img = controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
     pedidos = controlador_pedido.obtener_listado_pedidos_usuario_fecha_id(user_id)
     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
-    
+
     return render_template("misPedidos.html", user_id=user_id, usuario=usuario, img=img , pedidos = pedidos , metodos = metodos)
 
 
@@ -3798,7 +3750,7 @@ def ver_detalle_pedido(id):
 # def detalle_pedido_perfil(user_id):
 #     usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
 #     pedidos = controlador_pedido.obtener_pedidos_usuario(user_id)
-#     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()  
+#     metodos = controlador_metodo_pago.obtener_listado_metodo_pago()
 #     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
 
 
@@ -3807,29 +3759,29 @@ def lista_deseos(user_id):
     usuario=controlador_usuario_cliente.obtener_usuario_cliente_por_id(user_id)
     img=controlador_usuario_cliente.obtener_imagen_usuario_cliente_id(user_id)
     lista=controlador_lista_deseos.obtenerListaDeseosConImagen(user_id)
-    return render_template("listaDeseos.html",user_id=user_id,usuario=usuario,img=img, lista=lista )   
-    
+    return render_template("listaDeseos.html",user_id=user_id,usuario=usuario,img=img, lista=lista )
+
 
 @app.route('/agregar_a_lista_deseos', methods=['POST'])
 def agregar_a_lista_deseos():
     usuario_id = session.get('id')
-    
+
     if not usuario_id:
         return render_template('iniciar_sesion.html', mostrar_modal=True, mensaje_modal="Regístrese para agregar a la lista de deseos")
 
     producto_id = request.form['producto_id']
-    
+
     controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
-    
+
     return '', 204
-   
-    
+
+
 @app.route("/insertar_imagen_usuario", methods=['POST'])
 def imagen_usuario():
     if 'imagen' not in request.files:
         flash('No se seleccionó ninguna imagen.', 'error')
         return redirect(url_for('perfil', user_id=session.get('id')))
-    
+
     imagen = request.files["imagen"]
     if imagen.filename == '':
         flash('No se seleccionó ninguna imagen.', 'error')
@@ -3858,11 +3810,11 @@ def confirmar_compra():
 
     subtotal = 0
     productos_carrito = controlador_detalle.obtener_Detalle_por_Id_pedido(pedido_id)
-    
+
     for producto in productos_carrito:
-        cantidad = producto[3]  
+        cantidad = producto[3]
         precio_unitario = producto[2]
-        producto_id = producto[4]  
+        producto_id = producto[4]
         total_producto = cantidad * precio_unitario
         controlador_detalle.reducir_detalle(producto_id, cantidad)
         subtotal += total_producto
@@ -3913,11 +3865,11 @@ def detalle_pedido(id):
 @app.route("/eliminar_detalle_pedido", methods=["POST"])
 def eliminar_detalle_pedido():
     producto_id = request.form["producto_id"]
-    pedido_id = request.form["pedido_id"]  
+    pedido_id = request.form["pedido_id"]
     controlador_detalle.eliminar_detalle(producto_id, pedido_id)
-    
+
     existencia=controlador_detalle.obtener_Detalle_por_Id_pedido(pedido_id)
-    
+
     if existencia and len(existencia) > 0:
         return render_template('listado_detalle_pedido.html',id=pedido_id)
     else:
@@ -3928,7 +3880,7 @@ def eliminar_detalle_pedido():
 @app.route("/editar_detalle=<int:producto_id>&editar_detalle=<int:pedido_id>", methods=["GET", "POST"])
 def editar_detalle(producto_id, pedido_id):
     detalle = controlador_detalle.obtener_detalle_por_ids(producto_id, pedido_id)
-    
+
     productos =controlador_detalle.obtenerProductos()
 
     return render_template("editar_detalle.html", detalle=detalle, productos=productos, producto_id=producto_id, pedido_id=pedido_id)
@@ -3939,9 +3891,9 @@ def actualizar_detalle_pedido():
     producto_id = request.form["producto_id"]
     pedido_id = request.form["pedido_id"]
     cantidad = request.form["cantidad"]
-        
+
     controlador_detalle.editar_detalle(producto_id, pedido_id, cantidad)
-        
+
     return redirect(url_for('detalle_pedido', id=pedido_id))
 
 
@@ -3979,7 +3931,7 @@ def api_guardar_marca():
 
         # Llamar al método del controlador para insertar la marca
         controlador_marcas.insertar_marca(marca)
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["message"] = "Marca registrada con éxito"
         dictRespuesta["data"] = {"id": marca.id, "marca": marca.marca}  # Devuelvo el id y el nombre de la marca
@@ -4018,11 +3970,11 @@ def api_listado_marcas():
                 "novedades": marca[7]
             }
             dictRespuesta["data"]["marcas"].append(marca_data)
-        
+
         dictRespuesta["data"]["total_marcas"] = len(marcas)
-        
+
         return jsonify(dictRespuesta)
-    
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["message"] = f"Error al obtener el listado de marcas: {str(e)}"
@@ -4031,7 +3983,7 @@ def api_listado_marcas():
 import base64
 
 @app.route("/api_listar_marca", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_marca_por_id():
     dictRespuesta = {}
     try:
@@ -4045,15 +3997,15 @@ def api_marca_por_id():
             dictRespuesta["message"] = "ID no proporcionado"
             dictRespuesta["data"] = {}
             return jsonify(dictRespuesta)
-        
+
         # Llamamos a la función para obtener la marca por ID
         marca = controlador_marcas.obtener_marca_por_id(id)
-        
+
         if marca:
             # Convertir los campos binarios (si existen) en base64
             logo_base64 = base64.b64encode(marca[2]).decode('utf-8') if marca[2] else None
             banner_base64 = base64.b64encode(marca[3]).decode('utf-8') if marca[3] else None
-            
+
             dictRespuesta["status"] = 1
             dictRespuesta["message"] = "Marca obtenida correctamente"
             dictRespuesta["data"] = {
@@ -4069,7 +4021,7 @@ def api_marca_por_id():
             dictRespuesta["data"] = {}
 
         return jsonify(dictRespuesta)
-    
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["message"] = f"Error al obtener la marca: {str(e)}"
@@ -4140,10 +4092,10 @@ def api_listado_productos():
             cantidad_caracteristicas = producto[10]
             marca = producto[11]
             subcategoria = producto[12]
-            
+
             if isinstance(fecha_registro, int):
                 fecha_registro = datetime.fromtimestamp(fecha_registro)
-            
+
             productos_formateados.append({
                 "idproducto": id_producto,
                 "nombre": nombre_producto,
@@ -4164,14 +4116,14 @@ def api_listado_productos():
         dictRespuesta["data"] = productos_formateados
         dictRespuesta["message"] = "Productos obtenidos correctamente"
         return jsonify(dictRespuesta)
-    
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al obtener el listado de productos: {str(e)}"
         return jsonify(dictRespuesta)
 
 @app.route("/api_guardar_producto", methods=["POST"])
-# @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
+@jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
 def api_guardar_producto():
     dictRespuesta = {}
     try:
@@ -4187,7 +4139,7 @@ def api_guardar_producto():
 
         # Llamar a la función para insertar el producto y obtener su id
         id_producto = controlador_productos.insertar_producto(
-            nombre, price_regular, precio_online, precio_oferta, 
+            nombre, price_regular, precio_online, precio_oferta,
             info_adicional, stock, marcaid, subcategoriaid
         )
 
@@ -4203,7 +4155,7 @@ def api_guardar_producto():
 
 
 @app.route("/api_eliminar_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_producto():
     dictRespuesta = {}
     try:
@@ -4220,7 +4172,7 @@ def api_eliminar_producto():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_producto():
     dictRespuesta = {}
     try:
@@ -4245,11 +4197,11 @@ def api_actualizar_producto():
             p_USUARIOid=None,     # No es necesario para este contexto
             p_ESTADO_PEDIDOid=None  # No es necesario para este contexto
         )
-        
+
         # Pasar los datos del objeto a la función de actualización
         controlador_productos.actualizar_producto(
-            nombre, price_regular, precio_online, precio_oferta, 
-            info_adicional, stock, disponibilidad, marcaid, 
+            nombre, price_regular, precio_online, precio_oferta,
+            info_adicional, stock, disponibilidad, marcaid,
             subcategoriaid, producto.id  # Usar el id del objeto
         )
 
@@ -4264,16 +4216,16 @@ def api_actualizar_producto():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_listar_producto():
     dictRespuesta = {}
     try:
         # Obtener el ID del producto desde el JSON
         id_producto = request.json["id"]
-        
+
         # Llamar al controlador para obtener los detalles del producto por ID
         producto = controlador_productos.obtener_por_id(id_producto)
-        
+
         if producto:
             # Si el producto existe, devolver los datos en formato JSON
             dictRespuesta["status"] = 1
@@ -4294,9 +4246,9 @@ def api_listar_producto():
             # Si no se encuentra el producto
             dictRespuesta["status"] = -1
             dictRespuesta["mensaje"] = "Producto no encontrado"
-        
+
         return jsonify(dictRespuesta)
-    
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al obtener el producto: {str(e)}"
@@ -4307,7 +4259,7 @@ def api_listar_producto():
 #############SUBCATEGORIA#############
 
 @app.route("/api_listado_subcategorias")
-# @jwt_required()
+@jwt_required()
 def api_listado_subcategorias():
     dictRespuesta = {}
     try:
@@ -4351,7 +4303,7 @@ def api_listado_subcategorias():
 
 
 @app.route("/api_guardar_subcategoria", methods=["POST"])
-# @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
+@jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
 def api_guardar_subcategoria():
     dictRespuesta = {}
     try:
@@ -4371,9 +4323,9 @@ def api_guardar_subcategoria():
         )
 
         id_sub = controlador_subcategorias.insertar_subcategoria_api(
-            subcategoria.subcategoria, 
-            subcategoria.faicon_subcat, 
-            subcategoria.disponibilidad, 
+            subcategoria.subcategoria,
+            subcategoria.faicon_subcat,
+            subcategoria.disponibilidad,
             subcategoria.CATEGORIAid
         )
 
@@ -4396,7 +4348,7 @@ def api_guardar_subcategoria():
 
 
 @app.route("/api_eliminar_subcategoria", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_subcategoria():
     dictRespuesta = {}
     try:
@@ -4413,7 +4365,7 @@ def api_eliminar_subcategoria():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_subcategoria", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_subcategoria():
     dictRespuesta = {}
     try:
@@ -4448,9 +4400,9 @@ def api_actualizar_subcategoria():
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al actualizar la subcategoría: {str(e)}"
         return jsonify(dictRespuesta)
-    
+
 @app.route("/api_listar_subcategoria", methods=["POST"])
-# @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
+@jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
 def api_listar_subcategoria():
     dictRespuesta = {}
     try:
@@ -4492,14 +4444,14 @@ def api_listar_subcategoria():
 
 ###################APIs CATEGORIA###############
 @app.route("/api_guardar_categoria", methods=["POST"])
-# @jwt_required()  # Descomentar si necesitas autenticación
+@jwt_required()  # Descomentar si necesitas autenticación
 def api_guardar_categoria():
     dictRespuesta = {}
     try:
         categoria = request.json["categoria"]
         faicon_cat = request.json["faicon_cat"]
         disponibilidad = request.json["disponibilidad"]
-        
+
         categoria_obj = clsCategoria(None, categoria, faicon_cat, disponibilidad)
 
         id_categoria = controlador_categorias.insertar_categoria_api(
@@ -4521,14 +4473,14 @@ def api_guardar_categoria():
 
 
 @app.route("/api_listado_categorias")
-# @jwt_required()
+@jwt_required()
 def api_listado_categorias():
     dictRespuesta = {}
     try:
         categorias = controlador_categorias.obtener_listado_categorias()
 
         categorias_procesadas = []
-    
+
         for categoria in categorias:
             id_categoria = categoria[0]
             nombre_categoria = categoria[1]
@@ -4553,7 +4505,7 @@ def api_listado_categorias():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_categoria", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_categoria():
     id_categoria = request.json["id"]
     dictRespuesta = {}
@@ -4568,7 +4520,7 @@ def api_eliminar_categoria():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_categoria", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_categoria():
     dictRespuesta = {}
     try:
@@ -4602,16 +4554,16 @@ def api_actualizar_categoria():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_categoria", methods=["POST"])
-# @jwt_required()  # Si es necesario autenticación, puedes dejarlo habilitado
+@jwt_required()  # Si es necesario autenticación, puedes dejarlo habilitado
 def api_listar_categoria():
     dictRespuesta = {}
     try:
         # Obtener el id de la categoría desde el cuerpo del JSON
         id_categoria = request.json["id"]
-        
+
         # Llamar a la función para obtener la categoría desde la base de datos
         categoria_data = controlador_categorias.obtener_categoria_por_id(id_categoria)
-        
+
         if categoria_data:
             # Crear una instancia de la clase Categoria usando los datos obtenidos
             categoria = clsCategoria(
@@ -4620,7 +4572,7 @@ def api_listar_categoria():
                 p_faicon_cat=categoria_data[2],
                 p_disponibilidad=categoria_data[3]
             )
-            
+
             dictRespuesta["status"] = 1
             dictRespuesta["mensaje"] = "Categoría encontrada"
             dictRespuesta["data"] = {
@@ -4629,7 +4581,7 @@ def api_listar_categoria():
                 "faicon_cat": categoria.faicon_cat,
                 "disponibilidad": categoria.disponibilidad
             }
-        
+
         else:
             dictRespuesta["status"] = -1
             dictRespuesta["mensaje"] = "Categoría no encontrada"
@@ -4641,10 +4593,10 @@ def api_listar_categoria():
         dictRespuesta["mensaje"] = f"Error al obtener la categoría: {str(e)}"
         return jsonify(dictRespuesta)
 
-    
+
 ################APIs USUARIOS###########
 @app.route("/api_guardar_usuario_cliente", methods=["POST"])
-# @jwt_required()  # Descomentar si necesitas autenticación
+@jwt_required()  # Descomentar si necesitas autenticación
 def api_guardar_usuario():
     dictRespuesta = {}
     try:
@@ -4694,14 +4646,14 @@ def api_guardar_usuario():
 
 
 @app.route("/api_listado_usuarios_clientes")
-# @jwt_required()
+@jwt_required()
 def api_listado_usuarios_clientes():
     dictRespuesta = {}
     try:
         usuarios = controlador_usuario_cliente.obtener_listado_usuarios_clientes()
 
         usuarios_procesados = []
-        
+
         for usuario in usuarios:
             id_usuario = usuario[0]
             nombres = usuario[1]
@@ -4764,7 +4716,7 @@ def api_listado_usuarios_clientes():
 
 
 @app.route("/api_eliminar_usuario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_usuario():
     id_usuario = request.json["id"]
     dictRespuesta = {}
@@ -4779,7 +4731,7 @@ def api_eliminar_usuario():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_usuario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_usuario():
     dictRespuesta = {}
     try:
@@ -4822,7 +4774,7 @@ def api_actualizar_usuario():
         return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_usuario_cliente", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_usuario_cliente():
     dictRespuesta = {}
     try:
@@ -4871,7 +4823,7 @@ def api_obtener_usuario_cliente():
 
 ###########################COMENTARIOS###############################
 @app.route("/api_guardar_comentario", methods=["POST"])
-# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+@jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_guardar_comentario():
     nombres = request.json["nombres"]
     apellidos = request.json["apellidos"]
@@ -4881,9 +4833,9 @@ def api_guardar_comentario():
     estado = request.json["estado"]
     motivo_comentarioid = request.json["motivo_comentarioid"]
     usuarioid = request.json.get("usuarioid")  # Opcional
-    
+
     dictRespuesta = {}
-    
+
     # Crear objeto Comentario
     comentario = clsComentario(
         p_id=None,  # El ID es auto-incremental, no lo pasamos
@@ -4897,7 +4849,7 @@ def api_guardar_comentario():
         p_MOTIVO_COMENTARIOid=motivo_comentarioid,
         p_USUARIOid=usuarioid
     )
-    
+
     try:
         # Extraer los atributos directamente del objeto Comentario y pasarlos a la función de inserción
         controlador_comentario.insertar_comentario(
@@ -4910,7 +4862,7 @@ def api_guardar_comentario():
             comentario.MOTIVO_COMENTARIOid,
             comentario.USUARIOid
         )
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Comentario registrado con éxito"
         return jsonify(dictRespuesta)
@@ -4919,17 +4871,17 @@ def api_guardar_comentario():
         dictRespuesta["mensaje"] = f"Error al registrar el comentario: {str(e)}"
         return jsonify(dictRespuesta)
 
-    
+
 
 @app.route("/api_listado_comentarios")
-# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+@jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_listado_comentarios():
     dictRespuesta = {}
-    
+
     try:
-        comentarios = controlador_comentario.obtener_listado_comentarios()  
+        comentarios = controlador_comentario.obtener_listado_comentarios()
         comentarios_procesados = []
-        
+
         for comentario in comentarios:
             id_comentario = comentario[0]
             nombres = comentario[1]
@@ -4964,11 +4916,11 @@ def api_listado_comentarios():
                 "disponibilidad": disponibilidad,
                 "usuarioid": usuarioid
             })
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["data"] = comentarios_procesados
         return jsonify(dictRespuesta)
-    
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al obtener el listado de comentarios: {str(e)}"
@@ -4976,7 +4928,7 @@ def api_listado_comentarios():
 
 
 @app.route("/api_eliminar_comentario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_comentario():
     id_comentario = request.json["id"]
     dictRespuesta = {}
@@ -4991,7 +4943,7 @@ def api_eliminar_comentario():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_comentario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_comentario():
     id_comentario = request.json["id"]
     nombres = request.json["nombres"]
@@ -5002,9 +4954,9 @@ def api_actualizar_comentario():
     estado = request.json["estado"]
     motivo_comentarioid = request.json["motivo_comentarioid"]
     usuarioid = request.json.get("usuarioid")  # Opcional
-    
+
     dictRespuesta = {}
-    
+
     # Crear objeto Comentario con los nuevos datos
     comentario = clsComentario(
         p_id=id_comentario,
@@ -5018,7 +4970,7 @@ def api_actualizar_comentario():
         p_MOTIVO_COMENTARIOid=motivo_comentarioid,
         p_USUARIOid=usuarioid
     )
-    
+
     try:
         # Extraer los atributos directamente del objeto Comentario y pasarlos a la función de actualización
         controlador_comentario.actualizar_comentario(
@@ -5032,7 +4984,7 @@ def api_actualizar_comentario():
             comentario.MOTIVO_COMENTARIOid,
             comentario.USUARIOid
         )
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Comentario actualizado con éxito"
         return jsonify(dictRespuesta)
@@ -5048,7 +5000,7 @@ def api_actualizar_comentario():
 
 ############################APIS PEDIDO#############################
 @app.route("/api_guardar_pedido", methods=["POST"])
-# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+@jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_guardar_pedido():
     # Obtener los datos desde la solicitud
     fecha_compra = request.json["fecha_compra"]
@@ -5056,7 +5008,7 @@ def api_guardar_pedido():
     metodo_pagoid = request.json["metodo_pagoid"]
     usuarioid = request.json["usuarioid"]
     estado_pedidoid = request.json["estado_pedidoid"]
-    
+
     dictRespuesta = {}
 
     try:
@@ -5069,7 +5021,7 @@ def api_guardar_pedido():
             p_USUARIOid=usuarioid,
             p_ESTADO_PEDIDOid=estado_pedidoid
         )
-        
+
         # Llamar al método del controlador para insertar el pedido
         pedido_id = controlador_carrito.insertar_pedido(
             pedido.USUARIOid,
@@ -5081,7 +5033,7 @@ def api_guardar_pedido():
         dictRespuesta["data"] = {"id": pedido_id, "fecha_compra": pedido.fecha_compra}
 
         return jsonify(dictRespuesta)
-    
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al registrar el pedido: {str(e)}"
@@ -5090,7 +5042,7 @@ def api_guardar_pedido():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_pedido", methods=["POST"])
-# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+@jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_actualizar_pedido():
     # Obtener los datos desde la solicitud
     id_pedido = request.json["id"]
@@ -5099,7 +5051,7 @@ def api_actualizar_pedido():
     metodo_pagoid = request.json["metodo_pagoid"]
     usuarioid = request.json["usuarioid"]
     estado_pedidoid = request.json["estado_pedidoid"]
-    
+
     dictRespuesta = {}
 
     try:
@@ -5112,7 +5064,7 @@ def api_actualizar_pedido():
             p_USUARIOid=usuarioid,
             p_ESTADO_PEDIDOid=estado_pedidoid
         )
-        
+
         # Llamar al método del controlador para actualizar el pedido
         controlador_pedido.actualizarPedido(
             pedido.id,
@@ -5128,7 +5080,7 @@ def api_actualizar_pedido():
         dictRespuesta["data"] = {"id": pedido.id, "fecha_compra": pedido.fecha_compra}
 
         return jsonify(dictRespuesta)
-    
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al actualizar el pedido: {str(e)}"
@@ -5138,11 +5090,11 @@ def api_actualizar_pedido():
 
 
 @app.route("/api_eliminar_pedido", methods=["POST"])
-# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+@jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_eliminar_pedido():
     # Obtener el id del pedido desde la solicitud
     id_pedido = request.json["id"]
-    
+
     dictRespuesta = {}
 
     try:
@@ -5154,7 +5106,7 @@ def api_eliminar_pedido():
         dictRespuesta["data"] = {"id": id_pedido}
 
         return jsonify(dictRespuesta)
-    
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al eliminar el pedido: {str(e)}"
@@ -5163,7 +5115,7 @@ def api_eliminar_pedido():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_pedidos", methods=["GET"])
-# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+@jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_listar_pedidos():
     dictRespuesta = {}
 
@@ -5201,7 +5153,7 @@ def api_listar_pedidos():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_pedido", methods=["POST"])
-# @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
+@jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
 def api_listar_pedido():
     dictRespuesta = {}
 
@@ -5255,7 +5207,7 @@ def api_listar_pedido():
 
 ##################3APIS DETALLE#############3
 @app.route("/api_obtener_detalles_por_usuario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_detalles_por_usuario():
     dictRespuesta = {}
     try:
@@ -5286,7 +5238,7 @@ def api_obtener_detalles_por_usuario():
         return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_detalles_por_pedido", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_detalles_por_pedido():
     dictRespuesta = {}
     try:
@@ -5317,7 +5269,7 @@ def api_obtener_detalles_por_pedido():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_detalle", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_detalle():
     dictRespuesta = {}
     try:
@@ -5341,7 +5293,7 @@ def api_eliminar_detalle():
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al eliminar detalle: {str(e)}"
         return jsonify(dictRespuesta)
-    
+
 @app.route("/api_editar_detalle", methods=["POST"])
 @jwt_required()
 def api_editar_detalle():
@@ -5390,7 +5342,7 @@ def api_guardar_detalle():
 
 ##################APIS MOTIVO_COMENTARIO###############33
 @app.route("/api_guardar_motivo", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_guardar_motivo():
     dictRespuesta = {}
     try:
@@ -5413,7 +5365,7 @@ def api_guardar_motivo():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_motivo", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_motivo():
     dictRespuesta = {}
     try:
@@ -5436,12 +5388,12 @@ def api_eliminar_motivo():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_motivos", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_listar_motivos():
     dictRespuesta = {}
     try:
         motivos = controlador_motivo_comentario.obtener_listado_motivos()
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Motivos obtenidos con éxito"
         dictRespuesta["data"] = []
@@ -5463,7 +5415,7 @@ def api_listar_motivos():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_motivo_por_id", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_listar_motivo_por_id():
     dictRespuesta = {}
     try:
@@ -5497,7 +5449,7 @@ def api_listar_motivo_por_id():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_motivo", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_motivo():
     dictRespuesta = {}
     try:
@@ -5523,7 +5475,7 @@ def api_actualizar_motivo():
 
 ###############APIS TIPO NOVEDAD############
 @app.route("/api_guardar_tipo_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_guardar_tipo_novedad():
     dictRespuesta = {}
     try:
@@ -5547,7 +5499,7 @@ def api_guardar_tipo_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_tipo_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_tipo_novedad():
     dictRespuesta = {}
     try:
@@ -5572,13 +5524,13 @@ def api_eliminar_tipo_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_tipos_novedad", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_listar_tipos_novedad():
     dictRespuesta = {}
     try:
         # Obtener todos los tipos de novedad
         tipos_novedad = controlador_tipos_novedad.obtener_tipos_novedad()
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Tipos de novedad obtenidos con éxito"
         dictRespuesta["data"] = []
@@ -5599,7 +5551,7 @@ def api_listar_tipos_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_tipo_novedad_por_id", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_listar_tipo_novedad_por_id():
     dictRespuesta = {}
     try:
@@ -5636,7 +5588,7 @@ def api_listar_tipo_novedad_por_id():
 
 
 @app.route("/api_actualizar_tipo_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_tipo_novedad():
     dictRespuesta = {}
     try:
@@ -5666,7 +5618,7 @@ def api_actualizar_tipo_novedad():
 
 #######################APIS NOVEDAD################
 @app.route("/api_guardar_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_guardar_novedad():
     dictRespuesta = {}
     try:
@@ -5698,9 +5650,9 @@ def api_guardar_novedad():
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al guardar la novedad: {str(e)}"
         return jsonify(dictRespuesta)
-    
+
 @app.route("/api_eliminar_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_novedad():
     dictRespuesta = {}
     try:
@@ -5725,7 +5677,7 @@ def api_eliminar_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_novedades", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_listar_novedades():
     dictRespuesta = {}
     try:
@@ -5760,7 +5712,7 @@ def api_listar_novedades():
         return jsonify(dictRespuesta)
 
 @app.route("/api_listar_novedad_por_id", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_listar_novedad_por_id():
     dictRespuesta = {}
     try:
@@ -5778,7 +5730,7 @@ def api_listar_novedad_por_id():
             novedad_obj = clsNovedad(novedad_data[0], novedad_data[1], novedad_data[2], novedad_data[3],
                                   novedad_data[4], novedad_data[5], None, novedad_data[6], novedad_data[7], novedad_data[8],
                                   novedad_data[9])
-            
+
             dictRespuesta["status"] = 1
             dictRespuesta["mensaje"] = "Novedad obtenida con éxito"
             dictRespuesta["data"] = {
@@ -5806,7 +5758,7 @@ def api_listar_novedad_por_id():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_novedad():
     dictRespuesta = {}
     try:
@@ -5845,7 +5797,7 @@ def api_actualizar_novedad():
 
 ########################APIS CARACTERISTICA PRODUCTOS#############
 @app.route("/api_insertar_caracteristica_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_caracteristica_producto():
     dictRespuesta = {}
     try:
@@ -5871,7 +5823,7 @@ def api_insertar_caracteristica_producto():
         return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_caracteristicas_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_caracteristicas_producto():
     dictRespuesta = {}
     try:
@@ -5893,7 +5845,7 @@ def api_obtener_caracteristicas_producto():
 
 
 @app.route("/api_actualizar_caracteristica_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_caracteristica_producto():
     dictRespuesta = {}
     try:
@@ -5919,7 +5871,7 @@ def api_actualizar_caracteristica_producto():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_caracteristica_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_caracteristica_producto():
     dictRespuesta = {}
     try:
@@ -5940,7 +5892,7 @@ def api_eliminar_caracteristica_producto():
         return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_caracteristica_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_caracteristica_producto():
     dictRespuesta = {}
     try:
@@ -5963,7 +5915,7 @@ def api_obtener_caracteristica_producto():
 
 #######################APIS METODO PAGO###################
 @app.route("/api_insertar_metodo_pago", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_metodo_pago():
     dictRespuesta = {}
     try:
@@ -5984,9 +5936,9 @@ def api_insertar_metodo_pago():
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al insertar el método de pago: {str(e)}"
         return jsonify(dictRespuesta)
-    
+
 @app.route("/api_obtener_metodos_pago", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_metodos_pago():
     dictRespuesta = {}
     try:
@@ -6005,7 +5957,7 @@ def api_obtener_metodos_pago():
 
 
 @app.route("/api_obtener_listado_metodos_pago", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_listado_metodos_pago():
     dictRespuesta = {}
     try:
@@ -6024,7 +5976,7 @@ def api_obtener_listado_metodos_pago():
 
 
 @app.route("/api_actualizar_metodo_pago", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_metodo_pago():
     dictRespuesta = {}
     try:
@@ -6047,7 +5999,7 @@ def api_actualizar_metodo_pago():
 
 
 @app.route("/api_eliminar_metodo_pago", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_metodo_pago():
     dictRespuesta = {}
     try:
@@ -6067,7 +6019,7 @@ def api_eliminar_metodo_pago():
         return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_metodo_pago", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_metodo_pago():
     dictRespuesta = {}
     try:
@@ -6079,7 +6031,7 @@ def api_obtener_metodo_pago():
             dictRespuesta["status"] = 0
             dictRespuesta["mensaje"] = "Se requiere el ID del método de pago"
             return jsonify(dictRespuesta)
-        
+
         # Llamar a la función para obtener el método de pago por ID
         metodo_pago = controlador_metodo_pago.obtener_metodo_pago_por_id(id)
 
@@ -6102,7 +6054,7 @@ def api_obtener_metodo_pago():
 
 ####################APIS TIPO IMG  NOVEDAD#######################3
 @app.route("/api_obtener_tipos_img_novedad", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_tipos_img_novedad():
     dictRespuesta = {}
     try:
@@ -6116,7 +6068,7 @@ def api_obtener_tipos_img_novedad():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_tipo_img_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_tipo_img_novedad():
     dictRespuesta = {}
     try:
@@ -6148,7 +6100,7 @@ def api_obtener_tipo_img_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_insertar_tipo_img_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_tipo_img_novedad():
     dictRespuesta = {}
     try:
@@ -6173,10 +6125,10 @@ def api_insertar_tipo_img_novedad():
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al insertar el tipo de imagen de novedad: {str(e)}"
         return jsonify(dictRespuesta)
-    
+
 
 @app.route("/api_actualizar_tipo_img_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_tipo_img_novedad():
     dictRespuesta = {}
     try:
@@ -6204,7 +6156,7 @@ def api_actualizar_tipo_img_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_tipo_img_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_tipo_img_novedad():
     dictRespuesta = {}
     try:
@@ -6233,7 +6185,7 @@ def api_eliminar_tipo_img_novedad():
 
 #####################APIS IMG NOVEDAD#################33
 @app.route("/api_obtener_todas_imagenes_novedad", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_todas_imagenes_novedad():
     dictRespuesta = {}
     try:
@@ -6248,7 +6200,7 @@ def api_obtener_todas_imagenes_novedad():
 
 
 @app.route("/api_obtener_imagen_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_imagen_novedad():
     dictRespuesta = {}
     try:
@@ -6285,7 +6237,7 @@ def api_obtener_imagen_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_insertar_imagen_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_imagen_novedad():
     dictRespuesta = {}
     try:
@@ -6315,7 +6267,7 @@ def api_insertar_imagen_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_imagen_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_imagen_novedad():
     dictRespuesta = {}
     try:
@@ -6342,7 +6294,7 @@ def api_actualizar_imagen_novedad():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_imagen_novedad", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_imagen_novedad():
     dictRespuesta = {}
     try:
@@ -6369,7 +6321,7 @@ def api_eliminar_imagen_novedad():
 
 ##########################APIS ESTADO PEDIDO#########
 @app.route("/api_obtener_estados_pedido", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_estados_pedido():
     dictRespuesta = {}
     try:
@@ -6384,7 +6336,7 @@ def api_obtener_estados_pedido():
 
 
 @app.route("/api_obtener_estado_pedido", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_estado_pedido():
     dictRespuesta = {}
     try:
@@ -6417,7 +6369,7 @@ def api_obtener_estado_pedido():
         return jsonify(dictRespuesta)
 
 @app.route("/api_insertar_estado_pedido", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_estado_pedido():
     dictRespuesta = {}
     try:
@@ -6442,7 +6394,7 @@ def api_insertar_estado_pedido():
 
 
 @app.route("/api_actualizar_estado_pedido", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_estado_pedido():
     dictRespuesta = {}
     try:
@@ -6467,7 +6419,7 @@ def api_actualizar_estado_pedido():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_estado_pedido", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_estado_pedido():
     dictRespuesta = {}
     try:
@@ -6494,7 +6446,7 @@ def api_eliminar_estado_pedido():
 
 ##################APIS TIPO_USUARIO#############
 @app.route("/api_obtener_tipos_usuario", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_tipos_usuario():
     dictRespuesta = {}
     try:
@@ -6508,7 +6460,7 @@ def api_obtener_tipos_usuario():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_tipo_usuario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_tipo_usuario():
     dictRespuesta = {}
     try:
@@ -6544,7 +6496,7 @@ def api_obtener_tipo_usuario():
         return jsonify(dictRespuesta)
 
 @app.route("/api_insertar_tipo_usuario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_tipo_usuario():
     dictRespuesta = {}
     try:
@@ -6570,7 +6522,7 @@ def api_insertar_tipo_usuario():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_tipo_usuario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_tipo_usuario():
     dictRespuesta = {}
     try:
@@ -6598,7 +6550,7 @@ def api_actualizar_tipo_usuario():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_tipo_usuario", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_tipo_usuario():
     dictRespuesta = {}
     try:
@@ -6625,7 +6577,7 @@ def api_eliminar_tipo_usuario():
 
 ########################APIS CARACTERISTICA##############
 @app.route("/api_obtener_caracteristicas", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_caracteristicas():
     dictRespuesta = {}
     try:
@@ -6639,7 +6591,7 @@ def api_obtener_caracteristicas():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_caracteristica", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_caracteristica():
     dictRespuesta = {}
     try:
@@ -6673,7 +6625,7 @@ def api_obtener_caracteristica():
         return jsonify(dictRespuesta)
 
 @app.route("/api_insertar_caracteristica", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_caracteristica():
     dictRespuesta = {}
     try:
@@ -6698,7 +6650,7 @@ def api_insertar_caracteristica():
         return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_caracteristica", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_caracteristica():
     dictRespuesta = {}
     try:
@@ -6724,7 +6676,7 @@ def api_actualizar_caracteristica():
         return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_caracteristica", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_caracteristica():
     dictRespuesta = {}
     try:
@@ -6752,7 +6704,7 @@ def api_eliminar_caracteristica():
 
 ###########################APIS REDES SOCIALES###############33
 @app.route("/api_obtener_redes_sociales", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_redes_sociales():
     dictRespuesta = {}
     try:
@@ -6767,7 +6719,7 @@ def api_obtener_redes_sociales():
 
 
 @app.route("/api_obtener_red_social", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_red_social():
     dictRespuesta = {}
     try:
@@ -6803,7 +6755,7 @@ def api_obtener_red_social():
 
 
 @app.route("/api_insertar_red_social", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_red_social():
     dictRespuesta = {}
     try:
@@ -6819,7 +6771,7 @@ def api_insertar_red_social():
 
         red_id = controlador_redes_sociales.insertar_redes_sociales_api(nomRed, faiconRed, enlace)
         red = clsRedesSociales(red_id, nomRed, faiconRed, enlace)
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Red social insertada con éxito"
         dictRespuesta["data"] = red.__dict__
@@ -6833,7 +6785,7 @@ def api_insertar_red_social():
 
 
 @app.route("/api_actualizar_red_social", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_red_social():
     dictRespuesta = {}
     try:
@@ -6850,7 +6802,7 @@ def api_actualizar_red_social():
 
         controlador_redes_sociales.actualizar_redes_sociales_por_id(nomRed, faiconRed, enlace, red_id)
         red = clsRedesSociales(red_id, nomRed, faiconRed, enlace)
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Red social actualizada con éxito"
         dictRespuesta["data"] = red.__dict__
@@ -6864,7 +6816,7 @@ def api_actualizar_red_social():
 
 
 @app.route("/api_eliminar_red_social", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_red_social():
     dictRespuesta = {}
     try:
@@ -6886,12 +6838,12 @@ def api_eliminar_red_social():
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al eliminar la red social: {str(e)}"
         return jsonify(dictRespuesta)
-    
+
 #######################FIN APIS REDES SOCIALES################
 
 ##########################APIS INFORMACION DOMUS#################
 @app.route("/api_obtener_informacion_domus", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_informacion_domus():
     dictRespuesta = {}
     try:
@@ -6921,7 +6873,7 @@ def api_obtener_informacion_domus():
 
 
 @app.route("/api_obtener_informacion_domus_por_id", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_informacion_domus_por_id():
     dictRespuesta = {}
     try:
@@ -6959,7 +6911,7 @@ def api_obtener_informacion_domus_por_id():
 
 
 @app.route("/api_actualizar_informacion_domus", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_informacion_domus():
     dictRespuesta = {}
     try:
@@ -6998,7 +6950,7 @@ def api_actualizar_informacion_domus():
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al actualizar la información: {str(e)}"
-    
+
     return jsonify(dictRespuesta)
 
 #####################FIN APIS INFORMACION DOMUS#################
@@ -7006,7 +6958,7 @@ def api_actualizar_informacion_domus():
 ##################APIS tipo_contenido##########3
 
 @app.route("/api_insertar_tipo_contenido_info", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -7031,13 +6983,13 @@ def api_insertar_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_tipo_contenido_info", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_tipo_contenido_info():
     dictRespuesta = {}
     try:
         # Obtener los datos desde la base de datos
         tipo_contenidos = controlador_contenido_info.obtener_datos_contenido_info()
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Tipos de contenido obtenidos con éxito"
         dictRespuesta["data"] = tipo_contenidos
@@ -7047,7 +6999,7 @@ def api_obtener_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_tipo_contenido_info_por_id", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_tipo_contenido_info_por_id():
     dictRespuesta = {}
     try:
@@ -7075,7 +7027,7 @@ def api_obtener_tipo_contenido_info_por_id():
     return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_tipo_contenido_info", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -7102,7 +7054,7 @@ def api_actualizar_tipo_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_tipo_contenido_info", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_tipo_contenido_info():
     dictRespuesta = {}
     try:
@@ -7128,7 +7080,7 @@ def api_eliminar_tipo_contenido_info():
 
 #######################APIS CONTENIDO INFO###############
 @app.route("/api_insertar_contenido_info", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_contenido_info():
     dictRespuesta = {}
     try:
@@ -7153,13 +7105,13 @@ def api_insertar_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_contenido_info", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_contenido_info():
     dictRespuesta = {}
     try:
         # Obtener los datos desde la base de datos
         contenidos = controlador_contenido_info.obtener_datos_contenido_info()
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Contenidos obtenidos con éxito"
         dictRespuesta["data"] = contenidos
@@ -7169,7 +7121,7 @@ def api_obtener_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_contenido_info_por_id", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_contenido_info_por_id():
     dictRespuesta = {}
     try:
@@ -7203,7 +7155,7 @@ def api_obtener_contenido_info_por_id():
     return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_contenido_info", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_contenido_info():
     dictRespuesta = {}
     try:
@@ -7229,7 +7181,7 @@ def api_actualizar_contenido_info():
     return jsonify(dictRespuesta)
 
 @app.route("/api_eliminar_contenido_info", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_contenido_info():
     dictRespuesta = {}
     try:
@@ -7257,7 +7209,7 @@ def api_eliminar_contenido_info():
 
 #######################APIS CUPONES##############
 @app.route("/api_insertar_cupon", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_cupon():
     dictRespuesta = {}
     try:
@@ -7286,13 +7238,13 @@ def api_insertar_cupon():
     return jsonify(dictRespuesta)
 
 @app.route("/api_obtener_cupones", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_cupones():
     dictRespuesta = {}
     try:
         # Obtener todos los cupones
         cupones = controlador_cupon.obtener_cupones()
-        
+
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Cupones obtenidos con éxito"
         dictRespuesta["data"] = cupones
@@ -7303,7 +7255,7 @@ def api_obtener_cupones():
 
 
 @app.route("/api_obtener_cupon_por_id", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_cupon_por_id():
     dictRespuesta = {}
     try:
@@ -7341,7 +7293,7 @@ def api_obtener_cupon_por_id():
 
 
 @app.route("/api_actualizar_cupon", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_cupon():
     dictRespuesta = {}
     try:
@@ -7373,7 +7325,7 @@ def api_actualizar_cupon():
 
 
 @app.route("/api_eliminar_cupon", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_cupon():
     dictRespuesta = {}
     try:
@@ -7401,7 +7353,7 @@ def api_eliminar_cupon():
 ######################APIS IMG_PRODUCTO#####################
 
 @app.route("/api_insertar_img_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_insertar_img_producto():
     dictRespuesta = {}
     try:
@@ -7431,7 +7383,7 @@ def api_insertar_img_producto():
 
 
 @app.route("/api_obtener_imagenes_por_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_imagenes_por_producto():
     dictRespuesta = {}
     try:
@@ -7456,7 +7408,7 @@ def api_obtener_imagenes_por_producto():
 
 
 @app.route("/api_obtener_imagen_por_id", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_imagen_por_id():
     dictRespuesta = {}
     try:
@@ -7488,11 +7440,11 @@ def api_obtener_imagen_por_id():
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al obtener imagen de producto: {str(e)}"
-    
+
     return jsonify(dictRespuesta)
 
 @app.route("/api_actualizar_img_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_actualizar_img_producto():
     dictRespuesta = {}
     try:
@@ -7523,12 +7475,12 @@ def api_actualizar_img_producto():
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al actualizar imagen de producto: {str(e)}"
-    
+
     return jsonify(dictRespuesta)
 
 
 @app.route("/api_eliminar_img_producto", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_eliminar_img_producto():
     dictRespuesta = {}
     try:
@@ -7555,7 +7507,7 @@ def api_eliminar_img_producto():
 
 #######################APIS LISTA DESEOS#################
 @app.route("/api_obtener_lista_deseos", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_obtener_lista_deseos():
     dictRespuesta = {}
     try:
@@ -7585,11 +7537,11 @@ def api_obtener_lista_deseos():
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al obtener la lista de deseos: {str(e)}"
-    
+
     return jsonify(dictRespuesta)
 
 @app.route("/api_agregar_quitar_lista_deseos", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def api_agregar_quitar_lista_deseos():
     dictRespuesta = {}
     try:
@@ -7602,16 +7554,16 @@ def api_agregar_quitar_lista_deseos():
             dictRespuesta["status"] = 0
             dictRespuesta["mensaje"] = "Faltan campos requeridos (usuarioid, productoid)"
             return jsonify(dictRespuesta)
-        
+
         controlador_lista_deseos.agregar_a_lista_deseos(usuario_id, producto_id)
 
         dictRespuesta["status"] = 1
         dictRespuesta["mensaje"] = "Producto agregado o quitado de la lista de deseos con éxito"
-        
+
     except Exception as e:
         dictRespuesta["status"] = -1
         dictRespuesta["mensaje"] = f"Error al agregar o quitar producto: {str(e)}"
-    
+
     return jsonify(dictRespuesta)
 
 ################FIN APIS LISTA DESEOS################
