@@ -1,0 +1,5 @@
+__pycache__/
+controladores/__pycache__/
+clases/__pycache__/
+*.pyc
+.venv/
