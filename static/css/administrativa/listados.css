@@ -113,7 +113,6 @@ p {
 
     overflow-x: auto;
     overflow-y: auto; 
-    /* max-height: 425px; */
     max-height: 65vh; 
     width: 74.5vw; 
     position: relative;
@@ -323,31 +322,15 @@ button:hover img {
 }
 
 .table_listado td.opciones_column {
-    /* background-color: #f8f8f8ab; */
     background: linear-gradient(90deg, #fff9f910 0%, #e9e9e9d0 51%);
     border-bottom: 1px solid #c2c2c2;
 }
-
-/* .table_listado td.opciones_column:hover {
-    background-color: inherit;
-} */
 
 .table_listado .opciones_column {
     position: sticky;
     right: 0;
     z-index: 1;
-
-    /* min-width: 100px; */
 }
-
-/* .main_img_celda img{
-    background-color: white;
-} */
-
-/* .main_img_celda img:hover {
-    scale: 4;
-    z-index: 5;
-} */
 
 .table_listado .opciones_fila {
     display: flex;

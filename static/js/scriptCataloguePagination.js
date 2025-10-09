@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const blockContainer = '#gallery_product';
+    const classItem = '.product';
+    const displayItem = 'grid';
     const paginations = document.querySelectorAll(".ctlg_pagination");
-    const galleryItems = document.querySelectorAll(".gallery_product .product");
+    const galleryItems = document.querySelectorAll(`${blockContainer} ${classItem}`);
     const limitPerPage = 24; // Número de elementos por página
     const paginationSize = 5; // Número máximo de elementos en la paginación
     let currentPage = 1;
@@ -38,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Mostrar los elementos de la página actual
         galleryItems.forEach((item, index) => {
             if (index >= (currentPage - 1) * limitPerPage && index < currentPage * limitPerPage) {
-                item.style.display = "grid"; // Usar flex ya que los elementos lo requieren
+                item.style.display = `${displayItem}`; // Usar flex ya que los elementos lo requieren
             } else {
                 item.style.display = "none";
             }
@@ -51,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Agregar botón "Anterior"
             const prev = document.createElement("p");
             prev.className = `page-item previous-page${currentPage === 1 ? " disable" : ""}`;
-            prev.innerHTML = `<a class="page-link" href="#gallery_product"><i class="fa-solid fa-caret-left"></i></a>`;
+            prev.innerHTML = `<a class="page-link" href="${blockContainer}"><i class="fa-solid fa-caret-left"></i></a>`;
             prev.addEventListener("click", () => showPage(currentPage - 1));
             pagination.appendChild(prev);
 
@@ -60,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const pageItem = document.createElement("p");
                 pageItem.className = `page-item ${item ? "current-page" : "dots"}${item === currentPage ? " active" : ""}`;
                 pageItem.innerHTML = item
-                    ? `<a class="page-link" href="#gallery_product">${item}</a>`
+                    ? `<a class="page-link" href="${blockContainer}">${item}</a>`
                     : `<span class="page-link">...</span>`;
                 if (item) {
                     pageItem.addEventListener("click", () => showPage(item));
@@ -71,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Agregar botón "Siguiente"
             const next = document.createElement("p");
             next.className = `page-item next-page${currentPage === totalPages ? " disable" : ""}`;
-            next.innerHTML = `<a class="page-link" href="#gallery_product"><i class="fa-solid fa-caret-right"></i></a>`;
+            next.innerHTML = `<a class="page-link" href="${blockContainer}"><i class="fa-solid fa-caret-right"></i></a>`;
             next.addEventListener("click", () => showPage(currentPage + 1));
             pagination.appendChild(next);
         });

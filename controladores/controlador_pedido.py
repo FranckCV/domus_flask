@@ -192,27 +192,26 @@ def obtener_listado_pedidos_usuario_fecha_id(id):
     pedido=[]
     with conexion.cursor() as cursor:
         cursor.execute('''
-                        SELECT 
-                            P.id,
-                            P.fecha_compra,
-                            P.subtotal,
-                            P.METODO_PAGOid,
-                            CONCAT(u.nombres, ' ' , u.apellidos) as nombre_completo,
-                            P.ESTADO_PEDIDOid,
-                            sum(dpe.cantidad),
-                            met.disponibilidad,
-                            P.usuarioid
-                        FROM pedido P
-                        left join usuario U on U.id = P.USUARIOid
-                        left join detalles_pedido dpe on dpe.pedidoid = P.id
-                        left join producto pr on pr.id = dpe.productoid
-                        left join metodo_pago met on p.METODO_PAGOid = met.id
-                        where P.USUARIOid = '''+str(id)+'''
-                        group by p.id , dpe.pedidoid
-                        order by P.fecha_compra, p.id desc
+                        select
+                    p.id,
+                    p.fecha_compra,
+                    p.subtotal,
+                    p.metodo_pagoid,
+                    concat(u.nombres, ' ' , u.apellidos) as nombre_completo,
+                    p.estado_pedidoid,
+                    sum(dpe.cantidad),
+                    met.disponibilidad,
+                    p.usuarioid
+                from pedido p
+                left join usuario u on u.id = p.usuarioid
+                left join detalles_pedido dpe on dpe.pedidoid = p.id
+                left join producto pr on pr.id = dpe.productoid
+                left join metodo_pago met on p.metodo_pagoid = met.id
+                where p.usuarioid = '''+str(id)+'''
+                group by p.id , dpe.pedidoid
+                order by p.fecha_compra, p.id desc
         ''')
         pedido = cursor.fetchall()
-    
     conexion.close()
     return pedido
 

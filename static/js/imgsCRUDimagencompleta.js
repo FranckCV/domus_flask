@@ -11,11 +11,6 @@ function closeImage() {
   overlay.style.display = 'none';
 }
 
-// document.querySelectorAll('.clickable-image').forEach(image => {
-//   image.addEventListener('click', function() {
-//     openImage(this.src);
-//   });
-// });
 
 document.addEventListener('click', function(event) {
   if (event.target.classList.contains('clickable-image')) {
