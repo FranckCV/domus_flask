@@ -1,0 +1,3477 @@
+{
+	"info": {
+		"_postman_id": "12100da8-acb1-4b3a-81d2-b994cd071668",
+		"name": "APIS_DOMUS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38961297"
+	},
+	"item": [
+		{
+			"name": "APIS_MARCAS",
+			"item": [
+				{
+					"name": "API_GUARDAR_MARCAR",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"marca\": \"Una marca cualquiera\",\r\n    \"img_logo\": \"data:image/png;base64,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\",\r\n    \"img_banner\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_marca",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_marca"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listado_marcas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MzMxMTU5NjYsImlhdCI6MTczMzExNTY2NiwibmJmIjoxNzMzMTE1NjY2LCJpZGVudGl0eSI6N30.Mb56J-N9dnc3mMHtm0Udpf1CwdAeeb0rHyCqC3nTVnU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listado_marcas",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listado_marcas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_marca",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 69\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_marca",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_marca"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_marca",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 68,\r\n    \"marca\": \"Una marca cualquiera modificada\",\r\n    \"img_logo\": \"data:image/png;base64,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\",\r\n    \"img_banner\": null,\r\n    \"disponibilidad\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_marca",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_marca"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_marca",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_marca",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_marca"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_PRODUCTOS",
+			"item": [
+				{
+					"name": "api_listado_productos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MzMxNTUyNzEsImlhdCI6MTczMzE1NDk3MSwibmJmIjoxNzMzMTU0OTcxLCJpZGVudGl0eSI6N30.wGgBaMLxMTpeW97WB06PZ2Hch7lCjSi3XLVeuT4RLLg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listado_productos",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listado_productos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_guardar_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Producto Ejemplo\",\r\n    \"price_regular\": 100.00,\r\n    \"precio_online\": 80.00,\r\n    \"precio_oferta\": 70.00,\r\n    \"info_adicional\": \"Descripción adicional del producto.\",\r\n    \"stock\": 50,\r\n    \"marcaid\": 1,\r\n    \"subcategoriaid\": 3,\r\n    \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":16\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"nombre\": \"Producto Actualizado\",\r\n    \"price_regular\": 120.00,\r\n    \"precio_online\": 100.00,\r\n    \"precio_oferta\": 95.00,\r\n    \"info_adicional\": \"Nuevo detalle del producto\",\r\n    \"stock\": 75,\r\n    \"marcaid\": 2,\r\n    \"subcategoriaid\": 3,\r\n    \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_producto"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_SUBCATEGORIAS",
+			"item": [
+				{
+					"name": "api_listado_subcategorias",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listado_subcategorias",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listado_subcategorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_guardar_subcategoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"subcategoria\": \"Electrodomésticos_pepitos\",\r\n  \"faicon_subcat\": \"fa fa-cogs\",\r\n  \"disponibilidad\": 1,\r\n  \"categoriaid\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_subcategoria",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_subcategoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_subcategoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 63\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_subcategoria",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_subcategoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_subcategoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 61,\r\n    \"subcategoria\": \"Subcategoría Actualizada\",\r\n    \"faicon_subcat\": \"fa-actualizado\",\r\n    \"disponibilidad\": 1,\r\n    \"categoriaid\": 2\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_subcategoria",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_subcategoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_subcategoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":61\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_subcategoria",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_subcategoria"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_CATEGORIAS",
+			"item": [
+				{
+					"name": "api_eliminar_categoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":11\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_categoria",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listado_categorias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listado_categorias",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listado_categorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_guardar_categoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"categoria\": \"Electrónica\",\r\n  \"faicon_cat\": \"fa-tv\",\r\n  \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_categoria",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_categoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"categoria\": \"Electrónica Actualizada\",\r\n    \"faicon_cat\": \"fa-tv-updated\",\r\n    \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_categoria",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_categoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_categoria",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_categoria"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_USUARIOS",
+			"item": [
+				{
+					"name": "api_listado_usuarios_clientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listado_usuarios_clientes",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listado_usuarios_clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_usuario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1,\r\n  \"usuario\": \"ACTUALIZAO PEPO\",\r\n  \"apellidos\": \"González\",\r\n  \"doc_identidad\": \"12345678\",\r\n  \"img_usuario\": \"juanperez.jpg\",\r\n  \"genero\": \"M\",\r\n  \"fecha_nacimiento\": \"1990-05-15\",\r\n  \"telefono\": \"987654321\",\r\n  \"correo\": \"juanperez@example.com\",\r\n  \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_usuario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_guardar_usuario_cliente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"usuario\": \"Juan Pérez\",\r\n    \"doc_identidad\": \"11011114\",\r\n    \"img_usuario\": \"url_de_imagen_o_base64\",  // Este campo es opcional\r\n    \"genero\": \"M\",\r\n    \"fecha_nacimiento\": \"1990-05-15\",\r\n    \"telefono\": \"987654321\",\r\n    \"correo\": \"juan.perez@exame.com\",\r\n    \"contrasenia\": \"contrasena123\",\r\n    \"disponibilidad\": 1,\r\n    \"tipo_usuarioid\": 2\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_usuario_cliente",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_usuario_cliente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_usuario_cliente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_usuario_cliente",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_usuario_cliente"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_COMENTARIOS",
+			"item": [
+				{
+					"name": "api_actualizar_comentario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1,\r\n  \"nombres\": \"Juan\",\r\n  \"apellidos\": \"Pérez\",\r\n  \"email\": \"juan.perez@example.com\",\r\n  \"celular\": \"987654321\",\r\n  \"mensaje\": \"Este es un mensaje actualizado.\",\r\n  \"estado\": 1,\r\n  \"motivo_comentarioid\": 2,\r\n  \"usuarioid\": 10\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_comentario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_comentario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_guardar_comentario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombres\": \"Juan\",\r\n  \"apellidos\": \"Pérez\",\r\n  \"email\": \"juan.perez@example.com\",\r\n  \"celular\": \"987654321\",\r\n  \"mensaje\": \"Este es un comentario de prueba\",\r\n  \"estado\": 1,\r\n  \"motivo_comentarioid\": 2,\r\n  \"usuarioid\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_comentario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_comentario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listado_comentarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listado_comentarios",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listado_comentarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_comentario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_comentario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_comentario"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_PEDIDOS",
+			"item": [
+				{
+					"name": "api_guardar_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fecha_compra\": \"2024-12-05\",\r\n  \"subtotal\": 100.50,\r\n  \"metodo_pagoid\": 1,\r\n  \"usuarioid\": 1,\r\n  \"estado_pedidoid\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 4,\r\n  \"fecha_compra\": \"2024-12-06\",\r\n  \"subtotal\": 120.75,\r\n  \"metodo_pagoid\": 2,\r\n  \"usuarioid\": 1,\r\n  \"estado_pedidoid\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 4\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_pedidos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_pedidos",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_pedidos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_pedido"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_DETALLE",
+			"item": [
+				{
+					"name": "api_obtener_detalles_por_usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_detalles_por_usuario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_detalles_por_usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_detalles_por_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_detalles_por_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_detalles_por_pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_detalle",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"producto_id\":1,\r\n    \"pedido_id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_detalle",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_detalle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_guardar_detalle",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"producto_id\": 1,\r\n  \"pedido_id\": 1,\r\n  \"cantidad\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_detalle",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_detalle"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_MOTIVO_COMENTARIO",
+			"item": [
+				{
+					"name": "api_guardar_motivo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"motivo\": \"Consulta\",\r\n  \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_motivo",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_motivo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_motivo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_motivo",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_motivo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_motivos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_motivos",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_motivos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_motivo_por_id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_motivo_por_id",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_motivo_por_id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_motivo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 5,\r\n  \"motivo\": \"Reclamación ACT\",\r\n  \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_motivo",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_motivo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_TIPO_NOVEDAD",
+			"item": [
+				{
+					"name": "api_guardar_tipo_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nomTipo\": \"Reclamo\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_tipo_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_tipo_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_tipo_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 4\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_tipo_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_tipo_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_tipos_novedad",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_tipos_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_tipos_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_tipo_novedad_por_id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_tipo_novedad_por_id",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_tipo_novedad_por_id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_tipo_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 5,\r\n  \"nomTipo\": \"Reclamo Resuelto 12\",\r\n  \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_tipo_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_tipo_novedad"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_NOVEDAD",
+			"item": [
+				{
+					"name": "api_guardar_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Novedad de prueba\",\r\n  \"titulo\": \"Titulo de prueba\",\r\n  \"fecha_inicio\": \"2024-12-06\",\r\n  \"fecha_vencimiento\": \"2024-12-20\",\r\n  \"terminos\": \"Términos y condiciones de prueba\",\r\n  \"marcaId\": 1,\r\n  \"subcategoriaId\": 2,\r\n  \"tipoNovedadId\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_guardar_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_guardar_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":8\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_novedades",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_novedades",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_novedades"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_listar_novedad_por_id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_listar_novedad_por_id",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_listar_novedad_por_id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 9,\r\n  \"nombre\": \"Novedad actualizada\",\r\n  \"titulo\": \"Titulo actualizado\",\r\n  \"fecha_inicio\": \"2024-12-10\",\r\n  \"fecha_vencimiento\": \"2024-12-30\",\r\n  \"terminos\": \"Términos actualizados\",\r\n  \"disponibilidad\": 1,\r\n  \"marcaId\": 1,\r\n  \"subcategoriaId\": 2,\r\n  \"tipoNovedadId\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_novedad"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_CARACTERISTICA_PRODUCTO",
+			"item": [
+				{
+					"name": "api_insertar_caracteristica_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"caracteristicaId\": 1,\r\n  \"productoId\": 2,\r\n  \"valor\": \"Rojo\",\r\n  \"principal\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_caracteristica_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_caracteristica_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_caracteristicas_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_caracteristicas_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_caracteristicas_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_caracteristica_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"caracteristicaId\": 1,\r\n  \"productoId\": 2,\r\n  \"valor\": \"Azul\",\r\n  \"principal\": 0\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_caracteristica_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_caracteristica_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_caracteristica_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"caracteristicaId\":1,\r\n    \"productoId\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_caracteristica_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_caracteristica_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_caracteristica_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"caracteristicaId\":1,\r\n    \"productoId\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_caracteristica_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_caracteristica_producto"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_METODOS_PAGO",
+			"item": [
+				{
+					"name": "api_insertar_metodo_pago",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Tarjeta de crédito\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_metodo_pago",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_metodo_pago"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_metodos_pago",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_metodos_pago",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_metodos_pago"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_listado_metodos_pago",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_listado_metodos_pago",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_listado_metodos_pago"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_metodo_pago",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 5,\r\n  \"nombre\": \"aaaa de débito\",\r\n  \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_metodo_pago",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_metodo_pago"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_metodo_pago",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_metodo_pago",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_metodo_pago"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_metodo_pago",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_metodo_pago",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_metodo_pago"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_TIPOS_IMG_NOVEDAD",
+			"item": [
+				{
+					"name": "api_obtener_tipos_img_novedad",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_tipos_img_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_tipos_img_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_tipo_img_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_tipo_img_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_tipo_img_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_insertar_tipo_img_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo\": \"blueecito\",\r\n    \"disponibilidad\" : 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_tipo_img_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_tipo_img_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_tipo_img_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":2,\r\n    \"tipo\": \"blueecito2\",\r\n    \"disponibilidad\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_tipo_img_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_tipo_img_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_tipo_img_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_tipo_img_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_tipo_img_novedad"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_IMG_NOVEDAD",
+			"item": [
+				{
+					"name": "api_obtener_todas_imagenes_novedad",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_todas_imagenes_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_todas_imagenes_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_imagen_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_imagen_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_imagen_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_insertar_imagen_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomImagen\": \"algo\",\r\n    \"imagen\": \"Null\",\r\n    \"tipo_img_id\":1,\r\n    \"novedad_id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_imagen_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_imagen_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_imagen_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":9,\r\n    \"nomImagen\":\"pepita\",\r\n    \"tipo_img_id\":2,\r\n    \"novedad_id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_imagen_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_imagen_novedad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_imagen_novedad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_imagen_novedad",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_imagen_novedad"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_ESTADO_PEDIDO",
+			"item": [
+				{
+					"name": "Api_obtener_estados_pedido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_estados_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_estados_pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_estado_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_estado_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_estado_pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_insertar_estado_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomEstado\": \"Cancelado\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_estado_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_estado_pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_estado_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 3,\r\n    \"nomEstado\": \"Finalizado\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_estado_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_estado_pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_estado_pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_estado_pedido",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_estado_pedido"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_TIPOS_USUARIO",
+			"item": [
+				{
+					"name": "api_obtener_tipos_usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_tipos_usuario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_tipos_usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_tipo_usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_tipo_usuario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_tipo_usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_insertar_tipo_usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo\":1,\r\n    \"descripcion\":\"no che\",\r\n    \"imagen\": \"Null\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_tipo_usuario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_tipo_usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_tipo_usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":4,\r\n    \"tipo\":1,\r\n    \"descripcion\":\"no che\",\r\n    \"imagen\": \"Null\",\r\n    \"disponibilidad\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_tipo_usuario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_tipo_usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_tipo_usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_tipo_usuario",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_tipo_usuario"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_CARACTERISTICAS",
+			"item": [
+				{
+					"name": "api_obtener_caracteristicas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_caracteristicas",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_caracteristicas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_caracteristica",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_caracteristica",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_caracteristica"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_insertar_caracteristica",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"campo\":\"5000 mAh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_caracteristica",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_caracteristica"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_caracteristica",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":71,\r\n    \"campo\":\"4000 noma\",\r\n    \"disponibilidad\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_caracteristica",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_caracteristica"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_caracteristica",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":71\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_caracteristica",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_caracteristica"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_REDES_SOCIALES",
+			"item": [
+				{
+					"name": "api_obtener_redes_sociales",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_redes_sociales",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_redes_sociales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_red_social",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_red_social",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_red_social"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_insertar_red_social",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomRed\":\"Miaucitosocial\",\r\n    \"faiconRed\":\"la verdad no se\",\r\n    \"enlace\":\"usat.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_red_social",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_red_social"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_red_social",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":9,\r\n    \"nomRed\": \"nombre\",\r\n    \"faiconRed\":\"sise nose\",\r\n    \"enlace\":\"no.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_red_social",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_red_social"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_red_social",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_red_social",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_red_social"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_INFORMACION_DOMUS",
+			"item": [
+				{
+					"name": "api_obtener_informacion_domus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_informacion_domus",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_informacion_domus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_informacion_domus",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"correo\": \"nuevo-correo@domus.com\",\r\n    \"numero\": \"987654321\",\r\n    \"imgLogo\": \"data:image/png;base64,...\",\r\n    \"imgIcon\": \"data:image/png;base64,...\",\r\n    \"descripcion\": \"Nueva descripción\",\r\n    \"historia\": \"Nueva historia\",\r\n    \"vision\": \"Nueva visión\",\r\n    \"valores\": \"Nuevos valores\",\r\n    \"mision\": \"Nueva misión\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_informacion_domus",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_informacion_domus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_informacion_domus_por_id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_informacion_domus_por_id",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_informacion_domus_por_id"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_TIPO_CONTENIDO_INFO",
+			"item": [
+				{
+					"name": "api_obtener_tipo_contenido_info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_tipo_contenido_info",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_tipo_contenido_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_insertar_tipo_contenido_info",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\":\"alguno\",\r\n    \"descripcion\":\"alguna a\",\r\n    \"faicon_cont\":\"fa-solid-crow\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_tipo_contenido_info",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_tipo_contenido_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_tipo_contenido_info_por_id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_tipo_contenido_info_por_id",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_tipo_contenido_info_por_id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_tipo_contenido_info",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":2,\r\n    \"nombre\":\"alguno\",\r\n    \"descripcion\":\"alguna a\",\r\n    \"faicon_cont\":\"fa-solid-crow\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_tipo_contenido_info",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_tipo_contenido_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_tipo_contenido_info",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_tipo_contenido_info",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_tipo_contenido_info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_CONTENIDO_INFO",
+			"item": [
+				{
+					"name": "api_insertar_contenido_info",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"titulo\": \"Hola\",\r\n    \"cuerpo\": \"sundae\",\r\n    \"tipo_contenido_infoid\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_contenido_info",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_contenido_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_contenido_info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_contenido_info",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_contenido_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_contenido_info_por_id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_contenido_info_por_id",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_contenido_info_por_id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_contenido_info",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":10,\r\n    \"titulo\": \"Hola\",\r\n    \"cuerpo\": \"sundaaaae\",\r\n    \"tipo_contenido_infoid\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_contenido_info",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_contenido_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_contenido_info",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_contenido_info",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_contenido_info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_CUPONES",
+			"item": [
+				{
+					"name": "api_insertar_cupon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigo\": \"CUPON123\",\r\n  \"fecha_inicio\": \"2024-12-01\",\r\n  \"fecha_vencimiento\": \"2024-12-31\",\r\n  \"cant_descuento\": 20.00\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_cupon",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_cupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_cupones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_cupones",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_cupones"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_cupon_por_id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_cupon_por_id",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_cupon_por_id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_cupon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1,\r\n  \"codigo\": \"CUPON123\",\r\n  \"fecha_inicio\": \"2024-12-01\",\r\n  \"fecha_vencimiento\": \"2024-12-31\",\r\n  \"cant_descuento\": 25.00,\r\n  \"disponibilidad\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_cupon",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_cupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_cupon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_cupon",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_cupon"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_IMAGENES_PRODUCTO",
+			"item": [
+				{
+					"name": "api_insertar_img_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"img_nombre\": \"camiseta_roja.jpg\",\r\n  \"imagen\": \"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8t0ekAAAAmElEQVR42u3BMQEAAAABIP6PzgpVhgwFowmVVIZhZAerKhDQCZk27G3vK9fMF9WVwHaTwNTlM9XPn11v0yNkTxdqVv5gGbaOP7h3grIr6z0jMlfgw0vIS40gERmefPje0J1TtiKhIr11HSo0JPT8CHFxH0fV5XNLR87Wq7oFytOt8dfgn77AmuH7eM9agzTc88cQhdZqO6HfkpYUnWqK2JZBaFZPll47gxw3fXZvEYj9TkLeFHbJrfZVn5Hkg8Fw/77MLJxAHwEbx0yxludEScQrx+Fq82N2zpgzHZM0ZhCCk9m66Zgu0Ihz8/Mqaq6tdbX3avEmyM2v7B5F0ga7NV9Rr5w7TbqTwdZsu8P1FStmDylthz0cDpgW4jWLrHb7Wl58n3wYhY2L1HfM+DJOlz6hbUlUnTVqGAtJKVybN5kt2od1qaYrPpAHw+H3t6y/sVXy5Hi6YmOksdC18h0Xj1fcZRMlBaJh5+VtS3tsBlhZKhqvV+4kjGm7ATnOwl3Ve6MP4L6bRbxFl90M=...\",\r\n  \"imgPrincipal\": 1,\r\n  \"producto_id\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_insertar_img_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_insertar_img_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_imagenes_por_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_imagenes_por_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_imagenes_por_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_obtener_imagen_por_id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_imagen_por_id",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_imagen_por_id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_actualizar_img_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":2,\r\n    \"imagen\":\"null\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_actualizar_img_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_actualizar_img_producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_eliminar_img_producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_eliminar_img_producto",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_eliminar_img_producto"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "APIS_LISTA_DESEOS",
+			"item": [
+				{
+					"name": "api_obtener_lista_deseos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_obtener_lista_deseos",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_obtener_lista_deseos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_agregar_quitar_lista_deseos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"usuarioid\":1,\r\n    \"productoid\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://domusmarket.pythonanywhere.com/api_agregar_quitar_lista_deseos",
+							"protocol": "https",
+							"host": [
+								"domusmarket",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api_agregar_quitar_lista_deseos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OBTENER_TOKEN",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"aaaa@eeee.es\",\r\n    \"password\": \"qwertyuiop\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://domusmarket.pythonanywhere.com/auth",
+					"protocol": "https",
+					"host": [
+						"domusmarket",
+						"pythonanywhere",
+						"com"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
