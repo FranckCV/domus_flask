@@ -6,6 +6,7 @@ from clase_user_v1.usuario import Usuario
 import hashlib
 import base64
 
+
 import controladores.controlador_caracteristicas_productos as controlador_caracteristicas_productos
 import controladores.controlador_caracteristicas_subcategorias as controlador_caracteristicas_subcategorias
 import controladores.controlador_caracteristicas as controlador_caracteristicas
@@ -66,21 +67,7 @@ from clases.clsInformacionDomus import InformacionDomus as clsInformacionDomus
 from clases.clsCupon import Cupon as clsCupon
 
 
-# class User(object):
-#     def __init__(self, id, username, password):
-#         self.id = id
-#         self.username = username
-#         self.password = password
 
-#     def __str__(self):
-#         return "User(id='%s')" % self.id
-
-
-
-# users = [
-#     User(1, 'user1', 'abcxyz'),
-#     User(2, 'user2', 'abcxyz'),
-# ]
 
 
 def authenticate(username, password):
@@ -111,6 +98,12 @@ def encstringsha256(cadena_legible):
 app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'super-secret'
+
+from blueprints.routesCrud.routesListado import listado_bp
+
+app.register_blueprint(listado_bp)
+
+
 
 jwt = JWT(app, authenticate, identity)
 
@@ -3903,9 +3896,9 @@ def actualizar_detalle_pedido():
 
 
 # TEST DE API
-@app.route("/api_obtenerdiscos")
+@app.route("/old_api_obtenerdiscos")
 @jwt_required()
-def api_obtenerdiscos():
+def old_api_obtenerdiscos():
     discos = controlador_categorias.obtener_listado_categorias()
     return jsonify(discos)
 
@@ -3913,14 +3906,14 @@ def api_obtenerdiscos():
 
 
 ############################################  APIs  ###############################################
-# @app.route("/api_error_adm")  # /error_adm
-# @app.route("/api_cuenta_administrativa")  # /cuenta_administrativa
-# @app.route("/api_dashboard")  # /dashboard
+# @app.route("/old_api_error_adm")  # /error_adm
+# @app.route("/old_api_cuenta_administrativa")  # /cuenta_administrativa
+# @app.route("/old_api_dashboard")  # /dashboard
 
 ## MARCAS ##
-@app.route("/api_guardar_marca", methods=["POST"])
+@app.route("/old_api_guardar_marca", methods=["POST"])
 @jwt_required()
-def api_guardar_marca():
+def old_api_guardar_marca():
     # Obtener los datos desde la solicitud
     marca_nombre = request.json["marca"]
     img_logo = request.json["img_logo"]
@@ -3949,9 +3942,9 @@ def api_guardar_marca():
 
 
 
-@app.route("/api_listado_marcas")
+@app.route("/old_api_listado_marcas")
 @jwt_required()
-def api_listado_marcas():
+def old_api_listado_marcas():
     dictRespuesta = {}
     try:
         marcas = controlador_marcas.obtener_listado_marcas()
@@ -3985,9 +3978,9 @@ def api_listado_marcas():
 
 import base64
 
-@app.route("/api_listar_marca", methods=["POST"])
+@app.route("/old_api_listar_marca", methods=["POST"])
 @jwt_required()
-def api_marca_por_id():
+def old_api_marca_por_id():
     dictRespuesta = {}
     try:
         # Obtener el ID del cuerpo de la solicitud JSON
@@ -4033,9 +4026,9 @@ def api_marca_por_id():
 
 
 
-@app.route("/api_eliminar_marca", methods=["POST"])
+@app.route("/old_api_eliminar_marca", methods=["POST"])
 @jwt_required()
-def api_eliminar_marca():
+def old_api_eliminar_marca():
     id_marca = request.json["id"]
     dictRespuesta = {}
     try:
@@ -4051,9 +4044,9 @@ def api_eliminar_marca():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_marca", methods=["POST"])
+@app.route("/old_api_actualizar_marca", methods=["POST"])
 @jwt_required()
-def api_actualizar_marca():
+def old_api_actualizar_marca():
     id_marca = request.json["id"]
     marca = request.json["marca"]
     img_logo = request.json.get("img_logo")
@@ -4073,9 +4066,9 @@ def api_actualizar_marca():
         return jsonify(dictRespuesta)
 
 ################# APIs PRODUCTOS ###################
-@app.route("/api_listado_productos")
+@app.route("/old_api_listado_productos")
 @jwt_required()
-def api_listado_productos():
+def old_api_listado_productos():
     dictRespuesta = {}
     try:
         productos = controlador_productos.obtener_listado_productos()
@@ -4125,9 +4118,9 @@ def api_listado_productos():
         dictRespuesta["mensaje"] = f"Error al obtener el listado de productos: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_guardar_producto", methods=["POST"])
+@app.route("/old_api_guardar_producto", methods=["POST"])
 @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
-def api_guardar_producto():
+def old_api_guardar_producto():
     dictRespuesta = {}
     try:
         # Recibir datos del producto
@@ -4157,9 +4150,9 @@ def api_guardar_producto():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_eliminar_producto", methods=["POST"])
+@app.route("/old_api_eliminar_producto", methods=["POST"])
 @jwt_required()
-def api_eliminar_producto():
+def old_api_eliminar_producto():
     dictRespuesta = {}
     try:
         id_producto = request.json["id"]
@@ -4174,9 +4167,9 @@ def api_eliminar_producto():
         dictRespuesta["mensaje"] = f"Error al eliminar el producto: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_producto", methods=["POST"])
+@app.route("/old_api_actualizar_producto", methods=["POST"])
 @jwt_required()
-def api_actualizar_producto():
+def old_api_actualizar_producto():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON
@@ -4218,9 +4211,9 @@ def api_actualizar_producto():
         dictRespuesta["mensaje"] = f"Error al actualizar el producto: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_producto", methods=["POST"])
+@app.route("/old_api_listar_producto", methods=["POST"])
 @jwt_required()
-def api_listar_producto():
+def old_api_listar_producto():
     dictRespuesta = {}
     try:
         # Obtener el ID del producto desde el JSON
@@ -4261,9 +4254,9 @@ def api_listar_producto():
 
 #############SUBCATEGORIA#############
 
-@app.route("/api_listado_subcategorias")
+@app.route("/old_api_listado_subcategorias")
 @jwt_required()
-def api_listado_subcategorias():
+def old_api_listado_subcategorias():
     dictRespuesta = {}
     try:
         subcategorias = controlador_subcategorias.obtener_subcategorias()
@@ -4305,9 +4298,9 @@ def api_listado_subcategorias():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_guardar_subcategoria", methods=["POST"])
+@app.route("/old_api_guardar_subcategoria", methods=["POST"])
 @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
-def api_guardar_subcategoria():
+def old_api_guardar_subcategoria():
     dictRespuesta = {}
     try:
         # Obtener los datos desde el JSON
@@ -4350,9 +4343,9 @@ def api_guardar_subcategoria():
 
 
 
-@app.route("/api_eliminar_subcategoria", methods=["POST"])
+@app.route("/old_api_eliminar_subcategoria", methods=["POST"])
 @jwt_required()
-def api_eliminar_subcategoria():
+def old_api_eliminar_subcategoria():
     dictRespuesta = {}
     try:
         id_subcategoria = request.json["id"]
@@ -4367,9 +4360,9 @@ def api_eliminar_subcategoria():
         dictRespuesta["mensaje"] = f"Error al eliminar la subcategoría: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_subcategoria", methods=["POST"])
+@app.route("/old_api_actualizar_subcategoria", methods=["POST"])
 @jwt_required()
-def api_actualizar_subcategoria():
+def old_api_actualizar_subcategoria():
     dictRespuesta = {}
     try:
         id_subcategoria = request.json["id"]
@@ -4404,9 +4397,9 @@ def api_actualizar_subcategoria():
         dictRespuesta["mensaje"] = f"Error al actualizar la subcategoría: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_subcategoria", methods=["POST"])
+@app.route("/old_api_listar_subcategoria", methods=["POST"])
 @jwt_required()  # Si necesitas autenticación, puedes descomentar esta línea
-def api_listar_subcategoria():
+def old_api_listar_subcategoria():
     dictRespuesta = {}
     try:
         id_subcategoria = request.json["id"]
@@ -4446,9 +4439,9 @@ def api_listar_subcategoria():
 
 
 ###################APIs CATEGORIA###############
-@app.route("/api_guardar_categoria", methods=["POST"])
+@app.route("/old_api_guardar_categoria", methods=["POST"])
 @jwt_required()  # Descomentar si necesitas autenticación
-def api_guardar_categoria():
+def old_api_guardar_categoria():
     dictRespuesta = {}
     try:
         categoria = request.json["categoria"]
@@ -4475,9 +4468,9 @@ def api_guardar_categoria():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_listado_categorias")
+@app.route("/old_api_listado_categorias")
 @jwt_required()
-def api_listado_categorias():
+def old_api_listado_categorias():
     dictRespuesta = {}
     try:
         categorias = controlador_categorias.obtener_listado_categorias()
@@ -4507,9 +4500,9 @@ def api_listado_categorias():
         dictRespuesta["mensaje"] = f"Error al obtener el listado de categorías: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_categoria", methods=["POST"])
+@app.route("/old_api_eliminar_categoria", methods=["POST"])
 @jwt_required()
-def api_eliminar_categoria():
+def old_api_eliminar_categoria():
     id_categoria = request.json["id"]
     dictRespuesta = {}
     try:
@@ -4522,9 +4515,9 @@ def api_eliminar_categoria():
         dictRespuesta["mensaje"] = f"Error al eliminar la categoría: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_categoria", methods=["POST"])
+@app.route("/old_api_actualizar_categoria", methods=["POST"])
 @jwt_required()
-def api_actualizar_categoria():
+def old_api_actualizar_categoria():
     dictRespuesta = {}
     try:
         id_categoria = request.json["id"]
@@ -4556,9 +4549,9 @@ def api_actualizar_categoria():
         dictRespuesta["mensaje"] = f"Error al actualizar la categoría: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_categoria", methods=["POST"])
+@app.route("/old_api_listar_categoria", methods=["POST"])
 @jwt_required()  # Si es necesario autenticación, puedes dejarlo habilitado
-def api_listar_categoria():
+def old_api_listar_categoria():
     dictRespuesta = {}
     try:
         # Obtener el id de la categoría desde el cuerpo del JSON
@@ -4598,9 +4591,9 @@ def api_listar_categoria():
 
 
 ################APIs USUARIOS###########
-@app.route("/api_guardar_usuario_cliente", methods=["POST"])
+@app.route("/old_api_guardar_usuario_cliente", methods=["POST"])
 @jwt_required()  # Descomentar si necesitas autenticación
-def api_guardar_usuario():
+def old_api_guardar_usuario():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON recibido
@@ -4648,9 +4641,9 @@ def api_guardar_usuario():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_listado_usuarios_clientes")
+@app.route("/old_api_listado_usuarios_clientes")
 @jwt_required()
-def api_listado_usuarios_clientes():
+def old_api_listado_usuarios_clientes():
     dictRespuesta = {}
     try:
         usuarios = controlador_usuario_cliente.obtener_listado_usuarios_clientes()
@@ -4718,9 +4711,9 @@ def api_listado_usuarios_clientes():
 
 
 
-@app.route("/api_eliminar_usuario", methods=["POST"])
+@app.route("/old_api_eliminar_usuario", methods=["POST"])
 @jwt_required()
-def api_eliminar_usuario():
+def old_api_eliminar_usuario():
     id_usuario = request.json["id"]
     dictRespuesta = {}
     try:
@@ -4733,9 +4726,9 @@ def api_eliminar_usuario():
         dictRespuesta["mensaje"] = f"Error al eliminar el usuario: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_usuario", methods=["POST"])
+@app.route("/old_api_actualizar_usuario", methods=["POST"])
 @jwt_required()
-def api_actualizar_usuario():
+def old_api_actualizar_usuario():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON recibido
@@ -4776,9 +4769,9 @@ def api_actualizar_usuario():
         dictRespuesta["mensaje"] = f"Error al actualizar el usuario: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_usuario_cliente", methods=["POST"])
+@app.route("/old_api_obtener_usuario_cliente", methods=["POST"])
 @jwt_required()
-def api_obtener_usuario_cliente():
+def old_api_obtener_usuario_cliente():
     dictRespuesta = {}
     try:
         # Obtener el ID del usuario desde el cuerpo de la solicitud
@@ -4825,9 +4818,9 @@ def api_obtener_usuario_cliente():
         return jsonify(dictRespuesta)
 
 ###########################COMENTARIOS###############################
-@app.route("/api_guardar_comentario", methods=["POST"])
+@app.route("/old_api_guardar_comentario", methods=["POST"])
 @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
-def api_guardar_comentario():
+def old_api_guardar_comentario():
     nombres = request.json["nombres"]
     apellidos = request.json["apellidos"]
     email = request.json["email"]
@@ -4876,9 +4869,9 @@ def api_guardar_comentario():
 
 
 
-@app.route("/api_listado_comentarios")
+@app.route("/old_api_listado_comentarios")
 @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
-def api_listado_comentarios():
+def old_api_listado_comentarios():
     dictRespuesta = {}
 
     try:
@@ -4930,9 +4923,9 @@ def api_listado_comentarios():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_eliminar_comentario", methods=["POST"])
+@app.route("/old_api_eliminar_comentario", methods=["POST"])
 @jwt_required()
-def api_eliminar_comentario():
+def old_api_eliminar_comentario():
     id_comentario = request.json["id"]
     dictRespuesta = {}
     try:
@@ -4945,9 +4938,9 @@ def api_eliminar_comentario():
         dictRespuesta["mensaje"] = f"Error al eliminar el comentario: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_comentario", methods=["POST"])
+@app.route("/old_api_actualizar_comentario", methods=["POST"])
 @jwt_required()
-def api_actualizar_comentario():
+def old_api_actualizar_comentario():
     id_comentario = request.json["id"]
     nombres = request.json["nombres"]
     apellidos = request.json["apellidos"]
@@ -5002,9 +4995,9 @@ def api_actualizar_comentario():
 ############################FIN COMENTARIOS####################################UUUUUUUUUUU
 
 ############################APIS PEDIDO#############################
-@app.route("/api_guardar_pedido", methods=["POST"])
+@app.route("/old_api_guardar_pedido", methods=["POST"])
 @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
-def api_guardar_pedido():
+def old_api_guardar_pedido():
     # Obtener los datos desde la solicitud
     fecha_compra = request.json["fecha_compra"]
     subtotal = request.json["subtotal"]
@@ -5044,9 +5037,9 @@ def api_guardar_pedido():
 
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_pedido", methods=["POST"])
+@app.route("/old_api_actualizar_pedido", methods=["POST"])
 @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
-def api_actualizar_pedido():
+def old_api_actualizar_pedido():
     # Obtener los datos desde la solicitud
     id_pedido = request.json["id"]
     fecha_compra = request.json["fecha_compra"]
@@ -5092,9 +5085,9 @@ def api_actualizar_pedido():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_eliminar_pedido", methods=["POST"])
+@app.route("/old_api_eliminar_pedido", methods=["POST"])
 @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
-def api_eliminar_pedido():
+def old_api_eliminar_pedido():
     # Obtener el id del pedido desde la solicitud
     id_pedido = request.json["id"]
 
@@ -5117,9 +5110,9 @@ def api_eliminar_pedido():
 
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_pedidos", methods=["GET"])
+@app.route("/old_api_listar_pedidos", methods=["GET"])
 @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
-def api_listar_pedidos():
+def old_api_listar_pedidos():
     dictRespuesta = {}
 
     try:
@@ -5155,9 +5148,9 @@ def api_listar_pedidos():
 
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_pedido", methods=["POST"])
+@app.route("/old_api_listar_pedido", methods=["POST"])
 @jwt_required()  # Aseguramos que solo usuarios autenticados puedan acceder a esta API
-def api_listar_pedido():
+def old_api_listar_pedido():
     dictRespuesta = {}
 
     try:
@@ -5209,9 +5202,9 @@ def api_listar_pedido():
 ############################FIN PEDIDOS########################
 
 ##################3APIS DETALLE#############3
-@app.route("/api_obtener_detalles_por_usuario", methods=["POST"])
+@app.route("/old_api_obtener_detalles_por_usuario", methods=["POST"])
 @jwt_required()
-def api_obtener_detalles_por_usuario():
+def old_api_obtener_detalles_por_usuario():
     dictRespuesta = {}
     try:
         # Obtener el ID del usuario desde el cuerpo de la solicitud
@@ -5240,9 +5233,9 @@ def api_obtener_detalles_por_usuario():
         dictRespuesta["mensaje"] = f"Error al obtener los detalles: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_detalles_por_pedido", methods=["POST"])
+@app.route("/old_api_obtener_detalles_por_pedido", methods=["POST"])
 @jwt_required()
-def api_obtener_detalles_por_pedido():
+def old_api_obtener_detalles_por_pedido():
     dictRespuesta = {}
     try:
         # Obtener el ID del pedido desde el cuerpo de la solicitud
@@ -5271,9 +5264,9 @@ def api_obtener_detalles_por_pedido():
         dictRespuesta["mensaje"] = f"Error al obtener los detalles: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_detalle", methods=["POST"])
+@app.route("/old_api_eliminar_detalle", methods=["POST"])
 @jwt_required()
-def api_eliminar_detalle():
+def old_api_eliminar_detalle():
     dictRespuesta = {}
     try:
         # Obtener los parámetros desde el cuerpo de la solicitud
@@ -5297,9 +5290,9 @@ def api_eliminar_detalle():
         dictRespuesta["mensaje"] = f"Error al eliminar detalle: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_editar_detalle", methods=["POST"])
+@app.route("/old_api_editar_detalle", methods=["POST"])
 @jwt_required()
-def api_editar_detalle():
+def old_api_editar_detalle():
     dictRespuesta = {}
     try:
         # Obtener los parámetros desde el cuerpo de la solicitud
@@ -5325,8 +5318,8 @@ def api_editar_detalle():
         return jsonify(dictRespuesta)
 
 
-@app.route('/api_guardar_detalle', methods=['POST'])
-def api_guardar_detalle():
+@app.route('/old_api_guardar_detalle', methods=['POST'])
+def old_api_guardar_detalle():
     try:
         # Recibimos los datos desde el JSON de la petición
         data = request.get_json()
@@ -5344,9 +5337,9 @@ def api_guardar_detalle():
         return jsonify({"message": f"Error al guardar detalle: {e}"}), 400
 
 ##################APIS MOTIVO_COMENTARIO###############33
-@app.route("/api_guardar_motivo", methods=["POST"])
+@app.route("/old_api_guardar_motivo", methods=["POST"])
 @jwt_required()
-def api_guardar_motivo():
+def old_api_guardar_motivo():
     dictRespuesta = {}
     try:
         motivo = request.json["motivo"]
@@ -5367,9 +5360,9 @@ def api_guardar_motivo():
         dictRespuesta["mensaje"] = f"Error al guardar el motivo: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_motivo", methods=["POST"])
+@app.route("/old_api_eliminar_motivo", methods=["POST"])
 @jwt_required()
-def api_eliminar_motivo():
+def old_api_eliminar_motivo():
     dictRespuesta = {}
     try:
         id_motivo = request.json["id"]
@@ -5390,9 +5383,9 @@ def api_eliminar_motivo():
         dictRespuesta["mensaje"] = f"Error al eliminar el motivo: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_motivos", methods=["GET"])
+@app.route("/old_api_listar_motivos", methods=["GET"])
 @jwt_required()
-def api_listar_motivos():
+def old_api_listar_motivos():
     dictRespuesta = {}
     try:
         motivos = controlador_motivo_comentario.obtener_listado_motivos()
@@ -5417,9 +5410,9 @@ def api_listar_motivos():
         dictRespuesta["mensaje"] = f"Error al obtener los motivos: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_motivo_por_id", methods=["POST"])
+@app.route("/old_api_listar_motivo_por_id", methods=["POST"])
 @jwt_required()
-def api_listar_motivo_por_id():
+def old_api_listar_motivo_por_id():
     dictRespuesta = {}
     try:
         id_motivo = request.json["id"]
@@ -5451,9 +5444,9 @@ def api_listar_motivo_por_id():
         dictRespuesta["mensaje"] = f"Error al obtener el motivo: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_motivo", methods=["POST"])
+@app.route("/old_api_actualizar_motivo", methods=["POST"])
 @jwt_required()
-def api_actualizar_motivo():
+def old_api_actualizar_motivo():
     dictRespuesta = {}
     try:
         id_motivo = request.json["id"]
@@ -5477,9 +5470,9 @@ def api_actualizar_motivo():
 ##############3FIN APIS TIPO MOTIVO COMENTARIO#############
 
 ###############APIS TIPO NOVEDAD############
-@app.route("/api_guardar_tipo_novedad", methods=["POST"])
+@app.route("/old_api_guardar_tipo_novedad", methods=["POST"])
 @jwt_required()
-def api_guardar_tipo_novedad():
+def old_api_guardar_tipo_novedad():
     dictRespuesta = {}
     try:
         # Recibir datos del tipo de novedad desde el JSON de la petición
@@ -5501,9 +5494,9 @@ def api_guardar_tipo_novedad():
         dictRespuesta["mensaje"] = f"Error al guardar el tipo de novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_tipo_novedad", methods=["POST"])
+@app.route("/old_api_eliminar_tipo_novedad", methods=["POST"])
 @jwt_required()
-def api_eliminar_tipo_novedad():
+def old_api_eliminar_tipo_novedad():
     dictRespuesta = {}
     try:
         # Recibir el ID del tipo de novedad desde el JSON de la petición
@@ -5526,9 +5519,9 @@ def api_eliminar_tipo_novedad():
         dictRespuesta["mensaje"] = f"Error al eliminar el tipo de novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_tipos_novedad", methods=["GET"])
+@app.route("/old_api_listar_tipos_novedad", methods=["GET"])
 @jwt_required()
-def api_listar_tipos_novedad():
+def old_api_listar_tipos_novedad():
     dictRespuesta = {}
     try:
         # Obtener todos los tipos de novedad
@@ -5553,9 +5546,9 @@ def api_listar_tipos_novedad():
         dictRespuesta["mensaje"] = f"Error al obtener los tipos de novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_tipo_novedad_por_id", methods=["POST"])
+@app.route("/old_api_listar_tipo_novedad_por_id", methods=["POST"])
 @jwt_required()
-def api_listar_tipo_novedad_por_id():
+def old_api_listar_tipo_novedad_por_id():
     dictRespuesta = {}
     try:
         # Recibir el ID del tipo de novedad desde el JSON de la petición
@@ -5590,9 +5583,9 @@ def api_listar_tipo_novedad_por_id():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_tipo_novedad", methods=["POST"])
+@app.route("/old_api_actualizar_tipo_novedad", methods=["POST"])
 @jwt_required()
-def api_actualizar_tipo_novedad():
+def old_api_actualizar_tipo_novedad():
     dictRespuesta = {}
     try:
         # Recibir datos del tipo de novedad desde el JSON de la petición
@@ -5620,9 +5613,9 @@ def api_actualizar_tipo_novedad():
 ##############################################################################
 
 #######################APIS NOVEDAD################
-@app.route("/api_guardar_novedad", methods=["POST"])
+@app.route("/old_api_guardar_novedad", methods=["POST"])
 @jwt_required()
-def api_guardar_novedad():
+def old_api_guardar_novedad():
     dictRespuesta = {}
     try:
         # Recibir datos de la novedad desde el JSON de la petición
@@ -5654,9 +5647,9 @@ def api_guardar_novedad():
         dictRespuesta["mensaje"] = f"Error al guardar la novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_novedad", methods=["POST"])
+@app.route("/old_api_eliminar_novedad", methods=["POST"])
 @jwt_required()
-def api_eliminar_novedad():
+def old_api_eliminar_novedad():
     dictRespuesta = {}
     try:
         # Recibir el ID de la novedad desde el JSON de la petición
@@ -5679,9 +5672,9 @@ def api_eliminar_novedad():
         dictRespuesta["mensaje"] = f"Error al eliminar la novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_novedades", methods=["GET"])
+@app.route("/old_api_listar_novedades", methods=["GET"])
 @jwt_required()
-def api_listar_novedades():
+def old_api_listar_novedades():
     dictRespuesta = {}
     try:
         # Obtener todas las novedades
@@ -5714,9 +5707,9 @@ def api_listar_novedades():
         dictRespuesta["mensaje"] = f"Error al obtener las novedades: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_listar_novedad_por_id", methods=["POST"])
+@app.route("/old_api_listar_novedad_por_id", methods=["POST"])
 @jwt_required()
-def api_listar_novedad_por_id():
+def old_api_listar_novedad_por_id():
     dictRespuesta = {}
     try:
         # Recibir el ID de la novedad desde el JSON de la petición
@@ -5760,9 +5753,9 @@ def api_listar_novedad_por_id():
         dictRespuesta["mensaje"] = f"Error al obtener la novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_novedad", methods=["POST"])
+@app.route("/old_api_actualizar_novedad", methods=["POST"])
 @jwt_required()
-def api_actualizar_novedad():
+def old_api_actualizar_novedad():
     dictRespuesta = {}
     try:
         # Recibir datos de la novedad desde el JSON de la petición
@@ -5799,9 +5792,9 @@ def api_actualizar_novedad():
 ###################FIN APIS NOVEDAD#####################
 
 ########################APIS CARACTERISTICA PRODUCTOS#############
-@app.route("/api_insertar_caracteristica_producto", methods=["POST"])
+@app.route("/old_api_insertar_caracteristica_producto", methods=["POST"])
 @jwt_required()
-def api_insertar_caracteristica_producto():
+def old_api_insertar_caracteristica_producto():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON de la petición
@@ -5825,9 +5818,9 @@ def api_insertar_caracteristica_producto():
         dictRespuesta["mensaje"] = f"Error al insertar la característica: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_caracteristicas_producto", methods=["POST"])
+@app.route("/old_api_obtener_caracteristicas_producto", methods=["POST"])
 @jwt_required()
-def api_obtener_caracteristicas_producto():
+def old_api_obtener_caracteristicas_producto():
     dictRespuesta = {}
     try:
         # Obtener el ID del producto desde la petición
@@ -5847,9 +5840,9 @@ def api_obtener_caracteristicas_producto():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_caracteristica_producto", methods=["POST"])
+@app.route("/old_api_actualizar_caracteristica_producto", methods=["POST"])
 @jwt_required()
-def api_actualizar_caracteristica_producto():
+def old_api_actualizar_caracteristica_producto():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON de la petición
@@ -5873,9 +5866,9 @@ def api_actualizar_caracteristica_producto():
         dictRespuesta["mensaje"] = f"Error al actualizar la característica: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_caracteristica_producto", methods=["POST"])
+@app.route("/old_api_eliminar_caracteristica_producto", methods=["POST"])
 @jwt_required()
-def api_eliminar_caracteristica_producto():
+def old_api_eliminar_caracteristica_producto():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON de la petición
@@ -5894,9 +5887,9 @@ def api_eliminar_caracteristica_producto():
         dictRespuesta["mensaje"] = f"Error al eliminar la característica: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_caracteristica_producto", methods=["POST"])
+@app.route("/old_api_obtener_caracteristica_producto", methods=["POST"])
 @jwt_required()
-def api_obtener_caracteristica_producto():
+def old_api_obtener_caracteristica_producto():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON de la petición
@@ -5917,9 +5910,9 @@ def api_obtener_caracteristica_producto():
         return jsonify(dictRespuesta)
 
 #######################APIS METODO PAGO###################
-@app.route("/api_insertar_metodo_pago", methods=["POST"])
+@app.route("/old_api_insertar_metodo_pago", methods=["POST"])
 @jwt_required()
-def api_insertar_metodo_pago():
+def old_api_insertar_metodo_pago():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON de la petición
@@ -5940,9 +5933,9 @@ def api_insertar_metodo_pago():
         dictRespuesta["mensaje"] = f"Error al insertar el método de pago: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_metodos_pago", methods=["GET"])
+@app.route("/old_api_obtener_metodos_pago", methods=["GET"])
 @jwt_required()
-def api_obtener_metodos_pago():
+def old_api_obtener_metodos_pago():
     dictRespuesta = {}
     try:
         # Obtener los métodos de pago desde la base de datos
@@ -5959,9 +5952,9 @@ def api_obtener_metodos_pago():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_obtener_listado_metodos_pago", methods=["GET"])
+@app.route("/old_api_obtener_listado_metodos_pago", methods=["GET"])
 @jwt_required()
-def api_obtener_listado_metodos_pago():
+def old_api_obtener_listado_metodos_pago():
     dictRespuesta = {}
     try:
         # Obtener el listado de métodos de pago con pedidos asociados
@@ -5978,9 +5971,9 @@ def api_obtener_listado_metodos_pago():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_metodo_pago", methods=["POST"])
+@app.route("/old_api_actualizar_metodo_pago", methods=["POST"])
 @jwt_required()
-def api_actualizar_metodo_pago():
+def old_api_actualizar_metodo_pago():
     dictRespuesta = {}
     try:
         # Obtener los datos del JSON de la petición
@@ -6001,9 +5994,9 @@ def api_actualizar_metodo_pago():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_eliminar_metodo_pago", methods=["POST"])
+@app.route("/old_api_eliminar_metodo_pago", methods=["POST"])
 @jwt_required()
-def api_eliminar_metodo_pago():
+def old_api_eliminar_metodo_pago():
     dictRespuesta = {}
     try:
         # Obtener el ID del método de pago desde la petición
@@ -6021,9 +6014,9 @@ def api_eliminar_metodo_pago():
         dictRespuesta["mensaje"] = f"Error al eliminar el método de pago: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_metodo_pago", methods=["POST"])
+@app.route("/old_api_obtener_metodo_pago", methods=["POST"])
 @jwt_required()
-def api_obtener_metodo_pago():
+def old_api_obtener_metodo_pago():
     dictRespuesta = {}
     try:
         # Obtener el ID del cuerpo de la solicitud
@@ -6056,9 +6049,9 @@ def api_obtener_metodo_pago():
 ###############FIN APIS METODO PAGO##################
 
 ####################APIS TIPO IMG  NOVEDAD#######################3
-@app.route("/api_obtener_tipos_img_novedad", methods=["GET"])
+@app.route("/old_api_obtener_tipos_img_novedad", methods=["GET"])
 @jwt_required()
-def api_obtener_tipos_img_novedad():
+def old_api_obtener_tipos_img_novedad():
     dictRespuesta = {}
     try:
         tipos_img = controlador_tipos_img_novedad.obtener_tipos_img_novedad()
@@ -6070,9 +6063,9 @@ def api_obtener_tipos_img_novedad():
         dictRespuesta["mensaje"] = f"Error al obtener los tipos de imagen de novedad: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_tipo_img_novedad", methods=["POST"])
+@app.route("/old_api_obtener_tipo_img_novedad", methods=["POST"])
 @jwt_required()
-def api_obtener_tipo_img_novedad():
+def old_api_obtener_tipo_img_novedad():
     dictRespuesta = {}
     try:
         # Obtener el ID del cuerpo de la solicitud
@@ -6102,9 +6095,9 @@ def api_obtener_tipo_img_novedad():
         dictRespuesta["mensaje"] = f"Error al obtener el tipo de imagen de novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_insertar_tipo_img_novedad", methods=["POST"])
+@app.route("/old_api_insertar_tipo_img_novedad", methods=["POST"])
 @jwt_required()
-def api_insertar_tipo_img_novedad():
+def old_api_insertar_tipo_img_novedad():
     dictRespuesta = {}
     try:
         # Obtener los datos del cuerpo de la solicitud
@@ -6130,9 +6123,9 @@ def api_insertar_tipo_img_novedad():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_tipo_img_novedad", methods=["POST"])
+@app.route("/old_api_actualizar_tipo_img_novedad", methods=["POST"])
 @jwt_required()
-def api_actualizar_tipo_img_novedad():
+def old_api_actualizar_tipo_img_novedad():
     dictRespuesta = {}
     try:
         # Obtener los datos del cuerpo de la solicitud
@@ -6158,9 +6151,9 @@ def api_actualizar_tipo_img_novedad():
         dictRespuesta["mensaje"] = f"Error al actualizar el tipo de imagen de novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_tipo_img_novedad", methods=["POST"])
+@app.route("/old_api_eliminar_tipo_img_novedad", methods=["POST"])
 @jwt_required()
-def api_eliminar_tipo_img_novedad():
+def old_api_eliminar_tipo_img_novedad():
     dictRespuesta = {}
     try:
         # Obtener el ID del cuerpo de la solicitud
@@ -6187,9 +6180,9 @@ def api_eliminar_tipo_img_novedad():
 #################FIN APIS TIPO IMG NOVEDAD################3
 
 #####################APIS IMG NOVEDAD#################33
-@app.route("/api_obtener_todas_imagenes_novedad", methods=["GET"])
+@app.route("/old_api_obtener_todas_imagenes_novedad", methods=["GET"])
 @jwt_required()
-def api_obtener_todas_imagenes_novedad():
+def old_api_obtener_todas_imagenes_novedad():
     dictRespuesta = {}
     try:
         imagenes = controlador_imagenes_novedades.obtener_todas_imagenes_novedad()
@@ -6202,9 +6195,9 @@ def api_obtener_todas_imagenes_novedad():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_obtener_imagen_novedad", methods=["POST"])
+@app.route("/old_api_obtener_imagen_novedad", methods=["POST"])
 @jwt_required()
-def api_obtener_imagen_novedad():
+def old_api_obtener_imagen_novedad():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6239,9 +6232,9 @@ def api_obtener_imagen_novedad():
         dictRespuesta["mensaje"] = f"Error al obtener la imagen de novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_insertar_imagen_novedad", methods=["POST"])
+@app.route("/old_api_insertar_imagen_novedad", methods=["POST"])
 @jwt_required()
-def api_insertar_imagen_novedad():
+def old_api_insertar_imagen_novedad():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6269,9 +6262,9 @@ def api_insertar_imagen_novedad():
         dictRespuesta["mensaje"] = f"Error al insertar la imagen de novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_imagen_novedad", methods=["POST"])
+@app.route("/old_api_actualizar_imagen_novedad", methods=["POST"])
 @jwt_required()
-def api_actualizar_imagen_novedad():
+def old_api_actualizar_imagen_novedad():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6296,9 +6289,9 @@ def api_actualizar_imagen_novedad():
         dictRespuesta["mensaje"] = f"Error al actualizar la imagen de novedad: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_imagen_novedad", methods=["POST"])
+@app.route("/old_api_eliminar_imagen_novedad", methods=["POST"])
 @jwt_required()
-def api_eliminar_imagen_novedad():
+def old_api_eliminar_imagen_novedad():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6323,9 +6316,9 @@ def api_eliminar_imagen_novedad():
 ##################FIN APIS IMG NOVEDAD###############
 
 ##########################APIS ESTADO PEDIDO#########
-@app.route("/api_obtener_estados_pedido", methods=["GET"])
+@app.route("/old_api_obtener_estados_pedido", methods=["GET"])
 @jwt_required()
-def api_obtener_estados_pedido():
+def old_api_obtener_estados_pedido():
     dictRespuesta = {}
     try:
         estados = controlador_estado_pedido.obtener_estados_pedido()
@@ -6338,9 +6331,9 @@ def api_obtener_estados_pedido():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_obtener_estado_pedido", methods=["POST"])
+@app.route("/old_api_obtener_estado_pedido", methods=["POST"])
 @jwt_required()
-def api_obtener_estado_pedido():
+def old_api_obtener_estado_pedido():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6371,9 +6364,9 @@ def api_obtener_estado_pedido():
         dictRespuesta["mensaje"] = f"Error al obtener el estado del pedido: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_insertar_estado_pedido", methods=["POST"])
+@app.route("/old_api_insertar_estado_pedido", methods=["POST"])
 @jwt_required()
-def api_insertar_estado_pedido():
+def old_api_insertar_estado_pedido():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6396,9 +6389,9 @@ def api_insertar_estado_pedido():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_estado_pedido", methods=["POST"])
+@app.route("/old_api_actualizar_estado_pedido", methods=["POST"])
 @jwt_required()
-def api_actualizar_estado_pedido():
+def old_api_actualizar_estado_pedido():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6421,9 +6414,9 @@ def api_actualizar_estado_pedido():
         dictRespuesta["mensaje"] = f"Error al actualizar el estado del pedido: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_estado_pedido", methods=["POST"])
+@app.route("/old_api_eliminar_estado_pedido", methods=["POST"])
 @jwt_required()
-def api_eliminar_estado_pedido():
+def old_api_eliminar_estado_pedido():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6448,9 +6441,9 @@ def api_eliminar_estado_pedido():
 ########################FIN APIS ESTADO PEDIDO#########
 
 ##################APIS TIPO_USUARIO#############
-@app.route("/api_obtener_tipos_usuario", methods=["GET"])
+@app.route("/old_api_obtener_tipos_usuario", methods=["GET"])
 @jwt_required()
-def api_obtener_tipos_usuario():
+def old_api_obtener_tipos_usuario():
     dictRespuesta = {}
     try:
         tipos_usuario = controlador_tipos_usuario.obtener_tipos_usuario()
@@ -6462,9 +6455,9 @@ def api_obtener_tipos_usuario():
         dictRespuesta["mensaje"] = f"Error al obtener los tipos de usuario: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_tipo_usuario", methods=["POST"])
+@app.route("/old_api_obtener_tipo_usuario", methods=["POST"])
 @jwt_required()
-def api_obtener_tipo_usuario():
+def old_api_obtener_tipo_usuario():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6498,9 +6491,9 @@ def api_obtener_tipo_usuario():
         dictRespuesta["mensaje"] = f"Error al obtener el tipo de usuario: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_insertar_tipo_usuario", methods=["POST"])
+@app.route("/old_api_insertar_tipo_usuario", methods=["POST"])
 @jwt_required()
-def api_insertar_tipo_usuario():
+def old_api_insertar_tipo_usuario():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6524,9 +6517,9 @@ def api_insertar_tipo_usuario():
         dictRespuesta["mensaje"] = f"Error al insertar el tipo de usuario: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_tipo_usuario", methods=["POST"])
+@app.route("/old_api_actualizar_tipo_usuario", methods=["POST"])
 @jwt_required()
-def api_actualizar_tipo_usuario():
+def old_api_actualizar_tipo_usuario():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6552,9 +6545,9 @@ def api_actualizar_tipo_usuario():
         dictRespuesta["mensaje"] = f"Error al actualizar el tipo de usuario: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_tipo_usuario", methods=["POST"])
+@app.route("/old_api_eliminar_tipo_usuario", methods=["POST"])
 @jwt_required()
-def api_eliminar_tipo_usuario():
+def old_api_eliminar_tipo_usuario():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6579,9 +6572,9 @@ def api_eliminar_tipo_usuario():
 ##############FIN APIS TIPO_USUARIO################
 
 ########################APIS CARACTERISTICA##############
-@app.route("/api_obtener_caracteristicas", methods=["GET"])
+@app.route("/old_api_obtener_caracteristicas", methods=["GET"])
 @jwt_required()
-def api_obtener_caracteristicas():
+def old_api_obtener_caracteristicas():
     dictRespuesta = {}
     try:
         caracteristicas = controlador_caracteristicas.obtener_Caracteristicas()
@@ -6593,9 +6586,9 @@ def api_obtener_caracteristicas():
         dictRespuesta["mensaje"] = f"Error al obtener las características: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_caracteristica", methods=["POST"])
+@app.route("/old_api_obtener_caracteristica", methods=["POST"])
 @jwt_required()
-def api_obtener_caracteristica():
+def old_api_obtener_caracteristica():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6627,9 +6620,9 @@ def api_obtener_caracteristica():
         dictRespuesta["mensaje"] = f"Error al obtener la característica: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_insertar_caracteristica", methods=["POST"])
+@app.route("/old_api_insertar_caracteristica", methods=["POST"])
 @jwt_required()
-def api_insertar_caracteristica():
+def old_api_insertar_caracteristica():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6652,9 +6645,9 @@ def api_insertar_caracteristica():
         dictRespuesta["mensaje"] = f"Error al insertar la característica: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_caracteristica", methods=["POST"])
+@app.route("/old_api_actualizar_caracteristica", methods=["POST"])
 @jwt_required()
-def api_actualizar_caracteristica():
+def old_api_actualizar_caracteristica():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6678,9 +6671,9 @@ def api_actualizar_caracteristica():
         dictRespuesta["mensaje"] = f"Error al actualizar la característica: {str(e)}"
         return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_caracteristica", methods=["POST"])
+@app.route("/old_api_eliminar_caracteristica", methods=["POST"])
 @jwt_required()
-def api_eliminar_caracteristica():
+def old_api_eliminar_caracteristica():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6706,9 +6699,9 @@ def api_eliminar_caracteristica():
 
 
 ###########################APIS REDES SOCIALES###############33
-@app.route("/api_obtener_redes_sociales", methods=["GET"])
+@app.route("/old_api_obtener_redes_sociales", methods=["GET"])
 @jwt_required()
-def api_obtener_redes_sociales():
+def old_api_obtener_redes_sociales():
     dictRespuesta = {}
     try:
         redes_sociales = controlador_redes_sociales.obtener_redes_sociales()
@@ -6721,9 +6714,9 @@ def api_obtener_redes_sociales():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_obtener_red_social", methods=["POST"])
+@app.route("/old_api_obtener_red_social", methods=["POST"])
 @jwt_required()
-def api_obtener_red_social():
+def old_api_obtener_red_social():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6757,9 +6750,9 @@ def api_obtener_red_social():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_insertar_red_social", methods=["POST"])
+@app.route("/old_api_insertar_red_social", methods=["POST"])
 @jwt_required()
-def api_insertar_red_social():
+def old_api_insertar_red_social():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6787,9 +6780,9 @@ def api_insertar_red_social():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_red_social", methods=["POST"])
+@app.route("/old_api_actualizar_red_social", methods=["POST"])
 @jwt_required()
-def api_actualizar_red_social():
+def old_api_actualizar_red_social():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6818,9 +6811,9 @@ def api_actualizar_red_social():
         return jsonify(dictRespuesta)
 
 
-@app.route("/api_eliminar_red_social", methods=["POST"])
+@app.route("/old_api_eliminar_red_social", methods=["POST"])
 @jwt_required()
-def api_eliminar_red_social():
+def old_api_eliminar_red_social():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6845,9 +6838,9 @@ def api_eliminar_red_social():
 #######################FIN APIS REDES SOCIALES################
 
 ##########################APIS INFORMACION DOMUS#################
-@app.route("/api_obtener_informacion_domus", methods=["GET"])
+@app.route("/old_api_obtener_informacion_domus", methods=["GET"])
 @jwt_required()
-def api_obtener_informacion_domus():
+def old_api_obtener_informacion_domus():
     dictRespuesta = {}
     try:
         datos = controlador_informacion_domus.obtener_informacion_domus()
@@ -6875,9 +6868,9 @@ def api_obtener_informacion_domus():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_obtener_informacion_domus_por_id", methods=["POST"])
+@app.route("/old_api_obtener_informacion_domus_por_id", methods=["POST"])
 @jwt_required()
-def api_obtener_informacion_domus_por_id():
+def old_api_obtener_informacion_domus_por_id():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6913,9 +6906,9 @@ def api_obtener_informacion_domus_por_id():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_informacion_domus", methods=["POST"])
+@app.route("/old_api_actualizar_informacion_domus", methods=["POST"])
 @jwt_required()
-def api_actualizar_informacion_domus():
+def old_api_actualizar_informacion_domus():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6960,9 +6953,9 @@ def api_actualizar_informacion_domus():
 
 ##################APIS tipo_contenido##########3
 
-@app.route("/api_insertar_tipo_contenido_info", methods=["POST"])
+@app.route("/old_api_insertar_tipo_contenido_info", methods=["POST"])
 @jwt_required()
-def api_insertar_tipo_contenido_info():
+def old_api_insertar_tipo_contenido_info():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -6985,9 +6978,9 @@ def api_insertar_tipo_contenido_info():
         dictRespuesta["mensaje"] = f"Error al insertar tipo de contenido: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_tipo_contenido_info", methods=["GET"])
+@app.route("/old_api_obtener_tipo_contenido_info", methods=["GET"])
 @jwt_required()
-def api_obtener_tipo_contenido_info():
+def old_api_obtener_tipo_contenido_info():
     dictRespuesta = {}
     try:
         # Obtener los datos desde la base de datos
@@ -7001,9 +6994,9 @@ def api_obtener_tipo_contenido_info():
         dictRespuesta["mensaje"] = f"Error al obtener los tipos de contenido: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_tipo_contenido_info_por_id", methods=["POST"])
+@app.route("/old_api_obtener_tipo_contenido_info_por_id", methods=["POST"])
 @jwt_required()
-def api_obtener_tipo_contenido_info_por_id():
+def old_api_obtener_tipo_contenido_info_por_id():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7029,9 +7022,9 @@ def api_obtener_tipo_contenido_info_por_id():
         dictRespuesta["mensaje"] = f"Error al obtener tipo de contenido por ID: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_tipo_contenido_info", methods=["POST"])
+@app.route("/old_api_actualizar_tipo_contenido_info", methods=["POST"])
 @jwt_required()
-def api_actualizar_tipo_contenido_info():
+def old_api_actualizar_tipo_contenido_info():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7056,9 +7049,9 @@ def api_actualizar_tipo_contenido_info():
         dictRespuesta["mensaje"] = f"Error al actualizar tipo de contenido: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_tipo_contenido_info", methods=["POST"])
+@app.route("/old_api_eliminar_tipo_contenido_info", methods=["POST"])
 @jwt_required()
-def api_eliminar_tipo_contenido_info():
+def old_api_eliminar_tipo_contenido_info():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7082,9 +7075,9 @@ def api_eliminar_tipo_contenido_info():
 ###############3FIN APIS TIPO CONTENID#####
 
 #######################APIS CONTENIDO INFO###############
-@app.route("/api_insertar_contenido_info", methods=["POST"])
+@app.route("/old_api_insertar_contenido_info", methods=["POST"])
 @jwt_required()
-def api_insertar_contenido_info():
+def old_api_insertar_contenido_info():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7107,9 +7100,9 @@ def api_insertar_contenido_info():
         dictRespuesta["mensaje"] = f"Error al insertar contenido: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_contenido_info", methods=["GET"])
+@app.route("/old_api_obtener_contenido_info", methods=["GET"])
 @jwt_required()
-def api_obtener_contenido_info():
+def old_api_obtener_contenido_info():
     dictRespuesta = {}
     try:
         # Obtener los datos desde la base de datos
@@ -7123,9 +7116,9 @@ def api_obtener_contenido_info():
         dictRespuesta["mensaje"] = f"Error al obtener los contenidos: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_contenido_info_por_id", methods=["POST"])
+@app.route("/old_api_obtener_contenido_info_por_id", methods=["POST"])
 @jwt_required()
-def api_obtener_contenido_info_por_id():
+def old_api_obtener_contenido_info_por_id():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7157,9 +7150,9 @@ def api_obtener_contenido_info_por_id():
         dictRespuesta["mensaje"] = f"Error al obtener contenido por ID: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_contenido_info", methods=["POST"])
+@app.route("/old_api_actualizar_contenido_info", methods=["POST"])
 @jwt_required()
-def api_actualizar_contenido_info():
+def old_api_actualizar_contenido_info():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7183,9 +7176,9 @@ def api_actualizar_contenido_info():
         dictRespuesta["mensaje"] = f"Error al actualizar contenido: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_eliminar_contenido_info", methods=["POST"])
+@app.route("/old_api_eliminar_contenido_info", methods=["POST"])
 @jwt_required()
-def api_eliminar_contenido_info():
+def old_api_eliminar_contenido_info():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7211,9 +7204,9 @@ def api_eliminar_contenido_info():
 
 
 #######################APIS CUPONES##############
-@app.route("/api_insertar_cupon", methods=["POST"])
+@app.route("/old_api_insertar_cupon", methods=["POST"])
 @jwt_required()
-def api_insertar_cupon():
+def old_api_insertar_cupon():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7240,9 +7233,9 @@ def api_insertar_cupon():
         dictRespuesta["mensaje"] = f"Error al insertar cupón: {str(e)}"
     return jsonify(dictRespuesta)
 
-@app.route("/api_obtener_cupones", methods=["GET"])
+@app.route("/old_api_obtener_cupones", methods=["GET"])
 @jwt_required()
-def api_obtener_cupones():
+def old_api_obtener_cupones():
     dictRespuesta = {}
     try:
         # Obtener todos los cupones
@@ -7257,9 +7250,9 @@ def api_obtener_cupones():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_obtener_cupon_por_id", methods=["POST"])
+@app.route("/old_api_obtener_cupon_por_id", methods=["POST"])
 @jwt_required()
-def api_obtener_cupon_por_id():
+def old_api_obtener_cupon_por_id():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7295,9 +7288,9 @@ def api_obtener_cupon_por_id():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_actualizar_cupon", methods=["POST"])
+@app.route("/old_api_actualizar_cupon", methods=["POST"])
 @jwt_required()
-def api_actualizar_cupon():
+def old_api_actualizar_cupon():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7327,9 +7320,9 @@ def api_actualizar_cupon():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_eliminar_cupon", methods=["POST"])
+@app.route("/old_api_eliminar_cupon", methods=["POST"])
 @jwt_required()
-def api_eliminar_cupon():
+def old_api_eliminar_cupon():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7355,9 +7348,9 @@ def api_eliminar_cupon():
 
 ######################APIS IMG_PRODUCTO#####################
 
-@app.route("/api_insertar_img_producto", methods=["POST"])
+@app.route("/old_api_insertar_img_producto", methods=["POST"])
 @jwt_required()
-def api_insertar_img_producto():
+def old_api_insertar_img_producto():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7385,9 +7378,9 @@ def api_insertar_img_producto():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_obtener_imagenes_por_producto", methods=["POST"])
+@app.route("/old_api_obtener_imagenes_por_producto", methods=["POST"])
 @jwt_required()
-def api_obtener_imagenes_por_producto():
+def old_api_obtener_imagenes_por_producto():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7410,9 +7403,9 @@ def api_obtener_imagenes_por_producto():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_obtener_imagen_por_id", methods=["POST"])
+@app.route("/old_api_obtener_imagen_por_id", methods=["POST"])
 @jwt_required()
-def api_obtener_imagen_por_id():
+def old_api_obtener_imagen_por_id():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7446,9 +7439,9 @@ def api_obtener_imagen_por_id():
 
     return jsonify(dictRespuesta)
 
-@app.route("/api_actualizar_img_producto", methods=["POST"])
+@app.route("/old_api_actualizar_img_producto", methods=["POST"])
 @jwt_required()
-def api_actualizar_img_producto():
+def old_api_actualizar_img_producto():
     dictRespuesta = {}
     try:
         # Obtener los datos del request
@@ -7482,9 +7475,9 @@ def api_actualizar_img_producto():
     return jsonify(dictRespuesta)
 
 
-@app.route("/api_eliminar_img_producto", methods=["POST"])
+@app.route("/old_api_eliminar_img_producto", methods=["POST"])
 @jwt_required()
-def api_eliminar_img_producto():
+def old_api_eliminar_img_producto():
     dictRespuesta = {}
     try:
         data = request.get_json()
@@ -7509,9 +7502,9 @@ def api_eliminar_img_producto():
 ####################FIN APIS IMG_PRODUCTO#####################
 
 #######################APIS LISTA DESEOS#################
-@app.route("/api_obtener_lista_deseos", methods=["POST"])
+@app.route("/old_api_obtener_lista_deseos", methods=["POST"])
 @jwt_required()
-def api_obtener_lista_deseos():
+def old_api_obtener_lista_deseos():
     dictRespuesta = {}
     try:
         # Obtener los datos del request
@@ -7543,9 +7536,9 @@ def api_obtener_lista_deseos():
 
     return jsonify(dictRespuesta)
 
-@app.route("/api_agregar_quitar_lista_deseos", methods=["POST"])
+@app.route("/old_api_agregar_quitar_lista_deseos", methods=["POST"])
 @jwt_required()
-def api_agregar_quitar_lista_deseos():
+def old_api_agregar_quitar_lista_deseos():
     dictRespuesta = {}
     try:
         data = request.get_json()
