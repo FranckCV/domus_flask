@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 
 def insertar_tipo_novedad(nombre_tipo):
     conexion = obtener_conexion()

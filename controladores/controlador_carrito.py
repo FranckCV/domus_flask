@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 
 #PARA INSERTAR EN PEDIDO
 def insertar_pedido(usuario, estado):

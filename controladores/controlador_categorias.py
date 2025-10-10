@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 tabla = 'categoria'
 import controladores.controlador_subcategorias as controlador_subcategorias
 

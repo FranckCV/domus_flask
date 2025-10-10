@@ -23,9 +23,9 @@
 
   <body class="body_section">
     <header>
-      <a class="header_item" id="index_logo" href="{{ url_for('index') }}"><img class="img-fluid" id="logo_header" src="{{ datos_domus_main.3 }}" alt="Logo Domus" /></a>
+      <a class="header_item" id="index_logo" href="{{ url_for('general.index') }}"><img class="img-fluid" id="logo_header" src="{{ datos_domus_main.3 }}" alt="Logo Domus" /></a>
       
-      <form enctype="multipart/form-data" method="GET" action="{{ url_for('buscar_elementos') }}" class="header_item" id="search">
+      <form enctype="multipart/form-data" method="GET" action="{{ url_for('general.buscar_elementos') }}" class="header_item" id="search">
         <input required type="text" placeholder="Busca el producto que quieras" aria-label="Recipient's username" aria-describedby="button-addon2" id="buscarElemento" name="buscarElemento" maxlength="150"
           {% if nombreBusqueda %}
             value="{{nombreBusqueda}}"
@@ -36,7 +36,7 @@
         </button>
       </form>
 
-      <a class="header_item header_option" id="header_carrito" href="{{ url_for('carrito') }}">
+      <a class="header_item header_option" id="header_carrito" href="{{ url_for('carrito.carrito') }}">
         <div class="d-flex flex-row">
           <i class="fa-solid fa-cart-shopping"></i>
           <div class="burbuja_carrito_cant">
@@ -51,7 +51,7 @@
         href="{% if logueado %}
           {{ url_for('perfil', user_id=user_id) }}
         {% else %}
-          {{ url_for('iniciar_sesion') }}
+          {{ url_for('auth.iniciar_sesion') }}
         {% endif %}">
         <i class="fa-solid fa-user"></i>
         <p>
@@ -68,19 +68,19 @@
           <i class="fa-solid fa-bars"></i>
           <p>Menú</p>
         </div>
-        <a class="nav_element" href="{{ url_for('catalogo') }}">
+        <a class="nav_element" href="{{ url_for('general.catalogo') }}">
           <i class="fa-solid fa-clipboard-list"></i>
           <p>Catálogo</p>
         </a>
-        <a class="nav_element" href="{{ url_for('servicio_cliente') }}">
+        <a class="nav_element" href="{{ url_for('general.servicio_cliente') }}">
           <i class="fa-regular fa-circle-question"></i>
           <p>Servicio al Cliente</p>
         </a>
-        <a class="nav_element" href="{{ url_for('contactanos') }}">
+        <a class="nav_element" href="{{ url_for('general.contactanos') }}">
           <i class="fa-solid fa-message"></i>
           <p>Contáctanos</p>
         </a>
-        <a class="nav_element" href="{{ url_for('novedades') }}">
+        <a class="nav_element" href="{{ url_for('general.novedades') }}">
           <i class="fa-solid fa-star"></i>
           <p>Novedades</p>
         </a>
@@ -118,35 +118,12 @@
           </a>
         {% endfor %}
 
-        <a href="{{ url_for('nuestras_marcas') }}">
+        <a href="{{ url_for('general.nuestras_marcas') }}">
           <i class="fa-solid fa-plus"></i>
           Ver más...
         </a>
       </div>
-      <!--    <div class="menu_element">
-            <i class="fa-solid fa-star"></i>
-            <span>Novedades</span>
-            <i class="fa-solid fa-chevron-down"></i>
-        </div>
-        <div class="submenu_content" id="menu_brands">
-
-            {% for marca in marcasMenu %}
-            <a href="{{url_for('marca', id=marca[0])}}">
-                <img src="{{marca[2]}}" alt="{{marca[1]}}">
-                {{marca[1]}}
-            </a>
-            {% endfor %}
-
-            <a href="{{url_for('marcas')}}">
-                <i class="fa-solid fa-plus"></i> 
-                Ver más... 
-            </a>
-            
-        </div>    -->
-      <!--    <a href="exclusividad.html" class="menu_element menu_exclusividad">                
-            <i class="fa-solid fa-star"></i>
-            <span>Exclusividad Domus</span>                
-        </a>         -->
+      
     </aside>
 
     {% block contenido %}
@@ -155,7 +132,7 @@
 
     <footer>
       <div id="footer_pictures">
-        <a href="{{ url_for('index') }}"><img id="logo_footer" src="{{ datos_domus_main.3 }}" alt="" /></a>
+        <a href="{{ url_for('general.index') }}"><img id="logo_footer" src="{{ datos_domus_main.3 }}" alt="" /></a>
         <hr />
         <div id="social">
           {% for red_footer in redes_footer %}
@@ -181,7 +158,7 @@
         <p>
           <i class="fa-solid fa-message"></i>
           Dejanos tu contacto: <br />
-          <a href="{{ url_for('contactanos') }}">Ir a Formulario</a>
+          <a href="{{ url_for('general.contactanos') }}">Ir a Formulario</a>
         </p>
       </div>
       <div id="footer_servicio" class="footer_column">
@@ -192,10 +169,10 @@
       </div>
       <div id="footer_nosotros" class="footer_column">
         <h2>Sobre nosotros</h2>
-        <a href="{{ url_for('nosotros') }}">Conócenos</a>
+        <a href="{{ url_for('general.nosotros') }}">Conócenos</a>
         <p>Puntos de Venta</p>
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.0777467455528!2d-79.86560812524452!3d-6.760374293236254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x904ceeeffd190ddd%3A0xce387ae6229aa09e!2sUSAT!5e0!3m2!1ses-419!2spe!4v1724621773294!5m2!1ses-419!2spe" width="250" height="150" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        <a href="{{ url_for('login_admin') }}">Exclusivo para Colaboradores</a>
+        <a href="{{ url_for('admin_dashboard.login_admin') }}">Exclusivo para Colaboradores</a>
       </div>
     </footer>
     <div class="footer_end">

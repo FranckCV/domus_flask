@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 
 def obtenerListaDeseos(usuario_id):
     conexion = obtener_conexion()

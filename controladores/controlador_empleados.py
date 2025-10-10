@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 import base64
 tabla = 'usuario'
 cadena_clave = '_SOMOS_DOMUS_2024_EMP_'

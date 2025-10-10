@@ -126,7 +126,7 @@
 
                             </a>
 
-                            <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST">
+                            <form action="{{ url_for('perfil.agregar_a_lista_deseos') }}" method="POST">
                                 <div class="" id="heart">
                                     <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
                                     <button type="submit" class="product_option product_option_fav">
@@ -207,7 +207,7 @@
 
 
                             </a>
-                            <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST">
+                            <form action="{{ url_for('perfil.agregar_a_lista_deseos') }}" method="POST">
                                 <div class="" id="heart">
                                     <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
                                     <button type="submit" class="product_option product_option_fav">
@@ -305,7 +305,7 @@
 
 
                                     </a>
-                                    <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST" id="form_{{ producto.0 }}" class="wishlist-form">
+                                    <form action="{{ url_for('perfil.agregar_a_lista_deseos') }}" method="POST" id="form_{{ producto.0 }}" class="wishlist-form">
                                         <div id="heart">
                                             <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
                                             <button type="button" class="product_option product_option_fav" onclick="agregarQuitarListaDeseos({{ producto.0 }})">
@@ -342,7 +342,7 @@
     <script src="static/js/scriptListProduct.js"></script>
     <script src="static/js/listaDeseos.js"></script> 
     <script>
-        fetch("{{ url_for('agregar_a_lista_deseos') }}", {
+        fetch("{{ url_for('perfil.agregar_a_lista_deseos') }}", {
             method: "POST",
             body: new URLSearchParams({
                 'producto_id': producto_id_input

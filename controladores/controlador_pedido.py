@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 import base64
 import controladores.controlador_productos as controlador_productos
 tabla = 'pedido'
