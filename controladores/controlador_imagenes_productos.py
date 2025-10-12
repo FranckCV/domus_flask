@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 import base64
 tabla = 'producto'
 
@@ -148,18 +148,18 @@ def obtener_listado_imagenes_por_producto(id):
         cursor.execute(sql)
         imagenes = cursor.fetchall()
 
-    imagenes_lista = []
-    for imagen in imagenes:
-        id, img , prin , pro = imagen
-        if imagen:
-            img_base64 = base64.b64encode(img).decode('utf-8')
-            img_url = f"data:image/png;base64,{img_base64}"
-        else:
-            img_url = ""  # Placeholder en caso de que no haya logo
-        imagenes_lista.append((id, img_url , prin , pro))
+    # imagenes_lista = []
+    # for imagen in imagenes:
+    #     id, img , prin , pro = imagen
+    #     if imagen:
+    #         img_base64 = base64.b64encode(img).decode('utf-8')
+    #         img_url = f"data:image/png;base64,{img_base64}"
+    #     else:
+    #         img_url = ""  # Placeholder en caso de que no haya logo
+    #     imagenes_lista.append((id, img_url , prin , pro))
 
     conexion.close()
-    return imagenes_lista
+    return imagenes
 
 
 def obtener_listado_imagenes_sec_por_producto(id):
@@ -180,18 +180,8 @@ def obtener_listado_imagenes_sec_por_producto(id):
         cursor.execute(sql)
         imagenes = cursor.fetchall()
 
-    imagenes_lista = []
-    for imagen in imagenes:
-        id, nom,img , prin , pro = imagen
-        if imagen:
-            img_base64 = base64.b64encode(img).decode('utf-8')
-            img_url = f"data:image/png;base64,{img_base64}"
-        else:
-            img_url = ""  # Placeholder en caso de que no haya logo
-        imagenes_lista.append((id, nom, img_url , prin , pro))
-
     conexion.close()
-    return imagenes_lista
+    return imagenes
 
 
 

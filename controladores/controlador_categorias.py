@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 tabla = 'categoria'
 import controladores.controlador_subcategorias as controlador_subcategorias
 
@@ -7,7 +7,7 @@ def obtener_categorias_disponibles():
     conexion = obtener_conexion()
     categorias = []
     with conexion.cursor() as cursor:
-        sql = 'SELECT id, categoria, faicon_cat, disponibilidad FROM '+tabla + ' where disponibilidad = 1'
+        sql = 'SELECT id, nombre, faicon_cat, disponibilidad FROM '+tabla + ' where disponibilidad = 1'
         cursor.execute(sql)
         categorias = cursor.fetchall()    
     return categorias
@@ -30,7 +30,7 @@ def obtener_categorias_subcategorias():
         sql = '''
         SELECT 
             id, 
-            categoria, 
+            nombre, 
             faicon_cat, 
             disponibilidad
         FROM categoria 
@@ -56,7 +56,7 @@ def obtener_categorias_subcategorias():
 def obtener_categoriasXnombre():
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT id ,categoria,faicon_cat,disponibilidad FROM categoria order by categoria")
+        cursor.execute("SELECT id ,nombre,faicon_cat,disponibilidad FROM categoria order by categoria")
         categorias = cursor.fetchall()
     conexion.close()
     return categorias
@@ -65,14 +65,14 @@ def obtener_categoriasXnombre():
 def insertar_categoria(categoria,faicon_cat,disponibilidad):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO categoria(categoria,faicon_cat,disponibilidad) VALUES (%s, %s,%s)",(categoria,faicon_cat,disponibilidad))
+        cursor.execute("INSERT INTO categoria(nombre,faicon_cat,disponibilidad) VALUES (%s, %s,%s)",(categoria,faicon_cat,disponibilidad))
     conexion.commit()
     conexion.close()
 
 def insertar_categoria_api(categoria, faicon_cat, disponibilidad):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO categoria(categoria, faicon_cat, disponibilidad) VALUES (%s, %s, %s)", 
+        cursor.execute("INSERT INTO categoria(nombre, faicon_cat, disponibilidad) VALUES (%s, %s, %s)", 
                        (categoria, faicon_cat, disponibilidad))
 
         cursor.execute("SELECT LAST_INSERT_ID();")
@@ -100,7 +100,7 @@ def obtener_listado_categorias():
         cursor.execute('''
                         SELECT 
                             cat.id ,
-                            cat.categoria ,
+                            cat.nombre ,
                             cat.faicon_cat ,
                             cat.disponibilidad,
                             count(sub.id)
@@ -146,7 +146,7 @@ def obtener_categoria_id_relacion(id):
         cursor.execute('''
                         SELECT 
                             cat.id ,
-                            cat.categoria ,
+                            cat.nombre ,
                             cat.faicon_cat ,
                             cat.disponibilidad,
                             count(sub.id)

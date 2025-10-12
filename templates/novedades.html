@@ -14,7 +14,7 @@
         <h1 id="h1PROM" style="color: black; font-size: 50px; margin: 0; padding: 0;" class="titulo_enlace">NOVEDADES </h1>
         {% if novedades_anun %}
         <section id="anuncios">
-            <a href="{{url_for('anuncios')}}" class="titulo_enlace"> <h2>ANUNCIOS</h2> </a>
+            <a href="{{url_for('general.anuncios')}}" class="titulo_enlace"> <h2>ANUNCIOS</h2> </a>
             <div class="promociones-grid">
 
                 {% for imagen in novedades_anun %}
@@ -24,7 +24,7 @@
                     {% else %}
                         ver
                     {% endif %}
-                    " href="{{url_for('selectedNovedad', id=imagen[0])}}">
+                    " href="{{url_for('general.selectedNovedad', id=imagen[0])}}">
                         <img src="{{imagen[1]}}" class="" alt="{{imagen[2]}}">
                         <p>{{imagen[2]}}</p>
                     </a>
@@ -45,7 +45,7 @@
                     {% for producto in productosOfertas %}
 
                     <div class="product">
-                        <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                        <a class="product_info" href="{{url_for('general.producto', id=producto[0])}}">
                             <img class="product_pic"
                                 src="{{ producto[7] }}"
                                 alt="{{producto[1]}}">
@@ -93,7 +93,7 @@
                         <div class="product_option product_option_fav button" id="heart">
                             <i class="fa-regular fa-heart"></i>
                         </div>
-                        <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
+                        <form class="product_form_add" action="{{url_for('carrito.agregar_carrito')}}" method="post">
                             <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
                             <button type="submit" class="product_option product_option_add" id="cant_aumentar">
                               <i class="fa-solid fa-plus"></i>
@@ -111,7 +111,7 @@
 
         {% if novedades_promo %}
         <section id="promociones">
-           <a href="{{url_for('promociones')}}" class="titulo_enlace"><h2>PROMOCIONES</h2></a> 
+           <a href="{{url_for('general.promociones')}}" class="titulo_enlace"><h2>PROMOCIONES</h2></a> 
             <p>Descubre todas nuestras promociones</p>
             <div class="promociones-grid">
 
@@ -122,7 +122,7 @@
                     {% else %}
                         ver
                     {% endif %}
-                    " href="{{url_for('selectedNovedad', id=imagen[0])}}">
+                    " href="{{url_for('general.selectedNovedad', id=imagen[0])}}">
                         <img src="{{imagen[1]}}" class="" alt="{{imagen[2]}}">
                         <p>{{imagen[2]}}</p>
                     </a>
@@ -134,7 +134,7 @@
 
         {% if novedades_avis %}
         <section id="promociones">
-           <a href="{{url_for('avisos')}}" class="titulo_enlace"><h2>AVISOS</h2></a> 
+           <a href="{{url_for('general.avisos')}}" class="titulo_enlace"><h2>AVISOS</h2></a> 
             <p>Descubre todas nuestras promociones</p>
             <div class="promociones-grid">
 
@@ -145,7 +145,7 @@
                     {% else %}
                         ver
                     {% endif %}
-                    " href="{{url_for('selectedNovedad', id=imagen[0])}}">
+                    " href="{{url_for('general.selectedNovedad', id=imagen[0])}}">
                         <img src="{{imagen[1]}}" class="" alt="{{imagen[2]}}">
                         <p>{{imagen[2]}}</p>
                     </a>

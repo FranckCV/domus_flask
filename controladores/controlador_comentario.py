@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 tabla = 'comentario'
 
 def obtener_comentarios_disponibles():

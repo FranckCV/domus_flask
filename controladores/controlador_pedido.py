@@ -1,19 +1,93 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 import base64
 import controladores.controlador_productos as controlador_productos
 tabla = 'pedido'
+import bd 
 
-# def actualizar_MetPago_Pedido(pedido_id, metodo):
-#     conexion = obtener_conexion()
-#     with conexion.cursor() as cursor:
-#         query = """
-#             UPDATE pedido
-#             SET METODO_PAGOid = %s  
-#             WHERE id = %s
-#         """
-#         cursor.execute(query, (metodo, pedido_id))
-#     conexion.commit()
-#     conexion.close()
+def get_carrito_usuarioid(usuarioid):
+    sql = '''
+        SELECT 
+            p.id, 
+            p.fecha_compra, 
+            p.subtotal, 
+            p.usuarioid, 
+            met.nombre as metodo_pago, 
+            est.nombre as estado, 
+            p.registro_auditoria 
+        FROM pedido p
+        LEFT join metodo_pago met on p.metodo_pagoid = met.id
+        LEFT join estado_pedido est on est.id = p.estado_pedidoid
+        where p.usuarioid = %s and p.estado_pedidoid = 1
+        '''
+    return bd.sql_select_fetchone(sql,(usuarioid)) or {}
+
+
+def get_pedido_id(id):
+    sql = '''
+        SELECT 
+            p.id, 
+            p.fecha_compra, 
+            p.subtotal, 
+            p.usuarioid, 
+            met.nombre as metodo_pago, 
+            est.nombre as estado, 
+            p.registro_auditoria 
+        FROM pedido P
+        LEFT join metodo_pago met on p.metodo_pagoid = met.id
+        LEFT join estado_pedido est on est.id = p.estado_pedidoid
+        where  p.id = %s
+        '''
+    return bd.sql_select_fetchone(sql,(id))
+
+
+def get_pedidos_usuario_id(usuario_id):
+    sql = '''
+        SELECT 
+            p.id, 
+            p.fecha_compra, 
+            p.subtotal, 
+            p.usuarioid, 
+            met.nombre as metodo_pago, 
+            est.nombre as estado, 
+            p.registro_auditoria 
+        FROM pedido P
+        inner join metodo_pago met on p.metodo_pagoid = met.id
+        inner join estado_pedido est on est.id = p.estado_pedidoid
+        where p.usuarioid = %s
+        '''
+    return bd.sql_select_fetchall(sql,(usuario_id))
+
+
+def insert_detalles_pedido(productoid, pedidoid, cantidad):
+    sql = '''
+        INSERT INTO detalles_pedido(productoid, pedidoid, cantidad) VALUES 
+        (%s , %s, %s)
+    '''
+    bd.sql_execute(sql,(productoid, pedidoid, cantidad))
+
+
+def update_detalles_pedido(productoid, pedidoid, cantidad):
+    sql = '''
+        UPDATE detalles_pedido SET 
+            cantidad = %s
+        WHERE productoid=%s and pedidoid=%s
+    '''
+    bd.sql_execute(sql,(cantidad,productoid, pedidoid))
+
+
+def delete_detalles_pedido(productoid, pedidoid):
+    sql = '''
+        DELETE FROM detalles_pedido WHERE 
+        WHERE productoid=%s and pedidoid=%s
+    '''
+    bd.sql_execute(sql,(productoid, pedidoid))
+
+
+
+
+
+
+
 
 
 def actualizarPedido(pedido_id, fecha_compra, subtotal,metodo_pago,estado,usuario_id):
@@ -261,7 +335,7 @@ def obtener_pedidos_usuario(usuario_id):
                 sum(dpe.cantidad) as total_productos,
                 met.disponibilidad,
                 P.usuarioid,
-                pr.imagen  -- Suponiendo que la imagen está en el campo `imagen` de la tabla producto
+                pr.imagen  -- Suponiendo que la imagen está en el campo imagen de la tabla producto
             FROM pedido P
             LEFT JOIN usuario U ON U.id = P.USUARIOid
             LEFT JOIN detalles_pedido dpe ON dpe.pedidoid = P.id

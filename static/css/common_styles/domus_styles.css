@@ -602,7 +602,7 @@ article {
     }
 
     .header_option {
-        font-size: 2.5vw;
+        font-size: 2vw;
         gap: 10px;
     }
 
@@ -680,12 +680,12 @@ article {
         grid-template-rows: repeat(2,auto);
         grid-template-areas: "h_domus h_buscar h_carrito h_perfil"
                              "nav nav nav nav";
-        font-size: 0.75vw;
+        font-size: 0.70vw;
     }    
     
     .header_item {
         margin-block: 20px;
-        font-size: 1.5vw;
+        font-size: 1.2vw;
     }
     
     .header_option {
@@ -718,7 +718,7 @@ article {
 
     .nav_element {
         margin-block: 0.75vw;
-        font-size: 1.1vw;    
+        font-size: 0.95vw;    
         padding-inline: 1.25vw;
         padding-block: 0.5vw;
         gap: 0.75vw;

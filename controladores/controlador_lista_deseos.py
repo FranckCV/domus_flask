@@ -1,4 +1,30 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
+import bd
+
+def insert_lista_deseos(productoid, usuarioid):
+    sql = '''
+        INSERT INTO lista_deseos(productoid, usuarioid) VALUES 
+        (%s, %s)
+    '''
+    bd.sql_execute(sql,(productoid, usuarioid))
+
+
+def delete_lista_deseos(productoid, usuarioid):
+    sql = '''
+        DELETE FROM lista_deseos WHERE 
+        WHERE productoid=%s and usuarioid=%s
+    '''
+    bd.sql_execute(sql,(productoid, usuarioid))
+
+
+
+
+
+
+
+
+
+
 
 def obtenerListaDeseos(usuario_id):
     conexion = obtener_conexion()

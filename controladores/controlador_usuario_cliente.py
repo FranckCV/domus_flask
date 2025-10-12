@@ -1,5 +1,132 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 import base64
+import bd
+from utils import encstringsha256
+
+def get_usuario_id(id):
+    sql = '''
+        SELECT 
+            u.id, 
+            u.nombres, 
+            u.apellidos, 
+            u.doc_identidad, 
+            u.img_usuario, 
+            CASE 
+                WHEN u.genero = 1 THEN 'Masculino'
+                ELSE 'Femenino'
+            END AS genero,
+            u.fecha_nacimiento, 
+            u.telefono, 
+            u.correo,
+            u.disponibilidad,
+            u.tipo_usuarioid
+        FROM usuario u
+        WHERE u.id = %s AND u.tipo_usuarioid = 3
+    '''
+    return bd.sql_select_fetchone(sql,(id))
+
+
+def change_password(usuario_id, contrasenia_actual, contrasenia_nueva):
+    try:
+        sql_s = '''
+            SELECT 
+                contrasenia as c
+            FROM usuario
+            where id = %s
+        '''
+        c_a = bd.sql_select_fetchone(sql_s, (usuario_id))['c']
+
+        if c_a == encstringsha256(contrasenia_actual):
+            sql_u = '''
+                UPDATE usuario
+                SET contrasenia = %s
+                WHERE id = %s
+            '''
+            bd.sql_execute(sql_u, (contrasenia_nueva, usuario_id))
+            return 1
+        return 0
+    except Exception as e:
+        return -1
+        
+
+def update_perfil(usuario_id, nombres, apellidos , doc_identidad , genero , telefono , correo):
+    try:
+        sql_u = '''
+            UPDATE usuario SET 
+            nombres = %s ,
+            apellidos = %s ,
+            doc_identidad = %s ,
+            genero = %s,
+            telefono = %s ,
+            correo = %s 
+            WHERE id = %s
+        '''
+        bd.sql_execute(sql_u, (nombres, apellidos , doc_identidad , genero , telefono , correo,usuario_id))
+        return 1
+    except Exception as e:
+        return -1
+        
+    
+def get_usuario_correo(correo):
+    sql = '''
+        SELECT 
+            id, 
+            nombres, 
+            apellidos, 
+            doc_identidad, 
+            img_usuario, 
+            genero, 
+            fecha_nacimiento, 
+            telefono, 
+            correo, 
+            contrasenia, 
+            disponibilidad, 
+            fecha_registro, 
+            tipo_usuarioid, 
+            registro_auditoria 
+        FROM usuario
+        WHERE correo = %s 
+    '''
+    return bd.sql_select_fetchone(sql,(correo))
+
+
+def get_usuario_id(id):
+    sql = '''
+        SELECT 
+            id, 
+            nombres, 
+            apellidos, 
+            doc_identidad, 
+            img_usuario, 
+            genero, 
+            fecha_nacimiento, 
+            telefono, 
+            correo, 
+            contrasenia, 
+            disponibilidad, 
+            fecha_registro, 
+            tipo_usuarioid, 
+            registro_auditoria 
+        FROM usuario
+        WHERE id = %s 
+    '''
+    return bd.sql_select_fetchone(sql,(id))
+  
+
+def register_usuario_cliente(nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia):
+    sql_s = '''
+        SELECT correo FROM usuario WHERE correo = %s
+    '''
+    existe_correo = bd.sql_select_fetchone(sql_s,(correo)) is not None
+    
+    if not existe_correo:
+        sql_i = '''
+            INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, 1, 3)
+        '''
+        return bd.sql_execute_lastrowid(sql_i,(nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia))
+    return 0
+
 
 def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuario):
     conexion = obtener_conexion() 
@@ -27,6 +154,7 @@ def insertar_usuario(nombres, apellidos, doc_identidad, genero, fecha_nacimiento
     finally:
         conexion.close()
 
+
 def insertar_usuario_api(nombres, apellidos, doc_identidad, genero, fecha_nacimiento, telefono, correo, contrasenia, disponibilidad, tipo_usuario):
     conexion = obtener_conexion() 
     try:
@@ -52,6 +180,7 @@ def insertar_usuario_api(nombres, apellidos, doc_identidad, genero, fecha_nacimi
         return -1  
     finally:
         conexion.close() 
+
 
 def confirmarDatos(correo, contrasenia):
     conexion= obtener_conexion()
@@ -172,6 +301,31 @@ def buscar_listado_usuarios_clientes_nombre(nombre):
         conexion.close()
 
 
+def obtener_usuario_cliente_por_id2(id):
+    conexion = obtener_conexion()
+    try:
+        with conexion.cursor() as cursor:
+            sql = '''
+                SELECT 
+                    id,
+                    correo,
+                    contrasenia,
+                    TIPO_USUARIOid
+                FROM usuario
+                WHERE id = %s
+            '''
+            cursor.execute(sql, (id,))
+            usuario = cursor.fetchone()
+
+            return usuario
+    except Exception as e:
+        print(f"Error al obtener el usuario cliente por ID: {e}")
+        return None
+    finally:
+        conexion.close()
+
+
+
 def obtener_usuario_cliente_por_id(id):
     conexion = obtener_conexion()
     try:
@@ -202,7 +356,8 @@ def obtener_usuario_cliente_por_id(id):
         return None
     finally:
         conexion.close()
-        
+
+
 def insertar_imagen(id, img):
     conexion = obtener_conexion()
     try:
@@ -218,8 +373,7 @@ def insertar_imagen(id, img):
         print(f"Error al actualizar la imagen del usuario: {e}")
     finally:
         conexion.close()
- 
-      
+   
         
 def obtener_usuario_cliente_por_email(email):
         conexion = obtener_conexion()

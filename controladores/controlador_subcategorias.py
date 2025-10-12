@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 tabla = 'categoria'
 
 
@@ -9,13 +9,13 @@ def obtenerSubcategoriasXCategoria(categoria):
         sql = '''
             SELECT 
                 su.id , 
-                su.subcategoria , 
+                su.nombre , 
                 su.faicon_subcat,
                 su.CATEGORIAid
             FROM categoria ca
             inner join subcategoria su on su.CATEGORIAid = ca.id
             where su.disponibilidad = 1 and ca.id = '''+str(categoria)+'''
-            order by su.subcategoria;
+            order by su.nombre;
         '''
         cursor.execute(sql)
         categorias = cursor.fetchall()    
@@ -29,10 +29,10 @@ def obtenerCategoriasXSubcategoria(subcategoria):
         sql = '''
             SELECT
                 ca.id,
-                ca.categoria,
+                ca.nombre,
                 ca.faicon_cat,
                 su.id, 
-                su.subcategoria , 
+                su.nombre , 
                 su.faicon_subcat
             FROM categoria ca
             inner join subcategoria su on su.CATEGORIAid = ca.id
@@ -70,11 +70,11 @@ def obtener_subcategoriasXnombre():
         cursor.execute('''
                        SELECT 
                         sub.id , 
-                        sub.subcategoria ,
+                        sub.nombre ,
                         sub.faicon_subcat,
                         sub.disponibilidad,
                         sub.categoriaid , 
-                        cat.categoria ,
+                        cat.nombre ,
                         cat.faicon_cat 
                        FROM subcategoria sub 
                        INNER JOIN categoria cat on cat.id = sub.categoriaid 
@@ -88,7 +88,7 @@ def obtener_subcategoriasXnombre():
 def insertar_subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO subcategoria(subcategoria,faicon_subcat,disponibilidad,categoriaid) VALUES (%s, %s,%s,%s)",(nombre,faicon_subcat,disponibilidad,categoriaid))
+        cursor.execute("INSERT INTO subcategoria(nombre,faicon_subcat,disponibilidad,categoriaid) VALUES (%s, %s,%s,%s)",(nombre,faicon_subcat,disponibilidad,categoriaid))
     conexion.commit()
     conexion.close()
 
@@ -96,7 +96,7 @@ def insertar_subcategoria_api(nombre, faicon_subcat, disponibilidad, categoriaid
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
-            cursor.execute("INSERT INTO subcategoria(subcategoria, faicon_subcat, disponibilidad, categoriaid) VALUES (%s, %s, %s, %s)", 
+            cursor.execute("INSERT INTO subcategoria(nombre, faicon_subcat, disponibilidad, categoriaid) VALUES (%s, %s, %s, %s)", 
                            (nombre, faicon_subcat, disponibilidad, categoriaid))
             
             cursor.execute('SELECT LAST_INSERT_ID();')
@@ -117,11 +117,11 @@ def obtener_subcategorias():
         cursor.execute('''
                         SELECT 
                             sub.id , 
-                            sub.subcategoria , 
+                            sub.nombre , 
                             sub.faicon_subcat ,
                             sub.disponibilidad ,
                             sub.categoriaid , 
-                            cat.categoria ,
+                            cat.nombre ,
                             cat.faicon_cat,
                             count(pr.id),
                             count(nov.id)
@@ -142,11 +142,11 @@ def obtener_listado_subcategorias():
         cursor.execute('''
                         SELECT 
                             sub.id , 
-                            sub.subcategoria , 
+                            sub.nombre , 
                             sub.faicon_subcat ,
                             sub.disponibilidad ,
                             sub.categoriaid , 
-                            cat.categoria ,
+                            cat.nombre ,
                             cat.faicon_cat,
                             count(pr.id),
                             count(nov.id),
@@ -168,11 +168,11 @@ def buscar_listado_subcategorias_nombre(nombre):
         cursor.execute('''
                         SELECT 
                             sub.id , 
-                            sub.subcategoria , 
+                            sub.nombre , 
                             sub.faicon_subcat ,
                             sub.disponibilidad ,
                             sub.categoriaid , 
-                            cat.categoria ,
+                            cat.nombre ,
                             cat.faicon_cat,
                             count(pr.id),
                             count(nov.id),

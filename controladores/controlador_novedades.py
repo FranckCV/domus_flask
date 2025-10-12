@@ -1,5 +1,32 @@
-from controladores.bd import obtener_conexion
-import base64
+from bd import obtener_conexion
+import bd
+
+def get_banners_recientes(limit=4):
+    sql = '''
+        SELECT 
+            nov.id, 
+            MIN(imnov.img) AS ruta, 
+            nov.nombre
+        FROM 
+            novedad nov
+        LEFT JOIN img_novedad imnov ON nov.id = imnov.NOVEDADid
+        Left join tipo_img_novedad tip on tip.id = imnov.tipo_img_novedadid
+        WHERE 
+            imnov.tipo_img_novedadid = 1 
+            AND nov.disponibilidad = 1
+            AND tip.disponibilidad = 1
+            AND nov.fecha_inicio <= NOW() 
+            AND NOW() <= nov.fecha_vencimiento
+        GROUP BY 
+            nov.id
+        ORDER BY 
+            nov.fecha_registro DESC
+        LIMIT %s
+    '''
+    return bd.sql_select_fetchall(sql,(limit))
+
+
+
 
 def obtenerBannersNovedadesRecientes():
     conexion = obtener_conexion()
@@ -8,7 +35,7 @@ def obtenerBannersNovedadesRecientes():
         sql = '''
                 SELECT 
                     nov.id, 
-                    MIN(imnov.imagen) AS imagen, 
+                    MIN(imnov.img) AS imagen, 
                     nov.nombre
                 FROM 
                     novedad nov
@@ -29,20 +56,8 @@ def obtenerBannersNovedadesRecientes():
         cursor.execute(sql)
         elementos = cursor.fetchall()   
 
-    banners_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom = dato
-
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        banners_lista.append((nov_id, img_url, nov_nom))
-        
     conexion.close()
-    return banners_lista
+    return elementos
 
 
 def obtenerTiposNovedades():
@@ -92,7 +107,7 @@ def obtener_listado_novedades():
                         img_n.NOVEDADid = nov.id
                         and tip.disponibilidad = 1
                     ORDER BY 
-                        OCTET_LENGTH(img_n.imagen) DESC 
+                        OCTET_LENGTH(img_n.img) DESC 
                     LIMIT 1
                 ),
                 tip.disponibilidad
@@ -139,7 +154,7 @@ def obtener_info_novedad_id(id):
                     WHERE 
                         img_n.NOVEDADid = nov.id 
                     ORDER BY 
-                        OCTET_LENGTH(img_n.imagen) DESC 
+                        OCTET_LENGTH(img_n.img) DESC 
                     LIMIT 1
                 )
             FROM novedad nov
@@ -170,7 +185,7 @@ def mostrarNovedadesxTipo(tipo, limite):
         sql = '''
                 SELECT 
                     nov.id, 
-                    imgnov.imagen AS max_imagen,
+                    imgnov.img AS max_imagen,
                     nov.titulo,
                     imgnov.tipo_img_novedadid
                 FROM novedad nov
@@ -179,8 +194,8 @@ def mostrarNovedadesxTipo(tipo, limite):
                 AND nov.TIPO_NOVEDADid = ''' + str(tipo) + ''' 
                 AND nov.fecha_inicio <= NOW() 
                 AND nov.fecha_vencimiento >= NOW()
-                AND imgnov.imagen = (
-                    SELECT MAX(imgnov2.imagen)
+                AND imgnov.img = (
+                    SELECT MAX(imgnov2.img)
                     FROM img_novedad imgnov2
                     WHERE imgnov2.NOVEDADid = nov.id
                 )
@@ -200,18 +215,8 @@ def mostrarNovedadesxTipo(tipo, limite):
         cursor.execute(sql)
         elementos = cursor.fetchall()   
 
-    img_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom , tipo_id = dato
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        img_lista.append((nov_id, img_url, nov_nom,tipo_id))
     conexion.close()
-    return img_lista
+    return elementos
 
 
 def buscar_listado_novedades_nombre_titulo(texto):
@@ -243,7 +248,7 @@ def buscar_listado_novedades_nombre_titulo(texto):
                     WHERE 
                         img_n.NOVEDADid = nov.id 
                     ORDER BY 
-                        OCTET_LENGTH(img_n.imagen) DESC 
+                        img_n.imagen) DESC 
                     LIMIT 1
                 )
             FROM novedad nov
@@ -269,7 +274,7 @@ def obtenerPromocionesTarjetas():
         sql = '''
                 SELECT 
                     nov.id, 
-                    MIN(imnov.imagen) AS imagen, 
+                    MIN(imnov.img) AS imagen, 
                     nov.nombre
                 FROM 
                     novedad nov
@@ -287,20 +292,8 @@ def obtenerPromocionesTarjetas():
         cursor.execute(sql)
         elementos = cursor.fetchall()   
 
-    banners_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom = dato
-
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        banners_lista.append((nov_id, img_url, nov_nom))
-        
     conexion.close()
-    return banners_lista
+    return elementos
 
 
 def obtenerNovedadesMarca(marca):
@@ -310,7 +303,7 @@ def obtenerNovedadesMarca(marca):
         sql = '''
                 SELECT 
                     nov.id, 
-                    Min(imnov.imagen) as novImagen,
+                    Min(imnov.img) as novImagen,
                     nov.nombre,
                     imnov.tipo_img_novedadid
                 FROM 
@@ -329,20 +322,8 @@ def obtenerNovedadesMarca(marca):
         cursor.execute(sql)
         elementos = cursor.fetchall()   
 
-    novedades_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
     conexion.close()
-    return novedades_lista
+    return elementos
 
 
 def obtenerNovedadesCategoria(categoria):
@@ -352,7 +333,7 @@ def obtenerNovedadesCategoria(categoria):
         sql = '''
                 SELECT 
                     nov.id, 
-                    Min(imnov.imagen) as novImagen,
+                    Min(imnov.img) as novImagen,
                     nov.nombre,
                     imnov.tipo_img_novedadid
                 FROM 
@@ -385,20 +366,8 @@ def obtenerNovedadesCategoria(categoria):
         cursor.execute(sql)
         elementos = cursor.fetchall()   
 
-    novedades_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        novedades_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
     conexion.close()
-    return novedades_lista
+    return elementos
 
 
 def obtenerNovedadesRecientes():
@@ -408,7 +377,7 @@ def obtenerNovedadesRecientes():
         sql = '''
                 SELECT 
                     nov.id, 
-                    Min(imnov.imagen) as novImagen,
+                    Min(imnov.img) as novImagen,
                     nov.nombre,
                     imnov.tipo_img_novedadid
                 FROM 
@@ -428,20 +397,8 @@ def obtenerNovedadesRecientes():
         cursor.execute(sql)
         elementos = cursor.fetchall()   
 
-    img_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom , nov_tipo = dato
-
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        img_lista.append((nov_id, img_url, nov_nom , nov_tipo))
-        
     conexion.close()
-    return img_lista
+    return elementos
 
 
 def mostrarNovedadesPromociones():
@@ -451,7 +408,7 @@ def mostrarNovedadesPromociones():
         sql = '''
                 SELECT 
                     nov.id, 
-                    MIN(imgnov.imagen),
+                    MIN(imgnov.img),
                     nov.titulo
                 FROM novedad nov
                 INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
@@ -462,18 +419,8 @@ def mostrarNovedadesPromociones():
         cursor.execute(sql)
         elementos = cursor.fetchall()   
 
-    img_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom  = dato
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        img_lista.append((nov_id, img_url, nov_nom))
     conexion.close()
-    return img_lista
+    return elementos
 
 
 
@@ -490,7 +437,7 @@ def promoselect(id):
                 nov.`terminos`, 
                 nov.`MARCAid`, 
                 nov.`SUBCATEGORIAid`,
-                MIN(imgnov.imagen),
+                MIN(imgnov.img),
                 mar.marca
             FROM `novedad` nov
             INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
@@ -501,21 +448,8 @@ def promoselect(id):
         cursor.execute(sql)
         promo = cursor.fetchone()
 
-        elemento_promo = None
-
-        if promo:
-            pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , pro_img , mar_nom = promo
-
-            if pro_img:
-                logo_base64 = base64.b64encode(pro_img).decode('utf-8')
-                logo_url = f"data:image/png;base64,{logo_base64}"
-            else:
-                logo_url = "" 
-
-        elemento_promo = (pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , logo_url , mar_nom)
-
     conexion.close()
-    return elemento_promo
+    return promo
 
 
 def mostrarNovedadesAnuncios():
@@ -525,7 +459,7 @@ def mostrarNovedadesAnuncios():
         sql = '''
                 SELECT 
                     nov.id, 
-                    MIN(imgnov.imagen),
+                    MIN(imgnov.img),
                     nov.titulo
                 FROM novedad nov
                 INNER JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
@@ -536,18 +470,7 @@ def mostrarNovedadesAnuncios():
         cursor.execute(sql)
         elementos = cursor.fetchall()   
 
-    img_lista = []
-    for dato in elementos:
-        nov_id, nov_img, nov_nom  = dato
-        if nov_img:
-            logo_base64 = base64.b64encode(nov_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            img_url = ""
-        
-        img_lista.append((nov_id, img_url, nov_nom))
-    conexion.close()
-    return img_lista
+    return elementos
 
 
 def anuncioSelect(id):
@@ -562,7 +485,7 @@ def anuncioSelect(id):
                 nov.`terminos`, 
                 nov.`MARCAid`, 
                 nov.`SUBCATEGORIAid`,
-                MIN(imgnov.imagen),
+                MIN(imgnov.img),
                 mar.marca
             FROM `novedad` nov
             LEFT JOIN img_novedad imgnov on imgnov.NOVEDADid = nov.id
@@ -573,21 +496,7 @@ def anuncioSelect(id):
         cursor.execute(sql)
         promo = cursor.fetchone()
 
-        elemento_promo = None
-
-        if promo:
-            pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , pro_img , mar_nom = promo
-
-            if pro_img:
-                logo_base64 = base64.b64encode(pro_img).decode('utf-8')
-                logo_url = f"data:image/png;base64,{logo_base64}"
-            else:
-                logo_url = "" 
-
-        elemento_promo = (pro_id, pro_titulo, pro_fecini, pro_fecven , pro_ter , pro_mar , pro_sub , logo_url , mar_nom)
-
-    conexion.close()
-    return elemento_promo
+    return promo
 
 
 def insertarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, marcaId, subcategoriaId, tipoNovedadId):
@@ -616,8 +525,6 @@ def actualizarNovedad(nombre, titulo, fechaInicio, fechaVencimiento, terminos, d
         '''
         cursor.execute(sql, (nombre, titulo, fechaInicio, fechaVencimiento, terminos, disponibilidad, marcaId, subcategoriaId, tipoNovedadId, novedadId))
         
-        # if imagen:
-        #     insertarImagenNovedad(novedadId, imagen)
 
     conexion.commit()
     conexion.close()
@@ -646,7 +553,7 @@ def actualizarImagenNovedad(nomImagen, imagen, tipo_img_novedad_id, id):
     with conexion.cursor() as cursor:
         sql = '''
             UPDATE img_novedad
-            SET nomImagen = %s, imagen = %s, TIPO_IMG_NOVEDADid = %s
+            SET nombre = %s, img = %s, TIPO_IMG_NOVEDADid = %s
             WHERE id = %s
         '''
         cursor.execute(sql, (nomImagen, imagen, tipo_img_novedad_id, id))

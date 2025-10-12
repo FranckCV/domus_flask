@@ -1,7 +1,28 @@
-from controladores.bd import obtener_conexion
-import base64
-import controladores.controlador_productos as controlador_productos
-tabla = 'marca'
+from bd import obtener_conexion
+import bd
+
+
+
+def get_marcas_recientes(limit=4):
+    sql = '''
+        SELECT 
+            ma.id, 
+            ma.nombre, 
+            ma.img_logo as ruta
+        FROM 
+            marca ma
+        WHERE 
+            ma.disponibilidad = 1 
+        ORDER BY 
+            ma.fecha_registro DESC
+        LIMIT %s
+        '''
+    return bd.sql_select_fetchall(sql,(limit))
+
+
+
+
+
 
 
 def obtener_marcas_menu(valor):
@@ -11,27 +32,17 @@ def obtener_marcas_menu(valor):
         sql = '''
             SELECT 
                 id, 
-                marca, 
+                nombre as marca, 
                 img_logo 
-            FROM '''+tabla+''' 
+            FROM marca
             where disponibilidad = 1 
             order by fecha_registro desc
             LIMIT '''+str(valor)
         cursor.execute(sql)
         marcas = cursor.fetchall()
     
-    marcas_lista = []
-    for marca in marcas:
-        marca_id, marca_nombre, logo_binario = marca
-        if logo_binario:
-            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = ""  # Placeholder en caso de que no haya logo
-        marcas_lista.append((marca_id, marca_nombre, logo_url))
-    
     conexion.close()
-    return marcas_lista
+    return marcas
 
 
 def obtener_marcas_index(cant):
@@ -41,11 +52,11 @@ def obtener_marcas_index(cant):
         sql = '''
             SELECT 
                 ma.id, 
-                ma.marca, 
+                ma.nombre, 
                 ma.img_logo, 
                 nov.id AS novedad_id, 
                 nov.tipo_novedadid, 
-                ino.imagen
+                ino.img
             FROM 
                 marca ma
             INNER JOIN 
@@ -67,29 +78,8 @@ def obtener_marcas_index(cant):
         cursor.execute(sql)
         marcas = cursor.fetchall()
     
-    marcas_lista = []
-    for marca in marcas:
-        marca_id, marca_nombre, logo_binario , nov_id, nov_tip, img_nov = marca
-
-        productosMarca = controlador_productos.obtener_en_tarjetas_marca(0 , marca_id , cant)
-
-        if logo_binario:
-            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = ""
-
-        if img_nov:
-            img_nov_base64 = base64.b64encode(img_nov).decode('utf-8')
-            img_nov_url = f"data:image/png;base64,{img_nov_base64}"
-        else:
-            img_nov_url = "" 
-
-        
-        marcas_lista.append((marca_id, marca_nombre, logo_url, nov_id, nov_tip, img_nov_url, productosMarca))
-    
     conexion.close()
-    return marcas_lista
+    return marcas
 
 
 def obtener_marca_disponible_por_id(id):
@@ -99,7 +89,7 @@ def obtener_marca_disponible_por_id(id):
         sql = '''
             SELECT 
                 ma.id, 
-                ma.marca, 
+                ma.nombre, 
                 ma.img_logo,
                 ma.img_banner,
                 ma.disponibilidad
@@ -108,28 +98,9 @@ def obtener_marca_disponible_por_id(id):
             '''
         cursor.execute(sql)
         marca = cursor.fetchone()
-
-    marca_elemento = None
-
-    if marca:
-        marca_id, marca_nombre, logo_binario, banner_binario , marca_disp = marca
-
-        if logo_binario:
-            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = ""  # Placeholder en caso de que no haya logo
-
-        if banner_binario:
-            banner_base64 = base64.b64encode(banner_binario).decode('utf-8')
-            banner_url = f"data:image/png;base64,{banner_base64}"
-        else:
-            banner_url = ""  # Placeholder en caso de que no haya banner
-
-        marca_elemento = (marca_id, marca_nombre, logo_url, banner_url , marca_disp)
-
+  
     conexion.close()
-    return marca_elemento
+    return marca
 
 
 def obtener_listado_marca_por_id(id):
@@ -139,7 +110,7 @@ def obtener_listado_marca_por_id(id):
         sql = '''
             SELECT 
                 ma.id, 
-                ma.marca, 
+                ma.nombre, 
                 ma.img_logo,
                 ma.img_banner,
                 ma.disponibilidad
@@ -151,25 +122,8 @@ def obtener_listado_marca_por_id(id):
 
     marca_elemento = None
 
-    if marca:
-        marca_id, marca_nombre, logo_binario, banner_binario , marca_disp = marca
-
-        if logo_binario:
-            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = ""  # Placeholder en caso de que no haya logo
-
-        if banner_binario:
-            banner_base64 = base64.b64encode(banner_binario).decode('utf-8')
-            banner_url = f"data:image/png;base64,{banner_base64}"
-        else:
-            banner_url = ""  # Placeholder en caso de que no haya banner
-
-        marca_elemento = (marca_id, marca_nombre, logo_url, banner_url , marca_disp)
-
     conexion.close()
-    return marca_elemento
+    return marca
 
 
 def obtener_imgs_marca_disponible_por_id(id):
@@ -209,19 +163,9 @@ def obtener_todas_marcas_recientes():
                 '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
-    
-    marcas_lista = []
-    for marca in marcas:
-        marca_id, marca_nombre, logo_binario, img_bin , fec , disp= marca
-        if logo_binario:
-            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = ""  
-        marcas_lista.append((marca_id, marca_nombre, logo_url))
-    
+
     conexion.close()
-    return marcas_lista
+    return marcas
 
 
 def obtener_todas_marcas_alfabetico(orden):
@@ -248,19 +192,9 @@ def obtener_todas_marcas_alfabetico(orden):
                 '''
         cursor.execute(sql)
         marcas = cursor.fetchall()
-    
-    marcas_lista = []
-    for marca in marcas:
-        marca_id, marca_nombre, logo_binario, img_bin , fec , disp= marca
-        if logo_binario:
-            logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = ""  
-        marcas_lista.append((marca_id, marca_nombre, logo_url))
-    
+  
     conexion.close()
-    return marcas_lista
+    return marcas
 
 
 def obtener_marcasXnombre():
@@ -269,24 +203,8 @@ def obtener_marcasXnombre():
         cursor.execute("SELECT id, marca, img_logo FROM marca order by marca")
         marcas = cursor.fetchall()
         
-        # Convertir el logo binario a base64 para cada marca
-        marcas_procesadas = []
-        for marca in marcas:
-            id_marca = marca[0]
-            nombre_marca = marca[1]
-            logo_binario = marca[2]
-            
-            # Convertir el logo binario a una cadena base64
-            if logo_binario:
-                logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-                logo_formato = f"data:image/png;base64,{logo_base64}" 
-            else:
-                logo_formato = None 
-            
-            marcas_procesadas.append((id_marca, nombre_marca, logo_formato))
-    
     conexion.close()
-    return marcas_procesadas
+    return marcas
 
 
 def insertar_marca(marca, logo, banner):
@@ -303,7 +221,7 @@ def obtener_listado_marcas():
         cursor.execute('''
                 SELECT 
                     m.id,
-                    m.marca, 
+                    m.nombre, 
                     m.img_logo, 
                     m.img_banner,
                     date(m.fecha_registro),
@@ -317,39 +235,13 @@ def obtener_listado_marcas():
                 LEFT JOIN 
                     novedad n ON m.id = n.MARCAid
                 GROUP BY 
-                    m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad
+                    m.id, m.nombre, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad
                 order by m.id
                 ''')
         marcas = cursor.fetchall()
-        
-        # Convertir el logo binario a base64 para cada marca
-        marcas_procesadas = []
-        for marca in marcas:
-            id_marca = marca[0]
-            nombre_marca = marca[1]
-            logo_binario = marca[2]
-            banner_binario = marca[3]
-            fecha = marca[4]
-            disp = marca[5]
-            cantPro = marca[6]
-            cantNov = marca[7]
-            
-            if logo_binario:
-                logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-                logo_formato = f"data:image/png;base64,{logo_base64}" 
-            else:
-                logo_formato = None
-
-            if banner_binario:
-                logo_base64 = base64.b64encode(banner_binario).decode('utf-8')
-                banner_formato = f"data:image/png;base64,{logo_base64}" 
-            else:
-                banner_formato = "" 
-            
-            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cantPro , cantNov))
-    
+      
     conexion.close()
-    return marcas_procesadas
+    return marcas
 
 
 def obtener_listado_marcas_nombre():
@@ -358,7 +250,7 @@ def obtener_listado_marcas_nombre():
         cursor.execute('''
                 SELECT 
                     m.id,
-                    m.marca, 
+                    m.nombre, 
                     m.img_logo, 
                     m.img_banner,
                     date(m.fecha_registro),
@@ -372,39 +264,13 @@ def obtener_listado_marcas_nombre():
                 LEFT JOIN 
                     novedad n ON m.id = n.MARCAid
                 GROUP BY 
-                    m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad
-                order by m.marca
+                    m.id, m.nombre, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad
+                order by m.nombre
                 ''')
         marcas = cursor.fetchall()
         
-        # Convertir el logo binario a base64 para cada marca
-        marcas_procesadas = []
-        for marca in marcas:
-            id_marca = marca[0]
-            nombre_marca = marca[1]
-            logo_binario = marca[2]
-            banner_binario = marca[3]
-            fecha = marca[4]
-            disp = marca[5]
-            cantPro = marca[6]
-            cantNov = marca[7]
-            
-            if logo_binario:
-                logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-                logo_formato = f"data:image/png;base64,{logo_base64}" 
-            else:
-                logo_formato = None
-
-            if banner_binario:
-                logo_base64 = base64.b64encode(banner_binario).decode('utf-8')
-                banner_formato = f"data:image/png;base64,{logo_base64}" 
-            else:
-                banner_formato = "" 
-            
-            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cantPro , cantNov))
-    
     conexion.close()
-    return marcas_procesadas
+    return marcas
 
 
 def buscar_listado_marcas_nombre(nombre):
@@ -413,7 +279,7 @@ def buscar_listado_marcas_nombre(nombre):
         cursor.execute('''
                 SELECT 
                     m.id,
-                    m.marca, 
+                    m.nombre, 
                     m.img_logo, 
                     m.img_banner,
                     date(m.fecha_registro),
@@ -426,40 +292,14 @@ def buscar_listado_marcas_nombre(nombre):
                     producto p ON m.id = p.MARCAid
                 LEFT JOIN 
                     novedad n ON m.id = n.MARCAid
-                WHERE UPPER(m.marca) LIKE UPPER ('%'''+str(nombre)+'''%')
+                WHERE UPPER(m.nombre) LIKE UPPER ('%'''+str(nombre)+'''%')
                 GROUP BY 
-                    m.id, m.marca, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad;
+                    m.id, m.nombre, m.img_logo, m.img_banner, m.fecha_registro, m.disponibilidad;
                 ''')
         marcas = cursor.fetchall()
         
-        # Convertir el logo binario a base64 para cada marca
-        marcas_procesadas = []
-        for marca in marcas:
-            id_marca = marca[0]
-            nombre_marca = marca[1]
-            logo_binario = marca[2]
-            banner_binario = marca[3]
-            fecha = marca[4]
-            disp = marca[5]
-            cantPro = marca[6]
-            cantNov = marca[7]
-            
-            if logo_binario:
-                logo_base64 = base64.b64encode(logo_binario).decode('utf-8')
-                logo_formato = f"data:image/png;base64,{logo_base64}" 
-            else:
-                logo_formato = None
-
-            if banner_binario:
-                logo_base64 = base64.b64encode(banner_binario).decode('utf-8')
-                banner_formato = f"data:image/png;base64,{logo_base64}" 
-            else:
-                banner_formato = "" 
-            
-            marcas_procesadas.append((id_marca, nombre_marca, logo_formato,banner_formato,fecha,disp,cantPro , cantNov))
-    
     conexion.close()
-    return marcas_procesadas
+    return marcas
 
 
 def eliminar_marca(id):

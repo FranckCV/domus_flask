@@ -54,7 +54,7 @@
             </h1>
             <div class="for_sale_gallery">
                 {% for imagen in novedadesCategoria %}
-                <a href="{{url_for('selectedNovedad', id=imagen[0])}}">
+                <a href="{{url_for('general.selectedNovedad', id=imagen[0])}}">
                     <img class="img-fluid 
                         {% if imagen[3] == 1 %}
                             img_for_sale_full
@@ -196,7 +196,7 @@
                             data-price="{{producto[3]}}"
                         {% endif %}
                         >
-                            <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                            <a class="product_info" href="{{url_for('general.producto', id=producto[0])}}">
                                 <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
 
                                 <p class="product_name">
@@ -238,7 +238,7 @@
                                 {% endif %}
 
                             </a>
-                            <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST">
+                            <form action="{{ url_for('perfil.agregar_a_lista_deseos') }}" method="POST">
                                 <div class="" id="heart">
                                     <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
                                     <button type="submit" class="product_option product_option_fav">
@@ -247,7 +247,7 @@
                                 </div>
                             </form>
                             
-                            <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
+                            <form class="product_form_add" action="{{url_for('carrito.agregar_carrito')}}" method="post">
                                 <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
                                 <button type="submit" class="product_option product_option_add" id="cant_aumentar">
                                 <i class="fa-solid fa-plus"></i>

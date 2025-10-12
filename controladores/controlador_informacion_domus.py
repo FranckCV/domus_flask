@@ -1,6 +1,4 @@
-from controladores.bd import obtener_conexion
-import base64
-
+from bd import obtener_conexion
 
 def obtener_informacion_domus():
     conexion = obtener_conexion()
@@ -19,31 +17,12 @@ def obtener_informacion_domus():
                     `mision`
                 FROM `informacion_domus` 
                 order by id desc 
-                limit 1;
+                limit 1
                        ''')
         datos = cursor.fetchone()
 
-    elementos = None
-
-    if datos:
-        id, correo, numero, imgLogo , imgIcon , descripcion , historia , vision , valores , mision = datos
-
-        if imgLogo:
-            logo_base64 = base64.b64encode(imgLogo).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = "" 
-
-        if imgIcon:
-            icon_base64 = base64.b64encode(imgIcon).decode('utf-8')
-            icon_url = f"data:image/png;base64,{icon_base64}"
-        else:
-            icon_url = "" 
-
-        elementos = (id, correo, numero, logo_url , icon_url , descripcion , historia , vision , valores , mision)
-
     conexion.close()
-    return elementos
+    return datos
 
 
 def obtener_informacion_domus_por_id(id):
@@ -68,27 +47,8 @@ def obtener_informacion_domus_por_id(id):
                        ''')
         datos = cursor.fetchone()
 
-    elementos = None
-
-    if datos:
-        id, correo, numero, imgLogo , imgIcon , descripcion , historia , vision , valores , mision = datos
-
-        if imgLogo:
-            logo_base64 = base64.b64encode(imgLogo).decode('utf-8')
-            logo_url = f"data:image/png;base64,{logo_base64}"
-        else:
-            logo_url = "" 
-
-        if imgIcon:
-            icon_base64 = base64.b64encode(imgIcon).decode('utf-8')
-            icon_url = f"data:image/png;base64,{icon_base64}"
-        else:
-            icon_url = "" 
-
-        elementos = (id, correo, numero, logo_url , icon_url , descripcion , historia , vision , valores , mision)
-
     conexion.close()
-    return elementos
+    return datos
 
 
 def obtener_imgs_informacion_domus_por_id(id):

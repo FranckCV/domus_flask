@@ -1,6 +1,4 @@
-from controladores.bd import obtener_conexion
-import base64
-
+from bd import obtener_conexion
 
 def obtener_redes_sociales():
     conexion = obtener_conexion()

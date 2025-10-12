@@ -1,7 +1,278 @@
-from controladores.bd import obtener_conexion
-import base64
+from bd import obtener_conexion
+import bd
+from settings import img_route
+ruta = img_route % 'img_producto'
 
-tabla = 'producto'
+
+def get_producto(u_id,p_id):
+    sql = '''
+        SELECT 
+            pr.id, 
+            pr.nombre, 
+            pr.precio_online as precio,
+            pr.precio_oferta as oferta,
+            pr.info_adicional, 
+            pr.stock, 
+            pr.fecha_registro,
+            pr.disponibilidad, 
+            sc.nombre as subcategoria ,
+            ca.nombre as categoria ,
+            ma.nombre as marca,
+            CASE 
+                WHEN ls.usuarioid IS NOT NULL THEN TRUE 
+                ELSE FALSE 
+            END AS favorito
+        FROM producto pr
+        INNER JOIN subcategoria sc on sc.id = pr.subcategoriaid
+        INNER JOIN categoria ca on ca.id = sc.categoriaid
+        INNER JOIN marca ma on ma.id = pr.marcaid
+        LEFT JOIN lista_deseos ls 
+            ON pr.id = ls.productoid 
+            AND ls.usuarioid = %s 
+        WHERE pr.id = %s
+    '''
+    return bd.sql_select_fetchone(sql,(u_id,p_id))
+
+
+def get_productos_pedido(pedido_id):
+    sql = '''
+        SELECT 
+            pr.id, 
+            pr.nombre,
+            ipr.imagen,
+            det.cantidad,
+            pr.precio_online as precio,
+            pr.precio_oferta as oferta,
+            CASE 
+                WHEN ls.usuarioid IS NOT NULL THEN TRUE 
+                ELSE FALSE 
+            END AS favorito
+        FROM producto pr 
+        INNER JOIN img_producto ipr ON pr.id = ipr.productoid
+        INNER JOIN subcategoria sub ON sub.id = pr.subcategoriaid
+        INNER JOIN categoria cat ON cat.id = sub.categoriaid
+        INNER JOIN marca mar ON mar.id = pr.marcaid
+        INNER JOIN detalles_pedido det 
+            ON pr.id = det.productoid 
+            AND det.pedidoid = %s
+        INNER JOIN pedido p on p.id = det.pedidoid
+        LEFT JOIN lista_deseos ls 
+            ON pr.id = ls.productoid 
+            AND ls.usuarioid = p.usuarioid  
+        WHERE 
+            cat.disponibilidad = 1 
+            AND sub.disponibilidad = 1 
+            AND mar.disponibilidad = 1
+            AND ipr.imgPrincipal = 1 
+            AND pr.disponibilidad = 1
+    '''
+    
+    return bd.sql_select_fetchall(sql, (pedido_id))
+
+
+def get_productos_lista_deseos(usuario_id):
+    sql = '''
+        SELECT 
+            pr.id, 
+            pr.nombre,
+            ipr.imagen,
+            pr.precio_online as precio,
+            pr.precio_oferta as oferta,
+            CASE 
+                WHEN ls.usuarioid IS NOT NULL THEN TRUE 
+                ELSE FALSE 
+            END AS favorito
+        FROM producto pr 
+        INNER JOIN img_producto ipr ON pr.id = ipr.productoid
+        INNER JOIN subcategoria sub ON sub.id = pr.subcategoriaid
+        INNER JOIN categoria cat ON cat.id = sub.categoriaid
+        INNER JOIN marca mar ON mar.id = pr.marcaid
+        INNER JOIN lista_deseos ls 
+            ON pr.id = ls.productoid 
+            AND ls.usuarioid = %s  
+        WHERE 
+            cat.disponibilidad = 1 
+            AND sub.disponibilidad = 1 
+            AND mar.disponibilidad = 1
+            AND ipr.imgPrincipal = 1 
+            AND pr.disponibilidad = 1 
+    '''
+    
+    return bd.sql_select_fetchall(sql, (usuario_id))
+
+
+def get_productos_recientes(usuarioid,limit=10):
+    sql = '''
+        SELECT 
+            pr.id, 
+            pr.nombre,
+            ipr.imagen,
+            pr.precio_online as precio,
+            pr.precio_oferta as oferta,
+            CASE 
+                WHEN ls.usuarioid IS NOT NULL THEN TRUE 
+                ELSE FALSE 
+            END AS favorito
+        FROM producto pr 
+        INNER JOIN img_producto ipr ON pr.id = ipr.productoid
+        INNER JOIN subcategoria sub ON sub.id = pr.subcategoriaid
+        INNER JOIN categoria cat ON cat.id = sub.categoriaid
+        INNER JOIN marca mar ON mar.id = pr.marcaid
+        LEFT JOIN lista_deseos ls 
+            ON pr.id = ls.productoid 
+            AND ls.usuarioid = %s  
+        WHERE 
+            cat.disponibilidad = 1 
+            AND sub.disponibilidad = 1 
+            AND mar.disponibilidad = 1
+            AND ipr.imgPrincipal = 1 
+            AND pr.disponibilidad = 1 
+        ORDER BY pr.fecha_registro DESC
+        LIMIT %s
+    '''
+    return bd.sql_select_fetchall(sql,(usuarioid,limit))
+
+
+def get_productos_populares(usuarioid,limit=10):
+    sql = '''
+        SELECT 
+            pr.id, 
+            pr.nombre, 
+            pr.precio_online as precio,
+            pr.precio_oferta as oferta,
+            ipr.imagen,
+            SUM(dp.cantidad) AS total_compras,
+            CASE 
+                WHEN ls.usuarioid IS NOT NULL THEN TRUE 
+                ELSE FALSE 
+            END AS favorito
+        FROM 
+            producto pr
+        inner join img_producto ipr on pr.id = ipr.PRODUCTOid
+        INNER JOIN detalles_pedido dp ON pr.id = dp.PRODUCTOid
+        INNER JOIN subcategoria sub on sub.id = pr.subcategoriaid
+        INNER JOIN categoria cat on cat.id = sub.categoriaid
+        INNER JOIN marca mar on mar.id = pr.marcaid
+        LEFT JOIN lista_deseos ls 
+            ON pr.id = ls.productoid 
+            AND ls.usuarioid = %s 
+        WHERE cat.disponibilidad = 1 and sub.disponibilidad = 1 and mar.disponibilidad = 1
+        and ipr.imgPrincipal = 1 and pr.disponibilidad = 1 
+        GROUP BY 
+            pr.id
+        ORDER BY 
+            5 DESC
+        LIMIT %s
+    '''
+    return bd.sql_select_fetchall(sql,(usuarioid,limit))
+
+
+def get_productos_catalogo(
+    usuarioid,
+    busqueda="",
+    orden="",
+    categoria="",
+    subcategoria="",
+    precio_max="",
+    precio_min="",
+    limit=10
+):
+    """Obtiene productos del catálogo con filtros"""
+    
+    # Validar y convertir límite
+    try:
+        limit = int(limit) if limit else 10
+        limit = min(limit, 100)  # Máximo 100 resultados
+    except:
+        limit = 10
+    
+    sql = '''
+        SELECT 
+            pr.id, 
+            pr.nombre,
+            ipr.imagen,
+            pr.precio_online as precio,
+            pr.precio_oferta as oferta,
+            CASE 
+                WHEN ls.usuarioid IS NOT NULL 
+                THEN TRUE 
+                ELSE FALSE 
+            END AS favorito,
+            pr.fecha_registro
+        FROM producto pr 
+        INNER JOIN img_producto ipr ON pr.id = ipr.productoid
+        INNER JOIN subcategoria sub ON sub.id = pr.subcategoriaid
+        INNER JOIN categoria cat ON cat.id = sub.categoriaid
+        INNER JOIN marca mar ON mar.id = pr.marcaid
+        LEFT JOIN lista_deseos ls 
+            ON pr.id = ls.productoid 
+            AND ls.usuarioid = %s  
+        WHERE 
+            cat.disponibilidad = 1 
+            AND sub.disponibilidad = 1 
+            AND mar.disponibilidad = 1
+            AND ipr.imgPrincipal = 1 
+            AND pr.disponibilidad = 1 
+    '''
+    
+    params = [usuarioid]
+    
+    # Búsqueda
+    if busqueda:
+        sql += " AND pr.nombre LIKE %s"
+        params.append(f"%{busqueda}%")
+    
+    # Categoría
+    if categoria:
+        sql += " AND cat.id = %s"
+        params.append(int(categoria))
+    
+    # Subcategoría
+    if subcategoria:
+        sql += " AND sub.id = %s"
+        params.append(int(subcategoria))
+    
+    # Precios
+    if precio_min:
+        try:
+            sql += " AND precio >= %s"
+            params.append(float(precio_min))
+        except:
+            pass
+    
+    if precio_max:
+        try:
+            sql += " AND precio <= %s"
+            params.append(float(precio_max))
+        except:
+            pass
+    
+    # Ordenamiento
+    orden_map = {
+        "1": "ORDER BY pr.fecha_registro DESC",
+        "2": "ORDER BY pr.fecha_registro DESC",
+        "3": "ORDER BY precio ASC",
+        "4": "ORDER BY precio DESC",
+    }
+    
+    sql += f" {orden_map.get(str(orden), 'ORDER BY pr.fecha_registro DESC')}"
+    sql += " LIMIT %s"
+    params.append(limit)
+    
+    try:
+        return bd.sql_select_fetchall(sql, tuple(params))
+    except Exception as e:
+        print(f"Error en get_productos_catalogo: {e}")
+        return []
+
+
+
+
+
+
+
+
+
 
 def obtener_por_id(id):
     conexion = obtener_conexion()
@@ -33,7 +304,7 @@ def obtener_por_id(id):
 def obtener_info_por_id(id):
     conexion = obtener_conexion()
     with conexion.cursor() as cursor:
-        sql = '''
+        sql = f'''
             SELECT 
                 pr.id, 
                 pr.nombre, 
@@ -47,7 +318,7 @@ def obtener_info_por_id(id):
                 pr.MARCAid, 
                 pr.SUBCATEGORIAid,
                 pr.disponibilidad,
-                img.imagen,
+                CONCAT({ruta},img.imagen) as imagen,
                 sub.categoriaid
             FROM producto pr
             LEFT JOIN img_producto img on img.PRODUCTOid = pr.id
@@ -57,22 +328,8 @@ def obtener_info_por_id(id):
         cursor.execute(sql, (id,))
         producto = cursor.fetchone()
 
-    producto_elemento = None
-
-    if producto:
-        pro_id, nom, reg, onl , ofe , prod_id , pro_info , pro_st , pro_fec , pro_ma , pro_sub , pro_disp ,pro_img, cat_id = producto
-
-        if pro_img:
-            img_base64 = base64.b64encode(pro_img).decode('utf-8')
-            img_url = f"data:image/png;base64,{img_base64}"
-        else:
-            img_url = ""  # Placeholder en caso de que no haya logo
-
-        
-    producto_elemento = (pro_id, nom, reg, onl , ofe , prod_id , pro_info , pro_st , pro_fec , pro_ma , pro_sub , pro_disp, img_url,cat_id)
-
     conexion.close()
-    return producto_elemento
+    return producto
 
 
 def ver_info_por_id(id):
@@ -135,14 +392,8 @@ def obtenerEnTarjetasTodos():
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtenerEnTarjetasMasRecientes():
@@ -173,14 +424,8 @@ def obtenerEnTarjetasMasRecientes():
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id= producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtenerEnTarjetasAlfabetico(orden):
@@ -217,14 +462,8 @@ def obtenerEnTarjetasAlfabetico(orden):
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id= producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtenerEnTarjetasxPrecio(orden):
@@ -261,14 +500,8 @@ def obtenerEnTarjetasxPrecio(orden):
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id= producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 
@@ -302,14 +535,8 @@ def buscarEnTarjetasMasRecientes(nombre):
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id= producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtenerEnTarjetasMasPopulares_catalogo():
@@ -343,14 +570,8 @@ def obtenerEnTarjetasMasPopulares_catalogo():
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cant = producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtenerEnTarjetasMasPopulares():
@@ -386,14 +607,8 @@ def obtenerEnTarjetasMasPopulares():
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cant = producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtenerEnTarjetasOfertas():
@@ -422,14 +637,8 @@ def obtenerEnTarjetasOfertas():
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtener_en_tarjetas_marca(id,marca, limit):
@@ -460,15 +669,8 @@ def obtener_en_tarjetas_marca(id,marca, limit):
         cursor.execute(sql)
         productos = cursor.fetchall()
     
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id= producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtener_en_tarjetas_subcategoria(id,subcategoria, limit):
@@ -498,15 +700,8 @@ def obtener_en_tarjetas_subcategoria(id,subcategoria, limit):
         cursor.execute(sql)
         productos = cursor.fetchall()
     
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario = producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}"))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def obtener_en_tarjetas_categoria(id,categoria, limit):
@@ -538,15 +733,8 @@ def obtener_en_tarjetas_categoria(id,categoria, limit):
         cursor.execute(sql)
         productos = cursor.fetchall()
     
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, img_binario , cat_id = producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_mar, pr_sub, f"data:image/png;base64,{img_url}",cat_id))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 # CRUD
@@ -636,14 +824,8 @@ def obtener_listado_productos():
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_id, pr_info, pr_stock, pr_fec, pr_disp,pr_mar, pr_sub, img_binario , sub_disp , cat_disp , mar_disp , cant_car , cant_img = producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_id, pr_info, pr_stock, pr_fec, pr_disp,pr_mar, pr_sub, f"data:image/png;base64,{img_url}" , sub_disp , cat_disp , mar_disp , cant_car , cant_img))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def buscar_listado_productos_nombre(nombre):
@@ -690,14 +872,8 @@ def buscar_listado_productos_nombre(nombre):
         cursor.execute(sql)
         productos = cursor.fetchall()
 
-    productos_lista = []
-    for producto in productos:
-        pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_id, pr_info, pr_stock, pr_fec, pr_disp,pr_mar, pr_sub, img_binario , sub_disp , cat_disp , mar_disp , cant_car , cant_img = producto
-        img_url = base64.b64encode(img_binario).decode('utf-8') if img_binario else ""
-        productos_lista.append((pr_id, pr_nombre, pr_reg, pr_on, pr_of, pr_id, pr_info, pr_stock, pr_fec, pr_disp,pr_mar, pr_sub, f"data:image/png;base64,{img_url}" , sub_disp , cat_disp , mar_disp , cant_car , cant_img))
-    
     conexion.close()
-    return productos_lista
+    return productos
 
 
 def eliminar_producto(id):

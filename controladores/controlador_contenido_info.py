@@ -1,5 +1,4 @@
-from controladores.bd import obtener_conexion
-import base64
+from bd import obtener_conexion
 
 def obtener_datos_contenido_info():
     conexion = obtener_conexion()

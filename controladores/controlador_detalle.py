@@ -1,5 +1,5 @@
-from controladores.bd import obtener_conexion
-import base64
+from bd import obtener_conexion
+
 
 def obtener_Detalle(id):
     conexion = obtener_conexion()
@@ -8,7 +8,9 @@ def obtener_Detalle(id):
 
     with conexion.cursor() as cursor:
         sql = '''
-            SELECT IMP.imagen, P.nombre, DP.cantidad, DP.PRODUCTOid 
+            SELECT 
+            IMP.imagen, 
+            P.nombre, DP.cantidad, DP.PRODUCTOid 
             FROM detalles_pedido DP
             INNER JOIN producto P ON P.id = DP.PRODUCTOid
             inner join pedido Pe on Pe.id=DP.PEDIDOid
@@ -32,14 +34,7 @@ def obtener_Detalle(id):
                 precio_final = precios[0]
 
 
-            # Codificar la imagen en base64 porque está en binarie
-            img_binario = producto[0] 
-            if img_binario:
-                imagen_base64 = base64.b64encode(img_binario).decode('utf-8')
-                imagen = f"data:image/png;base64,{imagen_base64}"
-            else:
-                imagen = "" 
-
+            imagen = producto[0] 
             nombre = producto[1]  
             cantidad = producto[2]  
             producto_id = producto[3]  
@@ -88,9 +83,7 @@ def obtener_Detalle_por_Id_pedido(id):
                 else:  # precio_regular
                     precio_final = precios[0]
 
-                img_binario = producto[0]
-                imagen = f"data:image/png;base64,{base64.b64encode(img_binario).decode('utf-8')}" if img_binario else ""
-
+                imagen = producto[0]
                 nombre = producto[1]
                 cantidad = producto[2]
                 producto_id = producto[3]
@@ -141,9 +134,7 @@ def obtener_listado_detalle_por_id_pedido(id):
                 else:  # precio_regular
                     precio_final = precios[0]
 
-                img_binario = producto[0]
-                imagen = f"data:image/png;base64,{base64.b64encode(img_binario).decode('utf-8')}" if img_binario else ""
-
+                imagen = producto[0]
                 nombre = producto[1]
                 cantidad = producto[2]
                 producto_id = producto[3]
@@ -290,13 +281,7 @@ def obtener_DetalleConDic(id):
             else:  # precio_regular
                 precio_final = precios[0]
 
-            img_binario = producto[0] 
-            if img_binario:
-                imagen_base64 = base64.b64encode(img_binario).decode('utf-8')
-                imagen = f"data:image/png;base64,{imagen_base64}"
-            else:
-                imagen = "" 
-
+            imagen = producto[0] 
             nombre = producto[1]  
             cantidad = producto[2]  
             producto_id = producto[3]  

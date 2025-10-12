@@ -20,7 +20,7 @@
                 <div class="ctlg_order">
                     <div class="ctlg_select">
                         <p>Ordenar por:</p>
-                        <form method="GET" action="{{ url_for('nuestras_marcas') }}">
+                        <form method="GET" action="{{ url_for('general.nuestras_marcas') }}">
                             <select id="ctlg_products_order" name="ctlg_products_order">
                                 <option value="1" {% if request.args.get('ctlg_products_order') == '1' %}selected{% endif %}>Más Recientes</option>
                                 <option value="2" {% if request.args.get('ctlg_products_order') == '2' %}selected{% endif %}>A - Z</option>
@@ -48,7 +48,7 @@
                 <div class="gallery_brand" id="galeria_marca">
                     
                     {% for marca in marcas %}
-                    <a class="brand_picture" href="{{url_for('marca', id=marca[0])}}">
+                    <a class="brand_picture" href="{{url_for('general.marca', id=marca[0])}}">
                         <img class="brand_logo" src="{{ marca[2] }}" alt="{{ marca[1] }}">
                         <p class="brand_name">
                             {{marca[1]}}

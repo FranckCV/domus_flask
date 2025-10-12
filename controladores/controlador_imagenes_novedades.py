@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 import base64
 tabla = 'producto'
 
@@ -138,11 +138,11 @@ def obtener_todas_imagenes_novedad():
         sql = '''
             SELECT 
                 id, 
-                nomImagen, 
-                imagen, 
+                img.nombre as nomImagen, 
+                img.img as imagen, 
                 TIPO_IMG_NOVEDADid, 
                 NOVEDADid 
-            FROM img_novedad
+            FROM img_novedad img
             ORDER BY id DESC
         '''
         cursor.execute(sql)
@@ -170,15 +170,15 @@ def obtener_imagenes_novedad_por_id(novedad_id):
         sql = '''
             SELECT 
                 img.id, 
-                img.nomImagen, 
-                img.imagen, 
+                img.nombre as nomImagen, 
+                img.img as imagen, 
                 tip.tipo,  
                 img.NOVEDADid,
                 tip.id
             FROM img_novedad img
             LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
             WHERE NOVEDADid = %s
-            ORDER BY nomImagen ASC
+            ORDER BY 2 ASC
         '''
         cursor.execute(sql, (novedad_id,))
         imagenes = cursor.fetchall()
@@ -225,8 +225,8 @@ def obtener_imagenes_novedad_id(id):
         sql = '''
             SELECT 
                 img.id, 
-                img.nomImagen, 
-                img.imagen, 
+                img.nombre as nomImagen, 
+                img.img as imagen, 
                 img.tipo_img_novedadid, 
                 img.NOVEDADid,
                 tip.tipo,
@@ -234,7 +234,7 @@ def obtener_imagenes_novedad_id(id):
             FROM img_novedad img
             LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
             WHERE NOVEDADid = %s
-            ORDER BY OCTET_LENGTH(img.imagen) DESC 
+            ORDER BY 3 DESC 
         '''
         cursor.execute(sql, (id))
         imagenes = cursor.fetchall()
@@ -262,15 +262,15 @@ def obtener_imagen_novedad_por_img_id(img_id):
         sql = '''
             SELECT 
                 img.id, 
-                img.nomImagen, 
-                img.imagen, 
+                img.nombre as nomImagen, 
+                img.img as imagen, 
                 tip.tipo,  
                 img.NOVEDADid,
                 tip.id
             FROM img_novedad img
             LEFT join tipo_img_novedad tip on tip.id = img.TIPO_IMG_NOVEDADid
             WHERE img.id = %s
-            ORDER BY nomImagen ASC
+            ORDER BY 2 ASC
         '''
         cursor.execute(sql, (img_id))
         imagenes = cursor.fetchone()

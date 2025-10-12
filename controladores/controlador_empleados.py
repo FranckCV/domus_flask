@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 import base64
 tabla = 'usuario'
 cadena_clave = '_SOMOS_DOMUS_2024_EMP_'
@@ -242,20 +242,8 @@ def obtener_imagen_usuario_empleado_id(id):
         '''
         cursor.execute(sql)
         usuario = cursor.fetchone()
-
-    elemento = None
-
-    if usuario:
-        usu_id , img_usu = usuario
-        if img_usu:
-            img_base64 = base64.b64encode(img_usu).decode('utf-8')
-            img_url = f"data:image/png;base64,{img_base64}"
-        else:
-            img_url = None
-    
-        elemento = (usu_id , img_url)
         
     conexion.close()
-    return elemento
+    return usuario
 
 

@@ -26,7 +26,7 @@
             </div>
             <div class="carousel-inner">
                 {% for imagen in novedadesBanner %}
-                    <a class="carousel-item {% if loop.first %}active{% endif %}" href="{{url_for('selectedNovedad', id=imagen[0])}}">
+                    <a class="carousel-item {% if loop.first %}active{% endif %}" href="{{url_for('general.selectedNovedad', id=imagen[0])}}">
                         <img src="{{imagen[1]}}" class="d-block w-100" alt="{{imagen[2]}}">
                     </a>
                 {% endfor %}
@@ -49,7 +49,7 @@
             </h1>
             <div class="for_sale_gallery">
                 {% for imagen in novedadesRecientes %}
-                <a href="{{url_for('selectedNovedad', id=imagen[0])}}">
+                <a href="{{url_for('general.selectedNovedad', id=imagen[0])}}">
                     <img class="img-fluid 
 
                     {% if imagen[3] == 1 %}
@@ -80,7 +80,7 @@
                         {% for producto in productosRecientes %}
 
                         <div class="product">
-                            <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                            <a class="product_info" href="{{url_for('general.producto', id=producto[0])}}">
                                 <img class="product_pic"
                                     src="{{ producto[7] }}"
                                     alt="{{producto[1]}}">
@@ -126,7 +126,7 @@
 
                             </a>
 
-                            <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST">
+                            <form action="{{ url_for('perfil.agregar_a_lista_deseos') }}" method="POST">
                                 <div class="" id="heart">
                                     <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
                                     <button type="submit" class="product_option product_option_fav">
@@ -135,7 +135,7 @@
                                 </div>
                             </form>
                             
-                            <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
+                            <form class="product_form_add" action="{{url_for('carrito.agregar_carrito')}}" method="post">
                                 <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
                                 <button type="submit" class="product_option product_option_add" id="cant_aumentar">
                                 <i class="fa-solid fa-plus"></i>
@@ -162,7 +162,7 @@
                         {% for producto in productosPopulares %}
 
                         <div class="product">
-                            <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                            <a class="product_info" href="{{url_for('general.producto', id=producto[0])}}">
                                 <img class="product_pic"
                                     src="{{ producto[7] }}"
                                     alt="{{producto[1]}}">
@@ -207,7 +207,7 @@
 
 
                             </a>
-                            <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST">
+                            <form action="{{ url_for('perfil.agregar_a_lista_deseos') }}" method="POST">
                                 <div class="" id="heart">
                                     <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
                                     <button type="submit" class="product_option product_option_fav">
@@ -216,7 +216,7 @@
                                 </div>
                             </form>
                             
-                            <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
+                            <form class="product_form_add" action="{{url_for('carrito.agregar_carrito')}}" method="post">
                                 <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
                                 <button type="submit" class="product_option product_option_add" id="cant_aumentar">
                                 <i class="fa-solid fa-plus"></i>
@@ -239,7 +239,7 @@
 
                 {% for marca in marcasBloque %}
                 <div class="brand_content">
-                    <a href="{{url_for('marca', id=marca[0])}}" class="brand_picture">
+                    <a href="{{url_for('general.marca', id=marca[0])}}" class="brand_picture">
                         <img class="brand_logo" src="{{ marca[2] }}" alt="">
                         <p class="brand_name">
                             {{marca[1]}}
@@ -260,7 +260,7 @@
                                 {% for producto in marca[6] %}
 
                                 <div class="product">
-                                    <a class="product_info" href="{{url_for('producto', id=producto[0])}}">
+                                    <a class="product_info" href="{{url_for('general.producto', id=producto[0])}}">
                                         <img class="product_pic"
                                             src="{{ producto[7] }}"
                                             alt="{{producto[1]}}">
@@ -305,7 +305,7 @@
 
 
                                     </a>
-                                    <form action="{{ url_for('agregar_a_lista_deseos') }}" method="POST" id="form_{{ producto.0 }}" class="wishlist-form">
+                                    <form action="{{ url_for('perfil.agregar_a_lista_deseos') }}" method="POST" id="form_{{ producto.0 }}" class="wishlist-form">
                                         <div id="heart">
                                             <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
                                             <button type="button" class="product_option product_option_fav" onclick="agregarQuitarListaDeseos({{ producto.0 }})">
@@ -315,7 +315,7 @@
                                     </form>
                                     
                                     
-                                    <form class="product_form_add" action="{{url_for('agregar_carrito')}}" method="post">
+                                    <form class="product_form_add" action="{{url_for('carrito.agregar_carrito')}}" method="post">
                                         <input type="hidden" name="producto_id" value="{{producto.0}}" data-product-id="{{ producto.0 }}" />
                                         <button type="submit" class="product_option product_option_add" id="cant_aumentar">
                                         <i class="fa-solid fa-plus"></i>
@@ -342,7 +342,7 @@
     <script src="static/js/scriptListProduct.js"></script>
     <script src="static/js/listaDeseos.js"></script> 
     <script>
-        fetch("{{ url_for('agregar_a_lista_deseos') }}", {
+        fetch("{{ url_for('perfil.agregar_a_lista_deseos') }}", {
             method: "POST",
             body: new URLSearchParams({
                 'producto_id': producto_id_input
