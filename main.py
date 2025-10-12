@@ -107,14 +107,6 @@ app.register_blueprint(api_v1_bp, url_prefix='/api_v1')
 app.register_blueprint(api_bp, url_prefix='/api')
 
 
-# RUTAS_PUBLICAS = {
-#     '/api/v1/login',
-#     '/api/v1/register',
-#     '/',
-#     '/auth',
-# }
-
-
 @app.before_request
 def verify_token():
     if request.path.startswith('/api/'):
