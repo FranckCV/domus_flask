@@ -4,17 +4,16 @@ from pymysql.cursors import DictCursor
 # SOMOSDOMUS2024
 
 # BD_HOST = 'DomusMarket.mysql.pythonanywhere-services.com'
-# BD_PORT = 3306
 # BD_USER = 'DomusMarket'
 # BD_PSWD = 'SOMOSDOMUS2024'
-# BD_DBNM = 'DomusMarket$bd_domus'
+# BD_DBNM = 'DomusMarket$domus_market'
 
 BD_HOST = 'localhost'
-BD_PORT = 3306
 BD_USER = 'root'
 BD_PSWD = ''
-BD_DBNM = 'bd_domus'
+BD_DBNM = 'domus_market'
 
+# BD_PORT = 3306
 
 def obtener_conexion():
     return pymysql.connect(
