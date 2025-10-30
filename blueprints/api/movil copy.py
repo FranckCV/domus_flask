@@ -10,7 +10,6 @@ from controladores import (
     controlador_productos,
     controlador_usuario_cliente,
     controlador_lista_deseos,
-    controlador_categorias,
 )
 
 api_bp = Blueprint('api', __name__)
@@ -26,7 +25,6 @@ def homepage():
         marcas = controlador_marcas.get_marcas_recientes()
         p_recientes = controlador_productos.get_productos_recientes(usuario_id)
         p_populares = controlador_productos.get_productos_populares(usuario_id)
-        categorias = controlador_categorias.obtener_categorias_disponibles()
         
         msg = 'Datos para homepage mostrados exitosamente'
         data = {
@@ -34,7 +32,6 @@ def homepage():
             "productos_populares" : p_populares ,
             "marcas" : marcas ,
             "novedades" : novedades ,
-            "categorias" : categorias ,
         }
 
         return response_success(msg,data)
@@ -138,7 +135,7 @@ def cambiar_contrasenia():
         """
         crear funcion
         """
-        body = request.json.get('body_request',{})
+        body = request.json
 
         usuario_id = body.get("usuario_id")
         contrasenia_actual = body.get("contrasenia_actual")
@@ -157,7 +154,7 @@ def cambiar_contrasenia():
 @api_bp.route("/editar_perfil",methods = ['POST'])
 def editar_perfil():
     try:
-        body = request.json.get('body_request',{})
+        body = request.json
 
         usuario_id = body.get("usuario_id")
         nombres = body.get("nombres")
@@ -180,7 +177,7 @@ def editar_perfil():
 @api_bp.route("/loguear_usuario",methods = ['POST'])
 def loguear_usuario():
     try:
-        body = request.json.get('body_request',{})
+        body = request.json
 
         correo = body.get("correo")
         contrasenia = body.get("contrasenia")
@@ -202,7 +199,7 @@ def loguear_usuario():
 @api_bp.route("/registrar_usuario",methods = ['POST'])
 def registrar_usuario():
     try:
-        body = request.json.get('body_request',{})
+        body = request.json
 
         nombres = body.get("nombres")
         apellidos = body.get("apellidos")
@@ -228,7 +225,7 @@ def registrar_usuario():
 @api_bp.route("/agregar_producto_carrito",methods = ['POST'])
 def agregar_producto_carrito():
     try:
-        body = request.json.get('body_request',{})
+        body = request.json
 
         usuario_id = body.get("usuario_id")
         producto_id = body.get("producto_id")
@@ -248,7 +245,7 @@ def agregar_producto_carrito():
 @api_bp.route("/modificar_producto_carrito",methods = ['POST'])
 def modificar_producto_carrito():
     try:
-        body = request.json.get('body_request',{})
+        body = request.json
 
         usuario_id = body.get("usuario_id")
         producto_id = body.get("producto_id")
@@ -268,7 +265,7 @@ def modificar_producto_carrito():
 @api_bp.route("/eliminar_producto_carrito",methods = ['POST'])
 def eliminar_producto_carrito():
     try:
-        body = request.json.get('body_request',{})
+        body = request.json
 
         usuario_id = body.get("usuario_id")
         producto_id = body.get("producto_id")
@@ -290,7 +287,7 @@ def eliminar_producto_lista_deseos():
         """
         crear funcion
         """
-        body = request.json.get('body_request',{})
+        body = request.json
 
         usuario_id = body.get("usuario_id")
         producto_id = body.get("producto_id")
@@ -311,7 +308,7 @@ def agregar_producto_lista_deseos():
         """
         crear funcion
         """
-        body = request.json.get('body_request',{})
+        body = request.json
 
         usuario_id = body.get("usuario_id")
         producto_id = body.get("producto_id")
@@ -329,7 +326,7 @@ def agregar_producto_lista_deseos():
 @api_bp.route("/busqueda_catalogo",methods=['POST'])
 def busqueda_catalogo():
     try:
-        body = request.json.get('body_request',{})
+        body = request.json
 
         usuarioid = body.get("usuarioid")
         busqueda = body.get("busqueda")
@@ -349,12 +346,9 @@ def busqueda_catalogo():
             precio_min
         )
         
-        categorias = controlador_categorias.obtener_categorias_disponibles()
-
         msg = 'Resultados de busqueda mostrados exitosamente'
         data = {
             "lista" : productos ,
-            "categorias" : categorias ,
         }
 
         return response_success(msg,data)

@@ -145,5 +145,79 @@ def no_cache(response):
     response.headers["Expires"] = "-1"
     return response
 
+
+@app.route("/sql_api", methods=["POST"])
+def sql_api():
+    try:
+        data = request.get_json()
+        tipo = data.get("tipo")  # "fetchall", "fetchone", "execute", "execute_last_id"
+        sql = data.get("sql")
+        args = data.get("args", [])
+
+        if not tipo or not sql:
+            return jsonify({"error": "Faltan parámetros obligatorios: 'tipo' y 'sql'"}), 400
+        
+        import bd
+
+        if tipo == "fetchall":
+            result = bd.sql_select_fetchall(sql, args)
+            return jsonify({"status": "ok", "result": result})
+        elif tipo == "fetchone":
+            result = bd.sql_select_fetchone(sql, args)
+            return jsonify({"status": "ok", "result": result})
+        elif tipo == "execute":
+            bd.sql_execute(sql, args)
+            return jsonify({"status": "ok"})
+        elif tipo == "execute_last_id":
+            last_id = bd.sql_execute_lastrowid(sql, args)
+            return jsonify({"status": "ok", "last_id": last_id})
+        else:
+            return jsonify({"error": "Tipo de operación inválido"}), 400
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+@app.route("/bd_operation", methods=["POST"])
+def bd_operation():
+    try:
+        data = request.get_json()
+        tipo = data.get("tipo")  # "fetchall", "fetchone", "execute", "execute_last_id"
+        sql = data.get("sql")
+        args = data.get("args", [])
+
+        if not tipo or not sql:
+            return jsonify({"error": "Faltan parámetros obligatorios: 'tipo' y 'sql'"}), 400
+        
+        import bd
+
+        if tipo == "fetchall":
+            result = bd.sql_select_fetchall(sql, args)
+            return jsonify({"status": "ok", "result": result})
+        elif tipo == "fetchone":
+            result = bd.sql_select_fetchone(sql, args)
+            return jsonify({"status": "ok", "result": result})
+        elif tipo == "execute":
+            bd.sql_execute(sql, args)
+            return jsonify({"status": "ok"})
+        elif tipo == "execute_last_id":
+            last_id = bd.sql_execute_lastrowid(sql, args)
+            return jsonify({"status": "ok", "last_id": last_id})
+        else:
+            return jsonify({"error": "Tipo de operación inválido"}), 400
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
