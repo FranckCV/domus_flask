@@ -1,7 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, current_app, request, jsonify
 from blueprints.api.utils import response_success, response_error 
 from datetime import datetime
 from utils import encstringsha256
+import os
+from werkzeug.utils import secure_filename
 
 from controladores import (
     controlador_marcas,
@@ -382,3 +384,77 @@ def comboboxes():
     except Exception as e:
         return response_error(str(e))
 
+@api_bp.route("/agregar_producto", methods=['POST'])
+def agregar_producto():
+    try:
+        body = request.form.get('body_request')
+        if body:
+            import json
+            body = json.loads(body)
+        else:
+            body = {}
+
+        nombre = body.get('nombre')
+        price_regular = body.get('price_regular')
+        precio_online = body.get('precio_online')
+        precio_oferta = body.get('precio_oferta')
+        info_adicional = body.get('info_adicional')
+        stock = body.get('stock')
+        disponibilidad = body.get('disponibilidad')
+        marcaid = body.get('marcaid')
+        subcategoriaid = body.get('subcategoriaid')
+
+        if not nombre or not precio_online or not stock:
+            return response_error("Faltan campos obligatorios: nombre, precio_online o stock")
+
+        file = request.files.get('imagen')
+        if not file:
+            return response_error("No se ha enviado ninguna imagen")
+
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+        def allowed_file(filename):
+            return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+        if not allowed_file(file.filename):
+            return response_error("Formato de imagen no permitido")
+
+        upload_folder = os.path.join(current_app.root_path, 'static', 'img')
+        os.makedirs(upload_folder, exist_ok=True)
+
+        filename = secure_filename(file.filename)
+        path_guardado = os.path.join(upload_folder, filename)
+        file.save(path_guardado)
+
+        ruta_relativa = f"/static/img/{filename}"
+
+        import bd
+        conn = bd.obtener_conexion()
+        cursor = conn.cursor()
+
+        sql_producto = """INSERT INTO producto
+            (nombre, price_regular, precio_online, precio_oferta, info_adicional, stock, disponibilidad, marcaid, subcategoriaid)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        values_producto = (nombre, price_regular, precio_online, precio_oferta,
+                            info_adicional, stock, disponibilidad, marcaid, subcategoriaid)
+        cursor.execute(sql_producto, values_producto)
+        conn.commit()
+        productoid = cursor.lastrowid
+
+        sql_img = """INSERT INTO img_producto (img_nombre, imagen, imgprincipal, productoid)
+                        VALUES (%s,%s,%s,%s)"""
+        cursor.execute(sql_img, (filename, ruta_relativa, 1, productoid))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        msg = "Producto agregado correctamente"
+        data = {
+            "producto_id": productoid,
+            "imagen_guardada": ruta_relativa
+        }
+
+        return response_success(msg, data)
+
+    except Exception as e:
+        return response_error(str(e))
