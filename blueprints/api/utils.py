@@ -6,7 +6,7 @@ def create_api(msg,data):
         return response_success(msg,data)
     except Exception as e:
         return response_error(str(e))
-    
+
 
 def response_success(message, data=None, status_code=200):
     """Respuesta exitosa estándar"""

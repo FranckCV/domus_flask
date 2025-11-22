@@ -1,0 +1,183 @@
+{% extends 'DBMS/base.html' %}
+
+{% block title %}{{ accion }} Registro - {{ tabla }}{% endblock %}
+
+{% block sidebar %}
+    <a href="{{ url_for('dbms.gestion') }}">
+        <i class="bi bi-house"></i> Inicio
+    </a>
+    <a href="{{ url_for('dbms.ver_tabla', nombre_tabla=tabla) }}" class="active">
+        <i class="bi bi-table"></i> {{ tabla }}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        <h2>
+            <i class="bi bi-{% if accion == 'Nuevo' %}plus-circle{% else %}pencil{% endif %}"></i> 
+            {{ accion }} Registro en: {{ tabla }}
+        </h2>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-{% if accion == 'Nuevo' %}success{% else %}warning{% endif %} text-white">
+                    <h5><i class="bi bi-clipboard-data"></i> Formulario de Datos</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% for col in columnas %}
+                            {% if col.Extra != 'auto_increment' %}
+                            <div class="mb-3">
+                                <label for="{{ col.Field }}" class="form-label">
+                                    <strong>{{ col.Field }}</strong>
+                                    {% if col.Key == 'PRI' %}
+                                        <span class="badge bg-warning text-dark">PK</span>
+                                    {% endif %}
+                                    {% if col.Null == 'NO' %}
+                                        <span class="badge bg-danger">Requerido</span>
+                                    {% endif %}
+                                </label>
+                                
+                                {% set tipo = col.Type.split('(')[0] %}
+                                {% set valor = datos[col.Field] if datos else '' %}
+                                
+                                {% if tipo in ['text', 'mediumtext', 'longtext'] %}
+                                    <textarea 
+                                        name="{{ col.Field }}" 
+                                        id="{{ col.Field }}" 
+                                        class="form-control" 
+                                        rows="4"
+                                        {% if col.Null == 'NO' %}required{% endif %}
+                                        {% if col.Key == 'PRI' and accion == 'Editar' %}readonly{% endif %}
+                                    >{{ valor }}</textarea>
+                                
+                                {% elif tipo in ['int', 'bigint', 'smallint', 'tinyint', 'mediumint'] %}
+                                    <input 
+                                        type="number" 
+                                        name="{{ col.Field }}" 
+                                        id="{{ col.Field }}" 
+                                        class="form-control" 
+                                        value="{{ valor }}"
+                                        {% if col.Null == 'NO' %}required{% endif %}
+                                        {% if col.Key == 'PRI' and accion == 'Editar' %}readonly{% endif %}
+                                    >
+                                
+                                {% elif tipo in ['decimal', 'float', 'double'] %}
+                                    <input 
+                                        type="number" 
+                                        step="0.01" 
+                                        name="{{ col.Field }}" 
+                                        id="{{ col.Field }}" 
+                                        class="form-control" 
+                                        value="{{ valor }}"
+                                        {% if col.Null == 'NO' %}required{% endif %}
+                                    >
+                                
+                                {% elif tipo in ['date'] %}
+                                    <input 
+                                        type="date" 
+                                        name="{{ col.Field }}" 
+                                        id="{{ col.Field }}" 
+                                        class="form-control" 
+                                        value="{{ valor }}"
+                                        {% if col.Null == 'NO' %}required{% endif %}
+                                    >
+                                
+                                {% elif tipo in ['datetime', 'timestamp'] %}
+                                    <input 
+                                        type="datetime-local" 
+                                        name="{{ col.Field }}" 
+                                        id="{{ col.Field }}" 
+                                        class="form-control" 
+                                        value="{{ valor.strftime('%Y-%m-%dT%H:%M') if valor else '' }}"
+                                        {% if col.Null == 'NO' %}required{% endif %}
+                                    >
+                                
+                                {% elif tipo == 'time' %}
+                                    <input 
+                                        type="time" 
+                                        name="{{ col.Field }}" 
+                                        id="{{ col.Field }}" 
+                                        class="form-control" 
+                                        value="{{ valor }}"
+                                        {% if col.Null == 'NO' %}required{% endif %}
+                                    >
+                                
+                                {% elif 'enum' in tipo %}
+                                    <select 
+                                        name="{{ col.Field }}" 
+                                        id="{{ col.Field }}" 
+                                        class="form-select"
+                                        {% if col.Null == 'NO' %}required{% endif %}
+                                    >
+                                        <option value="">Seleccione...</option>
+                                        {% set opciones = col.Type.replace('enum(', '').replace(')', '').replace("'", '').split(',') %}
+                                        {% for opcion in opciones %}
+                                            <option value="{{ opcion }}" {% if valor == opcion %}selected{% endif %}>
+                                                {{ opcion }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                
+                                {% else %}
+                                    <input 
+                                        type="text" 
+                                        name="{{ col.Field }}" 
+                                        id="{{ col.Field }}" 
+                                        class="form-control" 
+                                        value="{{ valor }}"
+                                        {% if col.Null == 'NO' %}required{% endif %}
+                                        {% if col.Key == 'PRI' and accion == 'Editar' %}readonly{% endif %}
+                                    >
+                                {% endif %}
+                                
+                                <small class="form-text text-muted">
+                                    Tipo: {{ col.Type }}
+                                    {% if col.Default %}| Default: {{ col.Default }}{% endif %}
+                                </small>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <hr>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-{% if accion == 'Nuevo' %}success{% else %}warning{% endif %}">
+                                <i class="bi bi-save"></i> {{ accion }} Registro
+                            </button>
+                            <a href="{{ url_for('dbms.ver_tabla', nombre_tabla=tabla) }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6><i class="bi bi-info-circle"></i> Información de Campos</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for col in columnas %}
+                        <li class="list-group-item">
+                            <strong>{{ col.Field }}</strong><br>
+                            <small>
+                                Tipo: {{ col.Type }}<br>
+                                Nulo: {{ col.Null }}<br>
+                                {% if col.Key %}Clave: {{ col.Key }}<br>{% endif %}
+                                {% if col.Default %}Default: {{ col.Default }}<br>{% endif %}
+                                {% if col.Extra %}Extra: {{ col.Extra }}{% endif %}
+                            </small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

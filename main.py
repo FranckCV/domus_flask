@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response,  redirect, url_for
 from flask_jwt import JWT, jwt_required, current_identity
 from utils import encstringsha256
+from datetime import timedelta
+
 # from utils import *
 from controladores import (
     controlador_categorias,
@@ -16,6 +18,7 @@ from controladores import (
 from clase_user_v1.usuario import Usuario
 
 app = Flask(__name__)
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(minutes=60)
 app.config['SECRET_KEY'] = 'super-secret'
 app.debug = True
 
@@ -38,12 +41,12 @@ def identity(payload):
         user_id = payload.get('identity')
         if not user_id:
             return None
-        
+
         data = controlador_usuario_cliente.obtener_usuario_cliente_por_id2(user_id)
-        
+
         if not data:
             return None
-        
+
         user = Usuario(
             id=data[0],
             correo=data[1],
@@ -66,6 +69,7 @@ from blueprints import (
     pedidos_bp,
     perfil_bp,
     comentarios_bp,
+    dbms_bp ,
     admin_dashboard_bp,
     admin_categorias_bp,
     admin_subcategorias_bp,
@@ -89,6 +93,7 @@ app.register_blueprint(carrito_bp)
 app.register_blueprint(pedidos_bp)
 app.register_blueprint(perfil_bp)
 app.register_blueprint(comentarios_bp)
+app.register_blueprint(dbms_bp, url_prefix='/dbms')
 
 app.register_blueprint(admin_dashboard_bp, url_prefix='/admin')
 app.register_blueprint(admin_categorias_bp, url_prefix='/admin')
@@ -146,6 +151,12 @@ def no_cache(response):
     return response
 
 
+@app.route("/")
+def main_page():
+    return redirect(url_for('general.index'))
+
+
+
 @app.route("/sql_api", methods=["POST"])
 def sql_api():
     try:
@@ -156,7 +167,7 @@ def sql_api():
 
         if not tipo or not sql:
             return jsonify({"error": "Faltan parámetros obligatorios: 'tipo' y 'sql'"}), 400
-        
+
         import bd
 
         if tipo == "fetchall":
@@ -190,7 +201,7 @@ def bd_operation():
 
         if not tipo or not sql:
             return jsonify({"error": "Faltan parámetros obligatorios: 'tipo' y 'sql'"}), 400
-        
+
         import bd
 
         if tipo == "fetchall":
@@ -213,6 +224,38 @@ def bd_operation():
 
 
 
+
+@app.route("/login_movil", methods=['POST'])
+def login_movil():
+    try:
+        from blueprints.api.utils import response_error , response_success
+        body = request.json.get('body_request', {})
+
+        correo = body.get("correo")
+        contrasenia = body.get("contrasenia")
+
+        if not correo or not contrasenia:
+            return response_error("Debe proporcionar correo y contraseña")
+
+        usuario = controlador_usuario_cliente.get_usuario_correo(correo)
+
+        if not usuario:
+            return response_error("Usuario no válido. Si es cliente, regístrese.")
+
+        epassword = encstringsha256(contrasenia)
+
+        stored_password = usuario.get("contrasenia")
+
+        if epassword == stored_password:
+            msg = "Inicio de sesión exitoso"
+            data = usuario
+            # print(f"Esto responde el login {response_success(msg, data)}")
+            return response_success(msg, data)
+        else:
+            return response_error("Contraseña incorrecta.")
+
+    except Exception as e:
+        return response_error(str(e))
 
 
 

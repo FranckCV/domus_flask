@@ -104,7 +104,7 @@
       </div>
       <div class="submenu_content" id="menu_categories">
         {% for categoria in categoriasMenu %}
-          <a href="{{ url_for('general.categoria', id=categoria.0) }}">
+          <a href="{{ url_for('general.categoria', id=categoria['id']) }}">
             <i class="{{ categoria.2 }}"></i>
             {{ categoria.1 }}
           </a>

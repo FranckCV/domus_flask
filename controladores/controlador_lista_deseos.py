@@ -11,7 +11,7 @@ def insert_lista_deseos(productoid, usuarioid):
 
 def delete_lista_deseos(productoid, usuarioid):
     sql = '''
-        DELETE FROM lista_deseos WHERE 
+        DELETE FROM lista_deseos  
         WHERE productoid=%s and usuarioid=%s
     '''
     bd.sql_execute(sql,(productoid, usuarioid))
