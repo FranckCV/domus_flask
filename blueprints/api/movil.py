@@ -14,6 +14,7 @@ from controladores import (
     controlador_lista_deseos,
     controlador_categorias,
     controlador_metodo_pago,
+    controlador_subcategorias ,
 )
 
 api_bp = Blueprint('api', __name__)
@@ -634,3 +635,24 @@ def procesar_pago_carrito():
     except Exception as e:
         return response_error(str(e))
 
+
+
+@api_bp.route("/comboboxes",methods=['POST'])
+def comboboxes():
+    try:
+        body = request.json.get('body_request',{})
+
+        categorias = controlador_categorias.obtener_categorias_disponibles()
+        subcategorias = controlador_subcategorias.obtener_subcategorias()
+        marcas = controlador_productos.obtener_marcas_disponibles()
+
+        msg = 'Comboboxes obtenidos exitosamente'
+        data = {
+            "categorias" : categorias,
+            "subcategorias" : subcategorias,
+            "marcas" : marcas
+        }
+
+        return response_success(msg,data)
+    except Exception as e:
+        return response_error(str(e))

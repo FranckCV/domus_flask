@@ -1,4 +1,5 @@
 from bd import obtener_conexion
+from pymysql.cursors import DictCursor
 tabla = 'categoria'
 
 
@@ -113,7 +114,7 @@ def insertar_subcategoria_api(nombre, faicon_subcat, disponibilidad, categoriaid
 
 def obtener_subcategorias():
     conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
+    with conexion.cursor(DictCursor) as cursor:
         cursor.execute('''
                         SELECT 
                             sub.id , 
