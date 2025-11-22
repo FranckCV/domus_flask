@@ -152,7 +152,7 @@ def obtener_todas_marcas_recientes():
         sql = '''
                 SELECT
                     id,
-                    marca, 
+                    nombre, 
                     img_logo, 
                     img_banner,
                     date(fecha_registro),
@@ -181,14 +181,14 @@ def obtener_todas_marcas_alfabetico(orden):
         sql = '''
                 SELECT
                     id,
-                    marca, 
+                    nombre, 
                     img_logo, 
                     img_banner,
                     date(fecha_registro),
                     disponibilidad
                 FROM marca 
                 where disponibilidad = 1
-                order by marca '''+ordenar+'''
+                order by nombre '''+ordenar+'''
                 '''
         cursor.execute(sql)
         marcas = cursor.fetchall()

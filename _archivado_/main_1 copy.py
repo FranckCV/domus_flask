@@ -1,6 +1,167 @@
+from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response,  redirect, url_for
+from flask_jwt import JWT, jwt_required, current_identity
+# import uuid
+from functools import wraps
+from clase_user_v1.usuario import Usuario
+import base64
+
+from datetime import datetime, date
+
+from clases.clsMarca import Marca as clsMarca
+from clases.clsProducto import Producto as clsProducto
+from clases.clsSubcategoria import Subcategoria as clsSubcategoria
+from clases.clsCategoria import Categoria as clsCategoria
+from clases.clsPedido import Pedido as clsPedido
+from clases.clsUsuario import Usuario as clsUsuario
+from clases.clsImgProducto import ImgProducto as clsImgProducto
+from clases.clsDetallesPedido import DetallesPedido as clsDetallesPedido
+from clases.clsListaDeseos import ListaDeseos as clsListaDeseos
+from clases.clsComentario import Comentario as clsComentario
+from clases.clsMotivoComentario import MotivoComentario as clsMotivoComentario
+from clases.clsTipoNovedad import TipoNovedad as clsTipoNovedad
+from clases.clsNovedad import Novedad as clsNovedad
+from clases.clsCaracteristicaProducto import CaracteristicasProducto as clsCaracteristicaProducto
+from clases.clsMetodoPago import MetodoPago as clsMetodoPago
+from clases.clsTipoImgNovedad import TipoImgNovedad as clsTipoImgNovedad
+from clases.clsImgNovedad import ImgNovedad as clsImgNovedad
+from clases.clsEstadoPedido import EstadoPedido as clsEstadoPedido
+from clases.clsTipoUsuario import TipoUsuario as clsTipoUsuario
+from clases.clsCaracteristica import Caracteristica as clsCaracteristica
+from clases.clsCaracteristicas_subcategoria import CaracteristicasSubcategoria as clsCaracteristicasSubcategoria
+from clases.clsRedesSociales import RedesSociales as clsRedesSociales
+from clases.clsInformacionDomus import InformacionDomus as clsInformacionDomus
+# from clases.clsTipoContenidoInfo import TipoContenidoInfo as clsTipoContenidoInfo
+# from clases.clsContenidoInfo import ContenidoInfo as clsContenidoInfo
+from clases.clsCupon import Cupon as clsCupon
 
 
 
+
+
+
+
+
+
+
+
+# PAGINAS ESPECIFICAS
+
+@app.route("/selectedCategoria=<int:id>")  #falta
+def categoria(id):
+    try:
+        categoria = controlador_categorias.obtener_categoria_por_id(id)
+        if categoria and categoria[3] == 1:
+            subcategorias = controlador_subcategorias.obtenerSubcategoriasXCategoria(id)
+            novedadesCategoria = controlador_novedades.obtenerNovedadesCategoria(id)
+            productosCategoria = controlador_productos.obtener_en_tarjetas_categoria(0,id,0)
+            categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()
+            return render_template("selectedCategoria.html", productosCategoria = productosCategoria , categoria = categoria, subcategorias = subcategorias , novedadesCategoria = novedadesCategoria , categoriasFiltro = categoriasFiltro)
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
+
+
+@app.route("/selectedMarca=<int:id>")  #falta
+def marca(id):
+    try:
+        marca = controlador_marcas.obtener_marca_disponible_por_id(id)
+        if marca and marca[4] == 1:
+            if marca[3]:
+                imagenMarcaFondo = marca[3]
+            else:
+                imagenMarcaFondo =  'static/img/elementos/domus_bg.jpg'
+
+            productosMarca = controlador_productos.obtener_en_tarjetas_marca(0,id,0)
+            novedadesMarca = controlador_novedades.obtenerNovedadesMarca(id)
+            subcategoriasMarca = controlador_subcategorias.obtenerSubcategoriasXMarca(id)
+            categoriasFiltro = controlador_categorias.obtener_categorias_subcategorias()
+            return render_template("selectedMarca.html", marca = marca , novedadesMarca = novedadesMarca , imagenMarcaFondo = imagenMarcaFondo , productosMarca = productosMarca , subcategoriasMarca = subcategoriasMarca , categoriasFiltro = categoriasFiltro)
+
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
+
+
+@app.route("/selectedProducto=<int:id>")  #falta
+def producto(id):
+    try:
+        producto = controlador_productos.obtener_por_id(id)
+        if producto and producto[11] == 1:
+            categoria = controlador_subcategorias.obtenerCategoriasXSubcategoria(producto[10])
+            marca = controlador_marcas.obtener_marca_disponible_por_id(producto[9])
+            imgs_producto = controlador_imagenes_productos.obtener_imagenes_por_producto(id)
+            caracteristicasPrincipales = controlador_caracteristicas_productos.obtenerCaracteristicasDisponiblesxProducto(id,1)
+            caracteristicasSecundarias = controlador_caracteristicas_productos.obtenerCaracteristicasDisponiblesxProducto(id,0)
+            productosSimilares = controlador_productos.obtener_en_tarjetas_subcategoria(id,producto[10],12)
+            productosMarca = controlador_productos.obtener_en_tarjetas_marca(id,producto[9],12)
+            return render_template("selectedProducto.html" , productosSimilares = productosSimilares , productosMarca = productosMarca , producto = producto , marca = marca, imgs_producto = imgs_producto, caracteristicasPrincipales = caracteristicasPrincipales, caracteristicasSecundarias = caracteristicasSecundarias, categoria = categoria)
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
+
+
+@app.route("/selectedNovedad=<int:id>")  #falta
+def selectedNovedad(id):
+    novedad = controlador_novedades.obtener_info_novedad_id(id)
+    categoria = None
+    marca = None
+    if novedad[9]:
+        categoria = controlador_subcategorias.obtenerCategoriasXSubcategoria(novedad[9])
+
+    if novedad[8]:
+        marca = controlador_marcas.obtener_marca_disponible_por_id(novedad[8])
+
+    imagenes = controlador_imagenes_novedades.obtener_imagenes_disponibles_por_novedad(id)
+    tipo = controlador_tipos_novedad.obtener_tipo_novedad_por_id(novedad[10])
+    return render_template("selectedNovedad.html" , novedad = novedad , tipo = tipo , imagenes = imagenes , categoria = categoria , marca = marca)
+
+
+@app.route("/tipoNovedad=<int:id>")  #falta
+def tipo_novedad(id):
+    promo = controlador_novedades.promoselect(id)
+    return render_template("selectedPromocion.html" , promo = promo)
+
+
+@app.route("/selectedPromocion=<int:id>")  #falta
+def promocion(id):
+    try:
+        promo = controlador_novedades.promoselect(id)
+        if promo:
+            return render_template("selectedPromocion.html" , promo = promo)
+        else:
+            return redirect("/error")
+    except:
+        return redirect("/error")
+
+
+@app.route("/selectedAnuncio=<int:id>")
+def anuncio(id):
+    # try:
+        anuncio = controlador_novedades.anuncioSelect(id)
+        return render_template("selectedAnuncio.html", anuncio=anuncio)
+
+    #     if anuncio:
+    #         return render_template("selectedAnuncio.html", anuncio=anuncio)
+    #     else:
+    #         return redirect("/error")
+    # except :
+    #     return redirect("/error")
+
+
+# PAGINAS INFORMATIVAS
+
+@app.route("/selectedContenidoInformativo=<int:id>") #falta
+def selectedContenidoInformativo(id):
+    tipo = controlador_contenido_info.obtener_tipo_contenido_info_por_id(id)
+    datos = controlador_contenido_info.obtener_datos_contenido_por_tipo(id)
+    return render_template("selectedContenidoInfo.html" , tipo = tipo , datos = datos)
+
+
+
+####################################################### CRUDS ####################################################################
 
 @app.route('/api/session-data', methods=['GET'])
 def get_session_data():

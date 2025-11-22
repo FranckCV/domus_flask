@@ -12,6 +12,7 @@ from blueprints.carrito import carrito_bp
 from blueprints.pedidos import pedidos_bp
 from blueprints.perfil import perfil_bp
 from blueprints.comentarios import comentarios_bp
+from blueprints.dbms import dbms_bp
 
 # Blueprints Admin
 from blueprints.admin import (
@@ -40,6 +41,7 @@ __all__ = [
     'pedidos_bp',
     'perfil_bp',
     'comentarios_bp',
+    'dbms_bp' ,
     'admin_dashboard_bp',
     'admin_categorias_bp',
     'admin_subcategorias_bp',
