@@ -1,0 +1,1 @@
+mysqldump --no-tablespaces -u DomusMarket -p --host=DomusMarket.mysql.pythonanywhere-services.com DomusMarket\$domus_market > backup.sql

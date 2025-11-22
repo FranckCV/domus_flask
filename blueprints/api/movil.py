@@ -458,3 +458,38 @@ def agregar_producto():
 
     except Exception as e:
         return response_error(str(e))
+    
+@api_bp.route("/login_movil", methods=['POST'])
+def login_movil():
+    try:
+        body = request.json.get('body_request', {})
+
+        correo = body.get("correo")
+        contrasenia = body.get("contrasenia")
+
+        if not correo or not contrasenia:
+            return response_error("Debe proporcionar correo y contraseña")
+
+        usuario = controlador_usuario_cliente.obtener_usuario_cliente_por_email(correo)
+
+        if not usuario:
+            return response_error("Usuario no válido. Si es cliente, regístrese.")
+
+        epassword = encstringsha256(contrasenia)
+
+        # Asumiendo que 'usuario' es un diccionario (por DictCursor)
+        stored_password = usuario.get("contrasenia")
+        
+        if epassword == stored_password:
+            msg = "Inicio de sesión exitoso"
+            data = {
+                "usuario_id": usuario.get("id"),
+                "nombre": usuario.get("nombres"),
+                "correo": usuario.get("correo")
+            }
+            return response_success(msg, data)
+        else:
+            return response_error("Contraseña incorrecta.")
+
+    except Exception as e:
+        return response_error(str(e))
