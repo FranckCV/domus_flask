@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, jsonify
+from flask import Blueprint, current_app, request, jsonify, send_file
 from blueprints.api.utils import response_success, response_error
 from datetime import datetime
 from utils import encstringsha256
@@ -15,6 +15,8 @@ from controladores import (
     controlador_categorias,
     controlador_metodo_pago,
     controlador_subcategorias ,
+    controlador_comprobante,
+    controlador_informacion_domus
 )
 
 api_bp = Blueprint('api', __name__)
@@ -610,9 +612,6 @@ def procesar_pago():
     except Exception as e:
         return response_error(str(e))
 
-
-
-
 @api_bp.route("/procesar_pago_carrito", methods=["POST"])
 def procesar_pago_carrito():
     try:
@@ -620,7 +619,7 @@ def procesar_pago_carrito():
 
         metodo_pago_id = body.get("metodo_pago_id")
         subtotal = body.get("subtotal")
-        pedido_id =  body.get("pedido_id")
+        pedido_id = body.get("pedido_id")
 
         card_nro =  body.get("card_nro",None)
         card_mmaa =  body.get("card_mmaa",None)
@@ -639,36 +638,106 @@ def procesar_pago_carrito():
         if not ok:
             return response_error("No se pudo actualizar el pedido")
 
-        # 3. RESPUESTA FINAL
+        # 3. GENERAR COMPROBANTE AUTOMÁTICAMENTE
+        try:
+            
+            # Datos del comprobante desde el body
+            tipo_comprobante = body.get("tipo_comprobante", "boleta")
+            
+            # Datos del cliente
+            datos_cliente = {
+                'nombre_completo': body.get("nombre_completo", "Cliente"),
+                'doc_identidad': body.get("doc_identidad", "00000000"),
+                'tipo_doc': body.get("tipo_doc", "DNI"),
+            }
+            
+            if tipo_comprobante == 'factura':
+                datos_cliente['razon_social'] = body.get("razon_social")
+                datos_cliente['ruc'] = body.get("ruc")
+                datos_cliente['direccion'] = body.get("direccion")
+            
+            # Obtener productos del pedido
+            productos_pedido = controlador_productos.get_productos_pedido(pedido_id)
+            
+            datos_productos = []
+            for prod in productos_pedido:
+                datos_productos.append({
+                    'cantidad': prod['cantidad'],
+                    'nombre': prod['nombre'],
+                    'precio_unitario': prod['precio'],
+                    'total': prod['cantidad'] * prod['precio']
+                })
+            
+            # Datos de la empresa
+            datos_empresa = {
+                'correo': 'contacto@domusmarket.com',
+                'telefono': '(01) 234-5678',
+                'ruc': '20123456789',
+                'direccion': 'Av. En tu corazón 123, Chiclayork, Perú'
+            }
+            
+            # Generar PDF del comprobante (retorna solo el nombre del archivo)
+            nombre_archivo = controlador_comprobante.generar_pdf_comprobante(
+                pedidoid=pedido_id,
+                tipo_comprobante=tipo_comprobante,
+                datos_cliente=datos_cliente,
+                datos_productos=datos_productos,
+                datos_empresa=datos_empresa
+            )
+            
+            # Construir ruta completa para la respuesta
+            ruta_completa = controlador_comprobante.obtener_ruta_completa_comprobante(pedido_id, nombre_archivo)
+            
+            comprobante_generado = True
+            ruta_comprobante = ruta_completa
+            
+        except Exception as e_comp:
+            print(f"Error al generar comprobante: {e_comp}")
+            import traceback
+            traceback.print_exc()
+            comprobante_generado = False
+            ruta_comprobante = None
+
+        # 4. RESPUESTA FINAL
         ped = controlador_pedido.get_pedido_id(pedido_id)
         usuario_id = ped['usuarioid']
         cart_id = controlador_pedido.insert_new_pedido_carrito(usuario_id)
 
-        data = {"pedido_id": pedido_id}
+        data = {
+            "pedido_id": pedido_id,
+            "comprobante_generado": comprobante_generado,
+            "ruta_comprobante": ruta_comprobante,
+            "nombre_archivo": nombre_archivo if comprobante_generado else None
+        }
+        
         return response_success("Pago procesado correctamente", data)
 
     except Exception as e:
         return response_error(str(e))
 
 
-
-@api_bp.route("/comboboxes",methods=['POST'])
-def comboboxes():
+@api_bp.route("/descargar_comprobante/<int:pedido_id>", methods=['GET'])
+def descargar_comprobante(pedido_id):
     try:
-        body = request.json.get('body_request',{})
-
-        categorias = controlador_categorias.obtener_categorias_disponibles()
-        subcategorias = controlador_subcategorias.obtener_subcategorias()
-        marcas = controlador_productos.obtener_marcas_disponibles()
-
-        msg = 'Comboboxes obtenidos exitosamente'
-        data = {
-            "categorias" : categorias,
-            "subcategorias" : subcategorias,
-            "marcas" : marcas
-        }
-
-        return response_success(msg,data)
+        comprobante = controlador_comprobante.obtener_comprobante_por_pedido(pedido_id)
+        
+        if not comprobante:
+            return response_error("Comprobante no encontrado")
+        
+        # Construir ruta completa usando la constante
+        nombre_archivo = comprobante['ruta_archivo']  # Ahora solo tiene el nombre
+        ruta_completa = controlador_comprobante.obtener_ruta_completa_comprobante(pedido_id, nombre_archivo)
+        
+        if not os.path.exists(ruta_completa):
+            return response_error("Archivo no encontrado")
+        
+        return send_file(
+            ruta_completa,
+            as_attachment=True,
+            download_name=nombre_archivo,
+            mimetype='application/pdf'
+        )
+        
     except Exception as e:
         return response_error(str(e))
 
