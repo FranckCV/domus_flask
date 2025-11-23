@@ -34,6 +34,22 @@ def get_producto(u_id,p_id):
     return bd.sql_select_fetchone(sql,(u_id,p_id))
 
 
+def get_img_producto_pr_id(id):
+    sql = '''
+        SELECT 
+            id, 
+            img_nombre, 
+            imagen, 
+            imgprincipal, 
+            productoid, 
+            registro_auditoria 
+        FROM img_producto im
+        WHERE im.productoid = %s
+        order by imgprincipal desc , id asc
+    '''
+    return bd.sql_select_fetchall(sql,(id))
+
+
 def get_productos_pedido(pedido_id):
     sql = '''
         SELECT
@@ -418,7 +434,7 @@ def obtenerEnTarjetasTodos():
                     pr.MARCAid,
                     pr.SUBCATEGORIAid,
                     ipr.imagen
-                FROM `producto` pr
+                FROM producto pr
                 inner join img_producto ipr on pr.id = ipr.PRODUCTOid
                 INNER JOIN subcategoria sub on sub.id = pr.subcategoriaid
                 INNER JOIN categoria cat on cat.id = sub.categoriaid
@@ -458,7 +474,7 @@ def obtenerEnTarjetasMasRecientes():
             pr.fecha_registro,
             pr.stock
 
-        FROM `producto` pr
+        FROM producto pr
         inner join img_producto ipr on pr.id = ipr.PRODUCTOid
         LEFT JOIN subcategoria sub on sub.id = pr.subcategoriaid
         LEFT JOIN categoria cat on cat.id = sub.categoriaid
@@ -491,7 +507,7 @@ def obtenerEnTarjetasAlfabetico(orden):
                     pr.SUBCATEGORIAid,
                     ipr.imagen,
                     sub.CATEGORIAid
-                FROM `producto` pr
+                FROM producto pr
                 inner join img_producto ipr on pr.id = ipr.PRODUCTOid
                 INNER JOIN subcategoria sub on sub.id = pr.subcategoriaid
                 INNER JOIN categoria cat on cat.id = sub.categoriaid
@@ -529,7 +545,7 @@ def obtenerEnTarjetasxPrecio(orden):
                     pr.SUBCATEGORIAid,
                     ipr.imagen,
                     sub.CATEGORIAid
-                FROM `producto` pr
+                FROM producto pr
                 inner join img_producto ipr on pr.id = ipr.PRODUCTOid
                 INNER JOIN subcategoria sub on sub.id = pr.subcategoriaid
                 INNER JOIN categoria cat on cat.id = sub.categoriaid
@@ -667,7 +683,7 @@ def obtenerEnTarjetasOfertas():
                     pr.MARCAid,
                     pr.SUBCATEGORIAid,
                     ipr.imagen
-                FROM `producto` pr
+                FROM producto pr
                 inner join img_producto ipr on pr.id = ipr.PRODUCTOid
                 INNER JOIN subcategoria sub on sub.id = pr.subcategoriaid
                 INNER JOIN categoria cat on cat.id = sub.categoriaid
@@ -848,7 +864,7 @@ def obtener_listado_productos():
                     mar.disponibilidad,
                     count(car.caracteristicaid),
                     COALESCE(img_count.total_imagenes, 0) AS total_imagenes
-                FROM `producto` pr
+                FROM producto pr
                 LEFT JOIN img_producto ipr ON pr.id = ipr.PRODUCTOid AND ipr.imgPrincipal = 1
                 LEFT JOIN subcategoria sub ON sub.id = pr.subcategoriaid
                 LEFT JOIN categoria cat ON cat.id = sub.categoriaid
@@ -894,7 +910,7 @@ def buscar_listado_productos_nombre(nombre):
                     mar.disponibilidad,
                     count(car.caracteristicaid),
                     COALESCE(img_count.total_imagenes, 0) AS total_imagenes
-                FROM `producto` pr
+                FROM producto pr
                 LEFT JOIN img_producto ipr ON pr.id = ipr.PRODUCTOid AND ipr.imgPrincipal = 1
                 LEFT JOIN subcategoria sub ON sub.id = pr.subcategoriaid
                 LEFT JOIN categoria cat ON cat.id = sub.categoriaid

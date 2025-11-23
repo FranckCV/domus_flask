@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, flash, jsonify, ses
 from flask_jwt import JWT, jwt_required, current_identity
 from utils import encstringsha256
 from datetime import timedelta
+from blueprints.api.utils import response_error , response_success
 
 # from utils import *
 from controladores import (
@@ -228,7 +229,6 @@ def bd_operation():
 @app.route("/login_movil", methods=['POST'])
 def login_movil():
     try:
-        from blueprints.api.utils import response_error , response_success
         body = request.json.get('body_request', {})
 
         correo = body.get("correo")
@@ -256,6 +256,36 @@ def login_movil():
 
     except Exception as e:
         return response_error(str(e))
+
+
+
+
+@app.route("/registrar_usuario",methods = ['POST'])
+def registrar_usuario():
+    try:
+        body = request.json.get('body_request',{})
+
+        nombres = body.get("nombres")
+        apellidos = body.get("apellidos")
+        doc_identidad = body.get("doc_identidad")
+        genero = body.get("genero")
+        telefono = body.get("telefono")
+        correo = body.get("correo")
+        contrasenia = body.get("contrasenia")
+
+        usuario_id = controlador_usuario_cliente.register_usuario_cliente(nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia)
+        if usuario_id == 0:
+            msg = 'Error al resgistrar usuario'
+            data = { 'usuario_id' : usuario_id }
+        else:
+            msg = 'Usuario registrado exitosamente'
+            data = { 'usuario_id' : usuario_id }
+
+        return response_success(msg,data)
+    except Exception as e:
+        return response_error(str(e))
+
+
 
 
 

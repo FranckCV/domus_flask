@@ -470,17 +470,21 @@ def actualizar_pedido_pagado(pedido_id, metodo_pago_id, subtotal):
                 WHERE id = %s
             """, (subtotal, metodo_pago_id, pedido_id))
 
-            for p in productos:
-                if p['stock'] - p['cantidad'] >= 0:
-                    cursor.execute("""
-                        UPDATE producto SET
-                            stock = stock - %s
-                        WHERE id = %s
-                    """, (p['cantidad'],p['id'])
-                    )
-                else:
-                    conexion.rollback()
-                    return False
+            if len(productos) > 0:
+                for p in productos:
+                    if p['stock'] - p['cantidad'] >= 0:
+                        cursor.execute("""
+                            UPDATE producto SET
+                                stock = stock - %s
+                            WHERE id = %s
+                        """, (p['cantidad'],p['id'])
+                        )
+                    else:
+                        conexion.rollback()
+                        return False
+            else:
+                conexion.rollback()
+                return False
 
         conexion.commit()
         return True
