@@ -55,7 +55,7 @@ def consultar_producto():
         producto_id = request.args.get("producto_id")
 
         producto = controlador_productos.get_producto(usuario_id,producto_id)
-        rutas = []
+        rutas = controlador_productos.get_img_producto_pr_id(producto_id)
         producto['rutas'] = rutas
 
         msg = 'Datos de producto mostrados exitosamente'
@@ -225,30 +225,30 @@ def loguear_usuario():
         return response_error(str(e))
 
 
-@api_bp.route("/registrar_usuario",methods = ['POST'])
-def registrar_usuario():
-    try:
-        body = request.json.get('body_request',{})
+# @api_bp.route("/registrar_usuario",methods = ['POST'])
+# def registrar_usuario():
+#     try:
+#         body = request.json.get('body_request',{})
 
-        nombres = body.get("nombres")
-        apellidos = body.get("apellidos")
-        doc_identidad = body.get("doc_identidad")
-        genero = body.get("genero")
-        telefono = body.get("telefono")
-        correo = body.get("correo")
-        contrasenia = body.get("contrasenia")
+#         nombres = body.get("nombres")
+#         apellidos = body.get("apellidos")
+#         doc_identidad = body.get("doc_identidad")
+#         genero = body.get("genero")
+#         telefono = body.get("telefono")
+#         correo = body.get("correo")
+#         contrasenia = body.get("contrasenia")
 
-        usuario_id = controlador_usuario_cliente.register_usuario_cliente(nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia)
-        if usuario_id == 0:
-            msg = 'Error al resgistrar usuario'
-            data = { 'usuario_id' : usuario_id }
-        else:
-            msg = 'Usuario registrado exitosamente'
-            data = { 'usuario_id' : usuario_id }
+#         usuario_id = controlador_usuario_cliente.register_usuario_cliente(nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia)
+#         if usuario_id == 0:
+#             msg = 'Error al resgistrar usuario'
+#             data = { 'usuario_id' : usuario_id }
+#         else:
+#             msg = 'Usuario registrado exitosamente'
+#             data = { 'usuario_id' : usuario_id }
 
-        return response_success(msg,data)
-    except Exception as e:
-        return response_error(str(e))
+#         return response_success(msg,data)
+#     except Exception as e:
+#         return response_error(str(e))
 
 
 @api_bp.route("/agregar_producto_carrito",methods = ['POST'])
@@ -450,6 +450,7 @@ def busqueda_catalogo():
         return response_success(msg,data)
     except Exception as e:
         return response_error(str(e))
+
 
 @api_bp.route("/agregar_producto", methods=['POST'])
 def agregar_producto():
@@ -725,3 +726,7 @@ def descargar_comprobante(pedido_id):
         
     except Exception as e:
         return response_error(str(e))
+
+
+
+

@@ -456,7 +456,6 @@ def obtener_pedidos_por_usuario_validacion_stock(usuario_id):
 #######################################################################
 def actualizar_pedido_pagado(pedido_id, metodo_pago_id, subtotal):
     productos = controlador_productos.get_productos_pedido(pedido_id)
-
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
@@ -470,17 +469,21 @@ def actualizar_pedido_pagado(pedido_id, metodo_pago_id, subtotal):
                 WHERE id = %s
             """, (subtotal, metodo_pago_id, pedido_id))
 
-            for p in productos:
-                if p['stock'] - p['cantidad'] >= 0:
-                    cursor.execute("""
-                        UPDATE producto SET
-                            stock = stock - %s
-                        WHERE id = %s
-                    """, (p['cantidad'],p['id'])
-                    )
-                else:
-                    conexion.rollback()
-                    return False
+            if len(productos) > 0:
+                for p in productos:
+                    if p['stock'] - p['cantidad'] >= 0:
+                        cursor.execute("""
+                            UPDATE producto SET
+                                stock = stock - %s
+                            WHERE id = %s
+                        """, (p['cantidad'],p['id'])
+                        )
+                    else:
+                        conexion.rollback()
+                        return False
+            else:
+                conexion.rollback()
+                return False
 
         conexion.commit()
         return True

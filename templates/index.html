@@ -80,13 +80,13 @@
                         {% for producto in productosRecientes %}
 
                         <div class="product">
-                            <a class="product_info" href="{{url_for('general.producto', id=producto[0])}}">
+                            <a class="product_info" href="{{url_for('general.producto', id=producto['id'])}}">
                                 <img class="product_pic"
-                                    src="{{ producto[7] }}"
-                                    alt="{{producto[1]}}">
+                                    src="{{ producto['imagen'] }}"
+                                    alt="{{producto['nombre']}}">
 
                                 <p class="product_name">
-                                    {{producto[1]}}
+                                    {{producto['nombre']}}
                                 </p>
 
                                 {% if producto[2] %}
@@ -95,8 +95,8 @@
                                             Regular
                                         </p>
                                         <p class="product_price_number">
-                                            S/. {{  producto[2] | int  }}
-                                            <sup>.{{ "{:.2f}".format(producto[2]).split('.')[1] }}</sup>
+                                            S/. {{  producto['price_regular'] | int  }}
+                                            <sup>.{{ "{:.2f}".format(producto['price_regular']).split('.')[1] }}</sup>
                                         </p>
                                     </div>
                                 {% endif %}
@@ -106,19 +106,19 @@
                                         Online
                                     </p>
                                     <p class="product_price_number">
-                                        S/. {{ producto[3] | int }}
-                                        <sup>.{{ "{:.2f}".format(producto[3]).split('.')[1] }}</sup>
+                                        S/. {{ producto['precio_online'] | int }}
+                                        <sup>.{{ "{:.2f}".format(producto['precio_online']).split('.')[1] }}</sup>
                                     </p>
                                 </div>
 
-                                {% if producto[4] %}
+                                {% if producto['precio_oferta'] %}
                                     <div class="product_price price_for_sale">
                                         <p class="product_price_title">
                                             Oferta
                                         </p>
                                         <p class="product_price_number">
-                                            S/. {{ producto[4] | int }}
-                                            <sup>.{{ "{:.2f}".format(producto[4]).split('.')[1] }}</sup>
+                                            S/. {{ producto['precio_oferta'] | int }}
+                                            <sup>.{{ "{:.2f}".format(producto['precio_oferta']).split('.')[1] }}</sup>
                                         </p>
                                     </div>
                                 {% endif %}
@@ -128,9 +128,9 @@
 
                             <form action="{{ url_for('perfil.agregar_a_lista_deseos') }}" method="POST">
                                 <div class="" id="heart">
-                                    <input type="hidden" name="producto_id" value="{{ producto.0 }}" data-product-id="{{ producto.0 }}" />
+                                    <input type="hidden" name="producto_id" value="{{ producto.id }}" data-product-id="{{ producto.id }}" />
                                     <button type="submit" class="product_option product_option_fav">
-                                        <i class="{% if producto.0 in lista_deseos_ids %} fa-solid fa-heart fav-active {% else %} fa-regular fa-heart {% endif %}"></i>
+                                        <i class="{% if producto.id in lista_deseos_ids %} fa-solid fa-heart fav-active {% else %} fa-regular fa-heart {% endif %}"></i>
                                     </button>
                                 </div>
                             </form>

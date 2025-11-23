@@ -1,0 +1,75 @@
+{# extends "maestra_general.html" #}
+
+{% block titulo %} 
+     
+{% endblock %}
+
+{% block estilos %} 
+    <style>
+        section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .card {
+            border: 1px solid black;
+            width: 250px;
+            font-size: 13px;
+            display: flex;
+        }
+        .c_content {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .c_img {
+            width: 80px;
+            aspect-ratio: 1 / 1;
+            border: 1px solid black;
+        }
+        .c_img img {
+            width: 80px
+        }
+        
+    </style>
+{% endblock %}
+
+{% block contenido %}
+    <div>
+        {{ productos | length }}
+    </div>
+
+    <section >
+        {% for p in productos %}
+        <div class="card">
+            <div class="c_img">
+                <img src="{{p.imagen}}" alt="">
+            </div>
+            <div class="c_content">
+                <div>
+                    ID: <strong>{{p.id}}</strong>
+                </div>
+                <div class="p_nom">{{p.nombre}}</div>
+
+                <div>Dispo: {{p.disponibilidad}}</div>
+                <div>Fecha: {{p.fecha_registro}}</div>
+                <div>Stock: {{p.stock}}</div>
+    
+                <div>P Reg: {{p.price_regular}}</div>
+                <div>P Onl: {{p.precio_online}}</div>
+                <div>P Ofe: {{p.precio_oferta}}</div>
+    
+                <div>Marca: {{p.MARCAid}} - {{p.marca}}</div>
+                <div>Categ: {{p.SUBCATEGORIAid}} - {{p.subcategoria}}</div>
+                <div>Subca: {{p.CATEGORIAid}} - {{p.categoria}}</div>
+            </div>
+        </div>
+        {% endfor %}
+        
+    </section>
+{% endblock %}
+
+{% block scripts %} 
+    
+
+{% endblock %}
