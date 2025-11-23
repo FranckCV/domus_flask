@@ -42,7 +42,7 @@ def change_password(usuario_id, contrasenia_actual, contrasenia_nueva):
                 SET contrasenia = %s
                 WHERE id = %s
             '''
-            bd.sql_execute(sql_u, (contrasenia_nueva, usuario_id))
+            bd.sql_execute(sql_u, (encstringsha256(contrasenia_nueva), usuario_id))
             return 1
         return 0
     except Exception as e:
@@ -118,13 +118,13 @@ def register_usuario_cliente(nombres, apellidos, doc_identidad, genero, telefono
         SELECT correo FROM usuario WHERE correo = %s
     '''
     existe_correo = bd.sql_select_fetchone(sql_s,(correo)) is not None
-    
+    enc_c = encstringsha256(contrasenia)
     if not existe_correo:
         sql_i = '''
             INSERT INTO usuario (nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia, disponibilidad, TIPO_USUARIOid)
             VALUES (%s, %s, %s, %s, %s, %s, %s, 1, 3)
         '''
-        return bd.sql_execute_lastrowid(sql_i,(nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia))
+        return bd.sql_execute_lastrowid(sql_i,(nombres, apellidos, doc_identidad, genero, telefono, correo, enc_c))
     return 0
 
 

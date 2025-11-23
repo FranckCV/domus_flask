@@ -258,3 +258,13 @@ def selectedContenidoInformativo(id):
     datos = controlador_contenido_info.obtener_datos_contenido_por_tipo(id)
     return render_template("selectedContenidoInfo.html" , tipo = tipo , datos = datos)
 
+
+
+@general_bp.route("/lista_productos")
+def lista_productos():
+    productos = controlador_productos.obtenerEnTarjetasMasRecientes() 
+
+    return render_template(
+        "lista_productos.html", 
+        productos = productos,
+        )

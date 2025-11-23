@@ -449,6 +449,7 @@ def busqueda_catalogo():
     except Exception as e:
         return response_error(str(e))
 
+
 @api_bp.route("/agregar_producto", methods=['POST'])
 def agregar_producto():
     try:
@@ -656,3 +657,7 @@ def comboboxes():
         return response_success(msg,data)
     except Exception as e:
         return response_error(str(e))
+
+
+
+

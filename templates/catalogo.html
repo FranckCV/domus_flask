@@ -130,28 +130,28 @@
                         
                         {% for producto in productos %}
 
-                        <div class="product" data-subcategory="{{producto[6]}}" data-category="{{producto[8]}}" 
-                        {% if producto[4] %}
-                            data-price="{{producto[4]}}" 
+                        <div class="product" data-subcategory="{{producto['SUBCATEGORIAid']}}" data-category="{{producto['CATEGORIAid']}}" 
+                        {% if producto['precio_oferta'] %}
+                            data-price="{{producto['precio_oferta']}}" 
                         {% else %}
-                            data-price="{{producto[3]}}"
+                            data-price="{{producto['precio_online']}}"
                         {% endif %}
                         >
-                            <a class="product_info" href="{{url_for('general.producto', id=producto[0])}}">
-                                <img class="product_pic" src="{{ producto[7] }}" alt="{{producto[1]}}">
+                            <a class="product_info" href="{{url_for('general.producto', id=producto['id'])}}">
+                                <img class="product_pic" src="{{ producto['imagen'] }}" alt="{{producto['nombre']}}">
 
                                 <p class="product_name">
-                                    {{producto[1]}}
+                                    {{producto['nombre']}}
                                 </p>
 
-                                {% if producto[2] %}
+                                {% if producto['price_regular'] %}
                                     <div class="product_price price_regular">
                                         <p class="product_price_title">
                                             Regular
                                         </p>
                                         <p class="product_price_number">
-                                            S/. {{  producto[2] | int  }}
-                                            <sup>.{{ "{:.2f}".format(producto[2]).split('.')[1] }}</sup>
+                                            S/. {{  producto['price_regular'] | int  }}
+                                            <sup>.{{ "{:.2f}".format(producto['price_regular']).split('.')[1] }}</sup>
                                         </p>
                                     </div>
                                 {% endif %}
@@ -161,19 +161,19 @@
                                         Online
                                     </p>
                                     <p class="product_price_number">
-                                        S/. {{ producto[3] | int }}
-                                        <sup>.{{ "{:.2f}".format(producto[3]).split('.')[1] }}</sup>
+                                        S/. {{ producto['precio_online'] | int }}
+                                        <sup>.{{ "{:.2f}".format(producto['precio_online']).split('.')[1] }}</sup>
                                     </p>
                                 </div>
 
-                                {% if producto[4] %}
+                                {% if producto['precio_oferta'] %}
                                     <div class="product_price price_for_sale">
                                         <p class="product_price_title">
                                             Oferta
                                         </p>
                                         <p class="product_price_number">
-                                            S/. {{ producto[4] | int }}
-                                            <sup>.{{ "{:.2f}".format(producto[4]).split('.')[1] }}</sup>
+                                            S/. {{ producto['precio_oferta'] | int }}
+                                            <sup>.{{ "{:.2f}".format(producto['precio_oferta']).split('.')[1] }}</sup>
                                         </p>
                                     </div>
                                 {% endif %}
