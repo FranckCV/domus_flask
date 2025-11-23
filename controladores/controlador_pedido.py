@@ -456,7 +456,6 @@ def obtener_pedidos_por_usuario_validacion_stock(usuario_id):
 #######################################################################
 def actualizar_pedido_pagado(pedido_id, metodo_pago_id, subtotal):
     productos = controlador_productos.get_productos_pedido(pedido_id)
-
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
