@@ -49,19 +49,18 @@ def change_password(usuario_id, contrasenia_actual, contrasenia_nueva):
         return -1
         
 
-def update_perfil(usuario_id, nombres, apellidos , doc_identidad , genero , telefono , correo):
+def update_perfil(usuario_id, nombres, apellidos , doc_identidad , telefono , fecha_nacimiento):
     try:
         sql_u = '''
             UPDATE usuario SET 
             nombres = %s ,
             apellidos = %s ,
             doc_identidad = %s ,
-            genero = %s,
             telefono = %s ,
-            correo = %s 
+            fecha_nacimiento = %s 
             WHERE id = %s
         '''
-        bd.sql_execute(sql_u, (nombres, apellidos , doc_identidad , genero , telefono , correo,usuario_id))
+        bd.sql_execute(sql_u, (nombres, apellidos , doc_identidad , telefono , fecha_nacimiento, usuario_id))
         return 1
     except Exception as e:
         return -1

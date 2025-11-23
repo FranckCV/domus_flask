@@ -187,11 +187,18 @@ def editar_perfil():
         nombres = body.get("nombres")
         apellidos = body.get("apellidos")
         doc_identidad = body.get("doc_identidad")
-        genero = body.get("genero")
+        #genero = body.get("genero")
         telefono = body.get("telefono")
-        correo = body.get("correo")
+        fecha_nacimiento = body.get("fecha_nacimiento")
 
-        controlador_usuario_cliente.update_perfil(usuario_id, nombres, apellidos , doc_identidad , genero, telefono , correo)
+        controlador_usuario_cliente.update_perfil(
+            usuario_id,
+            nombres,
+            apellidos,
+            doc_identidad,
+            telefono,
+            fecha_nacimiento
+        )
 
         msg = 'Perfil modificado exitosamente'
         data = {}
@@ -615,11 +622,18 @@ def procesar_pago_carrito():
         subtotal = body.get("subtotal")
         pedido_id =  body.get("pedido_id")
 
+        card_nro =  body.get("card_nro",None)
+        card_mmaa =  body.get("card_mmaa",None)
+        card_titular =  body.get("card_titular",None)
+
         # 2. ACTUALIZAR A PAGADO
         ok = controlador_pedido.actualizar_pedido_pagado(
             pedido_id,
             metodo_pago_id,
-            subtotal
+            subtotal ,
+            card_nro ,
+            card_mmaa ,
+            card_titular 
         )
 
         if not ok:

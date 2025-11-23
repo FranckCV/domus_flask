@@ -4,6 +4,7 @@ import inspect
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
+from cryptography.fernet import Fernet
 
 def encstringsha256(cadena_legible):
     h = hashlib.new('sha256')
@@ -38,4 +39,23 @@ def save_file_folder(archivo,folder='static'):
         archivo.save(ruta_completa)
         return ruta_completa
     return None
+
+
+
+ENCRYPT_KEY = b'iKLqt1D9ipJH2Mb6f7sShcR2NRuM1X3q4vjx2Ufzq80='
+
+cipher = Fernet(ENCRYPT_KEY)
+
+def fernet_encrypt(value):
+    if not value:
+        return None
+    return cipher.encrypt(value.encode()).decode()
+
+def fernet_decrypt(value):
+    if not value:
+        return None
+    return cipher.decrypt(value.encode()).decode()
+
+
+
 

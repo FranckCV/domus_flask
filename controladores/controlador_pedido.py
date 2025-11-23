@@ -1,6 +1,7 @@
 from bd import obtener_conexion
 import base64
 import controladores.controlador_productos as controlador_productos
+from utils import fernet_encrypt
 tabla = 'pedido'
 import bd
 
@@ -454,20 +455,26 @@ def obtener_pedidos_por_usuario_validacion_stock(usuario_id):
 
 
 #######################################################################
-def actualizar_pedido_pagado(pedido_id, metodo_pago_id, subtotal):
+def actualizar_pedido_pagado(pedido_id, metodo_pago_id, subtotal, card_nro=None, card_mmaa=None , card_titular=None ):
+    ec_nro = fernet_encrypt(card_nro)
+    ec_mmaa = fernet_encrypt(card_mmaa)
+    ec_titular = fernet_encrypt(card_titular)
+
     productos = controlador_productos.get_productos_pedido(pedido_id)
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
             cursor.execute("""
-                UPDATE pedido
-                SET
+                UPDATE pedido SET
                     fecha_compra = NOW(),
                     subtotal = %s,
                     metodo_pagoid = %s,
-                    estado_pedidoid = 2
+                    estado_pedidoid = 2 ,
+                    card_nro = %s ,
+                    card_mmaa = %s ,
+                    card_titular = %s 
                 WHERE id = %s
-            """, (subtotal, metodo_pago_id, pedido_id))
+            """, (subtotal, metodo_pago_id, ec_nro, ec_mmaa , ec_titular, pedido_id))
 
             if len(productos) > 0:
                 for p in productos:
