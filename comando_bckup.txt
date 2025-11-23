@@ -1,1 +1,27 @@
 mysqldump --no-tablespaces -u DomusMarket -p --host=DomusMarket.mysql.pythonanywhere-services.com DomusMarket\$domus_market > backup.sql
+
+
+
+{
+  "body_request": {
+    "pedido_id": 2,
+    "tipo_comprobante": "factura",
+    "nombre_completo": "Empresa Domus SAC",
+    "doc_identidad": "20123456789",
+    "tipo_doc": "RUC",
+    "razon_social": "Empresa Domus SAC",
+    "ruc": "20123456789",
+    "direccion": "Av. Los Olivos 456, Lima"
+  }
+}
+
+
+{
+  "body_request": {
+    "pedido_id": 1,
+    "tipo_comprobante": "boleta",
+    "nombre_completo": "Juan Pérez García",
+    "doc_identidad": "12345678",
+    "tipo_doc": "DNI"
+  }
+}
