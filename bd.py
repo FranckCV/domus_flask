@@ -11,7 +11,8 @@ from pymysql.cursors import DictCursor
 BD_HOST = 'localhost'
 BD_USER = 'root'
 BD_PSWD = ''
-BD_DBNM = 'domus_market2'
+BD_DBNM = 'bd_domus'
+# BD_DBNM = 'domus_market2'
 
 # BD_PORT = 3306
 
