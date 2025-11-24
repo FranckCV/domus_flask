@@ -252,10 +252,11 @@ def login_movil():
             # print(f"Esto responde el login {response_success(msg, data)}")
             return response_success(msg, data)
         else:
-            return response_error("Contraseña incorrecta.")
+            return response_error("Credenciales incorrectas")
 
     except Exception as e:
         return response_error(str(e))
+
 
 
 
