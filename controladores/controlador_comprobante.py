@@ -208,7 +208,7 @@ def generar_pdf_comprobante(pedidoid, tipo_comprobante, datos_cliente, datos_pro
     # ==================== ENCABEZADO CON LOGO (RUTA ABSOLUTA) ====================
     
     # Ruta absoluta del logo
-    logo_path = os.path.join(base_dir, 'static', 'img', 'ic_logo_invert.png')
+    logo_path = os.path.join(base_dir, 'static', 'img', 'ic_logo_dark.png')
     
     if os.path.exists(logo_path):
         # Logo sin fondo, tal cual es la imagen
@@ -337,19 +337,48 @@ def generar_pdf_comprobante(pedidoid, tipo_comprobante, datos_cliente, datos_pro
     elements.append(Paragraph("<b>DETALLE DE PRODUCTOS</b>", style_section_header))
     elements.append(Spacer(1, 0.2*cm))
     
-    productos_data = [['Cant.', 'Descripción', 'P. Unit.', 'Total']]
+    productos_data = [['Cant.', 'Descripción', 'P. Unit.', 'Dcto.', 'Total']]
+    
+    # Variables para calcular totales
+    subtotal_sin_igv = 0.0
     
     for prod in datos_productos:
         nombre_producto = truncar_texto(prod['nombre'], 50)
+        cantidad = int(prod['cantidad'])
         
+        # Determinar el precio final (con IGV incluido)
+        precio_unitario_con_igv = float(prod['precio_unitario'])
+        precio_oferta_con_igv = float(prod.get('precio_oferta', 0))
+        
+        # Si hay precio de oferta, ese es el precio final
+        if precio_oferta_con_igv > 0:
+            precio_final_con_igv = precio_oferta_con_igv
+            descuento_unitario_con_igv = precio_unitario_con_igv - precio_oferta_con_igv
+            descuento_total_con_igv = descuento_unitario_con_igv * cantidad
+        else:
+            precio_final_con_igv = precio_unitario_con_igv
+            descuento_total_con_igv = 0
+        
+        # Calcular precio unitario SIN IGV (dividir entre 1.18)
+        precio_unitario_sin_igv = precio_unitario_con_igv / 1.18
+        
+        # Calcular total de la línea SIN IGV
+        total_linea_sin_igv = (precio_final_con_igv / 1.18) * cantidad
+        subtotal_sin_igv += total_linea_sin_igv
+        
+        # Calcular total de la línea CON IGV (para mostrarlo)
+        total_linea_con_igv = precio_final_con_igv * cantidad
+        
+        # Agregar fila a la tabla
         productos_data.append([
-            str(prod['cantidad']),
+            str(cantidad),
             nombre_producto,
-            f"S/ {float(prod['precio_unitario']):.2f}",
-            f"S/ {float(prod['total']):.2f}"
+            f"S/ {precio_unitario_sin_igv:.2f}",  # Precio unitario SIN IGV
+            f"S/ {(descuento_total_con_igv / 1.18):.2f}" if descuento_total_con_igv > 0 else "-",  # Descuento SIN IGV
+            f"S/ {total_linea_sin_igv:.2f}"  # Total SIN IGV
         ])
     
-    productos_table = Table(productos_data, colWidths=[2*cm, 8.5*cm, 2.5*cm, 2*cm])
+    productos_table = Table(productos_data, colWidths=[2*cm, 7*cm, 2.5*cm, 2.5*cm, 3*cm])
     productos_table.setStyle(TableStyle([
         # Encabezado
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2C3E50')),
@@ -368,8 +397,8 @@ def generar_pdf_comprobante(pedidoid, tipo_comprobante, datos_cliente, datos_pro
         ('FONTSIZE', (0, 1), (-1, -1), 9),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('TOPPADDING', (0, 1), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
+        ('TOPPADDING', (0, 1), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
         ('LEFTPADDING', (0, 1), (-1, -1), 8),
         ('RIGHTPADDING', (0, 1), (-1, -1), 8),
     ]))
@@ -379,8 +408,13 @@ def generar_pdf_comprobante(pedidoid, tipo_comprobante, datos_cliente, datos_pro
     
     # ==================== TOTALES ====================
     
-    subtotal = sum(float(p['total']) for p in datos_productos)
+    # Subtotal (sin IGV)
+    subtotal = subtotal_sin_igv
+    
+    # IGV (18% del subtotal)
     igv = subtotal * 0.18
+    
+    # Total (subtotal + IGV)
     total = subtotal + igv
     
     totales_data = [

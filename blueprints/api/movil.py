@@ -3,6 +3,7 @@ from blueprints.api.utils import response_success, response_error
 from datetime import datetime
 from utils import encstringsha256
 import os
+import requests
 from werkzeug.utils import secure_filename
 
 from controladores import (
@@ -664,6 +665,7 @@ def procesar_pago_carrito():
                     'cantidad': prod['cantidad'],
                     'nombre': prod['nombre'],
                     'precio_unitario': prod['precio'],
+                    'precio_oferta': prod['oferta'],
                     'total': prod['cantidad'] * prod['precio']
                 })
             
@@ -743,6 +745,161 @@ def descargar_comprobante(pedido_id):
     except Exception as e:
         return response_error(str(e))
 
+
+@api_bp.route("/consultar_documento", methods=['POST'])
+def consultar_documento():
+    """
+    Consulta información de DNI o RUC usando API alternativa gratuita
+    
+    Body request:
+    {
+        "body_request": {
+            "tipo_documento": "dni" | "ruc",
+            "numero_documento": "12345678" | "20123456789"
+        }
+    }
+    
+    Response:
+    - Para DNI: nombre_completo
+    - Para RUC: razon_social, direccion
+    """
+    try:
+        body = request.json.get('body_request', {})
+        
+        tipo_documento = body.get("tipo_documento", "").lower()
+        numero_documento = body.get("numero_documento", "")
+        
+        if not tipo_documento or not numero_documento:
+            return response_error("Debe proporcionar tipo_documento y numero_documento")
+        
+        if tipo_documento not in ['dni', 'ruc']:
+            return response_error("tipo_documento debe ser 'dni' o 'ruc'")
+        
+        # Validar longitud según tipo
+        if tipo_documento == 'dni' and len(numero_documento) != 8:
+            return response_error("El DNI debe tener 8 dígitos")
+        
+        if tipo_documento == 'ruc' and len(numero_documento) != 11:
+            return response_error("El RUC debe tener 11 dígitos")
+        
+        # ============================================
+        # API DNI-RUC (Gratuita)
+        # ============================================
+        
+        if tipo_documento == 'dni':
+            # API gratuita para DNI
+            url = f"https://dniruc.apisperu.com/api/v1/dni/{numero_documento}"
+            
+            try:
+                response_api = requests.get(url, timeout=15, params={"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InBlcmV6ZGowOTA0QGdtYWlsLmNvbSJ9.8rz9gE8oTMuGHoGvePcZA50zZjUDMph_jVX3PK8npWc"})
+                
+                if response_api.status_code == 200:
+                    data_api = response_api.json()
+                    
+                    # Verificar si hay éxito
+                    if data_api.get("success", False):
+                        # Extraer nombres y apellidos
+                        nombres = data_api.get("nombres", "")
+                        apellido_paterno = data_api.get("apellidoPaterno", "")
+                        apellido_materno = data_api.get("apellidoMaterno", "")
+                        
+                        nombre_completo = f"{nombres} {apellido_paterno} {apellido_materno}".strip()
+                        
+                        msg = "Consulta DNI exitosa"
+                        data = {
+                            "tipo_documento": "dni",
+                            "numero_documento": numero_documento,
+                            "nombre_completo": nombre_completo,
+                            "nombres": nombres,
+                            "apellido_paterno": apellido_paterno,
+                            "apellido_materno": apellido_materno
+                        }
+                        
+                        return response_success(msg, data)
+                    else:
+                        # Log de depuración
+                        print(f"DNI API Response: {data_api}")
+                        mensaje_error = data_api.get("message", "DNI no encontrado o inválido")
+                        return response_error(f"DNI no encontrado: {mensaje_error}")
+                else:
+                    return response_error(f"Error al consultar DNI: Código {response_api.status_code}")
+            
+            except requests.Timeout:
+                return response_error("Tiempo de espera agotado al consultar DNI")
+            except requests.RequestException as e:
+                return response_error(f"Error de conexión al consultar DNI: {str(e)}")
+        
+        elif tipo_documento == 'ruc':
+            # API gratuita para RUC
+            url = f"https://dniruc.apisperu.com/api/v1/ruc/{numero_documento}"
+            
+            try:
+                response_api = requests.get(url, timeout=15, params={"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InBlcmV6ZGowOTA0QGdtYWlsLmNvbSJ9.8rz9gE8oTMuGHoGvePcZA50zZjUDMph_jVX3PK8npWc"})
+                
+                print(f"RUC API Status: {response_api.status_code}")
+                
+                if response_api.status_code == 200:
+                    data_api = response_api.json()
+                    
+                    # Log completo de la respuesta para debug
+                    print(f"RUC API Response: {data_api}")
+                    
+                    # Verificar si hay éxito
+                    if data_api.get("success", False):
+                        # Extraer datos de la empresa
+                        razon_social = data_api.get("razonSocial", "") or data_api.get("nombre", "")
+                        direccion = data_api.get("direccion", "")
+                        estado = data_api.get("estado", "")
+                        condicion = data_api.get("condicion", "")
+                        
+                        msg = "Consulta RUC exitosa"
+                        data = {
+                            "tipo_documento": "ruc",
+                            "numero_documento": numero_documento,
+                            "razon_social": razon_social,
+                            "direccion": direccion,
+                            "estado": estado,
+                            "condicion": condicion
+                        }
+                        
+                        return response_success(msg, data)
+                    else:
+                        # Extraer mensaje de error de la API
+                        mensaje_error = data_api.get("message", "No se encontró información")
+                        
+                        # Si la API dice que no encontró, intentar extraer lo que sí viene
+                        if data_api.get("razonSocial") or data_api.get("nombre"):
+                            # Aunque diga success=false, a veces trae datos
+                            razon_social = data_api.get("razonSocial", "") or data_api.get("nombre", "")
+                            direccion = data_api.get("direccion", "")
+                            estado = data_api.get("estado", "")
+                            condicion = data_api.get("condicion", "")
+                            
+                            msg = "Consulta RUC exitosa (con advertencia)"
+                            data = {
+                                "tipo_documento": "ruc",
+                                "numero_documento": numero_documento,
+                                "razon_social": razon_social,
+                                "direccion": direccion,
+                                "estado": estado,
+                                "condicion": condicion
+                            }
+                            
+                            return response_success(msg, data)
+                        else:
+                            return response_error(f"RUC no encontrado: {mensaje_error}. Verifique que el número sea correcto.")
+                else:
+                    return response_error(f"Error al consultar RUC: Código {response_api.status_code}")
+            
+            except requests.Timeout:
+                return response_error("Tiempo de espera agotado al consultar RUC")
+            except requests.RequestException as e:
+                return response_error(f"Error de conexión al consultar RUC: {str(e)}")
+    
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return response_error(f"Error al consultar documento: {str(e)}")
 
 
 
