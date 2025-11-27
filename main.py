@@ -14,7 +14,8 @@ from controladores import (
     controlador_informacion_domus ,
     controlador_lista_deseos ,
     controlador_usuario_cliente ,
-    controlador_contenido_info
+    controlador_contenido_info,
+    controlador_bitacora
 )
 from clase_user_v1.usuario import Usuario
 
@@ -249,6 +250,7 @@ def login_movil():
         if epassword == stored_password:
             msg = "Inicio de sesión exitoso"
             data = usuario
+            controlador_bitacora.registrar_bitacora(usuarioid=usuario.get("id"))
             # print(f"Esto responde el login {response_success(msg, data)}")
             return response_success(msg, data)
         else:

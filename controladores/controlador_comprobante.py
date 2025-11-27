@@ -343,7 +343,7 @@ def generar_pdf_comprobante(pedidoid, tipo_comprobante, datos_cliente, datos_pro
     subtotal_sin_igv = 0.0
     
     for prod in datos_productos:
-        nombre_producto = truncar_texto(prod['nombre'], 50)
+        nombre_producto = truncar_texto(prod['nombre'], 41)
         cantidad = int(prod['cantidad'])
         
         # Determinar el precio final (con IGV incluido)
