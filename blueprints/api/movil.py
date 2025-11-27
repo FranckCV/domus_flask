@@ -612,13 +612,13 @@ def procesar_pago():
     except Exception as e:
         return response_error(str(e))
 
+
 @api_bp.route("/procesar_pago_carrito", methods=["POST"])
 def procesar_pago_carrito():
     try:
         body = request.json.get("body_request", {})
 
         metodo_pago_id = body.get("metodo_pago_id")
-        subtotal = body.get("subtotal")
         pedido_id = body.get("pedido_id")
 
         card_nro =  body.get("card_nro",None)
@@ -629,7 +629,6 @@ def procesar_pago_carrito():
         ok = controlador_pedido.actualizar_pedido_pagado(
             pedido_id,
             metodo_pago_id,
-            subtotal ,
             card_nro ,
             card_mmaa ,
             card_titular 
@@ -701,7 +700,10 @@ def procesar_pago_carrito():
         # 4. RESPUESTA FINAL
         ped = controlador_pedido.get_pedido_id(pedido_id)
         usuario_id = ped['usuarioid']
-        cart_id = controlador_pedido.insert_new_pedido_carrito(usuario_id)
+
+        val_cart = controlador_pedido.get_carrito_usuarioid(usuario_id)
+        if not val_cart:
+            cart_id = controlador_pedido.insert_new_pedido_carrito(usuario_id)
 
         data = {
             "pedido_id": pedido_id,

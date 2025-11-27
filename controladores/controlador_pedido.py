@@ -455,15 +455,37 @@ def obtener_pedidos_por_usuario_validacion_stock(usuario_id):
 
 
 #######################################################################
-def actualizar_pedido_pagado(pedido_id, metodo_pago_id, subtotal, card_nro=None, card_mmaa=None , card_titular=None ):
+
+def actualizar_pedido_pagado(pedido_id, metodo_pago_id, card_nro=None, card_mmaa=None , card_titular=None ):
     ec_nro = fernet_encrypt(card_nro)
     ec_mmaa = fernet_encrypt(card_mmaa)
     ec_titular = fernet_encrypt(card_titular)
 
     productos = controlador_productos.get_productos_pedido(pedido_id)
+    if not productos or productos == [] or len(productos) == 0 :
+        print("No hay productos en el pedido")
+        return False
+    
+    subtotal_calculado = 0
     conexion = obtener_conexion()
     try:
         with conexion.cursor() as cursor:
+            for p in productos:
+                if p['stock'] >= p['cantidad']:
+                    cursor.execute("""
+                        UPDATE producto SET
+                            stock = stock - %s
+                        WHERE id = %s
+                    """, (p['cantidad'],p['id'])
+                    )
+
+                    precio = p["oferta"] if p["oferta"] and p["oferta"] > 0 else p["precio"]
+                    subtotal_calculado += precio * p["cantidad"]
+
+                else:
+                    conexion.rollback()
+                    return False
+            
             cursor.execute("""
                 UPDATE pedido SET
                     fecha_compra = NOW(),
@@ -474,23 +496,7 @@ def actualizar_pedido_pagado(pedido_id, metodo_pago_id, subtotal, card_nro=None,
                     card_mmaa = %s ,
                     card_titular = %s 
                 WHERE id = %s
-            """, (subtotal, metodo_pago_id, ec_nro, ec_mmaa , ec_titular, pedido_id))
-
-            if len(productos) > 0:
-                for p in productos:
-                    if p['stock'] - p['cantidad'] >= 0:
-                        cursor.execute("""
-                            UPDATE producto SET
-                                stock = stock - %s
-                            WHERE id = %s
-                        """, (p['cantidad'],p['id'])
-                        )
-                    else:
-                        conexion.rollback()
-                        return False
-            else:
-                conexion.rollback()
-                return False
+            """, (subtotal_calculado, metodo_pago_id, ec_nro, ec_mmaa , ec_titular, pedido_id))
 
         conexion.commit()
         return True
