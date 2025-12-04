@@ -538,7 +538,6 @@ def login_google():
         return response_error(f"Error en login con Google: {str(e)}")
 #####
 
-
 # GITHUB
 
 @app.route("/login_github", methods=['POST'])
@@ -562,13 +561,24 @@ def login_github():
         
         # 1. ✅ INTERCAMBIAR CÓDIGO POR ACCESS_TOKEN
         import requests
+        from dotenv import load_dotenv
         
-        # ⚠️ IMPORTANTE: Nunca expongas client_secret en el código
-        # Mejor guardarlo en variables de entorno
+        # ✅ CARGAR .env DESDE LA CARPETA DEL PROYECTO
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        dotenv_path = os.path.join(basedir, '.env')
+        
+        # Intentar cargar .env si existe
+        if os.path.exists(dotenv_path):
+            load_dotenv(dotenv_path)
+            print(f"✅ Archivo .env cargado desde: {dotenv_path}")
+        else:
+            print(f"⚠️ Archivo .env no encontrado en: {dotenv_path}")
+        
+        # Obtener credenciales
         GITHUB_CLIENT_ID = os.getenv('GITHUB_CLIENT_ID', 'Ov23liyY7OsCPVbgDH4p')
-        GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET', 'TU_GITHUB_CLIENT_SECRET')  # ⚠️ CAMBIAR
+        GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET')
         
-        if GITHUB_CLIENT_SECRET == 'TU_GITHUB_CLIENT_SECRET':
+        if not GITHUB_CLIENT_SECRET or GITHUB_CLIENT_SECRET == 'TU_GITHUB_CLIENT_SECRET':
             return response_error("GitHub Client Secret no configurado en el servidor")
         
         token_url = "https://github.com/login/oauth/access_token"
@@ -576,7 +586,6 @@ def login_github():
             "client_id": GITHUB_CLIENT_ID,
             "client_secret": GITHUB_CLIENT_SECRET,
             "code": code,
-            # "redirect_uri": "com.cdp.appdomus://callback"  # Opcional, pero recomendado
         }
         
         try:
@@ -695,7 +704,7 @@ def login_github():
             
             doc_identidad = "00000000"
             genero = 1
-            telefono = "000000000"
+            telefono = "999999999"
             
             import bd
             contrasenia_temporal = encstringsha256(secrets.token_urlsafe(32))
@@ -768,8 +777,6 @@ def login_github():
         import traceback
         traceback.print_exc()
         return response_error(f"Error en login con GitHub: {str(e)}")
-
-
 
 #######
 
