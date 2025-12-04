@@ -67,25 +67,43 @@ def consultar_producto():
         return response_error(str(e))
 
 
+# @api_bp.route("/consultar_usuario")
+# def consultar_usuario():
+#     try:
+#         usuario_id = request.args.get("usuario_id", type=int)
+
+#         lista_deseos = controlador_productos.get_productos_lista_deseos(usuario_id)
+#         lista_pedidos = controlador_pedido.get_pedidos_usuario_id(usuario_id)
+
+#         data = {
+#             "lista_deseos": lista_deseos,
+#             "lista_pedidos": lista_pedidos
+#         }
+
+#         return response_success("Datos de usuario mostrados exitosamente", data)
+
+#     except Exception as e:
+#         return response_error(str(e))
+
 @api_bp.route("/consultar_usuario")
 def consultar_usuario():
     try:
         usuario_id = request.args.get("usuario_id", type=int)
 
-        lista_deseos = controlador_productos.get_productos_lista_deseos(usuario_id)
-        lista_pedidos = controlador_pedido.get_pedidos_usuario_id(usuario_id)
+        usuario = controlador_usuario_cliente.get_usuario_id(usuario_id)
+        # lista_deseos = controlador_productos.get_productos_lista_deseos(usuario_id)
+        # lista_pedidos = controlador_pedido.get_pedidos_usuario_id(usuario_id)
 
-        data = {
-            "lista_deseos": lista_deseos,
-            "lista_pedidos": lista_pedidos
-        }
+        # data = {
+        #     "lista_deseos": lista_deseos,
+        #     "lista_pedidos": lista_pedidos,
+        #     "usuario" : usuario
+        # }
 
-        return response_success("Datos de usuario mostrados exitosamente", data)
+        return response_success("Datos de usuario mostrados exitosamente", usuario)
 
     except Exception as e:
         return response_error(str(e))
-
-
 
 @api_bp.route("/consultar_pedido")
 def consultar_pedido():
@@ -903,3 +921,81 @@ def consultar_documento():
 
 
 
+UPLOAD_FOLDER = "/home/DomusMarket/mysite/static/img/img_usuario"
+ALLOWED = {"jpg", "jpeg", "png", "webp", "gif"}
+
+def allowed_ext(filename):
+    return filename.split('.')[-1].lower() in ALLOWED
+
+def get_extension_from_url(url):
+    """Extrae la extensión de una URL"""
+    parsed = urlparse(url)
+    path = parsed.path
+    ext = os.path.splitext(path)[1].lower().replace('.', '')
+    return ext if ext in ALLOWED else None
+
+@api_bp.route("/cambiar_foto_perfil", methods=["POST"])
+def cambiar_foto_perfil():
+    try:
+        usuario_id = request.form.get("usuario_id")
+        url = request.form.get("url", "").strip()
+        saved_path = None
+
+        if not usuario_id:
+            return response_error("Falta el parámetro usuario_id")
+
+        # == 1) QUITAR FOTO (url vacía y sin archivo) ==
+        if "file" not in request.files and url == "":
+            # Guardar NULL en la BD
+            controlador_usuario_cliente.update_img_usuario(None, usuario_id)
+            return response_success("Foto de perfil eliminada", {"img": None})
+
+        # == 2) SUBIR DESDE GALERÍA ==
+        if "file" in request.files:
+            file = request.files["file"]
+            if file and file.filename and allowed_ext(file.filename):
+                original_filename = secure_filename(file.filename)
+                name_without_ext = os.path.splitext(original_filename)[0]
+                extension = os.path.splitext(original_filename)[1]
+
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                newname = f"user_{usuario_id}_{name_without_ext}_{timestamp}{extension}"
+                fullpath = os.path.join(UPLOAD_FOLDER, newname)
+
+                file.save(fullpath)
+                saved_path = f"/static/img/img_usuario/{newname}"
+
+        # == 3) GUARDAR URL EXTERNA (NO DESCARGAR) ==
+        elif url != "":
+            saved_path = url
+
+        # Si se generó saved_path, actualizar en BD
+        if saved_path is not None:
+            controlador_usuario_cliente.update_img_usuario(saved_path, usuario_id)
+
+        return response_success("Foto de perfil modificada", {"img": saved_path})
+
+    except Exception as e:
+        return response_error(str(e))
+
+
+
+@api_bp.route("/comboboxes",methods=['POST'])
+def comboboxes():
+    try:
+        body = request.json.get('body_request',{})
+
+        categorias = controlador_categorias.obtener_categorias_disponibles()
+        subcategorias = controlador_subcategorias.obtener_subcategorias()
+        marcas = controlador_productos.obtener_marcas_disponibles()
+
+        msg = 'Comboboxes obtenidos exitosamente'
+        data = {
+            "categorias" : categorias,
+            "subcategorias" : subcategorias,
+            "marcas" : marcas
+        }
+
+        return response_success(msg,data)
+    except Exception as e:
+        return response_error(str(e))

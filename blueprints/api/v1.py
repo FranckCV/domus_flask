@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt import jwt_required
+from flask_jwt_extended import jwt_required
 from blueprints.api.utils import response_success, response_error 
 from datetime import datetime
 

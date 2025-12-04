@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response,  redirect, url_for
-from flask_jwt import JWT, jwt_required, current_identity
+from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response, url_for
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from utils import encstringsha256
 from datetime import timedelta
-from blueprints.api.utils import response_error , response_success
+from blueprints.api.utils import response_error, response_success
+import firebase_admin
+from firebase_admin import credentials
+import os
 
 # from utils import *
 from controladores import (
@@ -22,46 +25,138 @@ from clase_user_v1.usuario import Usuario
 app = Flask(__name__)
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(minutes=60)
 app.config['SECRET_KEY'] = 'super-secret'
+app.config['JWT_SECRET_KEY'] = 'jwt-super-secret-y-12'  # Cambia esto por una clave segura    
 app.debug = True
 
 
+# def authenticate(username, password):
+#     data = controlador_usuario_cliente.obtener_usuario_cliente_por_email(username)
+#     if not data:
+#         return None
+#     user = Usuario(id=data[0], correo=data[1], contrasenia=data[2], tipo_usuario_id=data[3])
+
+#     if user and user.contrasenia == encstringsha256(password):
+#         return user
+
+#     return None
+
+
+# def identity(payload):
+#     """Obtiene el usuario a partir del JWT"""
+#     try:
+#         user_id = payload.get('identity')
+#         if not user_id:
+#             return None
+
+#         data = controlador_usuario_cliente.obtener_usuario_cliente_por_id2(user_id)
+
+#         if not data:
+#             return None
+
+#         user = Usuario(
+#             id=data[0],
+#             correo=data[1],
+#             contrasenia=data[2],
+#             tipo_usuario_id=data[3]
+#         )
+#         return user
+#     except Exception as e:
+#         print(f"Error en identity: {e}")
+#         return None
+
+
+jwt = JWTManager(app)
+
+# Inicializar Firebase Admin SDK
+if not firebase_admin._apps:
+    try:
+        cred_path = os.path.join(os.path.dirname(__file__), 'firebase-credentials.json')
+        print(f"Ruta del archivo de credenciales de Firebase: {cred_path}")
+        if os.path.exists(cred_path):
+            cred = credentials.Certificate(cred_path)
+            firebase_admin.initialize_app(cred)
+            print("✅ Firebase Admin inicializado correctamente")
+        else:
+            print("⚠️ Archivo firebase-credentials.json no encontrado")
+    except Exception as e:
+        print(f"❌ Error al inicializar Firebase: {e}")
+
 def authenticate(username, password):
-    data = controlador_usuario_cliente.obtener_usuario_cliente_por_email(username)
-    if not data:
-        return None
-    user = Usuario(id=data[0], correo=data[1], contrasenia=data[2], tipo_usuario_id=data[3])
-
-    if user and user.contrasenia == encstringsha256(password):
-        return user
-
+    """Autentica usuario y retorna objeto Usuario si es válido"""
+    from controladores import controlador_usuario_admin, controlador_usuario_cliente
+    
+    # Buscar en admin
+    usuario_admin = controlador_usuario_admin.confirmarDatosAdm(username, password)
+    if usuario_admin:
+        return Usuario(
+            id=usuario_admin['id'],
+            nombres=usuario_admin['nombres'],
+            apellidos=usuario_admin['apellidos'],
+            correo=usuario_admin['correo'],
+            tipo_usuario_id=usuario_admin['tipo_usuarioid']
+        )
+    
+    # Buscar en clientes
+    usuario_cliente = controlador_usuario_cliente.get_usuario_correo(username)
+    if usuario_cliente and encstringsha256(password) == usuario_cliente['contrasenia']:
+        return Usuario(
+            id=usuario_cliente['id'],
+            nombres=usuario_cliente['nombres'],
+            apellidos=usuario_cliente['apellidos'],
+            correo=usuario_cliente['correo'],
+            tipo_usuario_id=usuario_cliente.get('tipo_usuarioid', 3)
+        )
+    
     return None
 
 
-def identity(payload):
-    """Obtiene el usuario a partir del JWT"""
+@app.route("/auth", methods=['POST'])
+def login():
+    """Endpoint de autenticación que genera JWT"""
     try:
-        user_id = payload.get('identity')
-        if not user_id:
-            return None
-
-        data = controlador_usuario_cliente.obtener_usuario_cliente_por_id2(user_id)
-
-        if not data:
-            return None
-
-        user = Usuario(
-            id=data[0],
-            correo=data[1],
-            contrasenia=data[2],
-            tipo_usuario_id=data[3]
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            return jsonify({"msg": "Usuario y contraseña requeridos"}), 400
+        
+        user = authenticate(username, password)
+        
+        if not user:
+            return jsonify({"msg": "Credenciales incorrectas"}), 401
+        
+        # Crear token con información del usuario
+        access_token = create_access_token(
+            identity=str(user.id),
+            additional_claims={
+                'nombres': user.nombres,
+                'correo': user.correo,
+                'tipo_usuario': user.tipo_usuario_id
+            }
         )
-        return user
+        
+        return jsonify(access_token=access_token), 200
+    
     except Exception as e:
-        print(f"Error en identity: {e}")
-        return None
+        return jsonify({"msg": str(e)}), 500
 
 
-jwt = JWT(app, authenticate, identity)
+# Callback opcional para cargar usuario desde el token
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    from controladores import controlador_usuario_cliente
+    usuario = controlador_usuario_cliente.get_usuario_id(identity)
+    
+    if usuario:
+        return Usuario(
+            id=usuario['id'],
+            nombres=usuario['nombres'],
+            apellidos=usuario['apellidos'],
+            correo=usuario['correo']
+        )
+    return None
 
 
 from blueprints import (
@@ -261,8 +356,6 @@ def login_movil():
 
 
 
-
-
 @app.route("/registrar_usuario",methods = ['POST'])
 def registrar_usuario():
     try:
@@ -275,8 +368,9 @@ def registrar_usuario():
         telefono = body.get("telefono")
         correo = body.get("correo")
         contrasenia = body.get("contrasenia")
+        fecha_nacimiento = body.get("fecha_nacimiento")
 
-        usuario_id = controlador_usuario_cliente.register_usuario_cliente(nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia)
+        usuario_id = controlador_usuario_cliente.register_usuario_cliente(nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia,fecha_nacimiento)
         if usuario_id == 0:
             msg = 'Error al resgistrar usuario'
             data = { 'usuario_id' : usuario_id }
@@ -289,7 +383,160 @@ def registrar_usuario():
         return response_error(str(e))
 
 
+################## REDES SOCIALES #####################
+import firebase_admin
+from firebase_admin import auth as firebase_auth
+import secrets
 
+@app.route("/login_google", methods=['POST'])
+def login_google():
+    """
+    Login con Google usando Firebase Authentication
+    
+    Body request:
+    {
+        "body_request": {
+            "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjE4MmU...",
+            "display_name": "Juan Perez",
+            "email": "juan.perez@gmail.com",
+            "photo_url": "https://lh3.googleusercontent.com/..."
+        }
+    }
+    """
+    try:
+        body = request.json.get('body_request', {})
+        
+        id_token = body.get("id_token")
+        display_name = body.get("display_name", "")
+        email = body.get("email", "")
+        photo_url = body.get("photo_url", "")
+        
+        if not id_token:
+            return response_error("Token de Google requerido")
+        
+        # 1. VERIFICAR TOKEN DE GOOGLE CON FIREBASE
+        try:
+            decoded_token = firebase_auth.verify_id_token(id_token, check_revoked=False)
+            firebase_uid = decoded_token['uid']
+            email_verificado = decoded_token.get('email', email)
+            
+            print(f"✅ Token válido para: {email_verificado}")
+            
+        except firebase_auth.InvalidIdTokenError as e:
+            print(f"❌ Token inválido: {e}")
+            return response_error("Token de Google inválido o expirado")
+        except Exception as e:
+            print(f"❌ Error al verificar token: {e}")
+            return response_error(f"Error al verificar token: {str(e)}")
+        
+        # 2. BUSCAR SI EL USUARIO YA EXISTE EN LA BD
+        usuario_existente = controlador_usuario_cliente.get_usuario_correo(email_verificado)
+        
+        if usuario_existente:
+            # Usuario existente - LOGIN
+            usuario_id = usuario_existente['id']
+            msg = "Inicio de sesión exitoso"
+            es_nuevo_usuario = False
+            
+            data = {
+                "id": usuario_existente['id'],
+                "nombres": usuario_existente['nombres'],
+                "apellidos": usuario_existente['apellidos'],
+                "correo": usuario_existente['correo'],
+                "doc_identidad": usuario_existente.get('doc_identidad', ''),
+                "telefono": usuario_existente.get('telefono', ''),
+                "genero": usuario_existente.get('genero', 1),
+                "fecha_nacimiento": str(usuario_existente.get('fecha_nacimiento', '')),
+                "img_usuario": usuario_existente.get('img_usuario') or photo_url,
+                "disponibilidad": usuario_existente.get('disponibilidad', 1),
+                "tipo_usuarioid": usuario_existente.get('tipo_usuarioid', 3),
+                "es_nuevo_usuario": es_nuevo_usuario
+            }
+        
+        else:
+            # Usuario nuevo - REGISTRO AUTOMÁTICO
+            nombre_completo = display_name.strip()
+            partes_nombre = nombre_completo.split(' ', 1)
+            
+            nombres = partes_nombre[0] if len(partes_nombre) > 0 else "Usuario"
+            apellidos = partes_nombre[1] if len(partes_nombre) > 1 else "Google"
+            
+            doc_identidad = "00000000"
+            genero = 1
+            telefono = "999999999"
+            
+            import bd
+            contrasenia_temporal = encstringsha256(secrets.token_urlsafe(32))
+            
+            sql = """
+                INSERT INTO usuario 
+                (nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia, img_usuario, disponibilidad, TIPO_USUARIOid)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 1, 3)
+            """
+            
+            try:
+                usuario_id = bd.sql_execute_lastrowid(
+                    sql,
+                    (nombres, apellidos, doc_identidad, genero, telefono, email_verificado, contrasenia_temporal, photo_url)
+                )
+                
+                if usuario_id <= 0:
+                    return response_error("Error al registrar usuario: ID inválido")
+                
+                msg = "Usuario registrado exitosamente con Google"
+                es_nuevo_usuario = True
+                
+                data = {
+                    "id": usuario_id,
+                    "nombres": nombres,
+                    "apellidos": apellidos,
+                    "correo": email_verificado,
+                    "doc_identidad": doc_identidad,
+                    "telefono": telefono,
+                    "genero": genero,
+                    "fecha_nacimiento": "",
+                    "img_usuario": photo_url,
+                    "disponibilidad": 1,
+                    "tipo_usuarioid": 3,
+                    "es_nuevo_usuario": es_nuevo_usuario
+                }
+                
+                print(f"✅ Usuario registrado con ID: {usuario_id}")
+                
+            except Exception as e_insert:
+                print(f"❌ Error al insertar usuario: {e_insert}")
+                import traceback
+                traceback.print_exc()
+                return response_error(f"Error al insertar usuario en BD: {str(e_insert)}")
+        
+        # ✅ GENERAR TOKEN JWT USANDO FLASK-JWT-EXTENDED
+        access_token = create_access_token(
+            identity=str(usuario_id),
+            additional_claims={
+                'nombres': data['nombres'],
+                'correo': email_verificado,
+                'tipo_usuario': data['tipo_usuarioid']
+            }
+        )
+        
+        print(f"✅ Token JWT generado para usuario {usuario_id}")
+        
+        # Registrar bitácora
+        controlador_bitacora.registrar_bitacora(usuarioid=usuario_id)
+        
+        # ✅ RESPUESTA CON TOKEN
+        return jsonify({
+            "status": 1,
+            "mensaje": msg,
+            "data": data,
+            "token": access_token  # ✅ TOKEN JWT
+        }), 200
+    
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return response_error(f"Error en login con Google: {str(e)}")
+#####
 
 
 if __name__ == "__main__":
