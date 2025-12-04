@@ -3,3 +3,4 @@ controladores/__pycache__/
 clases/__pycache__/
 *.pyc
 .venv/
+firebase-credentials.json
