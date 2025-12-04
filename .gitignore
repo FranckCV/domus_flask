@@ -4,3 +4,4 @@ clases/__pycache__/
 *.pyc
 .venv/
 firebase-credentials.json
+.env

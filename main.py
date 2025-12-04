@@ -539,5 +539,239 @@ def login_google():
 #####
 
 
+# GITHUB
+
+@app.route("/login_github", methods=['POST'])
+def login_github():
+    """
+    Login con GitHub OAuth
+    
+    Body request:
+    {
+        "body_request": {
+            "code": "abc123..."
+        }
+    }
+    """
+    try:
+        body = request.json.get('body_request', {})
+        code = body.get("code")
+        
+        if not code:
+            return response_error("Código de GitHub requerido")
+        
+        # 1. ✅ INTERCAMBIAR CÓDIGO POR ACCESS_TOKEN
+        import requests
+        
+        # ⚠️ IMPORTANTE: Nunca expongas client_secret en el código
+        # Mejor guardarlo en variables de entorno
+        GITHUB_CLIENT_ID = os.getenv('GITHUB_CLIENT_ID', 'Ov23liyY7OsCPVbgDH4p')
+        GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET', 'TU_GITHUB_CLIENT_SECRET')  # ⚠️ CAMBIAR
+        
+        if GITHUB_CLIENT_SECRET == 'TU_GITHUB_CLIENT_SECRET':
+            return response_error("GitHub Client Secret no configurado en el servidor")
+        
+        token_url = "https://github.com/login/oauth/access_token"
+        token_data = {
+            "client_id": GITHUB_CLIENT_ID,
+            "client_secret": GITHUB_CLIENT_SECRET,
+            "code": code,
+            # "redirect_uri": "com.cdp.appdomus://callback"  # Opcional, pero recomendado
+        }
+        
+        try:
+            token_response = requests.post(
+                token_url,
+                data=token_data,
+                headers={"Accept": "application/json"},
+                timeout=10
+            )
+            
+            if token_response.status_code != 200:
+                print(f"❌ Error de GitHub: {token_response.text}")
+                return response_error("Error al obtener token de GitHub")
+            
+            token_json = token_response.json()
+            access_token = token_json.get("access_token")
+            
+            if not access_token:
+                error_msg = token_json.get("error_description", "No se recibió access_token")
+                print(f"❌ Error en respuesta de GitHub: {error_msg}")
+                return response_error(f"Error de GitHub: {error_msg}")
+            
+            print(f"✅ Access token de GitHub obtenido correctamente")
+            
+        except requests.exceptions.Timeout:
+            print("❌ Timeout al conectar con GitHub")
+            return response_error("Error de conexión con GitHub")
+        except Exception as e:
+            print(f"❌ Error al obtener token: {e}")
+            return response_error(f"Error al obtener token: {str(e)}")
+        
+        # 2. ✅ OBTENER INFORMACIÓN DEL USUARIO
+        try:
+            user_response = requests.get(
+                "https://api.github.com/user",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Accept": "application/json"
+                },
+                timeout=10
+            )
+            
+            if user_response.status_code != 200:
+                print(f"❌ Error al obtener datos de usuario: {user_response.text}")
+                return response_error("Error al obtener datos de usuario de GitHub")
+            
+            user_data = user_response.json()
+            
+            # 3. ✅ OBTENER EMAIL (puede ser privado en GitHub)
+            email = user_data.get("email")
+            
+            if not email:
+                email_response = requests.get(
+                    "https://api.github.com/user/emails",
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Accept": "application/json"
+                    },
+                    timeout=10
+                )
+                
+                if email_response.status_code == 200:
+                    emails = email_response.json()
+                    # Buscar el email principal y verificado
+                    for e in emails:
+                        if e.get("primary") and e.get("verified"):
+                            email = e.get("email")
+                            break
+            
+            if not email:
+                return response_error("No se pudo obtener el email de GitHub. Verifique que su email esté público o agregue el scope 'user:email'")
+            
+            github_id = str(user_data.get("id"))
+            name = user_data.get("name") or user_data.get("login", "Usuario GitHub")
+            login = user_data.get("login")
+            avatar_url = user_data.get("avatar_url", "")
+            
+            print(f"✅ Datos de GitHub obtenidos para: {email} (login: {login})")
+            
+        except requests.exceptions.Timeout:
+            print("❌ Timeout al obtener datos de usuario")
+            return response_error("Error de conexión con GitHub")
+        except Exception as e:
+            print(f"❌ Error al obtener datos de usuario: {e}")
+            return response_error(f"Error al obtener datos: {str(e)}")
+        
+        # 4. BUSCAR SI EL USUARIO YA EXISTE EN LA BD
+        usuario_existente = controlador_usuario_cliente.get_usuario_correo(email)
+        
+        if usuario_existente:
+            # Usuario existente - LOGIN
+            usuario_id = usuario_existente['id']
+            msg = "Inicio de sesión exitoso con GitHub"
+            es_nuevo_usuario = False
+            
+            data = {
+                "id": usuario_existente['id'],
+                "nombres": usuario_existente['nombres'],
+                "apellidos": usuario_existente['apellidos'],
+                "correo": usuario_existente['correo'],
+                "doc_identidad": usuario_existente.get('doc_identidad', ''),
+                "telefono": usuario_existente.get('telefono', ''),
+                "genero": usuario_existente.get('genero', 1),
+                "fecha_nacimiento": str(usuario_existente.get('fecha_nacimiento', '')),
+                "img_usuario": usuario_existente.get('img_usuario') or avatar_url,
+                "disponibilidad": usuario_existente.get('disponibilidad', 1),
+                "tipo_usuarioid": usuario_existente.get('tipo_usuarioid', 3),
+                "es_nuevo_usuario": es_nuevo_usuario
+            }
+        
+        else:
+            # Usuario nuevo - REGISTRO AUTOMÁTICO
+            partes_nombre = name.split(' ', 1)
+            nombres = partes_nombre[0] if len(partes_nombre) > 0 else login
+            apellidos = partes_nombre[1] if len(partes_nombre) > 1 else "GitHub"
+            
+            doc_identidad = "00000000"
+            genero = 1
+            telefono = "000000000"
+            
+            import bd
+            contrasenia_temporal = encstringsha256(secrets.token_urlsafe(32))
+            
+            sql = """
+                INSERT INTO usuario 
+                (nombres, apellidos, doc_identidad, genero, telefono, correo, contrasenia, img_usuario, disponibilidad, TIPO_USUARIOid)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 1, 3)
+            """
+            
+            try:
+                usuario_id = bd.sql_execute_lastrowid(
+                    sql,
+                    (nombres, apellidos, doc_identidad, genero, telefono, email, contrasenia_temporal, avatar_url)
+                )
+                
+                if usuario_id <= 0:
+                    return response_error("Error al registrar usuario: ID inválido")
+                
+                msg = "Usuario registrado exitosamente con GitHub"
+                es_nuevo_usuario = True
+                
+                data = {
+                    "id": usuario_id,
+                    "nombres": nombres,
+                    "apellidos": apellidos,
+                    "correo": email,
+                    "doc_identidad": doc_identidad,
+                    "telefono": telefono,
+                    "genero": genero,
+                    "fecha_nacimiento": "",
+                    "img_usuario": avatar_url,
+                    "disponibilidad": 1,
+                    "tipo_usuarioid": 3,
+                    "es_nuevo_usuario": es_nuevo_usuario
+                }
+                
+                print(f"✅ Usuario registrado con ID: {usuario_id}")
+                
+            except Exception as e_insert:
+                print(f"❌ Error al insertar usuario: {e_insert}")
+                import traceback
+                traceback.print_exc()
+                return response_error(f"Error al insertar usuario en BD: {str(e_insert)}")
+        
+        # ✅ GENERAR TOKEN JWT USANDO FLASK-JWT-EXTENDED
+        access_token_jwt = create_access_token(
+            identity=str(usuario_id),
+            additional_claims={
+                'nombres': data['nombres'],
+                'correo': email,
+                'tipo_usuario': data['tipo_usuarioid']
+            }
+        )
+        
+        print(f"✅ Token JWT generado para usuario {usuario_id}")
+        
+        # Registrar bitácora
+        controlador_bitacora.registrar_bitacora(usuarioid=usuario_id)
+        
+        # ✅ RESPUESTA CON TOKEN
+        return jsonify({
+            "status": 1,
+            "mensaje": msg,
+            "data": data,
+            "token": access_token_jwt  # ✅ TOKEN JWT
+        }), 200
+    
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return response_error(f"Error en login con GitHub: {str(e)}")
+
+
+
+#######
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
